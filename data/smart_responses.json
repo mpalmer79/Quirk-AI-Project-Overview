@@ -1,1 +1,9 @@
+[
+  {
+    "id": "sr_new_inquiry",
+    "title": "New Internet Lead – Inventory Inquiry",
+    "email": "Hi [[first_name]], thanks for your interest in the [[model_trim]]. We currently have [[stock_count]] available (e.g., stock #[[stock_number]]). [[incentive_line]] Would [[two_appt_options]] work for a quick 15-minute visit?",
+    "sms": "Hi [[first_name]], this is Quirk BDC. [[model_trim]] is available (stock #[[stock_number]]). Want me to hold for [[two_appt_options]]?"
+  }
+]
 
