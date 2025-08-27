@@ -1,9 +1,233 @@
 [
   {
     "id": "sr_new_inquiry",
+    "category": "New Lead",
     "title": "New Internet Lead – Inventory Inquiry",
-    "email": "Hi [[first_name]], thanks for your interest in the [[model_trim]]. We currently have [[stock_count]] available (e.g., stock #[[stock_number]]). [[incentive_line]] Would [[two_appt_options]] work for a quick 15-minute visit?",
-    "sms": "Hi [[first_name]], this is Quirk BDC. [[model_trim]] is available (stock #[[stock_number]]). Want me to hold for [[two_appt_options]]?"
+    "email": "Hi [[first_name]], thanks for your interest in the [[model_trim]]. We currently have [[stock_count]] available, including stock #[[stock_number]] ([[stock_type]]). [[incentive_line]] I can reserve one for you — would [[two_appt_options]] work for a quick 15‑minute visit?",
+    "sms": "Hi [[first_name]], this is [[agent_name]] at [[store_name]]. Good news — [[model_trim]] is available (stock #[[stock_number]], [[stock_type]]). Want me to hold for [[two_appt_options]]?"
+  },
+  {
+    "id": "sr_price_inquiry",
+    "category": "Pricing",
+    "title": "Price Inquiry – “What’s your best price?”",
+    "email": "Great question, [[first_name]]. The [[model_trim]] you asked about is currently listed at [[price]] [[price_disclaimer]]. [[incentive_line]] The best way to save is to confirm the exact vehicle in person so we can apply every eligible incentive. I can have one ready — does [[two_appt_options]] work?",
+    "sms": "[[first_name]], [[model_trim]] is [[price]] [[price_disclaimer]]. I can apply incentives when you’re here. [[two_appt_options]] work? – [[agent_name]]"
+  },
+  {
+    "id": "sr_otd_quote",
+    "category": "Pricing",
+    "title": "Out‑the‑Door (OTD) Quote",
+    "email": "I can provide an accurate OTD based on your address and the specific [[model_trim]] (stock #[[stock_number]]). If you’re financing or leasing, I’ll include payment estimates as well. What’s the best ZIP to use?",
+    "sms": "Happy to send an OTD for stock #[[stock_number]]. What’s your ZIP so taxes/fees are exact? – [[agent_name]]"
+  },
+  {
+    "id": "sr_payment_range",
+    "category": "Payments",
+    "title": "Monthly Payment Range",
+    "email": "Hi [[first_name]], with average credit and [[down_payment]] down, the [[model_trim]] typically lands around [[est_payment]]/mo plus tax/fees (subject to credit). I can tailor an exact quote once you pick the vehicle. Want to stop by [[two_appt_options]]?",
+    "sms": "[[model_trim]] est. [[est_payment]]/mo with [[down_payment]] down (OAC). I can personalize when you’re here. [[two_appt_options]] work? – [[agent_name]]"
+  },
+  {
+    "id": "sr_finance_preapproval",
+    "category": "Finance",
+    "title": "Pre‑Approval Invite",
+    "email": "If you prefer, we can start with a soft‑pull pre‑approval and save time at the store. Then I’ll have a [[model_trim]] waiting when you arrive [[appointment_option_1]]. Would you like a secure link to begin?",
+    "sms": "Want a soft‑pull pre‑approval before you come in? I’ll have [[model_trim]] ready [[appointment_option_1]]. – [[agent_name]]"
+  },
+  {
+    "id": "sr_lease_vs_buy",
+    "category": "Finance",
+    "title": "Lease vs. Buy",
+    "email": "Happy to compare lease vs. buy on [[model_trim]] with current programs. If you share miles/usage, I’ll tailor a side‑by‑side and have it ready [[appointment_option_1]].",
+    "sms": "I can prep a lease vs. buy comparison for [[model_trim]]. Ready [[appointment_option_1]]? – [[agent_name]]"
+  },
+  {
+    "id": "sr_credit_concern",
+    "category": "Finance",
+    "title": "Credit Concerns – Reassurance",
+    "email": "We work with a wide range of credit profiles and have multiple lenders competing for your business. If helpful, we can start with a soft‑pull to outline options before you visit.",
+    "sms": "We help all credit types daily. Want a soft‑pull link to outline options before you come in? – [[agent_name]]"
+  },
+  {
+    "id": "sr_color_trim",
+    "category": "Inventory",
+    "title": "Availability – Color/Trim Request",
+    "email": "Hi [[first_name]], we have [[color]] in the [[model_trim]] and a few other trims arriving soon. I can place a complimentary 24‑hour hold on stock #[[stock_number]]. Would [[two_appt_options]] be convenient to see it?",
+    "sms": "We have [[color]] in [[model_trim]] plus incoming options. Want me to hold stock #[[stock_number]] for [[two_appt_options]]? – [[agent_name]]"
+  },
+  {
+    "id": "sr_specific_vin",
+    "category": "Inventory",
+    "title": "Specific VIN / Stock Request",
+    "email": "I found stock #[[stock_number]] — a [[model_trim]] priced at [[price]] (MSRP [[msrp]]). I can hold it for 24 hours. Would [[two_appt_options]] be best to see it?",
+    "sms": "Located stock #[[stock_number]] ([[model_trim]]). Hold it for you? [[two_appt_options]] – [[agent_name]]"
+  },
+  {
+    "id": "sr_incoming_unit",
+    "category": "Inventory",
+    "title": "Incoming / In‑Transit Unit",
+    "email": "We have a [[model_trim]] incoming with ETA [[eta_date]]. I can secure it in your name and notify you the moment it lands. Prefer to see a similar one now [[appointment_option_1]]?",
+    "sms": "[[model_trim]] inbound ETA [[eta_date]]. Want me to secure it or see a similar one [[appointment_option_1]]? – [[agent_name]]"
+  },
+  {
+    "id": "sr_switch_vehicle",
+    "category": "Inventory",
+    "title": "Alternative Suggestion (Switch)",
+    "email": "If you’re open, a lot of guests also compare [[alt_model_trim]] for features and value. I can line up both side‑by‑side so you can decide in 15 minutes. [[two_appt_options]]?",
+    "sms": "Want to compare [[model_trim]] vs [[alt_model_trim]] side‑by‑side? Quick visit [[two_appt_options]] – [[agent_name]]"
+  },
+  {
+    "id": "sr_hold_or_deposit",
+    "category": "Availability",
+    "title": "Hold / Deposit Option",
+    "email": "Because this model moves quickly, we can place a fully refundable hold with a small deposit to secure [[model_trim]] (stock #[[stock_number]]). Prefer to stop by [[two_appt_options]] or hold it today?",
+    "sms": "We can place a refundable hold on stock #[[stock_number]] ([[model_trim]]) if helpful. Or come by [[two_appt_options]] – [[agent_name]]"
+  },
+  {
+    "id": "sr_trade_in",
+    "category": "Trade",
+    "title": "Trade‑In – Fast Appraisal",
+    "email": "Thanks for the info on your [[trade_vehicle]], [[first_name]]. We can give you a real offer in minutes — even if you don’t buy. While you’re here, I’ll have a [[model_trim]] pulled up to compare. Does [[two_appt_options]] work?",
+    "sms": "Your [[trade_vehicle]] could be worth more than you think. Quick appraisal + [[model_trim]] test drive [[two_appt_options]]? – [[agent_name]]"
+  },
+  {
+    "id": "sr_trade_range",
+    "category": "Trade",
+    "title": "Rough Trade Range",
+    "email": "Based on [[trade_vehicle]] and average condition, we see trades in the [[trade_range]] range. The final value depends on miles/condition; I can get you a firm offer while you test drive [[model_trim]]. [[two_appt_options]]?",
+    "sms": "Trade range for [[trade_vehicle]] looks like [[trade_range]] pending condition. Want to swing by [[two_appt_options]] for a firm offer? – [[agent_name]]"
+  },
+  {
+    "id": "sr_used_carfax",
+    "category": "Used",
+    "title": "Used Vehicle – Carfax & Reconditioning",
+    "email": "Hi [[first_name]], I attached the Carfax and our reconditioning highlights for the [[model_trim]]. It’s priced at [[price]] and ready to drive. Want the keys waiting [[two_appt_options]]?",
+    "sms": "Carfax ready on the [[model_trim]]. Priced at [[price]]. Keys waiting [[two_appt_options]]? – [[agent_name]]"
+  },
+  {
+    "id": "sr_used_price_drop",
+    "category": "Used",
+    "title": "Used – Price Just Reduced",
+    "email": "Heads up — [[model_trim]] was just reduced to [[price]]. Interest has picked up; I’m happy to set a courtesy hold if you’re planning to visit [[appointment_option_1]].",
+    "sms": "Price drop on [[model_trim]] → [[price]]. Want me to hold it [[appointment_option_1]]? – [[agent_name]]"
+  },
+  {
+    "id": "sr_test_drive",
+    "category": "Appointment",
+    "title": "Low‑Pressure Test Drive",
+    "email": "No pressure, [[first_name]] — many guests start with a quick 15‑minute drive. I’ll prep a [[model_trim]] so you can see if it fits. [[two_appt_options]]?",
+    "sms": "Happy to set a no‑obligation 15‑min drive in a [[model_trim]]. [[two_appt_options]] work? – [[agent_name]]"
+  },
+  {
+    "id": "sr_appointment_confirm",
+    "category": "Appointment",
+    "title": "Appointment Confirmation",
+    "email": "Looking forward to seeing you [[appointment_datetime]] at [[store_name]]. I’ll have the [[model_trim]] pulled up (stock #[[stock_number]]). Bring your license + insurance for a quick drive.",
+    "sms": "Confirmed for [[appointment_datetime]]. [[model_trim]] will be ready. – [[agent_name]], [[store_name]]"
+  },
+  {
+    "id": "sr_appointment_reminder",
+    "category": "Appointment",
+    "title": "Appointment Reminder",
+    "email": "Friendly reminder for [[appointment_datetime]] at [[store_name]]. If anything changes, reply here and I’ll adjust. Parking is out front; I’ll meet you in the showroom.",
+    "sms": "Reminder for [[appointment_datetime]]. Reply if you need to adjust. – [[agent_name]]"
+  },
+  {
+    "id": "sr_appointment_reschedule",
+    "category": "Appointment",
+    "title": "Reschedule Offer",
+    "email": "No worries if your schedule changed. I can move your visit to [[appointment_option_1]] or [[appointment_option_2]]. Which is easier?",
+    "sms": "Want to switch to [[appointment_option_1]] or [[appointment_option_2]]? – [[agent_name]]"
+  },
+  {
+    "id": "sr_voicemail",
+    "category": "Phone",
+    "title": "Missed Call / Voicemail Follow‑Up",
+    "email": "Tried reaching you to confirm details on the [[model_trim]]. I’ll be available until [[close_time]]. If it’s easier, reply with the best time and I’ll call then.",
+    "sms": "Just missed you! Can I try again around [[callback_time]]? – [[agent_name]]"
+  },
+  {
+    "id": "sr_followup_day1",
+    "category": "Follow‑up",
+    "title": "Day 1 – No Response",
+    "email": "Just checking in, [[first_name]] — still interested in the [[model_trim]]? I have times [[two_appt_options]] and can prep your preferred color. Reply with what works best.",
+    "sms": "Following up on [[model_trim]]. I can have it ready [[two_appt_options]]. – [[agent_name]]"
+  },
+  {
+    "id": "sr_followup_day3",
+    "category": "Follow‑up",
+    "title": "Day 3 – Value Nudge",
+    "email": "Wanted to share: we have a strong selection on [[model_trim]] right now and [[incentive_line]]. If you’d like, I’ll reserve one for a quick drive [[two_appt_options]].",
+    "sms": "[[model_trim]] selection is solid today + [[incentive_line_short]]. Quick drive [[two_appt_options]]? – [[agent_name]]"
+  },
+  {
+    "id": "sr_followup_day7",
+    "category": "Follow‑up",
+    "title": "Day 7 – Incentive Ending",
+    "email": "Hi [[first_name]], incentives on [[model_trim]] are scheduled to change soon. If seeing numbers helps, I can have a worksheet ready [[appointment_option_1]]. Interested?",
+    "sms": "Incentives may change soon on [[model_trim]]. Want a quick worksheet ready [[appointment_option_1]]? – [[agent_name]]"
+  },
+  {
+    "id": "sr_followup_day14",
+    "category": "Follow‑up",
+    "title": "Day 14 – Last Touch",
+    "email": "If it’s not the right time, I can keep an eye out and message when we receive a match. If you want to take a quick drive first, I have openings [[two_appt_options]].",
+    "sms": "Happy to keep an eye out and text when a match arrives. Or pop in [[two_appt_options]] for a quick drive. – [[agent_name]]"
+  },
+  {
+    "id": "sr_delivery",
+    "category": "Convenience",
+    "title": "Delivery / Express Pickup",
+    "email": "We offer flexible delivery and express pickup. You can complete most paperwork online and just sign/drive. If helpful, I’ll outline steps and prep a [[model_trim]] for [[appointment_option_1]].",
+    "sms": "We can do express pickup or delivery. Want steps + a [[model_trim]] ready [[appointment_option_1]]? – [[agent_name]]"
+  },
+  {
+    "id": "sr_accessibility",
+    "category": "Convenience",
+    "title": "Accessibility / Language Support",
+    "email": "If you prefer Spanish or need any accommodations during your visit, let me know and I’ll arrange it. My goal is to make your visit quick and easy.",
+    "sms": "Puedo ayudar en español si prefieres. ¿Agendo [[appointment_option_1]]? – [[agent_name]]"
+  },
+  {
+    "id": "sr_docs_needed",
+    "category": "Convenience",
+    "title": "What to Bring",
+    "email": "For a fast visit, please bring a valid driver’s license, insurance card, and your trade’s registration (if applicable). I’ll have [[model_trim]] pulled up [[appointment_option_1]].",
+    "sms": "For a fast visit: license + insurance (and trade reg if applicable). See you [[appointment_option_1]]. – [[agent_name]]"
+  },
+  {
+    "id": "sr_after_sale_checkin",
+    "category": "Post‑Sale",
+    "title": "After‑Sale Check‑In",
+    "email": "Congrats again on your [[model_trim]]! Any questions on features or setup? If you’d like, we can schedule a 10‑minute tech session to walk through your most‑used features.",
+    "sms": "Thanks again for choosing [[store_name]]! Need help with features on your [[model_trim]]? – [[agent_name]]"
+  },
+  {
+    "id": "sr_referral",
+    "category": "Post‑Sale",
+    "title": "Referral Invitation",
+    "email": "If a friend or family member is shopping, I’ll take great care of them: quick pricing, no pressure, and a thank‑you gift for you. Feel free to share my number.",
+    "sms": "Know someone shopping? I’ll take great care of them and we’ll thank you properly. – [[agent_name]]"
+  },
+  {
+    "id": "sr_bad_fit",
+    "category": "Edge",
+    "title": "Vehicle Not a Fit – Switch or Order",
+    "email": "Based on what you shared, [[model_trim]] may not be the best fit. Two options: I can line up [[alt_model_trim]] to compare, or we can custom‑order exactly what you want. [[two_appt_options]]?",
+    "sms": "Not the best fit? I can line up [[alt_model_trim]] or help custom‑order. [[two_appt_options]] work? – [[agent_name]]"
+  },
+  {
+    "id": "sr_unit_sold",
+    "category": "Edge",
+    "title": "Unit Just Sold",
+    "email": "That exact unit was just sold, but I have a near‑twin arriving [[eta_date]]. I can notify you as soon as it lands or set up a drive in a similar one [[appointment_option_1]].",
+    "sms": "That one sold, but a twin arrives [[eta_date]]. Want me to ping you or set a quick drive [[appointment_option_1]]? – [[agent_name]]"
+  },
+  {
+    "id": "sr_long_distance",
+    "category": "Edge",
+    "title": "Long‑Distance Buyer",
+    "email": "We regularly help out‑of‑state buyers. I can send a full video walk‑around, secure e‑sign docs, and arrange delivery. Would you like a quick video on [[model_trim]]?",
+    "sms": "Out of state? I can send a video + delivery options. Want a quick walk‑around of [[model_trim]]? – [[agent_name]]"
   }
 ]
-
