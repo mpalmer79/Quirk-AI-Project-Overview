@@ -4,38 +4,47 @@ on:
   push:
     branches: [ "main" ]
   pull_request:
-  workflow_dispatch:  # allow manual runs
+  workflow_dispatch:
 
 jobs:
   build:
     name: Build & Test
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
+      # Only run Node steps if a package.json exists
       - name: Setup Node
+        if: ${{ hashFiles('**/package.json') != '' }}
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
 
-      - name: Install dependencies
-        run: npm ci
+      # Use npm install so it works even without a package-lock.json yet
+      - name: Install deps
+        if: ${{ hashFiles('**/package.json') != '' }}
+        run: npm install
 
       - name: Typecheck
+        if: ${{ hashFiles('**/package.json') != '' }}
         run: npm run typecheck --if-present
 
       - name: Lint
+        if: ${{ hashFiles('**/package.json') != '' }}
         run: npm run lint --if-present
 
       - name: Build
+        if: ${{ hashFiles('**/package.json') != '' }}
         run: npm run build --if-present
+
+      # If there's no package.json yet, don't fail—just log it.
+      - name: No Node project detected
+        if: ${{ hashFiles('**/package.json') == '' }}
+        run: echo "No package.json found — skipping Node build."
 
   sanity:
     name: Sanity Check
     runs-on: ubuntu-latest
     steps:
       - run: echo "✅ GitHub Actions is wired up and running"
-
