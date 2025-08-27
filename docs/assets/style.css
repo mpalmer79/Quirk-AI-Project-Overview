@@ -46,34 +46,25 @@ body {
   padding: 24px;
 }
 
-/* --- Brand header --- */
+/* --- Brand header with centered logo --- */
 .brandbar {
   background: linear-gradient(90deg, var(--brand-dark), var(--brand));
-  color: #fff;
-  padding: 12px 20px;
-  box-shadow: 0 2px 4px rgba(0,0,0,.12);
-}
-.brandbar .inner {
+  height: 80px;                /* adjust bar height as needed */
   display: flex;
   align-items: center;
-  gap: 12px;
-  max-width: 1100px;
-  margin: 0 auto;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,.12);
 }
-.brandbar img {
-  height: 40px;
+.brandbar .inner.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.brandbar img.logo-center {
+  height: 50px;   /* scale the logo */
   width: auto;
   display: block;
-}
-.brandbar h1 {
-  font-size: 20px;
-  font-weight: 600;
-  margin: 0;
-}
-.brandbar span {
-  margin-left: auto;
-  font-size: 12px;
-  color: #cbd5e1;
 }
 
 /* --- Cards & sections --- */
@@ -123,6 +114,10 @@ body.dark textarea {
 select:focus, input:focus, textarea:focus, .btn:focus {
   border-color: var(--brand);
   box-shadow: 0 0 0 3px var(--focus);
+}
+textarea {
+  min-height: 200px;
+  resize: vertical;
 }
 
 /* --- Buttons --- */
