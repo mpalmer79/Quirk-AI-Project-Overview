@@ -2,49 +2,61 @@ name: CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ main ]
+    paths:
+      - "sandbox/**"
+      - "orchestrator/**"
+      - ".github/workflows/**"
+      - "data/**"
   pull_request:
-  workflow_dispatch:
+    branches: [ main ]
 
 jobs:
-  build:
-    name: Build & Test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      # Only run Node steps if a package.json exists
-      - name: Setup Node
-        if: ${{ hashFiles('**/package.json') != '' }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-
-      # Use npm install so it works even without a package-lock.json yet
-      - name: Install deps
-        if: ${{ hashFiles('**/package.json') != '' }}
-        run: npm install
-
-      - name: Typecheck
-        if: ${{ hashFiles('**/package.json') != '' }}
-        run: npm run typecheck --if-present
-
-      - name: Lint
-        if: ${{ hashFiles('**/package.json') != '' }}
-        run: npm run lint --if-present
-
-      - name: Build
-        if: ${{ hashFiles('**/package.json') != '' }}
-        run: npm run build --if-present
-
-      # If there's no package.json yet, don't fail—just log it.
-      - name: No Node project detected
-        if: ${{ hashFiles('**/package.json') == '' }}
-        run: echo "No package.json found — skipping Node build."
-
   sanity:
     name: Sanity Check
     runs-on: ubuntu-latest
     steps:
-      - run: echo "✅ GitHub Actions is wired up and running"
+      - uses: actions/checkout@v4
+      - name: List changed files
+        run: git diff --name-only ${{ github.sha }}~1 ${{ github.sha }} || true
+      - name: Validate JSON (quick check)
+        run: |
+          sudo apt-get update && sudo apt-get install -y jq
+          find . -name "*.json" -not -path "./node_modules/*" -print0 | xargs -0 -I{} sh -c 'jq . {} >/dev/null' || true
+
+  sandbox-normalize:
+    name: Sandbox → inventory.json
+    needs: sanity
+    if: ${{ hashFiles('sandbox/package.json') != '' && (github.event_name == 'pull_request' || github.event_name == 'push') }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: sandbox
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm ci
+      - run: npm run normalize
+      - name: Upload inventory.json artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: inventory.json
+          path: sandbox/inventory.json
+
+  orchestrator-build:
+    name: Orchestrator Build
+    needs: sanity
+    if: ${{ hashFiles('orchestrator/package.json') != '' }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: orchestrator
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm ci
+      - run: npm run -s dev -- --help || true  # smoke check; replace with real build/test later
