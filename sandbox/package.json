@@ -1,0 +1,11 @@
+{
+  "name": "quirk-genai-sandbox-tools",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "normalize": "node normalize.js --in ../data/inventory.sample.csv --out ./inventory.json"
+  },
+  "dependencies": {
+    "csv-parse": "^5.5.6"
+  }
+}
