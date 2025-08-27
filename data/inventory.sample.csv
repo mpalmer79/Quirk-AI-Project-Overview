@@ -1,4 +1,3 @@
-
 StockType,StockNumber,VIN,Year,Make,Model,Trim,Odometer,Age,Price,MSRP,Cost
 New,M3371,1GCPKFEK4SG311872,2025,Chevrolet,Silverado 1500,RST,0,120,59715,61515,54030
 Used,M3842,1HGCV1F38KA123456,2021,Honda,Accord Sport,2.0T,34210,310,25990,0,24100
