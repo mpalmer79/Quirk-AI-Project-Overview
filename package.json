@@ -1,1 +1,26 @@
+{
+  "name": "quirk-genai-sandbox",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3000",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "validate:inventory": "ts-node scripts/validate-inventory.ts"
+  },
+  "dependencies": {
+    "next": "^14.2.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "papaparse": "^5.4.1",
+    "framer-motion": "^11.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.3",
+    "eslint": "^9.0.0",
+    "tailwindcss": "^3.4.7",
+    "ts-node": "^10.9.2"
+  }
+}
 
