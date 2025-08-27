@@ -4,10 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>BDC Smart Response Playground</title>
-  <!-- External stylesheet with your brand colors -->
+  <!-- External stylesheet -->
   <link rel="stylesheet" href="./assets/style.css" />
 </head>
-<body>
+<body class="light">
 
   <!-- ===== Brand header ===== -->
   <div class="brandbar">
@@ -15,6 +15,9 @@
       <img src="./assets/quirk-logo.png" alt="Quirk Logo" />
       <h1>BDC Smart Response Playground</h1>
       <span>inventory + incentive + two time slots</span>
+
+      <!-- Theme toggle button -->
+      <button id="toggleTheme" class="btn secondary" style="margin-left:16px;">Dark Mode</button>
     </div>
   </div>
 
@@ -66,7 +69,21 @@
 
   </div><!-- /container -->
 
-  <!-- App logic (loads inventory.json, fills templates) -->
   <script type="module" src="./app.js"></script>
+  <script>
+    // Theme toggle logic
+    const btn = document.getElementById('toggleTheme');
+    btn.addEventListener('click', () => {
+      const body = document.body;
+      const dark = body.classList.toggle('dark');
+      if (dark) {
+        body.classList.remove('light');
+        btn.textContent = 'Light Mode';
+      } else {
+        body.classList.add('light');
+        btn.textContent = 'Dark Mode';
+      }
+    });
+  </script>
 </body>
 </html>
