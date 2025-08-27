@@ -1,5 +1,5 @@
 /* ================================
-   BDC Smart Response Playground
+   Quirk Gen AI Alternative
    Brandable CSS with Light/Dark mode
    ================================= */
 
@@ -46,28 +46,29 @@ body {
   padding: 24px;
 }
 
-/* --- Brand header with logo + left-aligned title --- */
+/* ---------------------------------
+   Brand header:
+   - Title left aligned
+   - Logo centered in bar
+   --------------------------------- */
 .brandbar {
   background: linear-gradient(90deg, var(--brand-dark), var(--brand));
   height: 80px;
   display: flex;
   align-items: center;
+  position: relative;                   /* enables absolute logo centering */
   box-shadow: 0 2px 4px rgba(0,0,0,.12);
 }
+
 .brandbar .inner {
   display: flex;
   align-items: center;
-  gap: 12px;
-  max-width: 1100px;
-  margin: 0 auto;
   padding: 0 20px;
   width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
 }
-.brandbar img.logo-left {
-  height: 50px;
-  width: auto;
-  display: block;
-}
+
 .brandbar h1 {
   font-size: 22px;
   font-weight: 600;
@@ -75,6 +76,15 @@ body {
   color: #fff;
 }
 
+/* Centered logo */
+.brandbar img.logo-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 50px;            /* adjust as needed */
+  width: auto;
+  display: block;
+}
 
 /* --- Cards & sections --- */
 .card {
@@ -147,7 +157,7 @@ textarea {
 .btn:active { transform: translateY(1px); }
 .btn.secondary {
   background: transparent;
-  color: #fff;                 /* on brandbar */
+  color: #fff;                 /* good on brandbar */
   border-color: rgba(255,255,255,.35);
 }
 body.light .btn.secondary {
@@ -165,7 +175,7 @@ body.dark .btn.secondary:hover {
 a { color: var(--accent); text-decoration: underline; }
 img { max-width: 100%; height: auto; border-radius: 8px; }
 
-/* --- Utility pills/badges (optional) --- */
+/* --- Optional badges --- */
 .pill {
   display: inline-block;
   padding: 4px 8px;
