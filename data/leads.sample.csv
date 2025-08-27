@@ -1,1 +1,4 @@
+LeadId,Name,Email,Phone,Vehicle/Model,Source,CreatedAt
+CSV-1,Sarah Nguyen,sarah.nguyen@example.com,603-555-0199,2025 Chevrolet Traverse RS,KBB ICO,2025-08-24
+CSV-2,Daniel Ortiz,,603-555-0147,2024 Chevrolet Silverado 1500 LT,Trade-In,2025-08-23
 
