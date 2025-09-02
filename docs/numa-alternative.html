@@ -3,21 +3,25 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>NUMA Alternative – Quirk AI Voice</title>
-  <meta name="description" content="A dealership-ready AI voice agent that handles Sales, Service, and Parts — integrates with VIN Solutions & DMS, escalates safely, and supports English & Spanish." />
+  <title>Quirk AI Voice vs NUMA — The Better Dealership Choice</title>
+  <meta name="description" content="Why dealerships choose Quirk AI Voice over NUMA: real-time automation, CRM/DMS integration, bilingual support, and measurable ROI." />
 
   <style>
-    :root {
-      --green: #0b6e37;
+    :root{
+      --green:#0b6e37;
       --green-700:#0a5f31;
-      --bg:#f7f9fb;
+      --bg:#ffffff;
       --card:#ffffff;
       --text:#0f172a;
       --muted:#475569;
       --ring:#e2e8f0;
+      --violet:#7c3aed;
+      --amber:#b45309;
+      --red:#b91c1c;
+      --slate:#0f172a;
     }
 
-    /* Header bar layout */
+    /* Header bar */
     .topbar {
       position: relative;
       background: var(--green);
@@ -34,119 +38,92 @@
       align-items: center;
     }
     .topbar .brand img {
-      height: 40px; /* tweak size as needed */
-      width: auto;
-      display: block;
+      height: 40px; width: auto; display:block;
     }
     /* Center title */
     .topbar-title {
-      margin: 0;
-      color: #fff;
-      font-weight: 700;
-      font-size: 1.25rem;
-      line-height: 64px;   /* keeps it centered vertically */
-      text-align: center;
+      margin: 0; color: #fff;
+      font-weight: 800; font-size: 1.2rem;
+      line-height: 64px; text-align: center;
+      letter-spacing:.2px;
     }
     /* Right nav */
     .topbar-nav {
       position: absolute;
-      right: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      display: flex;
-      gap: 18px;
+      right: 16px; top: 50%; transform: translateY(-50%);
+      display: flex; gap: 18px;
     }
     .topbar-nav a {
-      color: #fff;
-      text-decoration: none;
-      font-weight: 600;
-      opacity: .95;
+      color:#fff; text-decoration:none; font-weight:600; opacity:.95;
     }
-    .topbar-nav a:hover {
-      opacity: 1;
-      text-decoration: underline;
-    }
-    /* Small screen adjustments */
-    @media (max-width: 640px) {
-      .topbar { height: 56px; }
-      .topbar .brand img { height: 32px; }
-      .topbar-title { font-size: 1.05rem; line-height: 56px; }
-    }
+    .topbar-nav a:hover { opacity:1; text-decoration:underline; }
 
-    /* Page layout */
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      color: var(--text);
-      background: #fff;
-    }
-    .page {
-      max-width: 1120px;
-      margin: 24px auto 72px;
-      padding: 0 16px;
-    }
-    .grid {
-      display: grid;
-      gap: 16px;
-    }
-    @media (min-width: 900px) {
-      .grid-2 { grid-template-columns: 1fr 1fr; }
-      .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
-    }
+    /* Layout */
+    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; color:var(--text); background:var(--bg); }
+    .page { max-width: 1120px; margin: 24px auto 80px; padding: 0 16px; }
+    .grid { display:grid; gap:16px; }
+    @media (min-width: 900px){ .grid-2{ grid-template-columns:1fr 1fr; } .grid-3{ grid-template-columns:1fr 1fr 1fr; } }
+
     /* Cards */
-    .card {
-      background: var(--card);
-      border: 1px solid var(--ring);
-      border-radius: 14px;
-      padding: 18px 20px;
-      box-shadow: 0 1px 0 rgba(16,24,40,.03);
-    }
-    .card h3 {
-      margin: 0 0 8px 0;
-      font-size: 1.1rem;
-    }
-    .muted { color: var(--muted); }
+    .card { background:var(--card); border:1px solid var(--ring); border-radius:16px; padding:20px; box-shadow:0 1px 0 rgba(16,24,40,.03); }
+    .card h3 { margin:0 0 8px 0; font-size:1.12rem; }
+    .muted{ color:var(--muted); }
+
     /* Hero */
-    .hero {
-      display: grid;
-      gap: 14px;
-      align-items: start;
-    }
-    .hero h2 {
-      margin: 0;
-      font-size: 1.35rem;
-    }
-    .btnrow { display: flex; gap: 12px; flex-wrap: wrap; }
+    .hero { display:grid; gap:14px; align-items:start; padding:22px; }
+    .hero h1 { margin:0; font-size:1.6rem; color:var(--slate); }
+    .kicker { color:#fff; background:var(--green); display:inline-block; padding:4px 10px; border-radius:999px; font-size:.85rem; font-weight:700; }
+    .btnrow { display:flex; gap:12px; flex-wrap:wrap; }
     .btn {
-      appearance: none;
-      border: 1px solid transparent;
-      padding: 10px 14px;
-      border-radius: 10px;
-      font-weight: 600;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-flex; align-items: center; gap: 8px;
+      appearance:none; border:1px solid transparent; padding:10px 14px; border-radius:10px;
+      font-weight:600; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:8px;
     }
-    .btn.primary { background: var(--green); color: #fff; border-color: var(--green-700); }
-    .btn.ghost { background: #fff; color: var(--green); border-color: var(--green); }
-    .btn:hover { filter: brightness(.96); }
-    ul { margin: 8px 0 0 18px; }
-    code { background: #f1f5f9; padding: 2px 6px; border-radius: 6px; }
+    .btn.primary { background: var(--green); color:#fff; border-color: var(--green-700); }
+    .btn.ghost   { background:#fff; color: var(--green); border-color: var(--green); }
+    .btn:hover{ filter:brightness(.96); }
+
+    /* Comparison table */
+    table { width:100%; border-collapse: collapse; }
+    th, td { padding:12px 10px; border-bottom:1px solid var(--ring); vertical-align: top; }
+    th { text-align:left; font-size:.92rem; color:var(--muted); }
+    .yes { color: var(--green); font-weight:700; }
+    .no  { color: var(--red); font-weight:700; }
+    .badge { font-size:.75rem; background:#eef2ff; color:#3730a3; padding:2px 8px; border-radius:999px; }
+
+    /* Metrics pills */
+    .pill { display:inline-flex; align-items:center; gap:8px; background:#f8fafc; border:1px solid var(--ring); padding:10px 12px; border-radius:12px; }
+    .pill strong { color:var(--violet); }
+
+    /* Lists */
+    ul { margin:8px 0 0 18px; }
+    code { background:#f1f5f9; padding:2px 6px; border-radius:6px; }
+
+    /* Footer note */
+    .footnote { color:var(--muted); font-size:.9rem; margin-top:8px; }
+
+    /* Small screens */
+    @media (max-width:640px){
+      .topbar{ height:56px; }
+      .topbar .brand img{ height:32px; }
+      .topbar-title{ font-size:1.05rem; line-height:56px; }
+      th, td{ padding:10px 8px; }
+    }
   </style>
 </head>
 <body>
 
-  <!-- Header Bar -->
+  <!-- Header -->
   <header class="topbar">
     <!-- Left: Logo -->
     <a class="brand" href="./" aria-label="Quirk AI Home">
+      <!-- Make sure this file exists at docs/assets/quirk-ai-logo.png -->
       <img src="./assets/quirk-ai-logo.png" alt="Quirk AI logo" />
     </a>
 
     <!-- Center: Title -->
-    <h1 class="topbar-title">Quirk Gen AI Alternative</h1>
+    <h1 class="topbar-title">Quirk AI Voice vs NUMA</h1>
 
-    <!-- Right: Navigation -->
+    <!-- Right: Nav -->
     <nav class="topbar-nav" aria-label="Top Navigation">
       <a href="./numa-alternative.html">NUMA Alternative</a>
       <a href="./project-library.html">Project Library</a>
@@ -154,42 +131,160 @@
   </header>
 
   <main class="page">
-    <!-- Intro / Hero -->
+
+    <!-- HERO -->
     <section class="card hero">
-      <div>
-        <h2>NUMA Alternative</h2>
-        <p class="muted">
-          A dealership-ready AI voice agent that handles Sales, Service, and Parts — integrates with VIN Solutions &amp; DMS,
-          escalates safely, and supports English &amp; Spanish.
-        </p>
-      </div>
+      <span class="kicker">Quirk AI Voice (powered by OpenAI)</span>
+      <h1>Why Dealerships Choose <strong>Quirk AI Voice</strong> over NUMA</h1>
+      <p class="muted">
+        NUMA captures voicemails. <strong>Quirk AI Voice</strong> handles real customer conversations in real time —
+        books service, logs leads, quotes trades, checks parts orders, and escalates to a person when it should.
+      </p>
       <div class="btnrow">
-        <a class="btn primary" href="#start-pilot">Get a Demo</a>
-        <a class="btn ghost" href="./project-library.html">Open Project Library</a>
+        <a class="btn primary" href="#comparison">See the Comparison</a>
+        <a class="btn ghost" href="#roi">Estimate ROI</a>
       </div>
     </section>
 
-    <!-- Content sections here... (unchanged from your existing file) -->
-    <!-- What / Where -->
-    <section class="grid grid-2">
+    <!-- QUICK BENEFITS -->
+    <section class="grid grid-3">
       <article class="card">
-        <h3>What it does</h3>
-        <p class="muted">
-          Tier-1 call handling with tool-driven actions: create CRM tickets, hold service slots, quote trades, and check order status.
-          Short, professional voice style; graceful escalation when needed.
-        </p>
+        <h3>Real-Time Automation</h3>
+        <p class="muted">Hold service slots, create CRM tickets, capture trades, check order status — right on the call or chat.</p>
       </article>
       <article class="card">
-        <h3>Where calls go</h3>
+        <h3>Bilingual, Dealership-Ready</h3>
+        <p class="muted">English + Spanish with a concise, professional tone; safe handoffs on edge cases.</p>
+      </article>
+      <article class="card">
+        <h3>Proven Guardrails</h3>
+        <p class="muted">Never invents prices, VINs, or slots; cites the KB; masks PII; escalates when confidence is low.</p>
+      </article>
+    </section>
+
+    <!-- COMPARISON -->
+    <section id="comparison" class="card">
+      <h3>NUMA vs <strong>Quirk AI Voice</strong></h3>
+      <table aria-label="Feature comparison">
+        <thead>
+          <tr>
+            <th>Capability</th>
+            <th>NUMA</th>
+            <th>Quirk AI Voice</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Real-time conversations (phone/chat/email)</td>
+            <td class="no">Voicemail/SMS centric</td>
+            <td class="yes">Yes — natural conversations across channels</td>
+          </tr>
+          <tr>
+            <td>Service scheduling</td>
+            <td class="no">Manual callback</td>
+            <td class="yes">Hold window via <code>schedule_service</code></td>
+          </tr>
+          <tr>
+            <td>CRM ticketing</td>
+            <td class="no">Limited</td>
+            <td class="yes">VIN Solutions via <code>create_ticket</code></td>
+          </tr>
+          <tr>
+            <td>Trade appraisal capture</td>
+            <td class="no">Manual</td>
+            <td class="yes">VIN/mileage/photos via <code>quote_trade</code></td>
+          </tr>
+          <tr>
+            <td>Parts order status</td>
+            <td class="no">Manual lookup</td>
+            <td class="yes"><code>check_order_status</code> tool</td>
+          </tr>
+          <tr>
+            <td>Bilingual (EN/ES)</td>
+            <td class="no">English focused</td>
+            <td class="yes">Yes — seamless mid-call switching</td>
+          </tr>
+          <tr>
+            <td>Guardrails & Escalation</td>
+            <td class="no">Basic forwarding</td>
+            <td class="yes">Confidence/sentiment rules; “Talk to a person”</td>
+          </tr>
+          <tr>
+            <td>Citations & KB grounding</td>
+            <td class="no">—</td>
+            <td class="yes">Answers reference the dealership KB</td>
+          </tr>
+          <tr>
+            <td>PII handling</td>
+            <td class="no">Standard</td>
+            <td class="yes">Mask phone/email/VIN in logs; signed URLs for recordings</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="footnote">
+        Quirk AI Voice uses your dealership’s policies/hours/promos as source of truth and escalates to humans when needed.
+      </p>
+    </section>
+
+    <!-- TOOLS & INTEGRATIONS -->
+    <section class="grid grid-3">
+      <article class="card">
+        <h3>VIN Solutions — <code>create_ticket</code></h3>
+        <p class="muted">Log lead/activity with <code>x_correlation_id</code>; attach summary + recording link; minimal PII in logs.</p>
+      </article>
+      <article class="card">
+        <h3>Scheduler — <code>schedule_service</code></h3>
+        <p class="muted">Hold a service window (never promise), capture concern + transport, link Vehicle by VIN/YMMT.</p>
+      </article>
+      <article class="card">
+        <h3>Trades/Parts — <code>quote_trade</code> & <code>check_order_status</code></h3>
+        <p class="muted">Collect VIN, mileage, photos for quotes; check parts ETA and pickup/ship options.</p>
+      </article>
+    </section>
+
+    <!-- ROI -->
+    <section id="roi" class="card">
+      <h3>Expected Impact</h3>
+      <div class="grid grid-3">
+        <div class="pill"><strong>~40%+</strong> deflection on top intents</div>
+        <div class="pill"><strong>+10–20%</strong> CSAT improvement</div>
+        <div class="pill"><strong>20–30%</strong> labor cost reduction</div>
+      </div>
+      <p class="muted" style="margin-top:10px;">
+        Use our calculator to plug in your call volume, staffing cost, and ticket values.
+        (See the ROI calculator page in this site.)
+      </p>
+    </section>
+
+    <!-- SAFETY / ESCALATION -->
+    <section class="grid grid-2">
+      <article class="card">
+        <h3>Safety & Guardrails</h3>
         <ul class="muted">
-          <li><strong>Sales</strong> → Lead + Activity (+ optional Appointment)</li>
-          <li><strong>Service</strong> → Vehicle link (VIN/YMMT) + Service Appointment</li>
-          <li><strong>Parts</strong> → Quote lines + optional Pick-up/Ship setup</li>
+          <li>Grounded answers (KB-only for hours/policies).</li>
+          <li>Never invent VINs, prices, or appointment slots.</li>
+          <li>Mask PII in logs; encrypt at rest; signed URL recordings.</li>
+        </ul>
+      </article>
+      <article class="card">
+        <h3>Escalation That Works</h3>
+        <ul class="muted">
+          <li>Auto-handoff when confidence &lt; 0.6 or sentiment is negative.</li>
+          <li>Immediate human on legal/finance or “talk to a person.”</li>
+          <li>Passes transcript, consent flags, and context to speed resolution.</li>
         </ul>
       </article>
     </section>
 
-    <!-- Add your other sections from before (Voice Capabilities, Tools, Mapping, Escalation, Metrics, Rollout, CTA, etc.) -->
+    <!-- CTA -->
+    <section class="card">
+      <h3>Ready to Compare Live?</h3>
+      <p class="muted">Route a test number, run Quirk AI Voice after-hours, and compare outcomes against NUMA for two weeks.</p>
+      <div class="btnrow" style="margin-top:6px;">
+        <a class="btn primary" href="mailto:sales@quirk.auto?subject=Quirk%20AI%20Voice%20Pilot">Start Pilot</a>
+        <a class="btn ghost" href="./project-library.html">Browse Technical Docs</a>
+      </div>
+    </section>
 
   </main>
 </body>
