@@ -77,44 +77,51 @@
 
   <main>
 
-    <!-- Lead tools -->
-    <section class="grid" style="grid-template-columns: 1fr;">
-      <div class="panel">
-        <div class="two-col">
-          <div>
-            <div class="panel">
-              <h3>Pick a model</h3>
-              <select>
-                <option>1500 (8)</option>
-                <option>2500</option>
-                <option>3500</option>
-              </select>
-            </div>
+    <!-- NEW: Logo + content wrapper -->
+    <div class="layout">
+      <aside class="brand-box">
+        <img src="assets/quirk-ai-logo.png" alt="Quirk AI Logo">
+      </aside>
 
-            <div class="panel">
-              <h3>Agent / Store</h3>
-              <input type="text" value="Alex / Quirk Chevy NH" />
+      <div class="content-col">
+        <!-- Lead tools -->
+        <section class="grid" style="grid-template-columns: 1fr;">
+          <div class="panel">
+            <div class="two-col">
+              <div>
+                <div class="panel">
+                  <h3>Pick a model</h3>
+                  <select>
+                    <option>1500 (8)</option>
+                    <option>2500</option>
+                    <option>3500</option>
+                  </select>
+                </div>
+
+                <div class="panel">
+                  <h3>Agent / Store</h3>
+                  <input type="text" value="Alex / Quirk Chevy NH" />
+                </div>
+              </div>
+
+              <div>
+                <div class="panel">
+                  <h3>Lead name</h3>
+                  <input type="text" value="Sarah" />
+                </div>
+
+                <div class="panel">
+                  <h3>Optional incentives line</h3>
+                  <input type="text" value="Right now there’s $1,500 cash back + 2.9% APR." />
+                </div>
+              </div>
             </div>
           </div>
 
-          <div>
+          <div class="two-col">
             <div class="panel">
-              <h3>Lead name</h3>
-              <input type="text" value="Sarah" />
-            </div>
-
-            <div class="panel">
-              <h3>Optional incentives line</h3>
-              <input type="text" value="Right now there’s $1,500 cash back + 2.9% APR." />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="two-col">
-        <div class="panel">
-          <h3>Email preview</h3>
-          <textarea>
+              <h3>Email preview</h3>
+              <textarea>
 Hi there, thanks for your interest in the 2025 Ram 1500 Laramie.
 We currently have 8 in stock.
 Would Thursday at 6:15 PM or Saturday at 10:30 AM work best for a quick drive?
@@ -123,75 +130,77 @@ Would Thursday at 6:15 PM or Saturday at 10:30 AM work best for a quick drive?
 https://dealer.example.com/photos/N98039.jpg
 
 (Stock N98039, VIN 6XEA6GE9PTJZES0VL)
-          </textarea>
-        </div>
+              </textarea>
+            </div>
 
-        <div class="panel">
-          <h3>SMS preview</h3>
-          <textarea>Hi there, it’s Your BDC Team at Quirk. 2025 Ram 1500 Laramie available now (stock N98039).
+            <div class="panel">
+              <h3>SMS preview</h3>
+              <textarea>Hi there, it’s Your BDC Team at Quirk. 2025 Ram 1500 Laramie available now (stock N98039).
 Thursday 6:15 PM or Saturday 10:30 AM?</textarea>
-        </div>
-      </div>
+            </div>
+          </div>
 
-      <div class="panel">
-        <h3>Vehicle</h3>
-        <div class="muted-inline">
-          <strong>2025 Ram 1500 Laramie</strong><br />
-          Price $52085 (MSRP $56521) — Status: in_stock
-        </div>
-      </div>
-    </section>
+          <div class="panel">
+            <h3>Vehicle</h3>
+            <div class="muted-inline">
+              <strong>2025 Ram 1500 Laramie</strong><br />
+              Price $52085 (MSRP $56521) — Status: in_stock
+            </div>
+          </div>
+        </section>
 
-    <!-- =========================
-         Project Library (single)
-         ========================= -->
-    <section class="project-library">
-      <h2>Project Library</h2>
-      <p class="muted">Plans, training, Smart Prompts, integrations, and data logs.</p>
+        <!-- =========================
+             Project Library (single)
+             ========================= -->
+        <section class="project-library">
+          <h2>Project Library</h2>
+          <p class="muted">Plans, training, Smart Prompts, integrations, and data logs.</p>
 
-      <div class="library-columns">
-        <!-- Column A -->
-        <div class="library-category">
-          <h3>Training & Playbooks</h3>
-          <ul class="library-list">
-            <li><a href="assets/BDC_AI_Training_Packet.pdf" target="_blank" rel="noopener">BDC AI Training Packet (PDF)</a></li>
-            <li><a href="assets/BDC_Training_Packet_v2.pdf" target="_blank" rel="noopener">BDC Training Packet v2 (PDF)</a></li>
-            <li><a href="assets/BDC_AI_Call_Script.pdf" target="_blank" rel="noopener">BDC AI Call Script (PDF)</a></li>
-          </ul>
+          <div class="library-columns">
+            <!-- Column A -->
+            <div class="library-category">
+              <h3>Training & Playbooks</h3>
+              <ul class="library-list">
+                <li><a href="assets/BDC_AI_Training_Packet.pdf" target="_blank" rel="noopener">BDC AI Training Packet (PDF)</a></li>
+                <li><a href="assets/BDC_Training_Packet_v2.pdf" target="_blank" rel="noopener">BDC Training Packet v2 (PDF)</a></li>
+                <li><a href="assets/BDC_AI_Call_Script.pdf" target="_blank" rel="noopener">BDC AI Call Script (PDF)</a></li>
+              </ul>
 
-          <h3 class="mt">Smart Response Library</h3>
-          <ul class="library-list">
-            <li><a href="assets/BDC_Smart_Response_Library_Full.pdf" target="_blank" rel="noopener">Smart Response Library — Full (PDF)</a></li>
-            <li><a href="assets/BDC_Smart_Response_Library_v1.pdf" target="_blank" rel="noopener">Smart Response Library — v1 (PDF)</a></li>
-            <li><a href="assets/BDC_Smart_Response_Library_Full.xlsx" target="_blank" rel="noopener">Smart Response Library — Full (Excel)</a></li>
-          </ul>
-        </div>
+              <h3 class="mt">Smart Response Library</h3>
+              <ul class="library-list">
+                <li><a href="assets/BDC_Smart_Response_Library_Full.pdf" target="_blank" rel="noopener">Smart Response Library — Full (PDF)</a></li>
+                <li><a href="assets/BDC_Smart_Response_Library_v1.pdf" target="_blank" rel="noopener">Smart Response Library — v1 (PDF)</a></li>
+                <li><a href="assets/BDC_Smart_Response_Library_Full.xlsx" target="_blank" rel="noopener">Smart Response Library — Full (Excel)</a></li>
+              </ul>
+            </div>
 
-        <!-- Column B -->
-        <div class="library-category">
-          <h3>Plans & One-Pagers</h3>
-          <ul class="library-list">
-            <li><a href="assets/BDC_Smart_Response_Project_Plan.pdf" target="_blank" rel="noopener">BDC Smart Response — Project Plan (PDF)</a></li>
-            <li><a href="assets/GenAI_Inventory_Integration_OnePager.pdf" target="_blank" rel="noopener">GenAI Inventory Integration — One Pager (PDF)</a></li>
-            <li><a href="assets/GenAI_Inventory_Integration_OnePager_v3.pdf" target="_blank" rel="noopener">GenAI Inventory Integration — One Pager v3 (PDF)</a></li>
-          </ul>
+            <!-- Column B -->
+            <div class="library-category">
+              <h3>Plans & One-Pagers</h3>
+              <ul class="library-list">
+                <li><a href="assets/BDC_Smart_Response_Project_Plan.pdf" target="_blank" rel="noopener">BDC Smart Response — Project Plan (PDF)</a></li>
+                <li><a href="assets/GenAI_Inventory_Integration_OnePager.pdf" target="_blank" rel="noopener">GenAI Inventory Integration — One Pager (PDF)</a></li>
+                <li><a href="assets/GenAI_Inventory_Integration_OnePager_v3.pdf" target="_blank" rel="noopener">GenAI Inventory Integration — One Pager v3 (PDF)</a></li>
+              </ul>
 
-          <h3 class="mt">Executive Summaries & Decks</h3>
-          <ul class="library-list">
-            <li><a href="assets/VINS vs Gen AI Alternative summary.pdf" target="_blank" rel="noopener">Executive Summary — VINS vs Gen AI Alternative (PDF)</a></li>
-            <li><a href="assets/VINS vs Generative AI Alternative Summary PowerPoint.pptx" target="_blank" rel="noopener">VINS vs Gen AI Alternative — Slides (PPTX)</a></li>
-          </ul>
+              <h3 class="mt">Executive Summaries & Decks</h3>
+              <ul class="library-list">
+                <li><a href="assets/VINS vs Gen AI Alternative summary.pdf" target="_blank" rel="noopener">Executive Summary — VINS vs Gen AI Alternative (PDF)</a></li>
+                <li><a href="assets/VINS vs Generative AI Alternative Summary PowerPoint.pptx" target="_blank" rel="noopener">VINS vs Gen AI Alternative — Slides (PPTX)</a></li>
+              </ul>
 
-          <h3 class="mt">Data & Logs</h3>
-          <ul class="library-list">
-            <li><a href="assets/desklog_analysis_summary.pdf" target="_blank" rel="noopener">Desk Log Analysis — Summary (PDF)</a></li>
-            <li><a href="assets/DeskLogExport.csv" target="_blank" rel="noopener">Desk Log Export (CSV)</a></li>
-            <li><a href="assets/VIN_Solutions_14Day_FollowUp_Schedule.csv" target="_blank" rel="noopener">VIN Solutions — 14-Day Follow-Up Schedule (CSV)</a></li>
-            <li><a href="assets/Gen AI Sandbox vehicle inventory.csv" target="_blank" rel="noopener">GenAI Sandbox — Vehicle Inventory (CSV)</a></li>
-          </ul>
-        </div>
-      </div>
-    </section>
+              <h3 class="mt">Data & Logs</h3>
+              <ul class="library-list">
+                <li><a href="assets/desklog_analysis_summary.pdf" target="_blank" rel="noopener">Desk Log Analysis — Summary (PDF)</a></li>
+                <li><a href="assets/DeskLogExport.csv" target="_blank" rel="noopener">Desk Log Export (CSV)</a></li>
+                <li><a href="assets/VIN_Solutions_14Day_FollowUp_Schedule.csv" target="_blank" rel="noopener">VIN Solutions — 14-Day Follow-Up Schedule (CSV)</a></li>
+                <li><a href="assets/Gen AI Sandbox vehicle inventory.csv" target="_blank" rel="noopener">GenAI Sandbox — Vehicle Inventory (CSV)</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+      </div><!-- /.content-col -->
+    </div><!-- /.layout -->
 
     <div class="footer-space"></div>
   </main>
