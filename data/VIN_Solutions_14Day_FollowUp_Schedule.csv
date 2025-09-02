@@ -1,0 +1,15 @@
+Day,Channel,Action
+0 (Immediate),Email/Text (Auto),"Acknowledgement with inventory-linked details (Year/Make/Model, photo, price)."
+0 (Immediate),Call,BDC agent call within 15 minutes. Log result in notes.
+1,Call,"Second attempt, reference trade if provided."
+1,Email,Personalized email addressing original question.
+2,Text,Ask if they prefer numbers via text or email.
+2,CRM Task,Mark response preference in notes.
+3,Email,Send video or brochure link (value add).
+3,Call,Third attempt if no contact. Log as VM if applicable.
+5,Email,"Send incentive-focused message (rebates, financing specials)."
+7,Call,Fourth attempt at different time of day.
+7,Text,"Short reminder: vehicle still available, offer to hold it."
+10,Email,"Share fresh inventory update, offer side-by-side comparisons."
+12,Call,"Fifth attempt, check if still in market, offer trade update."
+14,Email,"Final nurture message, transition to drip if no response."
