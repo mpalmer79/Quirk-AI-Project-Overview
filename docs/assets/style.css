@@ -210,3 +210,38 @@ pre {
 .mt-12 { margin-top: 12px; }
 .mt-16 { margin-top: 16px; }
 .mt-24 { margin-top: 24px; }
+
+/* =========================================
+   NAV (Header) — NUMA Alternative + Library
+   - Works for either .brandbar (your header)
+     or .topbar (if you use that variant)
+   ========================================= */
+.brandbar, .topbar { color: #fff; }
+
+.brandbar .nav,
+.topbar .nav {
+  position: absolute;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+/* Override global link styling inside header */
+.brandbar .nav .nav-link,
+.topbar  .nav .nav-link {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+}
+.brandbar .nav .nav-link:hover,
+.topbar  .nav .nav-link:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 800px) {
+  .brandbar img.logo-center { left: 16px; }
+  .brandbar .nav, .topbar .nav { right: 12px; gap: 12px; }
+  .brandbar h1 { font-size: 18px; }
+}
