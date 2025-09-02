@@ -48,7 +48,7 @@ body {
 
 /* ---------------------------------
    Brand header:
-   - Title left aligned (flush-left)
+   - Title flush-left to viewport
    - Logo centered in bar
    --------------------------------- */
 .brandbar {
@@ -60,17 +60,17 @@ body {
   box-shadow: 0 2px 4px rgba(0,0,0,.12);
 }
 
-/* UPDATED: remove left padding so the "Q" starts at the far-left edge */
+/* IMPORTANT: make inner wrapper full-width and not centered */
 .brandbar .inner {
   display: flex;
   align-items: center;
-  padding-left: 0;                      /* << flush-left */
-  padding-right: 20px;                  /* keep right breathing room */
-  width: 100%;
-  max-width: 1100px;
-  margin: 0 auto;
   gap: 12px;
   flex-wrap: wrap;
+  width: 100%;
+  margin: 0;            /* was 0 auto; */
+  max-width: none;      /* was 1100px; */
+  padding-left: 0;      /* flush-left */
+  padding-right: 20px;  /* right breathing room */
 }
 
 .brandbar h1 {
