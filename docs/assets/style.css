@@ -5,14 +5,14 @@
 
 /* --- Light mode (default) --- */
 body.light {
-  --brand: #0a7e39;          /* primary brand color */
-  --brand-dark: #085f2c;     /* darker shade for header/hover */
-  --accent: #0ea5e9;         /* link/accent */
-  --ink: #0f172a;            /* main text */
-  --muted: #64748b;          /* muted text */
-  --border: #e5e7eb;         /* borders */
-  --surface: #ffffff;        /* cards */
-  --surface-2: #f8fafc;      /* page bg */
+  --brand: #0a7e39;
+  --brand-dark: #085f2c;
+  --accent: #0ea5e9;
+  --ink: #0f172a;
+  --muted: #64748b;
+  --border: #e5e7eb;
+  --surface: #ffffff;
+  --surface-2: #f8fafc;
   --focus: color-mix(in srgb, var(--brand) 25%, transparent);
   background: var(--surface-2);
   color: var(--ink);
@@ -48,8 +48,8 @@ body {
 
 /* ---------------------------------
    Brand header:
-   - Title centered
-   - Logo left-centered to page
+   - Title centered to page
+   - Logo left-centered
    --------------------------------- */
 .brandbar {
   background: linear-gradient(90deg, var(--brand-dark), var(--brand));
@@ -58,13 +58,13 @@ body {
   align-items: center;
   position: relative;
   box-shadow: 0 2px 4px rgba(0,0,0,.12);
-  justify-content: center;              /* center the title */
+  justify-content: center; /* centers the title */
 }
 
 .brandbar .inner {
   display: flex;
   align-items: center;
-  justify-content: center;              /* center horizontally */
+  justify-content: center; /* center title text */
   width: 100%;
   margin: 0;
   max-width: none;
@@ -80,10 +80,10 @@ body {
   flex: 1;
 }
 
-/* Q logo positioned left-center of the whole bar */
+/* Q logo positioned left-centered relative to header */
 .brandbar img.logo-center {
   position: absolute;
-  left: 20%;                            /* adjust % for exact alignment */
+  left: 20%;   /* adjust this % for exact horizontal placement */
   top: 50%;
   transform: translateY(-50%);
   height: 50px;
@@ -162,7 +162,7 @@ textarea {
 .btn:active { transform: translateY(1px); }
 .btn.secondary {
   background: transparent;
-  color: #fff;                 /* good on brandbar */
+  color: #fff;
   border-color: rgba(255,255,255,.35);
 }
 body.light .btn.secondary {
