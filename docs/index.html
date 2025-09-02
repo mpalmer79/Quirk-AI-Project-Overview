@@ -6,18 +6,30 @@
   <title>Quirk AI Gen Alternative</title>
   <!-- External stylesheet -->
   <link rel="stylesheet" href="./assets/style.css" />
+  <style>
+    /* Ensure anchor scroll positions are visible if header overlaps */
+    :target { scroll-margin-top: 80px; }
+    /* Simple spacing helper so the brandbar items don’t crowd */
+    .brandbar .inner { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .brandbar .spacer { flex: 1 1 auto; }
+  </style>
 </head>
 <body class="light">
 
   <!-- ===== Brand header ===== -->
-<div class="brandbar">
-  <div class="inner">
-    <h1>Quirk Gen AI Alternative</h1>
-    <img src="./assets/quirk-logo.png" alt="Quirk Logo" class="logo-center"/>
-    <button id="toggleTheme" class="btn secondary">Dark Mode</button>
-  </div>
-</div>
+  <div class="brandbar">
+    <div class="inner">
+      <h1>Quirk Gen AI Alternative</h1>
+      <img src="./assets/quirk-logo.png" alt="Quirk Logo" class="logo-center"/>
 
+      <span class="spacer"></span>
+
+      <!-- NEW: Link to the Project Library section -->
+      <a href="#project-library" class="btn">Project Library</a>
+
+      <button id="toggleTheme" class="btn secondary">Dark Mode</button>
+    </div>
+  </div>
 
   <!-- ===== Main content ===== -->
   <div class="container">
@@ -66,6 +78,63 @@
     </div>
 
   </div><!-- /container -->
+
+  <!-- ===== NEW: Project Library (downloads) ===== -->
+  <section id="project-library" style="padding: 32px 0; border-top: 1px solid #e5e7eb; margin-top: 32px;">
+    <div class="container">
+      <h2 style="font-size:1.5rem; font-weight:600; margin-bottom: 12px;">Project Library</h2>
+      <p style="color:#475569; margin-bottom: 20px;">
+        Plans, training, Smart Response Library, inventory integration, and data logs. Click to download.
+      </p>
+
+      <!-- Plans & Executive Summaries -->
+      <h3 style="font-size:1.125rem; font-weight:600; margin-top: 16px;">Plans & Executive Summaries</h3>
+      <ul>
+        <li><a href="assets/BDC_Smart_Response_Project_Plan.pdf" download>Project Plan (PDF)</a></li>
+        <li><a href="assets/VINS_vs_GenAI_Alternative_summary.pdf" download>Executive Summary (PDF)</a></li>
+        <li><a href="assets/VINS_vs_Generative_AI_Alternative_Summary_PowerPoint.pptx" download>Executive Summary (PPTX)</a></li>
+        <li><a href="assets/workflow_vins-vs-genai.png" download>Workflow Diagram (PNG)</a></li>
+      </ul>
+
+      <!-- Smart Response Library -->
+      <h3 style="font-size:1.125rem; font-weight:600; margin-top: 16px;">Smart Response Library</h3>
+      <ul>
+        <li><a href="assets/BDC_Smart_Response_Library_v1.pdf" download>Response Library — v1 (PDF)</a></li>
+        <li><a href="assets/BDC_Smart_Response_Library_Full.pdf" download>Response Library — Full (PDF)</a></li>
+        <li><a href="data/BDC_Smart_Response_Library_Full.xlsx" download>Response Library — Full (XLSX)</a></li>
+      </ul>
+
+      <!-- Training & Roleplay -->
+      <h3 style="font-size:1.125rem; font-weight:600; margin-top: 16px;">Training & Roleplay</h3>
+      <ul>
+        <li><a href="assets/BDC_AI_Call_Script.pdf" download>AI Call Script (PDF)</a></li>
+        <li><a href="assets/BDC_AI_Training_Packet.pdf" download>Training Packet (PDF)</a></li>
+        <li><a href="assets/BDC_Training_Packet_v2.pdf" download>Training Packet v2 (PDF)</a></li>
+      </ul>
+
+      <!-- Inventory Integration -->
+      <h3 style="font-size:1.125rem; font-weight:600; margin-top: 16px;">Inventory Integration</h3>
+      <ul>
+        <li><a href="assets/GenAI_Inventory_Integration_OnePager.pdf" download>Integration One-Pager (PDF)</a></li>
+        <li><a href="assets/GenAI_Inventory_Integration_OnePager_v3.pdf" download>Integration One-Pager v3 (PDF)</a></li>
+      </ul>
+
+      <!-- Data & Logs -->
+      <h3 style="font-size:1.125rem; font-weight:600; margin-top: 16px;">Data & Logs</h3>
+      <ul>
+        <li><a href="assets/desklog_analysis_summary.pdf" download>Desk Log — Summary (PDF)</a></li>
+        <li><a href="data/desklog_analysis_summary.xlsx" download>Desk Log — Summary (XLSX)</a></li>
+        <li><a href="data/DeskLogExport.csv" download>Desk Log — Raw (CSV)</a></li>
+        <li><a href="data/VIN_Solutions_14Day_FollowUp_Schedule.csv" download>VIN 14-Day Follow-Up (CSV)</a></li>
+        <li><a href="data/Gen_AI_Sandbox_vehicle_inventory.csv" download>Sandbox Inventory (CSV)</a></li>
+      </ul>
+
+      <!-- One-click bundle -->
+      <div style="margin-top: 20px;">
+        <a href="downloads/all.zip" class="btn">Download Everything (ZIP)</a>
+      </div>
+    </div>
+  </section>
 
   <script type="module" src="./app.js"></script>
   <script>
