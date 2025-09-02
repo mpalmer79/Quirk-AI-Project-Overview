@@ -4,17 +4,146 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>NUMA Alternative – Quirk AI Voice</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="./assets/style.css" />
 </head>
-<body>
-  <header class="container">
-    <h1>NUMA Alternative</h1>
-    <p>A quick overview of our Quirk AI Voice project that replaces NUMA.</p>
+<body class="light">
+  <!-- Brand header (uses your existing .brandbar styles) -->
+  <header class="brandbar">
+    <div class="inner">
+      <img class="logo-center" src="./assets/q-mark.svg" alt="" />
+      <h1>Quirk Gen AI Alternative</h1>
+
+      <!-- Right-side nav (styled by .brandbar .nav .nav-link in CSS) -->
+      <nav class="nav">
+        <a href="/quirk-genai-sandbox/numa-alternative.html" class="nav-link">NUMA Alternative</a>
+        <a href="/quirk-genai-sandbox/project-library.html" class="nav-link">Project Library</a>
+      </nav>
+    </div>
   </header>
 
   <main class="container">
-    <p>Coming soon: live project details.</p>
-    <p><a href="./index.html">Back to Home</a></p>
+    <!-- Hero intro -->
+    <section class="card">
+      <h3 class="mt-0">NUMA Alternative</h3>
+      <p class="muted">A dealership-ready AI voice agent that handles Sales, Service, and Parts — integrates with VIN Solutions & DMS, escalates safely, and supports English & Spanish.</p>
+      <div class="mt-12">
+        <button class="btn">Get a Demo</button>
+        <button class="btn secondary" onclick="location.href='/quirk-genai-sandbox/project-library.html'">Open Project Library</button>
+      </div>
+    </section>
+
+    <!-- Overview tiles -->
+    <section class="row mt-16">
+      <div class="card">
+        <h3 class="mt-0">What it does</h3>
+        <p class="muted">
+          Tier-1 call handling with tool-driven actions: create CRM tickets, hold service slots, quote trades, and check order status.
+          Short, professional voice style; graceful escalation when needed.
+        </p>
+      </div>
+      <div class="card">
+        <h3 class="mt-0">Where calls go</h3>
+        <ul class="muted">
+          <li><strong>Sales</strong> → Lead + Activity (+ optional Appointment)</li>
+          <li><strong>Service</strong> → Vehicle link (VIN/YMMT) + Service Appointment</li>
+          <li><strong>Parts</strong> → Quote lines + optional Pick-up/Ship setup</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Voice capabilities -->
+    <section class="card mt-16">
+      <h3 class="mt-0">Voice Capabilities</h3>
+      <ul class="muted">
+        <li>Expressive TTS with natural prosody, multilingual EN/ES, and multi-speaker mode for training.</li>
+        <li>Live streaming to telephony with retries and fallback vendor path when errors occur.</li>
+        <li>Governance: PII minimization, correlation IDs, retention, and audit tags.</li>
+      </ul>
+      <p class="muted">Powered by Google AI Studio’s native speech generation (free/unlimited at time of writing), with a configurable fallback. </p>
+    </section>
+
+    <!-- Tools & adapters -->
+    <section class="row mt-16">
+      <div class="card">
+        <div class="pill">CRM</div>
+        <h3 class="mt-8">VIN Solutions — <code>create_ticket</code></h3>
+        <p class="muted">Lead/Activity creation with <code>x_correlation_id</code>. Optional appointment. Minimal PII in logs.</p>
+      </div>
+      <div class="card">
+        <div class="pill">Service</div>
+        <h3 class="mt-8"><code>schedule_service</code></h3>
+        <p class="muted">Hold a service slot, capture concern text & transport flags, and link vehicle by VIN/YMMT.</p>
+      </div>
+    </section>
+
+    <section class="row mt-16">
+      <div class="card">
+        <div class="pill">Sales / Trade</div>
+        <h3 class="mt-8"><code>quote_trade</code></h3>
+        <p class="muted">Capture trade snapshot (Y/M/M/T, VIN, mileage, condition) and return an appraisal range + follow-up URL.</p>
+      </div>
+      <div class="card">
+        <div class="pill">Parts</div>
+        <h3 class="mt-8"><code>check_order_status</code> / Parts Quote</h3>
+        <p class="muted">Build line items by part # or description; set fulfillment method/time and pickup appointment if needed.</p>
+      </div>
+    </section>
+
+    <!-- CRM/DMS mapping -->
+    <section class="card mt-16">
+      <h3 class="mt-0">CRM/DMS Field Mapping (High-Level)</h3>
+      <ul class="muted">
+        <li><strong>Common:</strong> store <code>call_id</code>, timestamps, duration, DNIS, <code>recording_url</code>, consent flags, and <code>intent</code> tag on the Activity.</li>
+        <li><strong>Sales:</strong> Lead upsert with Vehicle Interest, trade snapshot, financing intent; optional Appointment.</li>
+        <li><strong>Service:</strong> Link VIN/YMMT + mileage + concern text; tag warning lights & transport; create Service Appointment.</li>
+        <li><strong>Parts:</strong> Quote lines + fulfillment method/time; optional Pickup Appointment.</li>
+        <li><strong>Identity resolution:</strong> exact match on phone/email/VIN; avoid dupes with <em>Needs&nbsp;Merge</em> when ambiguous.</li>
+      </ul>
+    </section>
+
+    <!-- Escalation & Safety -->
+    <section class="card mt-16">
+      <h3 class="mt-0">Escalation & Safety</h3>
+      <ul class="muted">
+        <li>Escalate if confidence &lt; 0.6, caller is upset/toxic, legal/financial specifics arise, or a human is requested.</li>
+        <li>On vendor errors: retry with backoff; if still failing, tag <code>tts_fallback</code> and/or send ADF/XML to CRM inbox and mark <em>Needs&nbsp;Merge</em>.</li>
+        <li>Always capture and store consent flags; attach the call recording link to the Activity.</li>
+      </ul>
+    </section>
+
+    <!-- Metrics & Rollout -->
+    <section class="row mt-16">
+      <div class="card">
+        <h3 class="mt-0">Metrics We Track</h3>
+        <ul class="muted">
+          <li>FCR (First Contact Resolution)</li>
+          <li>Deflection Rate (AI vs Human)</li>
+          <li>CSAT</li>
+          <li>AHT (Average Handle Time)</li>
+          <li>TTS/ASR latency (p95), talk-over & barge-in rates</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="mt-0">Rollout Snapshot</h3>
+        <ul class="muted">
+          <li>Weeks 1–2: TTS adapters + streaming bridge; feature-flag EN voices</li>
+          <li>Week 3: Spanish enablement & IVR language switch; QA scripts</li>
+          <li>Weeks 4–6: Multi-speaker training audio; guardrails & fallbacks; A/B voice styles; publish CSAT/FCR deltas</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="card mt-16">
+      <h3 class="mt-0">Ready to try it?</h3>
+      <p class="muted">Spin up the voice agent, route a test number, and compare outcomes vs NUMA.</p>
+      <div class="mt-12">
+        <button class="btn">Start Pilot</button>
+        <button class="btn secondary" onclick="location.href='/quirk-genai-sandbox/project-library.html'">Browse Library</button>
+      </div>
+    </section>
+
+    <div class="mt-24"></div>
   </main>
 </body>
 </html>
