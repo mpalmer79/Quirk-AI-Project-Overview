@@ -35,7 +35,7 @@ body.dark {
 
 /* --- Base layout --- */
 * { box-sizing: border-box; }
-html, body { margin: 0; padding: 0; }           /* remove browser gutter so title can sit flush left */
+html, body { margin: 0; padding: 0; }
 body {
   font-family: system-ui, Segoe UI, Arial, sans-serif;
   line-height: 1.45;
@@ -48,29 +48,27 @@ body {
 
 /* ---------------------------------
    Brand header:
-   - Title flush-left to viewport
-   - Logo centered in bar
+   - Title centered
+   - Logo left-centered to page
    --------------------------------- */
 .brandbar {
   background: linear-gradient(90deg, var(--brand-dark), var(--brand));
   height: 80px;
   display: flex;
   align-items: center;
-  position: relative;                   /* enables absolute logo centering */
+  position: relative;
   box-shadow: 0 2px 4px rgba(0,0,0,.12);
+  justify-content: center;              /* center the title */
 }
 
-/* IMPORTANT: make inner wrapper full-width and not centered */
 .brandbar .inner {
   display: flex;
   align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
+  justify-content: center;              /* center horizontally */
   width: 100%;
-  margin: 0;            /* was 0 auto; */
-  max-width: none;      /* was 1100px; */
-  padding-left: 0;      /* flush-left */
-  padding-right: 20px;  /* right breathing room */
+  margin: 0;
+  max-width: none;
+  padding: 0 20px;
 }
 
 .brandbar h1 {
@@ -78,14 +76,17 @@ body {
   font-weight: 600;
   margin: 0;
   color: #fff;
+  text-align: center;
+  flex: 1;
 }
 
-/* Centered logo */
+/* Q logo positioned left-center of the whole bar */
 .brandbar img.logo-center {
   position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  height: 50px;            /* adjust as needed */
+  left: 20%;                            /* adjust % for exact alignment */
+  top: 50%;
+  transform: translateY(-50%);
+  height: 50px;
   width: auto;
   display: block;
 }
