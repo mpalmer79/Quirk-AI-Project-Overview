@@ -18,6 +18,15 @@
     .panel { border: 1px solid #ddd; border-radius: 8px; padding: 12px; background: #fff; }
     .panel h3 { margin: 0 0 8px; font-size: 1rem; }
 
+    /* ===== Header nav (NUMA link) ===== */
+    .header-flex { display: flex; align-items: center; justify-content: space-between; }
+    .top-nav .nav-link {
+      color: #fff; text-decoration: none;
+      padding: 6px 10px; border: 1px solid rgba(255,255,255,.35);
+      border-radius: 8px;
+    }
+    .top-nav .nav-link:hover { background: rgba(255,255,255,.12); }
+
     /* ===== Project Library (grouped lists, single instance) ===== */
     .project-library { margin-top: 24px; }
     .project-library h2 { font-size: 1.25rem; margin: 0 0 4px; }
@@ -56,14 +65,21 @@
 
   <!-- Top bar -->
   <header class="site-header">
-    <div class="wrap">
+    <div class="wrap header-flex">
       <strong>Quirk GenAI Alternative</strong>
+
+      <!-- Right-side nav -->
+      <!-- If your NUMA page is docs/numa.html use href="numa.html";
+           if it's docs/numa/index.html use href="numa/". -->
+      <nav class="top-nav">
+        <a href="numa.html" class="nav-link">NUMA Alternative</a>
+      </nav>
     </div>
   </header>
 
   <main>
 
-    <!-- Lead tools (kept simple/safe; your existing style.css still applies) -->
+    <!-- Lead tools -->
     <section class="grid" style="grid-template-columns: 1fr;">
       <div class="panel">
         <div class="two-col">
