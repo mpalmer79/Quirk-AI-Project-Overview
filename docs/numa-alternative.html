@@ -31,18 +31,7 @@
       height: 64px;
       padding: 0 16px;
     }
-    /* Left logo */
-    .topbar .brand {
-      position: absolute;
-      left: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      display: inline-flex;
-      align-items: center;
-    }
-    .topbar .brand img {
-      height: 40px; width: auto; display:block;
-    }
+
     /* Center title */
     .topbar-title {
       margin: 0; color: #fff;
@@ -50,6 +39,7 @@
       line-height: 64px; text-align: center;
       letter-spacing:.2px;
     }
+
     /* Right nav */
     .topbar-nav {
       position: absolute;
@@ -107,7 +97,6 @@
     /* Small screens */
     @media (max-width:640px){
       .topbar{ height:56px; }
-      .topbar .brand img{ height:32px; }
       .topbar-title{ font-size:1.05rem; line-height:56px; }
       th, td{ padding:10px 8px; }
     }
@@ -117,10 +106,7 @@
 
   <!-- Header -->
   <header class="topbar">
-    <!-- Left: Logo -->
-    <a class="brand" href="./" aria-label="Quirk AI Home">
-      <img src="./assets/quirk-ai-logo.png" alt="Quirk AI logo" />
-    </a>
+    <!-- Removed small top-left logo -->
 
     <!-- Center: Title -->
     <h1 class="topbar-title">Quirk AI Voice vs NUMA</h1>
