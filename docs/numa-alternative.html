@@ -6,6 +6,9 @@
   <title>Quirk AI Voice vs NUMA — The Better Dealership Choice</title>
   <meta name="description" content="Why dealerships choose Quirk AI Voice over NUMA: real-time automation, CRM/DMS integration, bilingual support, and measurable ROI." />
 
+  <!-- Reuse global styles (for .layout / .brand-box / .content-col) -->
+  <link rel="stylesheet" href="assets/style.css" />
+
   <style>
     :root{
       --green:#0b6e37;
@@ -116,7 +119,6 @@
   <header class="topbar">
     <!-- Left: Logo -->
     <a class="brand" href="./" aria-label="Quirk AI Home">
-      <!-- Make sure this file exists at docs/assets/quirk-ai-logo.png -->
       <img src="./assets/quirk-ai-logo.png" alt="Quirk AI logo" />
     </a>
 
@@ -132,160 +134,172 @@
 
   <main class="page">
 
-    <!-- HERO -->
-    <section class="card hero">
-      <span class="kicker">Quirk AI Voice (powered by OpenAI)</span>
-      <h1>Why Dealerships Choose <strong>Quirk AI Voice</strong> over NUMA</h1>
-      <p class="muted">
-        NUMA captures voicemails. <strong>Quirk AI Voice</strong> handles real customer conversations in real time —
-        books service, logs leads, quotes trades, checks parts orders, and escalates to a person when it should.
-      </p>
-      <div class="btnrow">
-        <a class="btn primary" href="#comparison">See the Comparison</a>
-        <a class="btn ghost" href="#roi">Estimate ROI</a>
-      </div>
-    </section>
+    <!-- Left logo column + right content (matches index layout) -->
+    <div class="layout">
+      <aside class="brand-box">
+        <a href="https://www.quirkcars.com" target="_blank" rel="noopener">
+          <img src="assets/quirk-ai-logo.png" alt="Quirk AI Logo">
+        </a>
+      </aside>
 
-    <!-- QUICK BENEFITS -->
-    <section class="grid grid-3">
-      <article class="card">
-        <h3>Real-Time Automation</h3>
-        <p class="muted">Hold service slots, create CRM tickets, capture trades, check order status — right on the call or chat.</p>
-      </article>
-      <article class="card">
-        <h3>Bilingual, Dealership-Ready</h3>
-        <p class="muted">English + Spanish with a concise, professional tone; safe handoffs on edge cases.</p>
-      </article>
-      <article class="card">
-        <h3>Proven Guardrails</h3>
-        <p class="muted">Never invents prices, VINs, or slots; cites the KB; masks PII; escalates when confidence is low.</p>
-      </article>
-    </section>
+      <div class="content-col">
 
-    <!-- COMPARISON -->
-    <section id="comparison" class="card">
-      <h3>NUMA vs <strong>Quirk AI Voice</strong></h3>
-      <table aria-label="Feature comparison">
-        <thead>
-          <tr>
-            <th>Capability</th>
-            <th>NUMA</th>
-            <th>Quirk AI Voice</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Real-time conversations (phone/chat/email)</td>
-            <td class="no">Voicemail/SMS centric</td>
-            <td class="yes">Yes — natural conversations across channels</td>
-          </tr>
-          <tr>
-            <td>Service scheduling</td>
-            <td class="no">Manual callback</td>
-            <td class="yes">Hold window via <code>schedule_service</code></td>
-          </tr>
-          <tr>
-            <td>CRM ticketing</td>
-            <td class="no">Limited</td>
-            <td class="yes">VIN Solutions via <code>create_ticket</code></td>
-          </tr>
-          <tr>
-            <td>Trade appraisal capture</td>
-            <td class="no">Manual</td>
-            <td class="yes">VIN/mileage/photos via <code>quote_trade</code></td>
-          </tr>
-          <tr>
-            <td>Parts order status</td>
-            <td class="no">Manual lookup</td>
-            <td class="yes"><code>check_order_status</code> tool</td>
-          </tr>
-          <tr>
-            <td>Bilingual (EN/ES)</td>
-            <td class="no">English focused</td>
-            <td class="yes">Yes — seamless mid-call switching</td>
-          </tr>
-          <tr>
-            <td>Guardrails & Escalation</td>
-            <td class="no">Basic forwarding</td>
-            <td class="yes">Confidence/sentiment rules; “Talk to a person”</td>
-          </tr>
-          <tr>
-            <td>Citations & KB grounding</td>
-            <td class="no">—</td>
-            <td class="yes">Answers reference the dealership KB</td>
-          </tr>
-          <tr>
-            <td>PII handling</td>
-            <td class="no">Standard</td>
-            <td class="yes">Mask phone/email/VIN in logs; signed URLs for recordings</td>
-          </tr>
-        </tbody>
-      </table>
-      <p class="footnote">
-        Quirk AI Voice uses your dealership’s policies/hours/promos as source of truth and escalates to humans when needed.
-      </p>
-    </section>
+        <!-- HERO -->
+        <section class="card hero">
+          <span class="kicker">Quirk AI Voice (powered by OpenAI)</span>
+          <h1>Why Dealerships Choose <strong>Quirk AI Voice</strong> over NUMA</h1>
+          <p class="muted">
+            NUMA captures voicemails. <strong>Quirk AI Voice</strong> handles real customer conversations in real time —
+            books service, logs leads, quotes trades, checks parts orders, and escalates to a person when it should.
+          </p>
+          <div class="btnrow">
+            <a class="btn primary" href="#comparison">See the Comparison</a>
+            <a class="btn ghost" href="#roi">Estimate ROI</a>
+          </div>
+        </section>
 
-    <!-- TOOLS & INTEGRATIONS -->
-    <section class="grid grid-3">
-      <article class="card">
-        <h3>VIN Solutions — <code>create_ticket</code></h3>
-        <p class="muted">Log lead/activity with <code>x_correlation_id</code>; attach summary + recording link; minimal PII in logs.</p>
-      </article>
-      <article class="card">
-        <h3>Scheduler — <code>schedule_service</code></h3>
-        <p class="muted">Hold a service window (never promise), capture concern + transport, link Vehicle by VIN/YMMT.</p>
-      </article>
-      <article class="card">
-        <h3>Trades/Parts — <code>quote_trade</code> & <code>check_order_status</code></h3>
-        <p class="muted">Collect VIN, mileage, photos for quotes; check parts ETA and pickup/ship options.</p>
-      </article>
-    </section>
+        <!-- QUICK BENEFITS -->
+        <section class="grid grid-3">
+          <article class="card">
+            <h3>Real-Time Automation</h3>
+            <p class="muted">Hold service slots, create CRM tickets, capture trades, check order status — right on the call or chat.</p>
+          </article>
+          <article class="card">
+            <h3>Bilingual, Dealership-Ready</h3>
+            <p class="muted">English + Spanish with a concise, professional tone; safe handoffs on edge cases.</p>
+          </article>
+          <article class="card">
+            <h3>Proven Guardrails</h3>
+            <p class="muted">Never invents prices, VINs, or slots; cites the KB; masks PII; escalates when confidence is low.</p>
+          </article>
+        </section>
 
-    <!-- ROI -->
-    <section id="roi" class="card">
-      <h3>Expected Impact</h3>
-      <div class="grid grid-3">
-        <div class="pill"><strong>~40%+</strong> deflection on top intents</div>
-        <div class="pill"><strong>+10–20%</strong> CSAT improvement</div>
-        <div class="pill"><strong>20–30%</strong> labor cost reduction</div>
-      </div>
-      <p class="muted" style="margin-top:10px;">
-        Use our calculator to plug in your call volume, staffing cost, and ticket values.
-        (See the ROI calculator page in this site.)
-      </p>
-    </section>
+        <!-- COMPARISON -->
+        <section id="comparison" class="card">
+          <h3>NUMA vs <strong>Quirk AI Voice</strong></h3>
+          <table aria-label="Feature comparison">
+            <thead>
+              <tr>
+                <th>Capability</th>
+                <th>NUMA</th>
+                <th>Quirk AI Voice</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Real-time conversations (phone/chat/email)</td>
+                <td class="no">Voicemail/SMS centric</td>
+                <td class="yes">Yes — natural conversations across channels</td>
+              </tr>
+              <tr>
+                <td>Service scheduling</td>
+                <td class="no">Manual callback</td>
+                <td class="yes">Hold window via <code>schedule_service</code></td>
+              </tr>
+              <tr>
+                <td>CRM ticketing</td>
+                <td class="no">Limited</td>
+                <td class="yes">VIN Solutions via <code>create_ticket</code></td>
+              </tr>
+              <tr>
+                <td>Trade appraisal capture</td>
+                <td class="no">Manual</td>
+                <td class="yes">VIN/mileage/photos via <code>quote_trade</code></td>
+              </tr>
+              <tr>
+                <td>Parts order status</td>
+                <td class="no">Manual lookup</td>
+                <td class="yes"><code>check_order_status</code> tool</td>
+              </tr>
+              <tr>
+                <td>Bilingual (EN/ES)</td>
+                <td class="no">English focused</td>
+                <td class="yes">Yes — seamless mid-call switching</td>
+              </tr>
+              <tr>
+                <td>Guardrails & Escalation</td>
+                <td class="no">Basic forwarding</td>
+                <td class="yes">Confidence/sentiment rules; “Talk to a person”</td>
+              </tr>
+              <tr>
+                <td>Citations & KB grounding</td>
+                <td class="no">—</td>
+                <td class="yes">Answers reference the dealership KB</td>
+              </tr>
+              <tr>
+                <td>PII handling</td>
+                <td class="no">Standard</td>
+                <td class="yes">Mask phone/email/VIN in logs; signed URLs for recordings</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="footnote">
+            Quirk AI Voice uses your dealership’s policies/hours/promos as source of truth and escalates to humans when needed.
+          </p>
+        </section>
 
-    <!-- SAFETY / ESCALATION -->
-    <section class="grid grid-2">
-      <article class="card">
-        <h3>Safety & Guardrails</h3>
-        <ul class="muted">
-          <li>Grounded answers (KB-only for hours/policies).</li>
-          <li>Never invent VINs, prices, or appointment slots.</li>
-          <li>Mask PII in logs; encrypt at rest; signed URL recordings.</li>
-        </ul>
-      </article>
-      <article class="card">
-        <h3>Escalation That Works</h3>
-        <ul class="muted">
-          <li>Auto-handoff when confidence &lt; 0.6 or sentiment is negative.</li>
-          <li>Immediate human on legal/finance or “talk to a person.”</li>
-          <li>Passes transcript, consent flags, and context to speed resolution.</li>
-        </ul>
-      </article>
-    </section>
+        <!-- TOOLS & INTEGRATIONS -->
+        <section class="grid grid-3">
+          <article class="card">
+            <h3>VIN Solutions — <code>create_ticket</code></h3>
+            <p class="muted">Log lead/activity with <code>x_correlation_id</code>; attach summary + recording link; minimal PII in logs.</p>
+          </article>
+          <article class="card">
+            <h3>Scheduler — <code>schedule_service</code></h3>
+            <p class="muted">Hold a service window (never promise), capture concern + transport, link Vehicle by VIN/YMMT.</p>
+          </article>
+          <article class="card">
+            <h3>Trades/Parts — <code>quote_trade</code> & <code>check_order_status</code></h3>
+            <p class="muted">Collect VIN, mileage, photos for quotes; check parts ETA and pickup/ship options.</p>
+          </article>
+        </section>
 
-    <!-- CTA -->
-    <section class="card">
-      <h3>Ready to Compare Live?</h3>
-      <p class="muted">Route a test number, run Quirk AI Voice after-hours, and compare outcomes against NUMA for two weeks.</p>
-      <div class="btnrow" style="margin-top:6px;">
-        <a class="btn primary" href="mailto:sales@quirk.auto?subject=Quirk%20AI%20Voice%20Pilot">Start Pilot</a>
-        <!-- Replace your existing button with this anchor -->
-<a href="./technical-docs.html" class="btn secondary">Browse Technical Docs</a>
-      </div>
-    </section>
+        <!-- ROI -->
+        <section id="roi" class="card">
+          <h3>Expected Impact</h3>
+          <div class="grid grid-3">
+            <div class="pill"><strong>~40%+</strong> deflection on top intents</div>
+            <div class="pill"><strong>+10–20%</strong> CSAT improvement</div>
+            <div class="pill"><strong>20–30%</strong> labor cost reduction</div>
+          </div>
+          <p class="muted" style="margin-top:10px;">
+            Use our calculator to plug in your call volume, staffing cost, and ticket values.
+            (See the ROI calculator page in this site.)
+          </p>
+        </section>
+
+        <!-- SAFETY / ESCALATION -->
+        <section class="grid grid-2">
+          <article class="card">
+            <h3>Safety & Guardrails</h3>
+            <ul class="muted">
+              <li>Grounded answers (KB-only for hours/policies).</li>
+              <li>Never invent VINs, prices, or appointment slots.</li>
+              <li>Mask PII in logs; encrypt at rest; signed URL recordings.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>Escalation That Works</h3>
+            <ul class="muted">
+              <li>Auto-handoff when confidence &lt; 0.6 or sentiment is negative.</li>
+              <li>Immediate human on legal/finance or “talk to a person.”</li>
+              <li>Passes transcript, consent flags, and context to speed resolution.</li>
+            </ul>
+          </article>
+        </section>
+
+        <!-- CTA -->
+        <section class="card">
+          <h3>Ready to Compare Live?</h3>
+          <p class="muted">Route a test number, run Quirk AI Voice after-hours, and compare outcomes against NUMA for two weeks.</p>
+          <div class="btnrow" style="margin-top:6px;">
+            <a class="btn primary" href="mailto:sales@quirk.auto?subject=Quirk%20AI%20Voice%20Pilot">Start Pilot</a>
+            <a class="btn secondary" href="./technical-docs.html">Browse Technical Docs</a>
+          </div>
+        </section>
+
+      </div><!-- /.content-col -->
+    </div><!-- /.layout -->
 
   </main>
 </body>
