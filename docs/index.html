@@ -1,228 +1,186 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Quirk GenAI Alternative</title>
 
-  <!-- Base styles for the site (already in your repo under /docs) -->
-  <link rel="stylesheet" href="./style.css" />
-
-  <!-- Optional: favicon from /public if you want it on Pages -->
-  <link rel="icon" href="../public/favicon.ico" />
-  <meta name="description" content="VIN Gen AI Alternative tooling and project library." />
+  <!-- Site stylesheet -->
+  <link rel="stylesheet" href="assets/style.css" />
 
   <style>
-    /* Minimal guard rails in case style.css doesn't define nav classes */
-    .topbar {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 10px 16px; background: #0b6a3c; /* matches your green header */
-      color: #fff; position: sticky; top: 0; z-index: 10;
-    }
-    .brand {
-      display: flex; align-items: center; gap: 10px; font-weight: 700;
-    }
-    .brand .logo {
-      width: 28px; height: 28px; border-radius: 6px; background: #fff2; display: inline-block;
-    }
-    .nav {
-      display: flex; align-items: center; gap: 18px;
-    }
-    .nav a {
-      color: inherit; text-decoration: none; font-weight: 600; font-size: 0.95rem;
-    }
-    .nav a:hover { text-decoration: underline; }
+    /* ===== Minimal safe defaults (doesn't fight your style.css) ===== */
+    body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    header.site-header { background:#155e2d; color:#fff; }
+    header.site-header .wrap { max-width: 1100px; margin: 0 auto; padding: 10px 16px; }
+    main { max-width: 1100px; margin: 16px auto 48px; padding: 0 16px; }
+    .grid { display: grid; gap: 12px; }
+    .panel { border: 1px solid #ddd; border-radius: 8px; padding: 12px; background: #fff; }
+    .panel h3 { margin: 0 0 8px; font-size: 1rem; }
 
-    .container { max-width: 1200px; margin: 24px auto; padding: 0 16px; }
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .card {
-      border: 1px solid rgba(0,0,0,.08); border-radius: 10px; background: #fff;
-      padding: 12px;
+    /* ===== Project Library (grouped lists, single instance) ===== */
+    .project-library { margin-top: 24px; }
+    .project-library h2 { font-size: 1.25rem; margin: 0 0 4px; }
+    .project-library .muted { color: #666; margin: 0 0 16px; }
+    .library-columns {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
     }
-    label { font-size: 0.9rem; font-weight: 600; margin-bottom: 6px; display: block; }
-    input[type="text"], select, textarea {
-      width: 100%; box-sizing: border-box; padding: 8px 10px; font: inherit;
-      border: 1px solid #cfd6d1; border-radius: 8px; background: #fff;
+    @media (min-width: 900px) {
+      .library-columns { grid-template-columns: 1fr 1fr; }
     }
-    textarea { min-height: 180px; white-space: pre-wrap; }
-    .vehicle { display: grid; grid-template-columns: 1fr; gap: 6px; }
-    .muted { opacity: .8; }
-    .project-library { margin-top: 28px; }
-    .footer-space { height: 40px; }
+    .library-category h3 {
+      font-size: 1rem;
+      margin: 0 0 6px;
+      border-bottom: 1px solid #e5e5e5;
+      padding-bottom: 4px;
+    }
+    .library-category h3.mt { margin-top: 16px; }
+    .library-list { list-style: none; padding-left: 0; margin: 6px 0 0; }
+    .library-list li { margin: 6px 0; }
+    .library-list a { text-decoration: none; border-bottom: 1px dashed #aaa; }
+    .library-list a:hover { border-bottom-style: solid; }
+
+    /* layout helpers for the top part of the page */
+    .two-col { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    @media (min-width: 980px) { .two-col { grid-template-columns: 1fr 1fr; } }
+    .footer-space { height: 32px; }
+    .muted-inline { color:#666; font-size:.95rem; }
+    textarea { width: 100%; min-height: 160px; }
+    select, input[type="text"] { width: 100%; }
+    label { display:block; font-weight:600; margin: 0 0 6px; }
   </style>
 </head>
-
 <body>
-  <!-- Top navigation -->
-  <header class="topbar">
-    <div class="brand">
-      <span class="logo" aria-hidden="true"></span>
-      <span>Quirk GenAI Alternative</span>
-    </div>
 
-    <nav class="nav">
-      <!-- NEW: NUMA Alternative link added to the LEFT of Project Library -->
-      <a href="/quirk-genai-sandbox/numa-alternative.html" class="nav-link">NUMA Alternative</a>
-      <a href="/quirk-genai-sandbox/project-library.html" class="nav-link">Project Library</a>
-    </nav>
+  <!-- Top bar -->
+  <header class="site-header">
+    <div class="wrap">
+      <strong>Quirk GenAI Alternative</strong>
+    </div>
   </header>
 
-  <main class="container">
-    <!-- Controls row -->
-    <section class="row">
-      <div class="card">
-        <label for="model">Pick a model</label>
-        <select id="model">
-          <option>1500 (8)</option>
-          <!-- Add more options dynamically as needed -->
-        </select>
+  <main>
 
-        <div style="height: 12px"></div>
+    <!-- Lead tools (kept simple/safe; your existing style.css still applies) -->
+    <section class="grid" style="grid-template-columns: 1fr;">
+      <div class="panel">
+        <div class="two-col">
+          <div>
+            <div class="panel">
+              <h3>Pick a model</h3>
+              <select>
+                <option>1500 (8)</option>
+                <option>2500</option>
+                <option>3500</option>
+              </select>
+            </div>
 
-        <label for="store">Agent / Store</label>
-        <input id="store" type="text" value="Alex / Quirk Chevy NH" />
+            <div class="panel">
+              <h3>Agent / Store</h3>
+              <input type="text" value="Alex / Quirk Chevy NH" />
+            </div>
+          </div>
+
+          <div>
+            <div class="panel">
+              <h3>Lead name</h3>
+              <input type="text" value="Sarah" />
+            </div>
+
+            <div class="panel">
+              <h3>Optional incentives line</h3>
+              <input type="text" value="Right now there’s $1,500 cash back + 2.9% APR." />
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="card">
-        <label for="lead">Lead name</label>
-        <input id="lead" type="text" value="Sarah" />
-
-        <div style="height: 12px"></div>
-
-        <label for="promo">Optional incentives line</label>
-        <input id="promo" type="text" value="Right now there’s $1,500 cash back + 2.9% APR." />
-      </div>
-    </section>
-
-    <!-- Previews row -->
-    <section class="row" style="margin-top:16px">
-      <div class="card">
-        <strong>Email preview</strong>
-        <textarea id="emailPreview">Hi there, thanks for your interest in the 2025 Ram 1500 Laramie.
+      <div class="two-col">
+        <div class="panel">
+          <h3>Email preview</h3>
+          <textarea>
+Hi there, thanks for your interest in the 2025 Ram 1500 Laramie.
 We currently have 8 in stock.
 Would Thursday at 6:15 PM or Saturday at 10:30 AM work best for a quick drive?
 — Your BDC Team, Quirk
 
 https://dealer.example.com/photos/N98039.jpg
 
-(Stock N98039, VIN 6XEA6GE9PTJZES0VL)</textarea>
-      </div>
+(Stock N98039, VIN 6XEA6GE9PTJZES0VL)
+          </textarea>
+        </div>
 
-      <div class="card">
-        <strong>SMS preview</strong>
-        <textarea id="smsPreview">Hi there, it’s Your BDC Team at Quirk. 2025 Ram 1500 Laramie available now (stock N98039).
+        <div class="panel">
+          <h3>SMS preview</h3>
+          <textarea>Hi there, it’s Your BDC Team at Quirk. 2025 Ram 1500 Laramie available now (stock N98039).
 Thursday 6:15 PM or Saturday 10:30 AM?</textarea>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Vehicle</h3>
+        <div class="muted-inline">
+          <strong>2025 Ram 1500 Laramie</strong><br />
+          Price $52085 (MSRP $56521) — Status: in_stock
+        </div>
       </div>
     </section>
 
-    <!-- Vehicle panel -->
-    <section class="card" style="margin-top:16px">
-      <div class="vehicle">
-        <div><strong>Vehicle</strong></div>
-        <div><strong>2025 Ram 1500 Laramie</strong></div>
-        <div class="muted">Price $52085 (MSRP $56261) — Status: in_stock</div>
-        <div><img alt="vehicle photo" src="../public/vehicle.jpg" onerror="this.style.display='none'"></div>
-      </div>
-    </section>
-
-    <!-- Project Library landing -->
+    <!-- =========================
+         Project Library (single)
+         ========================= -->
     <section class="project-library">
       <h2>Project Library</h2>
       <p class="muted">Plans, training, Smart Prompts, integrations, and data logs.</p>
-      <section id="project-library" class="project-library">
-  <h2>Project Library</h2>
-  <p class="muted">Plans, training, Smart Prompts, integrations, and data logs.</p>
 
-  <div class="library-grid">
-    <!-- Training & Playbooks -->
-    <a class="library-card" href="assets/BDC_AI_Training_Packet.pdf" target="_blank" rel="noopener">
-      <span class="title">BDC AI Training Packet</span>
-      <span class="meta">PDF</span>
-    </a>
-    <a class="library-card" href="assets/BDC_Training_Packet_v2.pdf" target="_blank" rel="noopener">
-      <span class="title">BDC Training Packet (v2)</span>
-      <span class="meta">PDF</span>
-    </a>
-    <a class="library-card" href="assets/BDC_AI_Call_Script.pdf" target="_blank" rel="noopener">
-      <span class="title">BDC AI Call Script</span>
-      <span class="meta">PDF</span>
-    </a>
+      <div class="library-columns">
+        <!-- Column A -->
+        <div class="library-category">
+          <h3>Training & Playbooks</h3>
+          <ul class="library-list">
+            <li><a href="assets/BDC_AI_Training_Packet.pdf" target="_blank" rel="noopener">BDC AI Training Packet (PDF)</a></li>
+            <li><a href="assets/BDC_Training_Packet_v2.pdf" target="_blank" rel="noopener">BDC Training Packet v2 (PDF)</a></li>
+            <li><a href="assets/BDC_AI_Call_Script.pdf" target="_blank" rel="noopener">BDC AI Call Script (PDF)</a></li>
+          </ul>
 
-    <!-- Smart Response Library -->
-    <a class="library-card" href="assets/BDC_Smart_Response_Library_Full.pdf" target="_blank" rel="noopener">
-      <span class="title">BDC Smart Response Library (Full)</span>
-      <span class="meta">PDF</span>
-    </a>
-    <a class="library-card" href="assets/BDC_Smart_Response_Library_v1.pdf" target="_blank" rel="noopener">
-      <span class="title">BDC Smart Response Library (v1)</span>
-      <span class="meta">PDF</span>
-    </a>
-    <a class="library-card" href="assets/BDC_Smart_Response_Library_Full.xlsx" target="_blank" rel="noopener">
-      <span class="title">BDC Smart Response Library (Full)</span>
-      <span class="meta">Excel</span>
-    </a>
+          <h3 class="mt">Smart Response Library</h3>
+          <ul class="library-list">
+            <li><a href="assets/BDC_Smart_Response_Library_Full.pdf" target="_blank" rel="noopener">Smart Response Library — Full (PDF)</a></li>
+            <li><a href="assets/BDC_Smart_Response_Library_v1.pdf" target="_blank" rel="noopener">Smart Response Library — v1 (PDF)</a></li>
+            <li><a href="assets/BDC_Smart_Response_Library_Full.xlsx" target="_blank" rel="noopener">Smart Response Library — Full (Excel)</a></li>
+          </ul>
+        </div>
 
-    <!-- Project Plans & One-Pagers -->
-    <a class="library-card" href="assets/BDC_Smart_Response_Project_Plan.pdf" target="_blank" rel="noopener">
-      <span class="title">BDC Smart Response — Project Plan</span>
-      <span class="meta">PDF</span>
-    </a>
-    <a class="library-card" href="assets/GenAI_Inventory_Integration_OnePager.pdf" target="_blank" rel="noopener">
-      <span class="title">GenAI Inventory Integration — One Pager</span>
-      <span class="meta">PDF</span>
-    </a>
-    <a class="library-card" href="assets/GenAI_Inventory_Integration_OnePager_v3.pdf" target="_blank" rel="noopener">
-      <span class="title">GenAI Inventory Integration — One Pager (v3)</span>
-      <span class="meta">PDF</span>
-    </a>
+        <!-- Column B -->
+        <div class="library-category">
+          <h3>Plans & One-Pagers</h3>
+          <ul class="library-list">
+            <li><a href="assets/BDC_Smart_Response_Project_Plan.pdf" target="_blank" rel="noopener">BDC Smart Response — Project Plan (PDF)</a></li>
+            <li><a href="assets/GenAI_Inventory_Integration_OnePager.pdf" target="_blank" rel="noopener">GenAI Inventory Integration — One Pager (PDF)</a></li>
+            <li><a href="assets/GenAI_Inventory_Integration_OnePager_v3.pdf" target="_blank" rel="noopener">GenAI Inventory Integration — One Pager v3 (PDF)</a></li>
+          </ul>
 
-    <!-- Executive Summaries / Decks -->
-    <a class="library-card" href="assets/VINS vs Gen AI Alternative summary.pdf" target="_blank" rel="noopener">
-      <span class="title">Executive Summary — VINS vs Gen AI Alternative</span>
-      <span class="meta">PDF</span>
-    </a>
-    <a class="library-card" href="assets/VINS vs Generative AI Alternative Summary PowerPoint.pptx" target="_blank" rel="noopener">
-      <span class="title">VINS vs Gen AI Alternative — Slides</span>
-      <span class="meta">PPTX</span>
-    </a>
+          <h3 class="mt">Executive Summaries & Decks</h3>
+          <ul class="library-list">
+            <li><a href="assets/VINS vs Gen AI Alternative summary.pdf" target="_blank" rel="noopener">Executive Summary — VINS vs Gen AI Alternative (PDF)</a></li>
+            <li><a href="assets/VINS vs Generative AI Alternative Summary PowerPoint.pptx" target="_blank" rel="noopener">VINS vs Gen AI Alternative — Slides (PPTX)</a></li>
+          </ul>
 
-    <!-- Data & Logs -->
-    <a class="library-card" href="assets/desklog_analysis_summary.pdf" target="_blank" rel="noopener">
-      <span class="title">Desk Log Analysis — Summary</span>
-      <span class="meta">PDF</span>
-    </a>
-    <a class="library-card" href="assets/DeskLogExport.csv" target="_blank" rel="noopener">
-      <span class="title">Desk Log Export</span>
-      <span class="meta">CSV</span>
-    </a>
-    <a class="library-card" href="assets/VIN_Solutions_14Day_FollowUp_Schedule.csv" target="_blank" rel="noopener">
-      <span class="title">VIN Solutions — 14-Day Follow-Up Schedule</span>
-      <span class="meta">CSV</span>
-    </a>
-    <a class="library-card" href="assets/Gen AI Sandbox vehicle inventory.csv" target="_blank" rel="noopener">
-      <span class="title">GenAI Sandbox — Vehicle Inventory</span>
-      <span class="meta">CSV</span>
-    </a>
-
-    <!-- Add the rest of your PDFs/CSVs in the same format -->
-  </div>
-</section>
-
+          <h3 class="mt">Data & Logs</h3>
+          <ul class="library-list">
+            <li><a href="assets/desklog_analysis_summary.pdf" target="_blank" rel="noopener">Desk Log Analysis — Summary (PDF)</a></li>
+            <li><a href="assets/DeskLogExport.csv" target="_blank" rel="noopener">Desk Log Export (CSV)</a></li>
+            <li><a href="assets/VIN_Solutions_14Day_FollowUp_Schedule.csv" target="_blank" rel="noopener">VIN Solutions — 14-Day Follow-Up Schedule (CSV)</a></li>
+            <li><a href="assets/Gen AI Sandbox vehicle inventory.csv" target="_blank" rel="noopener">GenAI Sandbox — Vehicle Inventory (CSV)</a></li>
+          </ul>
+        </div>
+      </div>
     </section>
 
     <div class="footer-space"></div>
   </main>
 
-  <!-- Optional: light JS to keep previews in sync if you need it -->
-  <script>
-    // Example: keep SMS name in sync if you change the lead name
-    const lead = document.getElementById('lead');
-    const sms = document.getElementById('smsPreview');
-    if (lead && sms) {
-      lead.addEventListener('input', () => {
-        // no-op; put your dynamic behavior here if desired
-      });
-    }
-  </script>
 </body>
 </html>
