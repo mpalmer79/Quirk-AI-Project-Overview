@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Technical Docs · Quirk GenAI / NUMA Alternative</title>
+
+  <!-- Reuse site styles -->
+  <link rel="stylesheet" href="assets/style.css" />
+
+  <style>
+    /* Page-specific niceties */
+    .breadcrumbs { font-size: .95rem; color:#666; margin-bottom: 10px; }
+    .breadcrumbs a { color:#0b5; text-decoration: none; border-bottom: 1px dashed #8ac; }
+    .breadcrumbs a:hover { border-bottom-style: solid; }
+    .docs-grid { display:grid; grid-template-columns: 1fr; gap:12px; }
+    @media (min-width: 900px){ .docs-grid { grid-template-columns: 1fr 1fr; } }
+    .doc-card { border:1px solid #ddd; border-radius:12px; padding:14px; background:#fff; }
+    .doc-card h3 { margin:0 0 6px; font-size:1rem; }
+    .doc-card p { margin:0 0 8px; color:#555; }
+    .doc-actions a { text-decoration:none; border:1px solid #ccc; border-radius:8px; padding:6px 10px; }
+    .doc-actions a:hover { box-shadow:0 1px 6px rgba(0,0,0,.08); }
+    .section { margin-top:24px; }
+    .btn { display:inline-block; text-decoration:none; padding:8px 12px; border-radius:8px; }
+    .btn.primary { background:#155e2d; color:#fff; }
+    .btn.secondary { border:1px solid #155e2d; color:#155e2d; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="wrap header-flex">
+      <strong>Quirk GenAI Alternative</strong>
+      <nav class="top-nav">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="numa-alternative.html" class="nav-link">NUMA Alternative</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="breadcrumbs">
+      <a href="index.html">Home</a> / <a href="numa-alternative.html">NUMA Alternative</a> / Technical Docs
+    </div>
+
+    <h1 style="margin:0 0 6px;">Technical Docs</h1>
+    <p class="muted">Central place for specs, one-pagers, training, Smart Prompts, and data we reference for this project.</p>
+
+    <!-- Quick actions -->
+    <p style="margin:12px 0 18px;">
+      <a href="#docs" class="btn primary">Jump to Documents</a>
+      <a href="#how-to-add" class="btn secondary">How to add more</a>
+    </p>
+
+    <!-- Documents (start with a few; add more anytime) -->
+    <section id="docs" class="section">
+      <h2 style="font-size:1.1rem; margin:0 0 10px;">Documents</h2>
+
+      <div class="docs-grid">
+        <article class="doc-card">
+          <h3>BDC Smart Response — Project Plan</h3>
+          <p>Scope, milestones, and owners for the Smart Response rollout.</p>
+          <div class="doc-actions">
+            <a href="assets/BDC_Smart_Response_Project_Plan.pdf" target="_blank" rel="noopener">Open PDF</a>
+          </div>
+        </article>
+
+        <article class="doc-card">
+          <h3>GenAI Inventory Integration — One Pager</h3>
+          <p>How inventory data flows into prompts and appointment copy.</p>
+          <div class="doc-actions">
+            <a href="assets/GenAI_Inventory_Integration_OnePager.pdf" target="_blank" rel="noopener">Open PDF</a>
+          </div>
+        </article>
+
+        <article class="doc-card">
+          <h3>Smart Response Library (Full)</h3>
+          <p>All email/SMS templates and Smart Prompts used by the BDC.</p>
+          <div class="doc-actions">
+            <a href="assets/BDC_Smart_Response_Library_Full.pdf" target="_blank" rel="noopener">Open PDF</a>
+            &nbsp;•&nbsp;
+            <a href="assets/BDC_Smart_Response_Library_Full.xlsx" target="_blank" rel="noopener">Open Excel</a>
+          </div>
+        </article>
+
+        <article class="doc-card">
+          <h3>Executive Summary — VINS vs Gen AI Alternative</h3>
+          <p>High-level comparison and outcomes for stakeholders.</p>
+          <div class="doc-actions">
+            <a href="assets/VINS vs Gen AI Alternative summary.pdf" target="_blank" rel="noopener">Open PDF</a>
+          </div>
+        </article>
+
+        <article class="doc-card">
+          <h3>Desk Log Analysis — Summary</h3>
+          <p>Observed outcomes and metrics from recent desk log reviews.</p>
+          <div class="doc-actions">
+            <a href="assets/desklog_analysis_summary.pdf" target="_blank" rel="noopener">Open PDF</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- How to add more docs -->
+    <section id="how-to-add" class="section">
+      <h2 style="font-size:1.1rem; margin:0 0 10px;">How to add more</h2>
+      <ol>
+        <li>Upload files to <code>docs/assets/</code> in GitHub (PDF, PPTX, CSV, etc.).</li>
+        <li>In this page (<code>docs/technical-docs.html</code>), duplicate one of the
+          <code>&lt;article class="doc-card"&gt;…&lt;/article&gt;</code> blocks and update the title, description, and the <code>href</code> to your new file (e.g., <code>assets/My_New_File.pdf</code>).</li>
+        <li>Commit and push — GitHub Pages updates automatically. Hard refresh if you don’t see it.</li>
+      </ol>
+    </section>
+
+    <div class="footer-space"></div>
+  </main>
+</body>
+</html>
