@@ -80,6 +80,37 @@ main {
   padding: 0 16px;
 }
 
+/* === Left logo + content layout (added) === */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr;       /* mobile: single column */
+  gap: 16px;
+  align-items: start;
+}
+@media (min-width: 980px) {
+  .layout {
+    grid-template-columns: 280px 1fr; /* left column ~ square size */
+  }
+}
+.brand-box {
+  width: 100%;
+  aspect-ratio: 1 / 1;              /* perfect square */
+  border: 1px solid #ddd;
+  border-radius: 16px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+}
+.brand-box img {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+  display: block;
+}
+.content-col { width: 100%; }
+
 /* ---------- Project Library ---------- */
 .project-library { margin-top: 24px; }
 .project-library h2 { font-size: 1.25rem; margin: 0 0 4px; }
