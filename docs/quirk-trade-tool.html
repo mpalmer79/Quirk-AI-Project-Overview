@@ -41,6 +41,28 @@
       font-weight: 800;
     }
 
+    /* Dealership list */
+    .dealer-list {
+      margin: 28px auto 0;
+      text-align: center;
+      line-height: 1.4;
+      list-style: none;
+      padding: 0;
+    }
+    .dealer-list li {
+      margin: 14px 0;      /* normal vertical spacing */
+      font-size: 1.125rem; /* slightly larger than body */
+      font-weight: 600;
+      color: #0f172a;
+    }
+    .dealer-list a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .dealer-list a:hover {
+      text-decoration: underline;
+    }
+
     /* Keep the back link top-left, untouched */
     .back-link {
       display: inline-block;
@@ -58,6 +80,14 @@
 
     <!-- Centered status with brand-green "Live" -->
     <p class="status">Status: <span class="live">Live</span></p>
+
+    <!-- Centered dealership names as links opening in a new tab/window -->
+    <ul class="dealer-list">
+      <li><a href="https://quirknhtrade.netlify.app/" target="_blank" rel="noopener">Quirk NH Auto Dealers</a></li>
+      <li><a href="https://quirkchevytrade.netlify.app/" target="_blank" rel="noopener">Quirk Chevrolet MA</a></li>
+      <li><a href="https://quirkfordtrade.netlify.app/" target="_blank" rel="noopener">Quirk Ford</a></li>
+      <li><a href="https://quirknissantrade.netlify.app/" target="_blank" rel="noopener">Quirk Nissan</a></li>
+    </ul>
   </main>
 
 </body>
