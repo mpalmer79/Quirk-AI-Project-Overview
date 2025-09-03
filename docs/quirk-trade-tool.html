@@ -53,8 +53,8 @@
       padding: 0;
     }
     .dealer-list li {
-      margin: 14px 0;      /* normal vertical spacing */
-      font-size: 1.125rem; /* slightly larger than body */
+      margin: 14px 0;
+      font-size: 1.125rem;
       font-weight: 600;
       color: #0f172a;
     }
@@ -65,19 +65,27 @@
     .dealer-list a:hover {
       text-decoration: underline;
     }
-
-    /* Keep the back link top-left, untouched */
-    .back-link {
-      display: inline-block;
-      margin: 12px 16px 0;
-    }
   </style>
 </head>
 <body>
+  <!-- ======= Top Navigation Bar ======= -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <!-- Left: HOME link -->
+      <a class="home-link" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
 
-  <!-- DO NOT MOVE: stays top-left as requested -->
-  <a href="index.html" class="back-link">← Back to Overview</a>
+      <!-- Center title -->
+      <div class="topbar-title">Quirk Trade Tool</div>
 
+      <!-- Right-side nav -->
+      <nav class="topbar-menu">
+        <a href="./quirk-ai-voice.html">Quirk AI Voice</a>
+        <a href="./project-library.html">Project Library</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ======= Page Content ======= -->
   <main class="page-wrap">
     <h1 class="title">Quirk Trade Tool</h1>
 
@@ -86,10 +94,8 @@
 
     <!-- Centered dealership names as links opening in a new tab/window -->
     <ul class="dealer-list">
-      <!-- Fixed at top -->
       <li><a href="https://quirknhtrade.netlify.app/" target="_blank" rel="noopener">Quirk NH Auto Dealers</a></li>
       <li><a href="https://quirkgmctrade.netlify.app/" target="_blank" rel="noopener">Quirk Buick GMC MA</a></li>
-      <!-- Alphabetical from here -->
       <li><a href="https://quirkchevytrade.netlify.app/" target="_blank" rel="noopener">Quirk Chevrolet MA</a></li>
       <li><a href="https://quirkcdjrbostontrade.netlify.app/" target="_blank" rel="noopener">Quirk CDJR Boston</a></li>
       <li><a href="https://quirkcdjrmarshfieldtrade.netlify.app/" target="_blank" rel="noopener">Quirk CDJR Marshfield</a></li>
@@ -106,5 +112,14 @@
     </ul>
   </main>
 
+  <!-- ======= Footer ======= -->
+  <footer class="container footer">
+    <p>&copy; <span id="year"></span> Quirk Auto — Trade Tool</p>
+  </footer>
+
+  <script>
+    // simple year stamp
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
