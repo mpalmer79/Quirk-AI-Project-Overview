@@ -130,7 +130,7 @@ body::before {
   inset: 0;                  /* fill viewport */
   background: url('/Quirk-AI-Project-Overview/assets/quirk-ai-logo.png') no-repeat center center;
   background-size: clamp(260px, 35vw, 520px); /* responsive size */
-  opacity: 0.06;             /* subtle watermark */
+  opacity: 0.12;             /* 12% in light mode */
   pointer-events: none;      /* never intercept clicks */
   z-index: 0;                /* sit behind main content */
 }
@@ -147,6 +147,6 @@ header, main, .panel, .layout, .brand-box { position: relative; z-index: 1; }
   .library-card { background: #15181b; border-color: #2a2f35; }
   .library-card .title { color: #e9ecef; }
   .library-card .meta { color: #a7b0ba; }
-  /* keep the watermark subtle in dark mode too */
-  body::before { opacity: 0.08; }
+  /* 16% in dark mode */
+  body::before { opacity: 0.16; }
 }
