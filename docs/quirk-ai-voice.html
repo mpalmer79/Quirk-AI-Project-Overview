@@ -3,24 +3,139 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AI Voice Agents (NUMA Replacement)</title>
+  <title>Quirk AI Voice vs NUMA — The Better Dealership Choice</title>
+  <meta name="description" content="Why dealerships choose Quirk AI Voice over NUMA: real-time automation, CRM/DMS integration, bilingual support, and measurable ROI." />
+
+  <!-- Global styles -->
   <link rel="stylesheet" href="assets/style.css" />
 </head>
-<body class="page">
-  <header class="page-header">
-    <a href="index.html" class="back-link">← Back to Overview</a>
-    <h1>AI Voice Agents (NUMA Replacement)</h1>
-    <p class="subhead">New direction; ~12 weeks to launch with higher-quality agent.</p>
+
+<body>
+  <!-- ======= Top Navigation Bar ======= -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <!-- Left: HOME link -->
+      <a class="home-link" href="https://mpalmer79.github.io/quirk-genai-sandbox/">HOME</a>
+
+      <!-- Center title -->
+      <div class="topbar-title">Quirk AI Voice vs NUMA</div>
+
+      <!-- Right-side nav -->
+      <nav class="topbar-menu">
+        <a href="./numa-alternative.html">NUMA Alternative</a>
+        <a href="./project-library.html">Project Library</a>
+      </nav>
+    </div>
   </header>
-  <main class="content">
-    <section class="card">
-      <h2>Status: <span class="status-development">In Development</span></h2>
-      <ul class="facts">
-        <li><strong>Est. Annual Savings:</strong> $380,000 (minus ~$32K API)</li>
-        <li><strong>Focus:</strong> After-hours, overflow, voicemail rescues</li>
-        <li><strong>Next:</strong> Script tuning, call-flow QA, store pilot</li>
-      </ul>
+
+  <!-- ======= Page Content ======= -->
+  <main class="page">
+    <!-- HERO / HEADER CARD AREA -->
+    <section class="container">
+      <div class="grid grid-hero layout">
+        <aside class="brand-box">
+          <a href="https://www.quirkcars.com" target="_blank" rel="noopener">
+            <img src="assets/quirk-ai-logo.png" alt="Quirk AI Logo" />
+          </a>
+        </aside>
+
+        <div class="hero-content content-col">
+          <div class="badge">Quirk AI Voice (powered by OpenAI)</div>
+          <h1>Why Dealerships Choose <strong>Quirk AI Voice</strong> over NUMA</h1>
+          <p>
+            NUMA captures voicemails; <strong>Quirk AI Voice</strong> handles real customer conversations in real time — books
+            service, logs leads, quotes trades, checks parts orders, and escalates to a person when it should.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#comparison">See the Comparison</a>
+            <a class="btn btn-outline" href="#roi">Estimate ROI</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- FEATURE CARDS -->
+      <div class="grid grid-features">
+        <div class="card">
+          <h3>Real-Time Automation</h3>
+          <p>Hold service slots, create CRM tickets, capture trades, check order status — right on the call or chat.</p>
+        </div>
+
+        <div class="card">
+          <h3>Bilingual, Dealership-Ready</h3>
+          <p>English + Spanish with a concise, professional tone; safe handoffs on edge cases.</p>
+        </div>
+
+        <div class="card">
+          <h3>Proven Guardrails</h3>
+          <p>Never invents prices, VINs, or slots; cites the KB; masks PII; escalates when confidence is low.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPARISON TABLE -->
+    <section id="comparison" class="container">
+      <h2>NUMA vs Quirk AI Voice</h2>
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Capability</th>
+              <th>NUMA</th>
+              <th>Quirk AI Voice</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Real-time conversations (phone/chat/email)</td>
+              <td><strong>Voicemail/SMS centric</strong></td>
+              <td><strong>Yes</strong> — natural conversations across channels</td>
+            </tr>
+            <tr>
+              <td>Service scheduling</td>
+              <td>Manual callback</td>
+              <td>Hold window via <code>schedule_service</code></td>
+            </tr>
+            <tr>
+              <td>CRM ticketing</td>
+              <td>Limited</td>
+              <td>VIN Solutions via <code>create_ticket</code></td>
+            </tr>
+            <tr>
+              <td>Trade appraisal capture</td>
+              <td>Manual</td>
+              <td>VIN/mileage/photos via <code>quote_trade</code></td>
+            </tr>
+            <tr>
+              <td>Parts order status</td>
+              <td>Manual lookup</td>
+              <td><code>check_order_status</code> tool</td>
+            </tr>
+            <tr>
+              <td>Bilingual (EN/ES)</td>
+              <td>English focused</td>
+              <td><strong>Yes</strong> — seamless mid-call switching</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ROI SECTION -->
+    <section id="roi" class="container">
+      <h2>Estimate ROI</h2>
+      <p>Quantify time saved, booked appointments, and conversion lift from live AI coverage on phones and chat.</p>
+      <a class="btn btn-primary" href="./roi-calculator.html">Open ROI Calculator</a>
     </section>
   </main>
+
+  <!-- ======= Footer ======= -->
+  <footer class="container footer">
+    <p>&copy; <span id="year"></span> Quirk Auto — Quirk AI Voice</p>
+  </footer>
+
+  <script>
+    // simple year stamp
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
