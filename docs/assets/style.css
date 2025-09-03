@@ -2,7 +2,7 @@
    Quirk GenAI Alternative
    Global Stylesheet (assets/style.css)
    Optimized w/ HOME link + 1024 default logo + 254px modifier
-   + Watermark logo behind page content
+   + Watermark logo behind page content (absolute path for GitHub Pages)
    ================================ */
 
 /* ---------- Base / Reset ---------- */
@@ -123,12 +123,12 @@ main { max-width: 1100px; margin: 16px auto 48px; padding: 0 16px; position: rel
 @media (max-width: 640px) { .topbar-inner { height: auto; padding: 8px 12px; } }
 
 /* ---------- Watermark (Logo behind content) ---------- */
-/* Uses assets/quirk-ai-logo.png centered, scaled responsively. */
+/* Use absolute path so it resolves correctly on GitHub Pages under /Quirk-AI-Project-Overview/ */
 body::before {
   content: "";
   position: fixed;           /* stays centered even when page scrolls */
   inset: 0;                  /* fill viewport */
-  background: url('assets/quirk-ai-logo.png') no-repeat center center;
+  background: url('/Quirk-AI-Project-Overview/assets/quirk-ai-logo.png') no-repeat center center;
   background-size: clamp(260px, 35vw, 520px); /* responsive size */
   opacity: 0.06;             /* subtle watermark */
   pointer-events: none;      /* never intercept clicks */
