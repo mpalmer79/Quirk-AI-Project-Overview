@@ -1,7 +1,7 @@
 /* ================================
    Quirk GenAI Alternative
    Global Stylesheet (assets/style.css)
-   Optimized for: HOME link in topbar + 1024×1024 QUIRK AI logo
+   Optimized w/ HOME link + 1024 default logo + 254px modifier
    ================================ */
 
 /* ---------- Base / Reset ---------- */
@@ -60,9 +60,14 @@ main { max-width: 1100px; margin: 16px auto 48px; padding: 0 16px; }
 .brand-box a:focus-visible { outline: 2px solid #155e2d; outline-offset: 3px; }
 .brand-box img { max-width: 90%; max-height: 90%; object-fit: contain; display: block; }
 
-/* Force the main hero logo to 1024×1024 while remaining responsive */
+/* ================= Logo sizing ================= */
+/* Default hero logo size for pages that want large branding */
 .hero-logo { width: 1024px; height: 1024px; object-fit: contain; display: block; }
-.brand-box img.hero-logo { max-width: none; max-height: none; }
+/* Use this modifier on pages that need a 254×254 logo: class="hero-logo hero-logo--254" */
+.hero-logo--254 { width: 254px; height: 254px; object-fit: contain; display: block; }
+/* If the logo sits inside brand-box, remove its intrinsic max constraints */
+.brand-box img.hero-logo, .brand-box img.hero-logo--254 { max-width: none; max-height: none; }
+/* Keep the big logo from overflowing on small screens */
 @media (max-width: 1100px) { .hero-logo { width: min(1024px, 90vw); height: auto; } }
 
 /* ---------- Project Library ---------- */
