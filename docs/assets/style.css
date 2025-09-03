@@ -19,6 +19,13 @@ body {
 a { color: #0b5; text-decoration: underline; }
 a:hover { text-decoration: none; }
 
+/* Project name links override - make them green like the page title */
+.project-name a,
+.project-name a:hover,
+.project-name a:visited {
+  color: #0b6e37 !important;
+}
+
 h1, h2, h3, h4 { margin: 0 0 8px; line-height: 1.2; }
 p { margin: 0 0 12px; }
 
