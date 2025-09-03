@@ -150,3 +150,28 @@ header, main, .panel, .layout, .brand-box { position: relative; z-index: 1; }
   /* 16% in dark mode */
   body::before { opacity: 0.16; }
 }
+/* ===== Force LIGHT theme on mobile ===== */
+
+/* Always expose only the light color scheme to the browser */
+:root { color-scheme: light; }
+
+/* If any earlier rules used prefers-color-scheme:dark, neutralize them */
+@media (prefers-color-scheme: dark) {
+  :root{
+    /* keep light values even when device is in dark mode */
+    --bg:#ffffff;
+    --card:#ffffff;
+    --text:#0f172a;
+    --muted:#475569;
+    --ring:#e2e8f0;
+  }
+  html, body { background:#fff; color:#0f172a; }
+}
+
+/* Mobile-specific hard override (keeps desktop behavior if desired) */
+@media (max-width: 768px), (hover:none) and (pointer:coarse) {
+  :root { color-scheme: light !important; }
+  html, body { background:#fff !important; color:#0f172a !important; }
+  .card { background:#fff !important; }
+  .muted, .subtitle { color:#475569 !important; }
+}
