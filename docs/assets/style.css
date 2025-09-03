@@ -42,7 +42,7 @@ p { margin: 0 0 12px; }
   .two-col { grid-template-columns: 1fr 1fr; }
 }
 
-/* Form elements */
+/* ---------- Forms ---------- */
 label { display: block; font-weight: 600; margin: 0 0 6px; }
 input[type="text"],
 select,
@@ -56,15 +56,13 @@ textarea {
 }
 textarea { min-height: 160px; }
 
-/* ---------- Header ---------- */
+/* ---------- Legacy Header (kept for other pages) ---------- */
 .site-header { background: #155e2d; color: #fff; }
 .site-header .wrap {
   max-width: 1100px;
   margin: 0 auto;
   padding: 10px 16px;
 }
-
-/* The snippet you requested — placed in the Header section */
 .header-flex { display: flex; align-items: center; justify-content: space-between; }
 .top-nav .nav-link {
   color: #fff; text-decoration: none;
@@ -80,7 +78,7 @@ main {
   padding: 0 16px;
 }
 
-/* === Left logo + content layout (added) === */
+/* === Left logo + content layout === */
 .layout {
   display: grid;
   grid-template-columns: 1fr;       /* mobile: single column */
@@ -157,7 +155,7 @@ main {
 }
 .library-list a:hover { border-bottom-style: solid; }
 
-/* ---------- Optional Card Grid (not used now, safe to keep) ---------- */
+/* ---------- Optional Card Grid ---------- */
 .library-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -174,6 +172,69 @@ main {
 .library-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,.08); }
 .library-card .title { display: block; font-weight: 600; line-height: 1.3; color: #111; }
 .library-card .meta { display: block; font-size: .85rem; color: #777; margin-top: 4px; }
+
+/* =====================================
+   NEW: Topbar for HOME link + centered title + right menu
+   Used by numa-alternative.html
+   ===================================== */
+.topbar { background: var(--green, #0b6e37); }
+
+.topbar-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 56px;                  /* adjust if your site uses a different height */
+  padding: 0 16px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;  /* left | center | right */
+  align-items: center;                   /* vertical centering */
+}
+
+/* LEFT: HOME link */
+.home-link {
+  justify-self: start;
+  font: inherit;                 /* same font as right-side links */
+  font-weight: 700;              /* bold */
+  font-size: clamp(20px, 2.2vw, 24px);  /* larger than the center title */
+  letter-spacing: 0.3px;
+  color: #fff;
+  text-decoration: none;
+  line-height: 1;
+}
+.home-link:hover,
+.home-link:focus { text-decoration: underline; }
+
+/* CENTER: title */
+.topbar-title {
+  justify-self: center;
+  color: #fff;
+  font-weight: 600;
+  font-size: clamp(16px, 1.8vw, 20px);
+  line-height: 1;
+  text-align: center;
+}
+
+/* RIGHT: existing menu */
+.topbar-menu {
+  justify-self: end;
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+.topbar-menu a {
+  color: #fff;
+  text-decoration: none;
+  font: inherit;                 /* ensures same font family as other nav links */
+  line-height: 1;
+}
+.topbar-menu a:hover,
+.topbar-menu a:focus { text-decoration: underline; }
+
+@media (max-width: 640px) {
+  .topbar-inner {
+    height: auto;
+    padding: 8px 12px;
+  }
+}
 
 /* ---------- Light/Dark Preference (optional) ---------- */
 @media (prefers-color-scheme: dark) {
