@@ -3,149 +3,199 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Quirk GenAI Alternative</title>
+  <title>Quirk AI Project Overview</title>
 
   <!-- Site stylesheet -->
   <link rel="stylesheet" href="assets/style.css" />
 
   <style>
-    /* ===== Minimal safe defaults (doesn't fight your style.css) ===== */
-    body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
-    header.site-header { background:#155e2d; color:#fff; }
-    header.site-header .wrap { max-width: 1100px; margin: 0 auto; padding: 10px 16px; }
-    main { max-width: 1100px; margin: 16px auto 48px; padding: 0 16px; }
-    .grid { display: grid; gap: 12px; }
-    .panel { border: 1px solid #ddd; border-radius: 8px; padding: 12px; background: #fff; }
-    .panel h3 { margin: 0 0 8px; font-size: 1rem; }
-
-    /* ===== Header nav (NUMA link) ===== */
-    .header-flex { display: flex; align-items: center; justify-content: space-between; }
-    .top-nav .nav-link {
-      color: #fff; text-decoration: none;
-      padding: 6px 10px; border: 1px solid rgba(255,255,255,.35);
+    /* Project Overview Page Specific Styles */
+    .page-header {
+      text-align: center;
+      margin: 32px 0;
+    }
+    
+    .page-header .logo {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 16px;
+    }
+    
+    .page-title {
+      font-size: 2rem;
+      font-weight: 600;
+      color: #0b6e37;
+      margin: 0 0 8px;
+    }
+    
+    .page-subtitle {
+      font-size: 1.1rem;
+      color: #666;
+      margin: 0;
+    }
+    
+    .projects-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    .project-item {
+      background: white;
+      border: 1px solid #e5e5e5;
       border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 24px;
     }
-    .top-nav .nav-link:hover { background: rgba(255,255,255,.12); }
-
-    /* ===== Project Library (grouped lists, single instance) ===== */
-    .project-library { margin-top: 24px; }
-    .project-library h2 { font-size: 1.25rem; margin: 0 0 4px; }
-    .project-library .muted { color: #666; margin: 0 0 16px; }
-    .library-columns {
+    
+    .project-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #111;
+      margin: 0 0 16px;
+    }
+    
+    .project-details {
       display: grid;
-      grid-template-columns: 1fr;
-      gap: 24px;
+      gap: 12px;
     }
-    @media (min-width: 900px) {
-      .library-columns { grid-template-columns: 1fr 1fr; }
+    
+    .project-detail {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 12px;
     }
-    .library-category h3 {
-      font-size: 1rem;
-      margin: 0 0 6px;
-      border-bottom: 1px solid #e5e5e5;
-      padding-bottom: 4px;
+    
+    .detail-label {
+      font-weight: 600;
+      color: #111;
     }
-    .library-category h3.mt { margin-top: 16px; }
-    .library-list { list-style: none; padding-left: 0; margin: 6px 0 0; }
-    .library-list li { margin: 6px 0; }
-    .library-list a { text-decoration: none; border-bottom: 1px dashed #aaa; }
-    .library-list a:hover { border-bottom-style: solid; }
-
-    /* layout helpers for the top part of the page */
-    .two-col { display: grid; grid-template-columns: 1fr; gap: 12px; }
-    @media (min-width: 980px) { .two-col { grid-template-columns: 1fr 1fr; } }
-    .footer-space { height: 32px; }
-    .muted-inline { color:#666; font-size:.95rem; }
-    textarea { width: 100%; min-height: 160px; }
-    select, input[type="text"] { width: 100%; }
-    label { display:block; font-weight:600; margin: 0 0 6px; }
+    
+    .detail-value {
+      color: #333;
+    }
+    
+    .status-near-launch {
+      color: #0b6e37;
+      font-weight: 500;
+    }
+    
+    .status-development {
+      color: #2563eb;
+      font-weight: 500;
+    }
+    
+    .status-planning {
+      color: #7c3aed;
+      font-weight: 500;
+    }
   </style>
 </head>
 <body>
 
-  <!-- Top bar -->
-  <header class="site-header">
-    <div class="wrap header-flex">
-      <strong>Quirk GenAI Alternative</strong>
-
-      <!-- Right-side nav -->
-      <nav class="top-nav">
-        <a href="numa-alternative.html" class="nav-link">NUMA Alternative</a>
-      </nav>
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="logo">
+      <img src="assets/quirk-ai-logo.png" alt="Quirk AI" style="width: 100%; height: 100%; object-fit: contain;" />
     </div>
+    <h1 class="page-title">Quirk AI Project Overview</h1>
+    <p class="page-subtitle">Internal Brief: Deployment Status & Cost Efficiency</p>
   </header>
 
-  <main>
+  <!-- Main Content -->
+  <main class="projects-container">
+    
+    <!-- Quirk Trade Tool -->
+    <div class="project-item">
+      <h2 class="project-name">Quirk Trade Tool</h2>
+      <div class="project-details">
+        <div class="project-detail">
+          <span class="detail-label">Status:</span>
+          <span class="detail-value status-near-launch">Near Launch</span>
+        </div>
+        <div class="project-detail">
+          <span class="detail-label">Est. Annual Savings:</span>
+          <span class="detail-value">Replaces Voga bill.</span>
+        </div>
+        <div class="project-detail">
+          <span class="detail-label">Notes:</span>
+          <span class="detail-value">Customer + employee values; Final tweaks underway.</span>
+        </div>
+      </div>
+    </div>
 
-    <!-- NEW: Logo + content wrapper -->
-    <div class="layout">
-     <aside class="brand-box">
-  <a href="https://www.quirkcars.com" target="_blank" rel="noopener">
-    <img src="assets/quirk-ai-logo.png" alt="Quirk AI Logo">
-  </a>
-</aside>
+    <!-- VIN Gen AI Alternative -->
+    <div class="project-item">
+      <h2 class="project-name">VIN Gen AI Alternative</h2>
+      <div class="project-details">
+        <div class="project-detail">
+          <span class="detail-label">Status:</span>
+          <span class="detail-value status-near-launch">Near Launch</span>
+        </div>
+        <div class="project-detail">
+          <span class="detail-label">Est. Annual Savings:</span>
+          <span class="detail-value">$383,600/year</span>
+        </div>
+        <div class="project-detail">
+          <span class="detail-label">Notes:</span>
+          <span class="detail-value">Better lead replies, 18 stores. Requires Chrome rollout + training.</span>
+        </div>
+      </div>
+    </div>
 
+    <!-- AI Voice Agents -->
+    <div class="project-item">
+      <h2 class="project-name">AI Voice Agents (Numa Replacement)</h2>
+      <div class="project-details">
+        <div class="project-detail">
+          <span class="detail-label">Status:</span>
+          <span class="detail-value status-development">In Development</span>
+        </div>
+        <div class="project-detail">
+          <span class="detail-label">Est. Annual Savings:</span>
+          <span class="detail-value">$380,000/yea (minus ~$32K API)</span>
+        </div>
+        <div class="project-detail">
+          <span class="detail-label">Notes:</span>
+          <span class="detail-value">New direction, 12 weeks to launch with higher-qlty agent.</span>
+        </div>
+      </div>
+    </div>
 
-      <div class="content-col">
-        <!-- Blank space where form fields used to be -->
-        <section style="min-height: 400px;">
-          <!-- Empty section for blank white space -->
-        </section>
+    <!-- Quirk AI Voice (Sales Calls) -->
+    <div class="project-item">
+      <h2 class="project-name">Quirk AI Voice (Sales Calls)</h2>
+      <div class="project-details">
+        <div class="project-detail">
+          <span class="detail-label">Status:</span>
+          <span class="detail-value status-planning">Planning</span>
+        </div>
+        <div class="project-detail">
+          <span class="detail-label">Est. Annual Savings:</span>
+          <span class="detail-value">Potential headcount reduction.</span>
+        </div>
+      </div>
+    </div>
 
-        <!-- =========================
-             Project Library (single)
-             ========================= -->
-        <section class="project-library">
-          <h2>Project Library</h2>
-          <p class="muted">Plans, training, Smart Prompts, integrations, and data logs.</p>
+    <!-- VIN Solutions Alternative -->
+    <div class="project-item">
+      <h2 class="project-name">VIN Solutions Alternative</h2>
+      <div class="project-details">
+        <div class="project-detail">
+          <span class="detail-label">Status:</span>
+          <span class="detail-value status-planning">Planning</span>
+        </div>
+        <div class="project-detail">
+          <span class="detail-label">Est. Annual Savings:</span>
+          <span class="detail-value">VIN bill for 18 stores</span>
+        </div>
+        <div class="project-detail">
+          <span class="detail-label">Notes:</span>
+          <span class="detail-value">Quirk-owned CRM, 12-16 weeks to build.</span>
+        </div>
+      </div>
+    </div>
 
-          <div class="library-columns">
-            <!-- Column A -->
-            <div class="library-category">
-              <h3>Training & Playbooks</h3>
-              <ul class="library-list">
-                <li><a href="assets/BDC_AI_Training_Packet.pdf" target="_blank" rel="noopener">BDC AI Training Packet (PDF)</a></li>
-                <li><a href="assets/BDC_Training_Packet_v2.pdf" target="_blank" rel="noopener">BDC Training Packet v2 (PDF)</a></li>
-                <li><a href="assets/BDC_AI_Call_Script.pdf" target="_blank" rel="noopener">BDC AI Call Script (PDF)</a></li>
-              </ul>
-
-              <h3 class="mt">Smart Response Library</h3>
-              <ul class="library-list">
-                <li><a href="assets/BDC_Smart_Response_Library_Full.pdf" target="_blank" rel="noopener">Smart Response Library — Full (PDF)</a></li>
-                <li><a href="assets/BDC_Smart_Response_Library_v1.pdf" target="_blank" rel="noopener">Smart Response Library — v1 (PDF)</a></li>
-                <li><a href="assets/BDC_Smart_Response_Library_Full.xlsx" target="_blank" rel="noopener">Smart Response Library — Full (Excel)</a></li>
-              </ul>
-            </div>
-
-            <!-- Column B -->
-            <div class="library-category">
-              <h3>Plans & One-Pagers</h3>
-              <ul class="library-list">
-                <li><a href="assets/BDC_Smart_Response_Project_Plan.pdf" target="_blank" rel="noopener">BDC Smart Response — Project Plan (PDF)</a></li>
-                <li><a href="assets/GenAI_Inventory_Integration_OnePager.pdf" target="_blank" rel="noopener">GenAI Inventory Integration — One Pager (PDF)</a></li>
-                <li><a href="assets/GenAI_Inventory_Integration_OnePager_v3.pdf" target="_blank" rel="noopener">GenAI Inventory Integration — One Pager v3 (PDF)</a></li>
-              </ul>
-
-              <h3 class="mt">Executive Summaries & Decks</h3>
-              <ul class="library-list">
-                <li><a href="assets/VINS vs Gen AI Alternative summary.pdf" target="_blank" rel="noopener">Executive Summary — VINS vs Gen AI Alternative (PDF)</a></li>
-                <li><a href="assets/VINS vs Generative AI Alternative Summary PowerPoint.pptx" target="_blank" rel="noopener">VINS vs Gen AI Alternative — Slides (PPTX)</a></li>
-              </ul>
-
-              <h3 class="mt">Data & Logs</h3>
-              <ul class="library-list">
-                <li><a href="assets/desklog_analysis_summary.pdf" target="_blank" rel="noopener">Desk Log Analysis — Summary (PDF)</a></li>
-                <li><a href="assets/DeskLogExport.csv" target="_blank" rel="noopener">Desk Log Export (CSV)</a></li>
-                <li><a href="assets/VIN_Solutions_14Day_FollowUp_Schedule.csv" target="_blank" rel="noopener">VIN Solutions — 14-Day Follow-Up Schedule (CSV)</a></li>
-                <li><a href="assets/Gen AI Sandbox vehicle inventory.csv" target="_blank" rel="noopener">GenAI Sandbox — Vehicle Inventory (CSV)</a></li>
-              </ul>
-            </div>
-          </div>
-        </section>
-      </div><!-- /.content-col -->
-    </div><!-- /.layout -->
-
-    <div class="footer-space"></div>
   </main>
 
 </body>
