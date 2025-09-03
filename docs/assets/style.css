@@ -175,3 +175,54 @@ header, main, .panel, .layout, .brand-box { position: relative; z-index: 1; }
   .card { background:#fff !important; }
   .muted, .subtitle { color:#475569 !important; }
 }
+/* === Quirk AI Voice hero alignment fix ===================== */
+/* Make the hero a tight 2-column grid: logo (fixed) + content (fluid) */
+.grid-hero {
+  display: grid;
+  grid-template-columns: 180px 1fr;  /* logo column + content */
+  column-gap: 24px;                  /* tighten spacing */
+  align-items: center;
+}
+
+/* Ensure the logo hugs the left edge of the container */
+.brand-box { 
+  justify-self: start; 
+  margin: 0; 
+}
+.brand-box a,
+.brand-box img {
+  display: block;
+  width: 180px;          /* adjust as needed (160–200 works well) */
+  height: auto;
+  margin: 0;
+}
+
+/* Remove any extra left padding on the text column */
+.content-col {
+  padding-left: 0 !important;
+  margin-left: 0 !important;
+}
+
+/* Keep the hero’s left edge aligned with the feature cards */
+.container {
+  max-width: 1100px;     /* match your site width */
+  margin: 0 auto;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+/* Tighten hero heading spacing */
+.container h1 {
+  margin-top: 6px;
+}
+
+/* Mobile: stack logo above text, still left-aligned */
+@media (max-width: 720px) {
+  .grid-hero {
+    grid-template-columns: 1fr;
+    row-gap: 12px;
+  }
+  .brand-box { 
+    order: -1; 
+  }
+}
