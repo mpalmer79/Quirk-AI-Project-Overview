@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Quirk AI Project Overview</title>
 
+  <!-- Tell the browser all relative links live under this GitHub Pages project -->
+  <base href="/Quirk-AI-Project-Overview/">
+
   <!-- Site stylesheet -->
   <link rel="stylesheet" href="assets/style.css" />
 
@@ -14,32 +17,29 @@
       text-align: center;
       margin: 32px 0;
     }
-    
     .page-header .logo {
       width: 80px;
       height: 80px;
       margin: 0 auto 16px;
+      display: inline-block;
     }
-    
     .page-title {
       font-size: 2rem;
       font-weight: 600;
       color: #0b6e37;
       margin: 0 0 8px;
     }
-    
+    .page-title a { color: inherit; text-decoration: none; }
     .page-subtitle {
       font-size: 1.1rem;
       color: #666;
       margin: 0;
     }
-    
     .projects-container {
       max-width: 800px;
       margin: 0 auto;
       padding: 0 20px;
     }
-    
     .project-item {
       background: white;
       border: 1px solid #e5e5e5;
@@ -47,73 +47,51 @@
       padding: 24px;
       margin-bottom: 24px;
     }
-    
     .project-name {
       font-size: 1.25rem;
       font-weight: 600;
       color: #111;
       margin: 0 0 16px;
     }
-    
     .project-name a {
       color: #0b6e37 !important;
       text-decoration: none;
       transition: color 0.2s ease;
     }
-    
     .project-name a:hover {
       color: #0b6e37 !important;
       text-decoration: underline;
     }
-    
     .project-name a:visited {
       color: #0b6e37 !important;
     }
-    
     .project-details {
       display: grid;
       gap: 12px;
     }
-    
     .project-detail {
       display: grid;
       grid-template-columns: 140px 1fr;
       gap: 12px;
     }
-    
-    .detail-label {
-      font-weight: 600;
-      color: #111;
-    }
-    
-    .detail-value {
-      color: #333;
-    }
-    
-    .status-near-launch {
-      color: #0b6e37;
-      font-weight: 500;
-    }
-    
-    .status-development {
-      color: #2563eb;
-      font-weight: 500;
-    }
-    
-    .status-planning {
-      color: #7c3aed;
-      font-weight: 500;
-    }
+    .detail-label { font-weight: 600; color: #111; }
+    .detail-value { color: #333; }
+    .status-near-launch { color: #0b6e37; font-weight: 500; }
+    .status-development { color: #2563eb; font-weight: 500; }
+    .status-planning { color: #7c3aed; font-weight: 500; }
   </style>
 </head>
 <body>
 
   <!-- Page Header -->
   <header class="page-header">
-    <div class="logo">
-      <img src="assets/quirk-ai-logo.png" alt="Quirk AI" style="width: 100%; height: 100%; object-fit: contain;" />
-    </div>
-    <h1 class="page-title">Quirk AI Project Overview</h1>
+    <a class="logo" href="./" aria-label="Go to project overview">
+      <img src="assets/quirk-ai-logo.png" alt="Quirk AI"
+           style="width: 100%; height: 100%; object-fit: contain;" />
+    </a>
+    <h1 class="page-title">
+      <a href="./">Quirk AI Project Overview</a>
+    </h1>
     <p class="page-subtitle">Internal Brief: Deployment Status & Cost Efficiency</p>
   </header>
 
@@ -186,7 +164,7 @@
     <!-- Quirk AI Voice (Sales Calls) -->
     <div class="project-item">
       <h2 class="project-name">
-        <a href="quirk-ai-voice.html" target="_blank" rel="noopener">Quirk AI Voice (Sales Calls)</a>
+        <a href="quirk-ai-voice-sales.html" target="_blank" rel="noopener">Quirk AI Voice (Sales Calls)</a>
       </h2>
       <div class="project-details">
         <div class="project-detail">
@@ -203,7 +181,7 @@
     <!-- VIN Solutions Alternative -->
     <div class="project-item">
       <h2 class="project-name">
-        <a href="vin-gen-ai-alternative.html" target="_blank" rel="noopener">VIN Solutions Alternative</a>
+        <a href="vin-solutions-alternative.html" target="_blank" rel="noopener">VIN Solutions Alternative</a>
       </h2>
       <div class="project-details">
         <div class="project-detail">
