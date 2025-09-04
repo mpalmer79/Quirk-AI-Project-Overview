@@ -274,24 +274,23 @@
               <span class="label-close">Collapse</span>
             </summary>
             <div id="salesforce-more" class="q-long">
-              <p>Salesforce CRM is a cloud-based customer relationship management platform that helps businesses manage all aspects of customer interaction across sales, service, marketing, commerce, and more, providing a unified view of the customer on a single integrated platform. It uses AI and analytics to provide actionable insights, automates processes, and offers customizable tools to help companies increase productivity, personalize customer journeys, and ultimately drive growth.</p>
+              <p><strong>Salesforce can be integrated with OpenAI and PBS Systems, but the process and capabilities differ for each.</strong> Integration with OpenAI is a widely supported native and API-driven process, while integrating with PBS Systems, a Dealer Management System (DMS), requires custom development because the two products have competing functionalities.</p>
 
-              <p><strong>What it is:</strong></p>
+              <p><strong>Integration with OpenAI</strong></p>
+              <p>Salesforce and OpenAI can be integrated in a variety of ways to embed AI capabilities directly into CRM workflows.</p>
               <ul>
-                <li>A cloud-based platform for managing customer relationships and streamlining business processes.</li>
-                <li>A suite of connected apps, known as “clouds” (Sales Cloud, Marketing Cloud, Service Cloud, Commerce Cloud), that unify customer data into a single view.</li>
-                <li>A tool to attract prospects, nurture leads, close deals, support customers, and market to them effectively.</li>
+                <li><strong>Native AI features:</strong> Salesforce’s own AI, Einstein, is enhanced by a strategic partnership with OpenAI to provide generative AI features.</li>
+                <li><strong>API integration:</strong> Developers can use Apex to connect Salesforce to OpenAI’s APIs for custom use cases like intelligent lead scoring, automated summaries, and advanced customer service.</li>
+                <li><strong>Third-party connectors:</strong> Platforms like <em>n8n.io</em> and <em>Relay.app</em> offer low-code solutions to connect Salesforce and OpenAI through pre-built templates and workflows.</li>
               </ul>
 
-              <p><strong>Key features and benefits:</strong></p>
+              <p><strong>Integration with PBS Systems DMS</strong></p>
+              <p>Integrating Salesforce with PBS Systems is a more complex undertaking, as PBS is a comprehensive, standalone DMS that also contains its own CRM functions.</p>
               <ul>
-                <li><strong>Centralized Data:</strong> Brings together all customer data into one platform, creating a single source of truth.</li>
-                <li><strong>Sales Automation:</strong> Helps sales teams manage leads, track opportunities, and close deals faster.</li>
-                <li><strong>Marketing Tools:</strong> Provides features for personalized and automated marketing campaigns across various channels.</li>
-                <li><strong>Customer Service:</strong> Tools for managing support tickets, building knowledge bases, and providing live chat.</li>
-                <li><strong>AI-Driven Insights:</strong> Uses AI to deliver actionable insights and support data-driven decisions.</li>
-                <li><strong>Customization:</strong> Customize fields, objects, and workflows to meet specific needs.</li>
-                <li><strong>Increased Productivity:</strong> Collaborate better, automate manual tasks, and focus on higher-value work.</li>
+                <li><strong>Custom API development:</strong> Integration is primarily achieved through custom API development. PBS Systems provides an API toolkit for partners to build integrations with its v10 DMS.</li>
+                <li><strong>No out-of-the-box solution:</strong> Since Salesforce offers its own competing Automotive Cloud, there is no simple, “plug-and-play” connector for PBS Systems on the AppExchange.</li>
+                <li><strong>Specialized consultants:</strong> Dealerships often work with specialized integrators or consulting firms, who use advanced APIs and platforms like MuleSoft to build a bi-directional data sync between the two systems.</li>
+                <li><strong>Data synchronization:</strong> Key to this integration is mapping data fields and building a synchronization strategy to avoid duplicates and ensure consistency for customer, vehicle, and inventory information.</li>
               </ul>
             </div>
           </details>
@@ -307,12 +306,10 @@
             </a>
           </h2>
 
-          <!-- Short blurb to keep height aligned with others -->
           <p class="clamp-2">
             Tekion integrates with OpenAI and partners with PBS Systems; its ARC platform uses Azure OpenAI to streamline communications and customer experience.
           </p>
 
-          <!-- Expandable long description -->
           <details class="q-disclosure">
             <summary class="q-cta q-cta-small" role="button" aria-controls="tekion-more">
               <span class="label-open">Expand</span>
