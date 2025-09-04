@@ -102,13 +102,38 @@
       font-size: .95rem;
     }
 
-    /* --- Creatio logo heading replacement --- */
+    /* --- Creatio logo heading replacement & clamp to keep card height consistent --- */
     .q-logo-heading { margin: 0 0 6px; }
     .q-logo-heading .logo-creatio {
       display: block;
       height: 28px; /* proportional to the 1.25rem H2 size */
       width: auto;
     }
+    .clamp-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;     /* keep initial height consistent with other cards */
+    }
+
+    /* --- Details/summary styled as a link button --- */
+    details.q-more { margin-top: 8px; }
+    details.q-more > summary {
+      list-style: none;
+      cursor: pointer;
+      display: inline-block;
+      font-weight: 700;
+      color: var(--quirk-green);
+      border: 1px solid rgba(11,110,55,.22);
+      border-radius: 999px;
+      padding: 8px 12px;
+      user-select: none;
+    }
+    details.q-more > summary::-webkit-details-marker { display: none; }
+    details.q-more[open] > summary { margin-bottom: 10px; }
+    .q-more .q-long p,
+    .q-more .q-long li { color: var(--quirk-ink); }
+    .q-more .q-long ul { margin: 6px 0 0 18px; }
     @media (max-width: 640px){
       .q-logo-heading .logo-creatio { height: 24px; }
     }
@@ -144,6 +169,7 @@
 
     <!-- Other Alternatives -->
     <section class="q-grid" style="margin-top:22px" aria-label="Other options">
+      <!-- Creatio -->
       <div class="q-col-6">
         <article class="q-card">
           <h2 class="q-logo-heading">
@@ -151,7 +177,34 @@
               <img class="logo-creatio" src="assets/logo_creatio.svg" alt="Creatio">
             </a>
           </h2>
-          <p>No/low-code CRM with robust process automation and customization. Good for multi-store workflows that need flexibility.</p>
+
+          <!-- Short blurb (clamped to keep initial card height consistent) -->
+          <p class="clamp-2">
+            Creatio Copilot centralizes generative AI use cases across the Creatio platform with no-code setup and embedded AI in Sales, Marketing, and Service.
+          </p>
+
+          <!-- Expandable long description -->
+          <details class="q-more">
+            <summary>Open for more</summary>
+            <div class="q-long">
+              <p><strong>Creatio Copilot:</strong> A centralized hub within the Creatio platform for configuring, deploying, and managing generative AI use cases. It works as a virtual assistant across all Creatio products, helping users with tasks like:</p>
+              <ul>
+                <li>Summarizing sales opportunities and dashboards.</li>
+                <li>Generating personalized content for emails and marketing campaigns.</li>
+                <li>Providing real-time assistance and suggestions for resolving service cases.</li>
+              </ul>
+              <p><strong>AI agents and skills:</strong> Creatio supports various AI agents and skills that automate tasks using OpenAI and other models. Users can create custom AI skills with no-code tools and natural language commands.</p>
+              <p><strong>Embedded AI for CRM:</strong> The integration powers AI functionality directly within Creatio's CRM suite, including:</p>
+              <ul>
+                <li><em>Sales:</em> Summarizing leads and opportunities, generating communication templates, and scoring leads.</li>
+                <li><em>Marketing:</em> Assisting with audience segmentation, campaign flow design, and content generation.</li>
+                <li><em>Service:</em> Providing real-time assistance for case resolution, summarizing sentiment, and helping with knowledge management.</li>
+              </ul>
+              <p><strong>AI-assisted app development:</strong> Creatio's no-code platform allows users to leverage generative AI to create applications from a simple description. The AI pre-populates templates for views, data models, and business rules, accelerating development.</p>
+              <p><strong>Marketplace connectors:</strong> While AI is natively integrated, Creatio also offers specific connectors for OpenAI, including a ChatGPT Connector on its Marketplace that allows for AI-driven content generation.</p>
+              <p><strong>Privacy and security:</strong> Creatio emphasizes robust security, using technologies like Azure OpenAI services to ensure that customer data remains private and is not used to train AI models.</p>
+            </div>
+          </details>
         </article>
       </div>
 
