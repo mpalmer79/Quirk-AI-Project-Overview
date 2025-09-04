@@ -144,16 +144,11 @@
 </head>
 <body>
 
-  <!-- Top green bar (same style as trade tool) -->
+  <!-- Top green bar -->
   <header class="topbar" role="banner">
     <div class="topbar-inner">
-      <!-- LEFT: HOME link -->
       <a class="home-link" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
-
-      <!-- CENTER: Page title -->
       <div class="topbar-title">VIN Solutions Alternative</div>
-
-      <!-- RIGHT: empty (links removed by request) -->
       <nav class="topbar-menu" aria-label="Page links"></nav>
     </div>
   </header>
@@ -206,28 +201,43 @@
               <span class="label-close">Collapse</span>
             </summary>
             <div id="creatio-more" class="q-long">
-              <p><strong>Creatio Copilot:</strong> A centralized hub within the Creatio platform for configuring, deploying, and managing generative AI use cases. It works as a virtual assistant across all Creatio products, helping users with tasks like:</p>
+              <p><strong>Creatio integrates with OpenAI, but there is no direct, native integration between Creatio and PBS Dealer Systems.</strong> Integration with PBS would require using Creatio's flexible API and a third-party connector or custom development.</p>
+
+              <p><strong>Creatio and OpenAI integration</strong></p>
+              <p>Creatio features a built-in AI copilot that uses OpenAI's large language models (LLMs). It can also connect to other services. This integration is available out-of-the-box and offers these features:</p>
               <ul>
-                <li>Summarizing sales opportunities and dashboards.</li>
-                <li>Generating personalized content for emails and marketing campaigns.</li>
-                <li>Providing real-time assistance and suggestions for resolving service cases.</li>
+                <li><strong>Built-in capabilities:</strong> Creatio Copilot is LLM-agnostic. It supports OpenAI's GPT models, as well as Anthropic Claude and Google Gemini, to assist users. A ChatGPT connector is also available through the Creatio Marketplace.</li>
+                <li><strong>Use cases:</strong> The AI assists with text generation for emails, chats, and social posts. It can also act as a virtual assistant by referencing knowledge base articles to suggest solutions for customer service cases.</li>
+                <li><strong>Developer tools:</strong> For no-code developers, Creatio Copilot can assist with the app-development process, such as generating app templates based on a description.</li>
+                <li><strong>Custom AI skills:</strong> Custom AI skills can be created to perform more complex, multi-step tasks with a single prompt.</li>
               </ul>
-              <p><strong>AI agents and skills:</strong> Creatio supports various AI agents and skills that automate tasks using OpenAI and other models. Users can create custom AI skills with no-code tools and natural language commands.</p>
-              <p><strong>Embedded AI for CRM:</strong> The integration powers AI functionality directly within Creatio's CRM suite, including:</p>
+
+              <p><strong>Creatio and PBS Dealer Systems integration</strong></p>
+              <p>While there is no pre-built connector, integrating Creatio with a specific Dealer Management System (DMS) like PBS is possible using several methods.</p>
               <ul>
-                <li><em>Sales:</em> Summarizing leads and opportunities, generating communication templates, and scoring leads.</li>
-                <li><em>Marketing:</em> Assisting with audience segmentation, campaign flow design, and content generation.</li>
-                <li><em>Service:</em> Providing real-time assistance for case resolution, summarizing sentiment, and helping with knowledge management.</li>
+                <li><strong>Open API:</strong> Creatio offers REST API support and OData protocol, allowing custom integrations with third-party systems.</li>
+                <li><strong>Integration Platform as a Service (iPaaS):</strong> Partners like Cyclr and Tray.io can enable connections with a wider range of applications.</li>
+                <li><strong>Custom connectors:</strong> Businesses can develop their own connectors using Creatio's open platform to exchange data with PBS Systems.</li>
+                <li><strong>Integration partners:</strong> Specialized partners may build a custom solution for specific needs.</li>
               </ul>
-              <p><strong>AI-assisted app development:</strong> Creatio's no-code platform allows users to leverage generative AI to create applications from a simple description. The AI pre-populates templates for views, data models, and business rules, accelerating development.</p>
-              <p><strong>Marketplace connectors:</strong> While AI is natively integrated, Creatio also offers specific connectors for OpenAI, including a ChatGPT Connector on its Marketplace that allows for AI-driven content generation.</p>
-              <p><strong>Privacy and security:</strong> Creatio emphasizes robust security, using technologies like Azure OpenAI services to ensure that customer data remains private and is not used to train AI models.</p>
+
+              <p><strong>Integrating the three systems</strong></p>
+              <p>The most effective way to combine all three systems is to use Creatio as the central hub:</p>
+              <ul>
+                <li><strong>Data exchange:</strong> Implement a custom integration between Creatio and PBS Dealer Systems to sync dealership data (such as sales, customer, and vehicle information) into Creatio.</li>
+                <li><strong>AI-powered processes:</strong> Use Creatio's native OpenAI integration to analyze, augment, and automate business processes using that dealership data. For example:
+                  <ul>
+                    <li>Use AI to generate personalized follow-up emails for new sales leads based on data imported from PBS.</li>
+                    <li>Leverage AI to create summaries of customer service chats to log in Creatio, referencing case information from the PBS integration.</li>
+                  </ul>
+                </li>
+              </ul>
             </div>
           </details>
         </article>
       </div>
 
-      <!-- Fullpath (summary updated earlier) -->
+      <!-- Fullpath -->
       <div class="q-col-6">
         <article class="q-card">
           <h2 class="q-logo-heading">
