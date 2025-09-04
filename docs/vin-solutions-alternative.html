@@ -108,7 +108,8 @@
     .q-logo-heading .logo-creatio,
     .q-logo-heading .logo-fullpath,
     .q-logo-heading .logo-salesforce,
-    .q-logo-heading .logo-tekion {
+    .q-logo-heading .logo-tekion,
+    .q-logo-heading .logo-hubspot {
       display: block;
       height: 28px;
       width: auto;
@@ -117,7 +118,8 @@
       .q-logo-heading .logo-creatio,
       .q-logo-heading .logo-fullpath,
       .q-logo-heading .logo-salesforce,
-      .q-logo-heading .logo-tekion { height: 24px; }
+      .q-logo-heading .logo-tekion,
+      .q-logo-heading .logo-hubspot { height: 24px; }
     }
 
     /* Keep initial card height consistent with a 2-line teaser */
@@ -369,6 +371,58 @@
                 <li><strong>API Partner:</strong> In March 2025, Hammer announced new API integrations with both Tekion and PBS Systems.</li>
                 <li><strong>Data Sharing:</strong> Partnership improves data flow and lead handling for dealerships using both platforms.</li>
                 <li><strong>Open Platform:</strong> Tekion’s Automotive Partner Cloud (APC) allows third-party vendors and partners to build direct integrations.</li>
+              </ul>
+            </div>
+          </details>
+        </article>
+      </div>
+
+      <!-- HubSpot (NEW) -->
+      <div class="q-col-6">
+        <article class="q-card">
+          <h2 class="q-logo-heading">
+            <a href="https://www.hubspot.com/products/crm/ai-crm?hubs_content=www.hubspot.com/&hubs_content-cta=nav-software-smartcrm"
+               target="_blank" rel="noopener">
+              <img class="logo-hubspot" src="assets/logo_hubspot.jpg" alt="HubSpot">
+            </a>
+          </h2>
+
+          <p class="clamp-2">
+            HubSpot CRM integrates directly with OpenAI for AI-powered automations. It has no native PBS Systems connector; connect via an iPaaS or custom API.
+          </p>
+
+          <details class="q-disclosure">
+            <summary class="q-cta q-cta-small" role="button" aria-controls="hubspot-more">
+              <span class="label-open">Expand</span>
+              <span class="label-close">Collapse</span>
+            </summary>
+            <div id="hubspot-more" class="q-long">
+              <p><strong>HubSpot CRM offers a direct integration with OpenAI, allowing for various AI-powered automations.</strong>
+                 However, it does not have a native, out-of-the-box integration with PBS Dealer Systems. You can connect to PBS using a third-party integration platform or HubSpot's custom API tools.</p>
+
+              <p><strong>HubSpot and OpenAI integration</strong></p>
+              <p>The direct integration between HubSpot and OpenAI enables you to use AI to automate and enhance customer relationship tasks and research.</p>
+              <p><em>How the integration works:</em></p>
+              <ul>
+                <li><strong>Workflow automation:</strong> Use OpenAI-powered actions within HubSpot workflows to summarize records, personalize emails, and generate tasks.</li>
+                <li><strong>Deep research connector:</strong> With a paid OpenAI subscription, a connector lets you query your CRM data in natural language within ChatGPT for instant insights.</li>
+                <li><strong>Content generation:</strong> Generate email drafts, social posts, and more using OpenAI’s language models directly inside HubSpot.</li>
+              </ul>
+
+              <p><strong>HubSpot and PBS Dealer Systems integration</strong></p>
+              <p>There’s no pre-built PBS app in HubSpot’s marketplace. To integrate HubSpot with PBS you have two primary options:</p>
+              <p><em>Option 1: Use a third-party integration platform</em></p>
+              <ul>
+                <li>Use platforms like Zapier, n8n, or APIcenter as the connector between HubSpot and PBS.</li>
+                <li><strong>How it works:</strong> These iPaaS tools connect apps that don’t natively integrate. Build automated workflows to sync data between HubSpot and the PBS DMS.</li>
+                <li><strong>Functionality:</strong> Automate syncing of customer data, sales orders, and inventory information.</li>
+              </ul>
+
+              <p><em>Option 2: Build a custom integration</em></p>
+              <ul>
+                <li>Work with a HubSpot Integration Partner or in-house devs.</li>
+                <li><strong>How it works:</strong> Use HubSpot’s open APIs to build a direct, custom integration to PBS.</li>
+                <li><strong>Functionality:</strong> Enables two-way sync for a seamless flow of data between marketing, sales, and dealership operations.</li>
               </ul>
             </div>
           </details>
