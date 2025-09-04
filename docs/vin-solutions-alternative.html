@@ -140,6 +140,17 @@
     @media (max-width: 640px){
       .q-logo-heading .logo-salesforce { height: 30px; }
     }
+
+    /* Make right-side Project Library link match the centered title */
+    .topbar-menu .lib-link {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: clamp(16px, 1.8vw, 20px);
+      line-height: 1;
+    }
+    .topbar-menu .lib-link:hover,
+    .topbar-menu .lib-link:focus { text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -149,7 +160,9 @@
     <div class="topbar-inner">
       <a class="home-link" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
       <div class="topbar-title">VIN Solutions Alternative</div>
-      <nav class="topbar-menu" aria-label="Page links"></nav>
+      <nav class="topbar-menu" aria-label="Page links">
+        <a class="lib-link" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/project-library.html">Project Library</a>
+      </nav>
     </div>
   </header>
 
@@ -174,8 +187,7 @@
             <li><strong>&lt;5 min</strong> response time with <strong>95%+</strong> follow-up compliance.</li>
             <li>~<strong>30%</strong> fewer manual tasks so BDC focuses on high-value calls.</li>
           </ul>
-          <span class="q-kicker">Best for: dealerships prioritizing speed to lead and appointment setting.</span><br />
-          <a class="q-cta" href="docs/vin-gen-ai-alternative.html">See how it works</a>
+          <span class="q-kicker">Best for: dealerships prioritizing speed to lead and appointment setting.</span>
         </article>
       </div>
     </section>
