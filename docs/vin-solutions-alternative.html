@@ -91,6 +91,7 @@
       background: #fff;
     }
     .q-cta:hover { transform: translateY(-1px); text-decoration: none; }
+    .q-cta-small { padding: 8px 12px; font-size: 0.95rem; }
 
     .q-note {
       margin-top: 24px;
@@ -102,7 +103,7 @@
       font-size: .95rem;
     }
 
-    /* --- Creatio logo heading replacement & clamp to keep card height consistent --- */
+    /* --- Creatio logo heading + clamped teaser to keep card height consistent --- */
     .q-logo-heading { margin: 0 0 6px; }
     .q-logo-heading .logo-creatio {
       display: block;
@@ -116,30 +117,12 @@
       overflow: hidden;     /* keeps initial height consistent with other cards */
     }
 
-    /* --- Expand control styled like a button, with Open/Close labels --- */
-    details.q-more { margin-top: 8px; }
-    details.q-more > summary {
-      list-style: none;
-      cursor: pointer;
-      display: inline-block;
-      font-weight: 700;
-      color: var(--quirk-green);
-      border: 1px solid rgba(11,110,55,.22);
-      border-radius: 999px;
-      padding: 8px 12px;
-      user-select: none;
-    }
-    details.q-more > summary::-webkit-details-marker { display: none; }
-    details.q-more[open] > summary { margin-bottom: 10px; }
-    /* Toggle label text without JS */
-    .label-open { display: inline; }
-    .label-close { display: none; }
-    details[open] .label-open { display: none; }
-    details[open] .label-close { display: inline; }
-
-    .q-more .q-long p,
-    .q-more .q-long li { color: var(--quirk-ink); }
-    .q-more .q-long ul { margin: 6px 0 0 18px; }
+    /* --- Disclosure control: Expand/Collapse label swap (desktop + mobile) --- */
+    details.q-disclosure summary::-webkit-details-marker { display: none; }
+    details.q-disclosure summary { list-style: none; cursor: pointer; }
+    .q-disclosure .label-close { display: none; }
+    .q-disclosure[open] .label-open { display: none; }
+    .q-disclosure[open] .label-close { display: inline; }
 
     @media (max-width: 640px){
       .q-logo-heading .logo-creatio { height: 24px; }
@@ -191,12 +174,12 @@
           </p>
 
           <!-- Expandable long description -->
-          <details class="q-more">
-            <summary>
-              <span class="label-open">Open for more</span>
-              <span class="label-close">Close</span>
+          <details class="q-disclosure">
+            <summary class="q-cta q-cta-small" role="button" aria-controls="creatio-more">
+              <span class="label-open">Expand</span>
+              <span class="label-close">Collapse</span>
             </summary>
-            <div class="q-long">
+            <div id="creatio-more" class="q-long">
               <p><strong>Creatio Copilot:</strong> A centralized hub within the Creatio platform for configuring, deploying, and managing generative AI use cases. It works as a virtual assistant across all Creatio products, helping users with tasks like:</p>
               <ul>
                 <li>Summarizing sales opportunities and dashboards.</li>
