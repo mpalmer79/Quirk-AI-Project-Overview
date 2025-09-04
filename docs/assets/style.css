@@ -382,3 +382,11 @@ footer.footer { flex-shrink: 0; }
     height: 24px;
   }
 }
+/* Swap the summary label text when the details is open */
+.q-disclosure .label-close { display: none; }
+.q-disclosure[open] .label-open { display: none; }
+.q-disclosure[open] .label-close { display: inline; }
+
+/* (optional polish) hide default marker and make summary look like a button */
+.q-disclosure summary::-webkit-details-marker { display: none; }
+.q-disclosure summary { list-style: none; cursor: pointer; }
