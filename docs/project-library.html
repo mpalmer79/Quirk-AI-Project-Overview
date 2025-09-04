@@ -1,90 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Project Library — Quirk AI</title>
+  <meta name="description" content="Quirk AI Project Library: playbooks, scripts, response libraries, inventory one-pagers, follow-up schedules, and KPI snapshots for BDC teams." />
 
-<section class="q-grid" aria-label="Project Library">
-  <!-- Playbook: Quirk GenAI Overlay -->
-  <div class="q-col-6">
-    <article class="q-card">
-      <h2>Quirk GenAI Overlay</h2>
-      <p class="clamp-2">How AI composes replies, injects inventory/incentives, and lifts appointments.</p>
-      <details class="q-disclosure">
-        <summary class="q-cta q-cta-small">
-          <span class="label-open">Expand</span><span class="label-close">Collapse</span>
-        </summary>
-        <div class="q-long">
-          <ul class="q-bullets">
-            <li><strong>+15–20%</strong> appt conversion; <strong>&lt;5 min</strong> first response; <strong>95%+</strong> compliance.</li>
-            <li>Links live inventory & OEM offers right in messages.</li>
-          </ul>
-          <p><a class="q-cta q-cta-small" href="docs/vin-gen-ai-alternative.html">Open overview</a></p>
-        </div>
-      </details>
-    </article>
-  </div>
+  <!-- Keep URLs resolving under the project site -->
+  <base href="/Quirk-AI-Project-Overview/">
 
-  <!-- Scripts & Training -->
-  <div class="q-col-6">
-    <article class="q-card">
-      <h2>BDC AI Call Script</h2>
-      <p class="clamp-2">Appointment-first phone framework with objection handling.</p>
-      <details class="q-disclosure">
-        <summary class="q-cta q-cta-small">
-          <span class="label-open">Expand</span><span class="label-close">Collapse</span>
-        </summary>
-        <div class="q-long">
-          <p><a class="q-cta q-cta-small" href="assets/BDC_AI_Call_Script.pdf">Download PDF</a></p>
-          <p><a class="q-cta q-cta-small" href="assets/BDC_Training_Packet_v2.pdf">Training Packet v2</a></p>
-        </div>
-      </details>
-    </article>
-  </div>
+  <link rel="stylesheet" href="assets/style.css" />
+  <style>
+    /* ===== Page-scoped polish matching your other docs ===== */
+    .q-wrap { max-width: 1080px; margin: 0 auto; padding: 24px 20px 64px; }
+    .q-hero {
+      border-radius: 16px; padding: 28px 20px; margin: 18px 0 24px;
+      border: 1px solid #e5e7eb;
+      background: linear-gradient(0deg, rgba(11,110,55,0.06), rgba(11,110,55,0.06)), #fff;
+      text-align: center;
+    }
+    .q-hero h1 { margin: 0 0 8px; font-size: clamp(1.6rem, 2.4vw, 2.1rem); font-weight: 800; color: #0f172a; }
+    .q-hero p { margin: 0; color: #475569; }
 
-  <!-- Response Library -->
-  <div class="q-col-6">
-    <article class="q-card">
-      <h2>Smart Response Library</h2>
-      <p class="clamp-2">Ready-to-use email/SMS replies for common BDC scenarios.</p>
-      <details class="q-disclosure">
-        <summary class="q-cta q-cta-small">
-          <span class="label-open">Expand</span><span class="label-close">Collapse</span>
-        </summary>
-        <div class="q-long">
-          <p><a class="q-cta q-cta-small" href="assets/BDC_Smart_Response_Library_Full.pdf">Open Full Library (PDF)</a></p>
-          <p class="muted">v1 kept as archive: <a href="assets/BDC_Smart_Response_Library_v1.pdf">view</a></p>
-        </div>
-      </details>
-    </article>
-  </div>
+    .q-grid { display: grid; gap: 20px; grid-template-columns: repeat(12, 1fr); }
+    .q-col-6 { grid-column: span 6; }
+    @media (max-width: 900px){ .q-col-6 { grid-column: span 12; } }
 
-  <!-- Inventory & Incentives -->
-  <div class="q-col-6">
-    <article class="q-card">
-      <h2>Inventory Integration One-Pager</h2>
-      <p class="clamp-2">How to personalize replies with real-time inventory & OEM offers.</p>
-      <details class="q-disclosure">
-        <summary class="q-cta q-cta-small">
-          <span class="label-open">Expand</span><span class="label-close">Collapse</span>
-        </summary>
-        <div class="q-long">
-          <p><a class="q-cta q-cta-small" href="assets/GenAI_Inventory_Integration_OnePager_v3.pdf">Open One-Pager</a></p>
-          <p><a class="q-cta q-cta-small" href="assets/VINS%20vs%20Gen%20AI%20Alternative%20summary.pdf">VINS vs GenAI Summary</a></p>
-        </div>
-      </details>
-    </article>
-  </div>
+    .q-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 14px; padding: 18px; box-shadow: 0 6px 16px rgba(2,6,23,.06); }
+    .q-card h2 { margin: 0 0 6px; font-size: 1.25rem; color: #0b6e37; font-weight: 800; }
+    .q-bullets { margin: 10px 0 0 18px; color: #0f172a; }
+    .clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
-  <!-- Follow-up & KPIs -->
-  <div class="q-col-6">
-    <article class="q-card">
-      <h2>Follow-up & KPIs</h2>
-      <p class="clamp-2">14-day cadence + scorecard to measure what matters.</p>
-      <details class="q-disclosure">
-        <summary class="q-cta q-cta-small">
-          <span class="label-open">Expand</span><span class="label-close">Collapse</span>
-        </summary>
-        <div class="q-long">
-          <p><span class="muted">Tip: convert the CSV to PDF for clean viewing on GH Pages.</span></p>
-          <p><a class="q-cta q-cta-small" href="assets/desklog_analysis_summary.pdf">Desklog Analysis Summary</a></p>
-        </div>
-      </details>
-    </article>
-  </div>
-</section>
+    /* Expand / Collapse */
+    details.q-disclosure summary::-webkit-details-marker { display: none; }
+    details.q-disclosure summary { list-style: none; cursor: pointer; }
+    .q-cta { display:inline-block; margin-top:12px; padding:10px 14px; border-radius:999px; border:1px solid rgba(11,110,55,.22); color:#0b6e37; text-decoration:none; font-weight:700; background:#fff; }
+    .q-cta:hover { text-decoration:none; transform: translateY(-1px); }
+    .q-cta-small { padding:8px 12px; font-size:.95rem; }
+    .q-disclosure .label-close { display:none; }
+    .q-disclosure[open] .label-open { display:none; }
+    .q-disclosure[open] .label-close { display:inline; }
+
+    .q-note { margin-top: 24px; padding: 16px; border: 1px dashed #e5e7eb; border-radius: 12px; background:#fafafa; color:#475569; }
+    .q-note h3 { margin: 0 0 8px; color:#0f172a; font-size:1.05rem; }
+  </style>
+</head>
+<body>
+  <!-- Top green bar (HOME left, centered title, no right links) -->
+  <header class="topbar" role="banner">
+    <div class="topbar-inner">
+      <a class="home-link" href="./">HOME</a>
+      <div class="topbar-title">Project Library</div>
+      <nav class="topbar-menu" aria-label="Secondary Navigation"><!-- intentionally empty --></nav>
+    </div>
+  </header>
+
+  <main class="q-wrap">
+    <section class="q-hero">
+      <h1>Project Library</h1>
+      <p>Playbooks, scripts, templates, and one-pagers to help your BDC move faster and book more appointments.</p>
+    </section>
+
+    <!-- Library cards -->
+    <section class="q-grid" aria-label="Library">
+      <!-- Quirk GenAI Overlay -->
+      <div class="q-col-6">
+        <article class="q-card">
+          <h2>Quirk GenAI Overlay</h2>
+          <p class="clamp-2">How AI composes replies, injects live inventory & incentives, and lifts appointment conversion.</p>
+          <details class="q-disclosure">
+            <summary class="q-cta q-cta-small"><span class="label-open">Expand</span><span class="label-close">Collapse</span></summary>
+            <div class="q-long">
+              <ul class="q-bullets">
+                <li><strong>+15–20%</strong> appointment conversion, <strong>&lt;5 min</strong> first response, <strong>95%+</strong> follow-up compliance.</li>
+                <li>Works alongside your CRM; messages stay personalized and fast.</li>
+              </ul>
+              <p><a class="q-cta q-cta-small" href="docs/vin-gen-ai-alternative.html">Open overview</a></p>
+            </div>
+          </details>
+        </article>
+      </div>
+
+      <!-- VIN Solutions Alternatives -->
+      <div class="q-col-6">
+        <article class="q-card">
+          <h2>VIN Solutions Alternatives</h2>
+          <p class="clamp-2">Creatio, Fullpath, Salesforce, and Tekion compared through an appointment-first lens.</p>
+          <details class="q-disclosure">
+            <summary class="q-cta q-cta-small"><span class="label-open">Expand</span><span class="label-close">Collapse</span></summary>
+            <div class="q-long">
+              <p><a class="q-cta q-cta-small" href="docs/vin-solutions-alternative.html">Open comparison</a></p>
+            </div>
+          </details>
+        </article>
+      </div>
+
+      <!-- Scripts & Training -->
+      <div class="q-col-6">
+        <article class="q-card">
+          <h2>Scripts & Training</h2>
+          <p class="clamp-2">Appointment-first call flows, AI usage, and onboarding resources for the team.</p>
+          <details class="q-disclosure">
+            <summary class="q-cta q-cta-small"><span class="label-open">Expand</span><span class="label-close">Collapse</span></summary>
+            <div class="q-long">
+              <p><a class="q-cta q-cta-small" href="assets/BDC_AI_Call_Script.pdf">BDC AI Call Script (PDF)</a></p>
+              <p><a class="q-cta q-cta-small" href="assets/BDC_Training_Packet_v2.pdf">BDC Training Packet v2</a></p>
+              <p><a class="q-cta q-cta-small" href="assets/BDC_AI_Training_Packet.pdf">BDC AI Training Packet</a></p>
+            </div>
+          </details>
+        </article>
+      </div>
+
+      <!-- Smart Response Library -->
+      <div class="q-col-6">
+        <article class="q-card">
+          <h2>Smart Response Library</h2>
+          <p class="clamp-2">Ready-to-use email/SMS replies for new leads, price, credit, appointment setting, and more.</p>
+          <details class="q-disclosure">
+            <summary class="q-cta q-cta-small"><span class="label-open">Expand</span><span class="label-close">Collapse</span></summary>
+            <div class="q-long">
+              <p><a class="q-cta q-cta-small" href="assets/BDC_Smart_Response_Library_Full.pdf">Open Full Library (PDF)</a></p>
+              <p class="muted">Archive: <a href="assets/BDC_Smart_Response_Library_v1.pdf">v1</a></p>
+            </div>
+          </details>
+        </article>
+      </div>
+
+      <!-- Inventory & Incentives -->
+      <div class="q-col-6">
+        <article class="q-card">
+          <h2>Inventory & Incentives</h2>
+          <p class="clamp-2">Personalize messages with real-time inventory + OEM offers to lift conversion.</p>
+          <details class="q-disclosure">
+            <summary class="q-cta q-cta-small"><span class="label-open">Expand</span><span class="label-close">Collapse</span></summary>
+            <div class="q-long">
+              <p><a class="q-cta q-cta-small" href="assets/GenAI_Inventory_Integration_OnePager_v3.pdf">Integration One-Pager</a></p>
+              <p><a class="q-cta q-cta-small" href="assets/VINS%20vs%20Gen%20AI%20Alternative%20summary.pdf">VINS vs GenAI Summary (PDF)</a></p>
+            </div>
+          </details>
+        </article>
+      </div>
+
+      <!-- Follow-up & KPIs -->
+      <div class="q-col-6">
+        <article class="q-card">
+          <h2>Follow-up & KPIs</h2>
+          <p class="clamp-2">14-day cadence template and a simple BDC scorecard to keep the team aligned.</p>
+          <details class="q-disclosure">
+            <summary class="q-cta q-cta-small"><span class="label-open">Expand</span><span class="label-close">Collapse</span></summary>
+            <div class="q-long">
+              <p class="muted">Tip: convert your CSV cadence to a PDF or Google Sheet for clean viewing.</p>
+              <p><a class="q-cta q-cta-small" href="assets/desklog_analysis_summary.pdf">Desklog Analysis Summary</a></p>
+            </div>
+          </details>
+        </article>
+      </div>
+    </section>
+
+    <!-- Tracking + why it matters -->
+    <section class="q-note" aria-label="Tracking">
+      <h3>Tracking + why it matters</h3>
+      <ul class="q-bullets">
+        <li><strong>Show freshness:</strong> add a short “Last updated” line to each card so reps trust what they’re using.</li>
+        <li><strong>Measure clicks:</strong> add simple UTM tags (e.g., <code>?utm_source=library&utm_medium=card&utm_campaign=training</code>) to see what gets used.</li>
+        <li><strong>Onboard fast:</strong> pin a “Start here” flow at the top: GenAI Overview → Training Packet → Call Script → Response Library → 14-day cadence.</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>
