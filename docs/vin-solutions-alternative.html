@@ -101,6 +101,17 @@
       background: #fafafa;
       font-size: .95rem;
     }
+
+    /* --- Creatio logo heading replacement --- */
+    .q-logo-heading { margin: 0 0 6px; }
+    .q-logo-heading .logo-creatio {
+      display: block;
+      height: 28px; /* proportional to the 1.25rem H2 size */
+      width: auto;
+    }
+    @media (max-width: 640px){
+      .q-logo-heading .logo-creatio { height: 24px; }
+    }
   </style>
 </head>
 <body>
@@ -135,22 +146,29 @@
     <section class="q-grid" style="margin-top:22px" aria-label="Other options">
       <div class="q-col-6">
         <article class="q-card">
-          <h2>Creatio</h2>
+          <h2 class="q-logo-heading">
+            <a href="https://www.creatio.com/" target="_blank" rel="noopener">
+              <img class="logo-creatio" src="assets/logo_creatio.svg" alt="Creatio">
+            </a>
+          </h2>
           <p>No/low-code CRM with robust process automation and customization. Good for multi-store workflows that need flexibility.</p>
         </article>
       </div>
+
       <div class="q-col-6">
         <article class="q-card">
           <h2>HubSpot CRM</h2>
           <p>Simple UI, strong marketing automation. Fast adoption for smaller BDC teams; add playbooks and sequences as you scale.</p>
         </article>
       </div>
+
       <div class="q-col-6">
         <article class="q-card">
           <h2>Zoho CRM</h2>
           <p>Cost-effective and customizable; strong reporting. Requires tuning for auto-retail tasks and VIN-centric workflows.</p>
         </article>
       </div>
+
       <div class="q-col-6">
         <article class="q-card">
           <h2>DealerSocket</h2>
