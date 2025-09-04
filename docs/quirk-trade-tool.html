@@ -66,12 +66,14 @@
       text-decoration: underline;
     }
 
-    /* Make the right-side "Project Library" match the centered title */
+    /* ===== Make right "Project Library" exactly match center title size ===== */
+    /* Center title size lives in global .topbar-title (clamp(16px, 1.8vw, 20px)) */
+    .topbar-menu { font-size: clamp(16px, 1.8vw, 20px); }   /* new */
     .topbar-title-link {
       color: #fff;
       text-decoration: none;
       font-weight: 600;
-      font-size: clamp(16px, 1.8vw, 20px);
+      font-size: inherit;                                   /* changed to inherit */
       line-height: 1;
     }
     .topbar-title-link:hover,
