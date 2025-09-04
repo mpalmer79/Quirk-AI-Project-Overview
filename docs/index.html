@@ -14,195 +14,270 @@
   <!-- Site stylesheet -->
   <link rel="stylesheet" href="assets/style.css" />
 
+  <!-- Page-scoped polish only for the home page -->
   <style>
-    /* Project Overview Page Specific Styles */
-    .page-header {
-      text-align: center;
-      margin: 32px 0;
+    /* ===== Topbar (reuse global styles) ===== */
+    .topbar-title { letter-spacing: .2px; }
+
+    /* ===== Hero ===== */
+    .hero {
+      margin: 18px auto 12px;
     }
-    .page-header .logo {
-      width: 80px;
-      height: 80px;
-      margin: 0 auto 16px;
-      display: inline-block;
+    .hero .container {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 20px;
+      align-items: center;
     }
-    .page-title {
-      font-size: 2rem;
-      font-weight: 600;
-      color: #0b6e37;
-      margin: 0 0 8px;
+    .hero-logo-box {
+      border: 1px solid #e5e7eb;
+      background: #fff;
+      border-radius: 14px;
+      padding: 12px;
+      display: grid;
+      place-items: center;
     }
-    .page-title a { color: inherit; text-decoration: none; }
-    .page-subtitle {
-      font-size: 1.1rem;
-      color: #666;
+    .hero-logo-box img { width: 120px; height: auto; object-fit: contain; }
+
+    .hero h1 {
+      margin: 2px 0 6px;
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      line-height: 1.2;
+      color: #0f172a;
+      font-weight: 800;
+    }
+    .hero p {
       margin: 0;
+      color: #475569;
+      font-size: 1.05rem;
     }
-    .projects-container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 0 20px;
+    .hero-actions {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
     }
+
+    /* ===== Buttons (page-scoped) ===== */
+    .btn {
+      display: inline-block;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-weight: 700;
+      text-decoration: none;
+      line-height: 1;
+      border: 1px solid rgba(11,110,55,.22);
+      transition: transform .06s ease, box-shadow .12s ease;
+      white-space: nowrap;
+      background: #fff;
+      color: #0b6e37;
+    }
+    .btn:hover { transform: translateY(-1px); text-decoration: none; }
+    .btn-primary {
+      background: #0b6e37;
+      color: #fff;
+      border-color: #0b6e37;
+    }
+    .btn-soft {
+      background: rgba(11,110,55,.08);
+      color: #0b6e37;
+    }
+
+    /* ===== Project grid ===== */
+    .projects-wrap { max-width: 1100px; margin: 10px auto 36px; padding: 0 16px; }
+    .projects-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    @media (min-width: 980px) { .projects-grid { grid-template-columns: 1fr 1fr; } }
+
     .project-item {
-      background: white;
-      border: 1px solid #e5e5e5;
-      border-radius: 8px;
-      padding: 24px;
-      margin-bottom: 24px;
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 18px;
+      box-shadow: 0 6px 16px rgba(2,6,23,.06);
     }
     .project-name {
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: #111;
-      margin: 0 0 16px;
+      margin: 0 0 6px;
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #0f172a;
     }
-    .project-name a {
-      color: #0b6e37 !important;
-      text-decoration: none;
-      transition: color 0.2s ease;
+    .project-lead {
+      color: #475569;
+      margin: 0 0 10px;
+      font-size: .98rem;
     }
-    .project-name a:hover {
-      color: #0b6e37 !important;
-      text-decoration: underline;
+
+    .project-details { display: grid; gap: 8px; }
+    .project-detail { display: grid; grid-template-columns: 140px 1fr; gap: 10px; }
+    .detail-label { font-weight: 600; color: #0f172a; }
+    .detail-value { color: #111; }
+
+    /* Status badges */
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      line-height: 1;
+      border-radius: 999px;
+      font-size: .85rem;
+      font-weight: 700;
+      border: 1px solid;
     }
-    .project-name a:visited {
-      color: #0b6e37 !important;
-    }
-    .project-details {
-      display: grid;
-      gap: 12px;
-    }
-    .project-detail {
-      display: grid;
-      grid-template-columns: 140px 1fr;
-      gap: 12px;
-    }
-    .detail-label { font-weight: 600; color: #111; }
-    .detail-value { color: #333; }
-    .status-near-launch { color: #0b6e37; font-weight: 500; }
-    .status-development { color: #2563eb; font-weight: 500; }
-    .status-planning { color: #7c3aed; font-weight: 500; }
+    .status-live       { color:#065f46; background:#ecfdf5; border-color:#a7f3d0; }
+    .status-dev        { color:#1d4ed8; background:#eff6ff; border-color:#bfdbfe; }
+    .status-planning   { color:#6d28d9; background:#f5f3ff; border-color:#ddd6fe; }
+
+    .project-actions { margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap; }
+
+    /* Footer */
+    footer.footer small { color:#667085; }
   </style>
 </head>
 <body>
 
-  <!-- Page Header -->
-  <header class="page-header">
-    <a class="logo" href="./" aria-label="Go to project overview">
-      <img src="assets/quirk-ai-logo.png" alt="Quirk AI"
-           style="width: 100%; height: 100%; object-fit: contain;" />
-    </a>
-    <h1 class="page-title">
-      <a href="./">Quirk AI Project Overview</a>
-    </h1>
-    <p class="page-subtitle">Internal Brief: Deployment Status & Cost Efficiency</p>
+  <!-- Top bar for fast navigation -->
+  <header class="topbar" role="banner">
+    <div class="topbar-inner">
+      <a class="home-link" href="./">HOME</a>
+      <div class="topbar-title">Quirk AI Project Overview</div>
+      <nav class="topbar-menu" aria-label="Primary">
+        <a href="project-library.html">Project Library</a>
+      </nav>
+    </div>
   </header>
 
-  <!-- Main Content -->
-  <main class="projects-container">
-    
-    <!-- Quirk Trade Tool -->
-    <div class="project-item">
-      <h2 class="project-name">
-        <a href="quirk-trade-tool.html" target="_blank" rel="noopener">Quirk Trade Tool</a>
-      </h2>
-      <div class="project-details">
-        <div class="project-detail">
-          <span class="detail-label">Status:</span>
-          <span class="detail-value status-near-launch">Live</span>
-        </div>
-        <div class="project-detail">
-          <span class="detail-label">Est. Annual Savings:</span>
-          <span class="detail-value">Replaces Voga bill.</span>
-        </div>
-        <div class="project-detail">
-          <span class="detail-label">Notes:</span>
-          <span class="detail-value">Customer + employee values; Final tweaks underway.</span>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-logo-box" aria-hidden="true">
+        <img src="assets/quirk-ai-logo.png" alt="Quirk AI logo">
+      </div>
+      <div>
+        <h1>Enterprise AI initiatives for Quirk Auto</h1>
+        <p>Live tools and in-flight projects that cut response time, automate busy work, and improve appointment conversion across the group.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="project-library.html">Open Project Library</a>
+          <a class="btn" href="vin-solutions-alternative.html" target="_blank" rel="noopener">VIN Solutions Alternatives</a>
+          <a class="btn" href="quirk-ai-voice.html" target="_blank" rel="noopener">AI Voice Agents</a>
         </div>
       </div>
     </div>
+  </section>
 
-    <!-- VIN Solutions Alternative (moved up) -->
-    <div class="project-item">
-      <h2 class="project-name">
-        <a href="vin-solutions-alternative.html" target="_blank" rel="noopener">VIN Solutions Alternative</a>
-      </h2>
-      <div class="project-details">
-        <div class="project-detail">
-          <span class="detail-label">Status:</span>
-          <span class="detail-value status-planning">Planning</span>
+  <!-- Projects -->
+  <main class="projects-wrap" id="projects">
+    <div class="projects-grid">
+
+      <!-- Quirk Trade Tool -->
+      <article class="project-item">
+        <h2 class="project-name">
+          <a href="quirk-trade-tool.html" target="_blank" rel="noopener">Quirk Trade Tool</a>
+        </h2>
+        <p class="project-lead">Capture trade details quickly and route to appraisal with fewer touches.</p>
+        <div class="project-details">
+          <div class="project-detail">
+            <span class="detail-label">Status:</span>
+            <span class="detail-value"><span class="badge status-live">Live</span></span>
+          </div>
+          <div class="project-detail">
+            <span class="detail-label">Est. Annual Impact:</span>
+            <span class="detail-value">Replaces Voga bill.</span>
+          </div>
+          <div class="project-detail">
+            <span class="detail-label">Notes:</span>
+            <span class="detail-value">Customer + employee flows; final polish complete.</span>
+          </div>
         </div>
-        <div class="project-detail">
-          <span class="detail-label">Est. Annual Savings:</span>
-          <span class="detail-value">VIN bill for 18 stores</span>
+        <div class="project-actions">
+          <a class="btn" href="quirk-trade-tool.html" target="_blank" rel="noopener">Open</a>
         </div>
-        <div class="project-detail">
-          <span class="detail-label">Notes:</span>
-          <span class="detail-value"> Comparison reporting of different Enterprise CRM Software with increased AI efficient solutions.</span>
+      </article>
+
+      <!-- VIN Solutions Alternative -->
+      <article class="project-item">
+        <h2 class="project-name">
+          <a href="vin-solutions-alternative.html" target="_blank" rel="noopener">VIN Solutions Alternative</a>
+        </h2>
+        <p class="project-lead">Enterprise CRM comparison with an appointment-first, AI-assisted lens.</p>
+        <div class="project-details">
+          <div class="project-detail">
+            <span class="detail-label">Status:</span>
+            <span class="detail-value"><span class="badge status-planning">Planning</span></span>
+          </div>
+          <div class="project-detail">
+            <span class="detail-label">Est. Annual Impact:</span>
+            <span class="detail-value">VIN bill for 18 stores.</span>
+          </div>
+          <div class="project-detail">
+            <span class="detail-label">Notes:</span>
+            <span class="detail-value">Comparison reporting of enterprise CRM platforms with AI efficiency gains.</span>
+          </div>
         </div>
-      </div>
+        <div class="project-actions">
+          <a class="btn" href="vin-solutions-alternative.html" target="_blank" rel="noopener">Open</a>
+        </div>
+      </article>
+
+      <!-- AI Voice Agents -->
+      <article class="project-item">
+        <h2 class="project-name">
+          <a href="quirk-ai-voice.html" target="_blank" rel="noopener">AI Voice Agents (NUMA Replacement)</a>
+        </h2>
+        <p class="project-lead">Real conversations that schedule, ticket, quote trades, and hand off safely.</p>
+        <div class="project-details">
+          <div class="project-detail">
+            <span class="detail-label">Status:</span>
+            <span class="detail-value"><span class="badge status-dev">In Development</span></span>
+          </div>
+          <div class="project-detail">
+            <span class="detail-label">Est. Annual Savings:</span>
+            <span class="detail-value">$380,000/yr (minus ~ $32K API)</span>
+          </div>
+          <div class="project-detail">
+            <span class="detail-label">Notes:</span>
+            <span class="detail-value">12-week path to launch; higher-quality agent and strong guardrails.</span>
+          </div>
+        </div>
+        <div class="project-actions">
+          <a class="btn" href="quirk-ai-voice.html" target="_blank" rel="noopener">Open</a>
+          <a class="btn btn-soft" href="quirk-ai-voice-sales.html" target="_blank" rel="noopener">Sales Calls page</a>
+        </div>
+      </article>
+
+      <!-- VIN Gen AI Alternative -->
+      <article class="project-item">
+        <h2 class="project-name">
+          <a href="vin-gen-ai-alternative.html" target="_blank" rel="noopener">VIN Gen AI Alternative</a>
+        </h2>
+        <p class="project-lead">AI overlay to compose replies, inject inventory/incentives, and push appointments.</p>
+        <div class="project-details">
+          <div class="project-detail">
+            <span class="detail-label">Status:</span>
+            <span class="detail-value"><span class="badge status-live">Near Launch</span></span>
+          </div>
+          <div class="project-detail">
+            <span class="detail-label">Est. Annual Savings:</span>
+            <span class="detail-value">$383,600/year.</span>
+          </div>
+          <div class="project-detail">
+            <span class="detail-label">Notes:</span>
+            <span class="detail-value">Requires Chrome rollout and quick training for 18 stores.</span>
+          </div>
+        </div>
+        <div class="project-actions">
+          <a class="btn" href="vin-gen-ai-alternative.html" target="_blank" rel="noopener">Open</a>
+        </div>
+      </article>
+
     </div>
-
-    <!-- AI Voice Agents -->
-    <div class="project-item">
-      <h2 class="project-name">
-        <a href="quirk-ai-voice.html" target="_blank" rel="noopener">AI Voice Agents (Numa Replacement)</a>
-      </h2>
-      <div class="project-details">
-        <div class="project-detail">
-          <span class="detail-label">Status:</span>
-          <span class="detail-value status-development">In Development</span>
-        </div>
-        <div class="project-detail">
-          <span class="detail-label">Est. Annual Savings:</span>
-          <span class="detail-value">$380,000/year (minus ~$32K API)</span>
-        </div>
-        <div class="project-detail">
-          <span class="detail-label">Notes:</span>
-          <span class="detail-value">New direction, 12 weeks to launch with higher-qlty agent.</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Quirk AI Voice (Sales Calls) -->
-    <div class="project-item">
-      <h2 class="project-name">
-        <a href="quirk-ai-voice-sales.html" target="_blank" rel="noopener">Quirk AI Voice (Sales Calls)</a>
-      </h2>
-      <div class="project-details">
-        <div class="project-detail">
-          <span class="detail-label">Status:</span>
-          <span class="detail-label status-planning">Planning</span>
-        </div>
-        <div class="project-detail">
-          <span class="detail-label">Est. Annual Savings:</span>
-          <span class="detail-value">Potential headcount reduction.</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- VIN Gen AI Alternative (moved down) -->
-    <div class="project-item">
-      <h2 class="project-name">
-        <a href="vin-gen-ai-alternative.html" target="_blank" rel="noopener">VIN Gen AI Alternative</a>
-      </h2>
-      <div class="project-details">
-        <div class="project-detail">
-          <span class="detail-label">Status:</span>
-          <span class="detail-value status-near-launch">Near Launch</span>
-        </div>
-        <div class="project-detail">
-          <span class="detail-label">Est. Annual Savings:</span>
-          <span class="detail-value">$383,600/year</span>
-        </div>
-        <div class="project-detail">
-          <span class="detail-label">Notes:</span>
-          <span class="detail-value">Better lead replies, 18 stores. Requires Chrome rollout + training.</span>
-        </div>
-      </div>
-    </div>
-
   </main>
 
+  <!-- Global footer (uses styles from assets/style.css) -->
+  <footer class="footer">
+    <small>© 2025 Quirk Auto — Quirk AI Project Overview</small>
+  </footer>
 </body>
 </html>
