@@ -113,10 +113,10 @@
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
-      overflow: hidden;     /* keep initial height consistent with other cards */
+      overflow: hidden;     /* keeps initial height consistent with other cards */
     }
 
-    /* --- Details/summary styled as a link button --- */
+    /* --- Expand control styled like a button, with Open/Close labels --- */
     details.q-more { margin-top: 8px; }
     details.q-more > summary {
       list-style: none;
@@ -131,9 +131,16 @@
     }
     details.q-more > summary::-webkit-details-marker { display: none; }
     details.q-more[open] > summary { margin-bottom: 10px; }
+    /* Toggle label text without JS */
+    .label-open { display: inline; }
+    .label-close { display: none; }
+    details[open] .label-open { display: none; }
+    details[open] .label-close { display: inline; }
+
     .q-more .q-long p,
     .q-more .q-long li { color: var(--quirk-ink); }
     .q-more .q-long ul { margin: 6px 0 0 18px; }
+
     @media (max-width: 640px){
       .q-logo-heading .logo-creatio { height: 24px; }
     }
@@ -173,7 +180,7 @@
       <div class="q-col-6">
         <article class="q-card">
           <h2 class="q-logo-heading">
-            <a href="https://www.creatio.com/sales" target="_blank" rel="noopener">
+            <a href="https://www.creatio.com/" target="_blank" rel="noopener">
               <img class="logo-creatio" src="assets/logo_creatio.svg" alt="Creatio">
             </a>
           </h2>
@@ -185,7 +192,10 @@
 
           <!-- Expandable long description -->
           <details class="q-more">
-            <summary>Open for more</summary>
+            <summary>
+              <span class="label-open">Open for more</span>
+              <span class="label-close">Close</span>
+            </summary>
             <div class="q-long">
               <p><strong>Creatio Copilot:</strong> A centralized hub within the Creatio platform for configuring, deploying, and managing generative AI use cases. It works as a virtual assistant across all Creatio products, helping users with tasks like:</p>
               <ul>
