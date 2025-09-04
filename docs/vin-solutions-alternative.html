@@ -13,7 +13,7 @@
   <style>
     /* ===== Quirk Brand Add-on (scoped to this page) ===== */
     :root {
-      --quirk-green: #0b6e37; /* matches your project palette */
+      --quirk-green: #0b6e37;
       --quirk-ink: #0f172a;
       --quirk-muted: #475569;
       --quirk-border: #e5e7eb;
@@ -103,17 +103,19 @@
       font-size: .95rem;
     }
 
-    /* --- Partner logo headings (Creatio + Fullpath) --- */
+    /* --- Partner logo headings (Creatio + Fullpath + Salesforce) --- */
     .q-logo-heading { margin: 0 0 6px; }
     .q-logo-heading .logo-creatio,
-    .q-logo-heading .logo-fullpath {
+    .q-logo-heading .logo-fullpath,
+    .q-logo-heading .logo-salesforce {
       display: block;
       height: 28px; /* proportional to 1.25rem heading */
       width: auto;
     }
     @media (max-width: 640px){
       .q-logo-heading .logo-creatio,
-      .q-logo-heading .logo-fullpath { height: 24px; }
+      .q-logo-heading .logo-fullpath,
+      .q-logo-heading .logo-salesforce { height: 24px; }
     }
 
     /* Keep initial card height consistent with a 2-line teaser */
@@ -171,104 +173,8 @@
             </a>
           </h2>
 
-          <!-- Short blurb (clamped to keep initial card height consistent) -->
           <p class="clamp-2">
             Creatio Copilot centralizes generative AI use cases across the Creatio platform with no-code setup and embedded AI in Sales, Marketing, and Service.
           </p>
 
-          <!-- Expandable long description -->
-          <details class="q-disclosure">
-            <summary class="q-cta q-cta-small" role="button" aria-controls="creatio-more">
-              <span class="label-open">Expand</span>
-              <span class="label-close">Collapse</span>
-            </summary>
-            <div id="creatio-more" class="q-long">
-              <p><strong>Creatio Copilot:</strong> A centralized hub within the Creatio platform for configuring, deploying, and managing generative AI use cases. It works as a virtual assistant across all Creatio products, helping users with tasks like:</p>
-              <ul>
-                <li>Summarizing sales opportunities and dashboards.</li>
-                <li>Generating personalized content for emails and marketing campaigns.</li>
-                <li>Providing real-time assistance and suggestions for resolving service cases.</li>
-              </ul>
-              <p><strong>AI agents and skills:</strong> Creatio supports various AI agents and skills that automate tasks using OpenAI and other models. Users can create custom AI skills with no-code tools and natural language commands.</p>
-              <p><strong>Embedded AI for CRM:</strong> The integration powers AI functionality directly within Creatio's CRM suite, including:</p>
-              <ul>
-                <li><em>Sales:</em> Summarizing leads and opportunities, generating communication templates, and scoring leads.</li>
-                <li><em>Marketing:</em> Assisting with audience segmentation, campaign flow design, and content generation.</li>
-                <li><em>Service:</em> Providing real-time assistance for case resolution, summarizing sentiment, and helping with knowledge management.</li>
-              </ul>
-              <p><strong>AI-assisted app development:</strong> Creatio's no-code platform allows users to leverage generative AI to create applications from a simple description. The AI pre-populates templates for views, data models, and business rules, accelerating development.</p>
-              <p><strong>Marketplace connectors:</strong> While AI is natively integrated, Creatio also offers specific connectors for OpenAI, including a ChatGPT Connector on its Marketplace that allows for AI-driven content generation.</p>
-              <p><strong>Privacy and security:</strong> Creatio emphasizes robust security, using technologies like Azure OpenAI services to ensure that customer data remains private and is not used to train AI models.</p>
-            </div>
-          </details>
-        </article>
-      </div>
-
-      <!-- Fullpath (replacing HubSpot) -->
-      <div class="q-col-6">
-        <article class="q-card">
-          <h2 class="q-logo-heading">
-            <a href="https://www.fullpath.com/" target="_blank" rel="noopener">
-              <img class="logo-fullpath" src="assets/logo_fullpath.jpg" alt="Fullpath">
-            </a>
-          </h2>
-
-          <!-- Short blurb to keep height aligned with others -->
-          <p class="clamp-2">
-            Fullpath integrates with OpenAI to power AI-driven marketing and customer engagement for automotive dealerships via its CDP.
-          </p>
-
-          <!-- Expandable long description -->
-          <details class="q-disclosure">
-            <summary class="q-cta q-cta-small" role="button" aria-controls="fullpath-more">
-              <span class="label-open">Expand</span>
-              <span class="label-close">Collapse</span>
-            </summary>
-            <div id="fullpath-more" class="q-long">
-              <p><strong>Fullpath</strong> integrates with OpenAI to offer AI-powered marketing and customer engagement tools for the automotive industry. As part of its Customer Data Platform (CDP), Fullpath uses OpenAI's Large Language Models (LLMs) to generate personalized customer experiences based on a dealership's data.</p>
-              <p><strong>Key features of the integration</strong></p>
-              <p><em>Enhanced customer data platform (CDP):</em> Fullpath's CDP is the foundation of its AI capabilities. It consolidates data from a dealership's CRM, DMS, inventory, website, and ad platforms. This allows the AI to generate hyper-personalized content for customers.</p>
-              <ul>
-                <li><em>AI-driven email marketing:</em> Fullpath uses OpenAI-powered AI to create and run email marketing campaigns.</li>
-                <li><em>Custom campaigns:</em> Dealers can use the CDP's first-party data to define specific audience segments and send them targeted, personalized emails with content generated by the AI.</li>
-                <li><em>Automated content generation:</em> The AI assists dealerships by creating personalized content that can be seamlessly integrated into their existing marketing automation workflows.</li>
-                <li><em>ChatGPT integration:</em> Uses dealership data to create a holistic and personalized conversational experience for customers.</li>
-                <li><em>Customized chatbot:</em> A custom GPT trained on inventory, OEM offers, and local promotions for a tailored chatbot experience.</li>
-                <li><em>Safety measures:</em> Guardrails such as system-level prompts and disclosures ensure the chatbot provides appropriate and transparent responses.</li>
-              </ul>
-              <p><strong>How Fullpath uses AI with OpenAI</strong></p>
-              <ul>
-                <li><em>Data consolidation:</em> Aggregates CRM, DMS, inventory, site, and ad data into one platform.</li>
-                <li><em>Data activation:</em> Uses consolidated data to train and activate AI for personalized content.</li>
-                <li><em>Campaign creation:</em> Dealers define segments and goals in Fullpath's tools.</li>
-                <li><em>AI generation:</em> LLMs generate targeted, engaging content—e.g., emails—for those campaigns.</li>
-                <li><em>Execution and tracking:</em> Automates delivery and measures performance to show impact.</li>
-              </ul>
-            </div>
-          </details>
-        </article>
-      </div>
-
-      <!-- Zoho -->
-      <div class="q-col-6">
-        <article class="q-card">
-          <h2>Zoho CRM</h2>
-          <p>Cost-effective and customizable; strong reporting. Requires tuning for auto-retail tasks and VIN-centric workflows.</p>
-        </article>
-      </div>
-
-      <!-- DealerSocket -->
-      <div class="q-col-6">
-        <article class="q-card">
-          <h2>DealerSocket</h2>
-          <p>Automotive-focused CRM with equity mining and desking. Familiar, but template-heavy compared to AI-assisted messaging.</p>
-        </article>
-      </div>
-    </section>
-
-    <div class="q-note">
-      Tip: Pair any CRM with Quirk’s AI overlay to keep tasks, activities, and appointments flowing inside VIN while messages stay personalized and fast.
-    </div>
-  </div>
-</body>
-</html>
+          <details class="q-disclosure
