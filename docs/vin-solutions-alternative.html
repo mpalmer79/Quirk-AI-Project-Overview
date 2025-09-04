@@ -66,12 +66,7 @@
       padding: 20px;
       box-shadow: 0 6px 16px rgba(2,6,23,.06);
     }
-    .q-card h2 {
-      margin: 0 0 6px;
-      font-size: 1.25rem;
-      color: var(--quirk-green);
-      font-weight: 800;
-    }
+    .q-card h2 { margin: 0 0 6px; font-size: 1.25rem; color: var(--quirk-green); font-weight: 800; }
     .q-card p { margin: 8px 0 0; color: var(--quirk-ink); }
     .q-bullets { margin: 10px 0 0 18px; color: var(--quirk-ink); }
     .q-bullets li { margin: 6px 0; }
@@ -109,7 +104,8 @@
     .q-logo-heading .logo-fullpath,
     .q-logo-heading .logo-salesforce,
     .q-logo-heading .logo-tekion,
-    .q-logo-heading .logo-hubspot {
+    .q-logo-heading .logo-hubspot,
+    .q-logo-heading .logo-monday {
       display: block;
       height: 28px;
       width: auto;
@@ -119,7 +115,8 @@
       .q-logo-heading .logo-fullpath,
       .q-logo-heading .logo-salesforce,
       .q-logo-heading .logo-tekion,
-      .q-logo-heading .logo-hubspot { height: 24px; }
+      .q-logo-heading .logo-hubspot,
+      .q-logo-heading .logo-monday { height: 24px; }
     }
 
     /* Keep initial card height consistent with a 2-line teaser */
@@ -377,18 +374,17 @@
         </article>
       </div>
 
-      <!-- HubSpot (NEW) -->
+      <!-- HubSpot -->
       <div class="q-col-6">
         <article class="q-card">
           <h2 class="q-logo-heading">
-            <a href="https://www.hubspot.com/products/crm/ai-crm?hubs_content=www.hubspot.com/&hubs_content-cta=nav-software-smartcrm"
-               target="_blank" rel="noopener">
+            <a href="https://www.hubspot.com/products/crm/ai-crm?hubs_content=www.hubspot.com/&hubs_content-cta=nav-software-smartcrm" target="_blank" rel="noopener">
               <img class="logo-hubspot" src="assets/logo_hubspot.jpg" alt="HubSpot">
             </a>
           </h2>
 
           <p class="clamp-2">
-            HubSpot CRM integrates directly with OpenAI for AI-powered automations. It has no native PBS Systems connector; connect via an iPaaS or custom API.
+            HubSpot CRM integrates directly with OpenAI for AI-powered automations; no native PBS Systems connector—connect via iPaaS or custom API.
           </p>
 
           <details class="q-disclosure">
@@ -397,37 +393,68 @@
               <span class="label-close">Collapse</span>
             </summary>
             <div id="hubspot-more" class="q-long">
-              <p><strong>HubSpot CRM offers a direct integration with OpenAI, allowing for various AI-powered automations.</strong>
-                 However, it does not have a native, out-of-the-box integration with PBS Dealer Systems. You can connect to PBS using a third-party integration platform or HubSpot's custom API tools.</p>
+              <p><strong>HubSpot CRM offers a direct integration with OpenAI, allowing for various AI-powered automations.</strong> However, it does not have a native, out-of-the-box integration with PBS Dealer Systems. You can connect to PBS using a third-party integration platform or HubSpot's custom API tools.</p>
 
               <p><strong>HubSpot and OpenAI integration</strong></p>
               <p>The direct integration between HubSpot and OpenAI enables you to use AI to automate and enhance customer relationship tasks and research.</p>
-              <p><em>How the integration works:</em></p>
               <ul>
-                <li><strong>Workflow automation:</strong> Use OpenAI-powered actions within HubSpot workflows to summarize records, personalize emails, and generate tasks.</li>
-                <li><strong>Deep research connector:</strong> With a paid OpenAI subscription, a connector lets you query your CRM data in natural language within ChatGPT for instant insights.</li>
-                <li><strong>Content generation:</strong> Generate email drafts, social posts, and more using OpenAI’s language models directly inside HubSpot.</li>
+                <li><strong>Workflow automation:</strong> Use OpenAI-powered actions within HubSpot workflows to summarize customer records, personalize emails, and generate new tasks.</li>
+                <li><strong>Deep research connector:</strong> With a paid OpenAI subscription, query your CRM data in natural language within ChatGPT to get instant insights.</li>
+                <li><strong>Content generation:</strong> Generate email drafts, social posts, and more using OpenAI models inside HubSpot.</li>
               </ul>
 
               <p><strong>HubSpot and PBS Dealer Systems integration</strong></p>
-              <p>There’s no pre-built PBS app in HubSpot’s marketplace. To integrate HubSpot with PBS you have two primary options:</p>
-              <p><em>Option 1: Use a third-party integration platform</em></p>
+              <p>HubSpot does not have a pre-built app for PBS Dealer Systems. To integrate HubSpot with PBS, you have two primary options:</p>
               <ul>
-                <li>Use platforms like Zapier, n8n, or APIcenter as the connector between HubSpot and PBS.</li>
-                <li><strong>How it works:</strong> These iPaaS tools connect apps that don’t natively integrate. Build automated workflows to sync data between HubSpot and the PBS DMS.</li>
-                <li><strong>Functionality:</strong> Automate syncing of customer data, sales orders, and inventory information.</li>
-              </ul>
-
-              <p><em>Option 2: Build a custom integration</em></p>
-              <ul>
-                <li>Work with a HubSpot Integration Partner or in-house devs.</li>
-                <li><strong>How it works:</strong> Use HubSpot’s open APIs to build a direct, custom integration to PBS.</li>
-                <li><strong>Functionality:</strong> Enables two-way sync for a seamless flow of data between marketing, sales, and dealership operations.</li>
+                <li><strong>Option 1 – Third-party platform:</strong> Use Zapier, n8n, or APIcenter to connect and automate data syncs.</li>
+                <li><strong>Option 2 – Custom build:</strong> Use HubSpot’s open APIs (or a HubSpot Integration Partner) to create a two-way sync tailored to your workflows.</li>
               </ul>
             </div>
           </details>
         </article>
       </div>
+
+      <!-- monday.com CRM (new) -->
+      <div class="q-col-6">
+        <article class="q-card">
+          <h2 class="q-logo-heading">
+            <a href="https://monday.com/blog/crm-and-sales/crm-for-automotive-industry/" target="_blank" rel="noopener">
+              <!-- Save your logo as assets/logo_mondaycrm.png -->
+              <img class="logo-monday" src="assets/logo_mondaycrm.png" alt="monday.com CRM">
+            </a>
+          </h2>
+
+          <p class="clamp-2">
+            monday.com CRM integrates with OpenAI; no pre-built PBS Systems integration—connecting to PBS requires a custom solution.
+          </p>
+
+          <details class="q-disclosure">
+            <summary class="q-cta q-cta-small" role="button" aria-controls="monday-more">
+              <span class="label-open">Expand</span>
+              <span class="label-close">Collapse</span>
+            </summary>
+            <div id="monday-more" class="q-long">
+              <p><strong>monday.com CRM integrates with OpenAI, but there is no direct, pre-built integration with PBS Dealer Systems.</strong> A custom solution would be necessary to connect with PBS.</p>
+
+              <p><strong>monday.com and OpenAI integration</strong></p>
+              <p>monday.com has built-in AI capabilities and supports integrations with OpenAI through several methods.</p>
+              <ul>
+                <li><strong>Native features:</strong> Uses OpenAI’s GPT models (and others) to power content generation, email writing, and task summaries.</li>
+                <li><strong>Integration apps:</strong> Marketplace apps or platforms like Make (Integromat), Zapier, or n8n can wire OpenAI to monday.com to automate workflows.</li>
+                <li><strong>API:</strong> Developers can use monday.com’s robust API to build custom apps that connect OpenAI for highly specific use cases.</li>
+              </ul>
+
+              <p><strong>monday.com and PBS Dealer Systems</strong></p>
+              <p>There is no readily available integration for PBS Dealer Systems in the monday.com marketplace or standard connectors.</p>
+              <ul>
+                <li><strong>Custom integration:</strong> Use monday.com’s API to build a bespoke connection to PBS (internal devs or a hired developer).</li>
+                <li><strong>Middleware platforms:</strong> You can also craft a custom workflow using Make or Zapier by leveraging monday.com’s API and any available PBS connectivity options.</li>
+              </ul>
+            </div>
+          </details>
+        </article>
+      </div>
+
     </section>
 
     <div class="q-note">
