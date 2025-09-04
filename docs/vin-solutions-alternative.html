@@ -103,19 +103,21 @@
       font-size: .95rem;
     }
 
-    /* --- Partner logo headings (Creatio + Fullpath + Salesforce) --- */
+    /* --- Partner logo headings (Creatio + Fullpath + Salesforce + Tekion) --- */
     .q-logo-heading { margin: 0 0 6px; }
     .q-logo-heading .logo-creatio,
     .q-logo-heading .logo-fullpath,
-    .q-logo-heading .logo-salesforce {
+    .q-logo-heading .logo-salesforce,
+    .q-logo-heading .logo-tekion {
       display: block;
-      height: 28px; /* base size for all; Salesforce is bumped just below */
+      height: 28px; /* base size for all; overrides per logo come below if needed */
       width: auto;
     }
     @media (max-width: 640px){
       .q-logo-heading .logo-creatio,
       .q-logo-heading .logo-fullpath,
-      .q-logo-heading .logo-salesforce { height: 24px; }
+      .q-logo-heading .logo-salesforce,
+      .q-logo-heading .logo-tekion { height: 24px; }
     }
 
     /* Keep initial card height consistent with a 2-line teaser */
@@ -253,7 +255,7 @@
         </article>
       </div>
 
-      <!-- Salesforce (logo file you uploaded: assets/Salesforce.com_logo.svg.png) -->
+      <!-- Salesforce -->
       <div class="q-col-6">
         <article class="q-card">
           <h2 class="q-logo-heading">
@@ -296,11 +298,46 @@
         </article>
       </div>
 
-      <!-- DealerSocket -->
+      <!-- TEKION (replaces DealerSocket) -->
       <div class="q-col-6">
         <article class="q-card">
-          <h2>DealerSocket</h2>
-          <p>Automotive-focused CRM with equity mining and desking. Familiar, but template-heavy compared to AI-assisted messaging.</p>
+          <h2 class="q-logo-heading">
+            <a href="https://tekion.com/products/crm" target="_blank" rel="noopener">
+              <img class="logo-tekion" src="assets/logo_tekion.png" alt="Tekion">
+            </a>
+          </h2>
+
+          <!-- Short blurb to keep height aligned with others -->
+          <p class="clamp-2">
+            Tekion integrates with OpenAI and partners with PBS Systems; its ARC platform uses Azure OpenAI to streamline communications and customer experience.
+          </p>
+
+          <!-- Expandable long description -->
+          <details class="q-disclosure">
+            <summary class="q-cta q-cta-small" role="button" aria-controls="tekion-more">
+              <span class="label-open">Expand</span>
+              <span class="label-close">Collapse</span>
+            </summary>
+            <div id="tekion-more" class="q-long">
+              <p><strong>Tekion integrates with OpenAI and has a partner relationship with PBS Systems.</strong></p>
+
+              <p><strong>Integration with OpenAI</strong></p>
+              <ul>
+                <li><strong>Azure OpenAI Service:</strong> Tekion uses OpenAI's technology within its Automotive Retail Cloud (ARC) via Microsoft’s Azure OpenAI Service.</li>
+                <li><strong>Customer Communication:</strong> “Smart Communication” analyzes and summarizes calls, chats, and emails between customers and sales agents.</li>
+                <li><strong>Sales Recommendations:</strong> Provides agents with customer-specific recommendations and prompts to deepen engagement.</li>
+                <li><strong>Customer Experience:</strong> Generative AI streamlines the purchasing process to make the experience more fluid and efficient.</li>
+              </ul>
+
+              <p><strong>Integration with PBS Systems</strong></p>
+              <ul>
+                <li><strong>DMS Connectivity:</strong> Integration enables shared customers to connect data between Tekion and PBS Systems.</li>
+                <li><strong>API Partner:</strong> In March 2025, Hammer announced new API integrations with both Tekion and PBS Systems.</li>
+                <li><strong>Data Sharing:</strong> Partnership improves data flow and lead handling for dealerships using both platforms.</li>
+                <li><strong>Open Platform:</strong> Tekion’s Automotive Partner Cloud (APC) allows third-party vendors and partners to build direct integrations.</li>
+              </ul>
+            </div>
+          </details>
         </article>
       </div>
     </section>
