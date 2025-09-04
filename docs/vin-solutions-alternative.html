@@ -103,13 +103,13 @@
       font-size: .95rem;
     }
 
-    /* --- Partner logo headings --- */
+    /* --- Partner logo headings (Creatio + Fullpath + Salesforce) --- */
     .q-logo-heading { margin: 0 0 6px; }
     .q-logo-heading .logo-creatio,
     .q-logo-heading .logo-fullpath,
     .q-logo-heading .logo-salesforce {
       display: block;
-      height: 28px; /* proportional to 1.25rem heading */
+      height: 28px; /* base size for all; Salesforce is bumped just below */
       width: auto;
     }
     @media (max-width: 640px){
@@ -132,6 +132,12 @@
     .q-disclosure .label-close { display: none; }
     .q-disclosure[open] .label-open { display: none; }
     .q-disclosure[open] .label-close { display: inline; }
+
+    /* === Salesforce logo size tweak to visually match Creatio === */
+    .q-logo-heading .logo-salesforce { height: 34px; width: auto; }
+    @media (max-width: 640px){
+      .q-logo-heading .logo-salesforce { height: 30px; }
+    }
   </style>
 </head>
 <body>
@@ -247,7 +253,7 @@
         </article>
       </div>
 
-      <!-- Salesforce (logo file name you uploaded: Salesforce.com_logo.svg.png) -->
+      <!-- Salesforce (logo file you uploaded: assets/Salesforce.com_logo.svg.png) -->
       <div class="q-col-6">
         <article class="q-card">
           <h2 class="q-logo-heading">
