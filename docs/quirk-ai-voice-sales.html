@@ -22,66 +22,66 @@
   <link rel="stylesheet" href="assets/style.css" />
 
   <style>
-    /* Page-specific light tweaks that piggyback on your brand tokens */
+    /* Brand tokens used in this page */
+    :root{
+      --brand:#0b6e37; --brand-dark:#0a5d2f;
+      --ink:#0f172a; --muted:#475569;
+      --border:#e5e7eb; --surface:#ffffff; --surface-2:#f9fafb;
+      --focus:#0b6e37;
+    }
+
     .center-text { text-align: center; }
     .container { max-width: 1100px; margin: 0 auto; padding: 24px; }
+
+    /* Hero */
     .hero { padding: 48px 24px 24px; }
     .hero h1 { font-size: clamp(1.8rem, 2.5vw, 2.6rem); margin-bottom: 12px; }
     .hero p { font-size: 1.1rem; line-height: 1.55; color: var(--muted); }
-    .badges { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 16px 0 24px; }
-    .badge { background: var(--surface); border: 1px solid var(--border); padding: 6px 10px; border-radius: 999px; font-size: .9rem; }
-    .cta-bar { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 8px; }
-    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); text-decoration: none; color: var(--ink); }
-    .btn.primary { background: var(--brand); border-color: var(--brand-dark); color: white; }
-    $1
-    /* Compact button variant */
-    .btn.compact { padding: 8px 10px; font-size: .95rem; }
 
-    /* Sticky section nav */
-    .section-nav { position: sticky; top: 0; z-index: 20; background: var(--surface-2); border-bottom: 1px solid var(--border); }
-    .section-nav .inner { display: flex; gap: 16px; overflow-x: auto; padding: 10px 24px; }
-    .chip { padding: 8px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); white-space: nowrap; text-decoration: none; color: var(--ink); }
-    .chip:hover { border-color: var(--brand); }
+    /* CTA */
+    .cta-bar { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:8px; }
+    .btn { display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:999px; border:1px solid var(--border); background:var(--surface); text-decoration:none; color:var(--ink); }
+    .btn.primary { background:var(--brand); border-color:var(--brand-dark); color:#fff; }
+    .btn.compact { padding:8px 10px; font-size:.95rem; }
 
     /* Comparison table */
-    .table-wrap { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; }
-    th, td { border-bottom: 1px solid var(--border); text-align: left; padding: 12px; vertical-align: top; }
-    thead th { position: sticky; top: 48px; background: var(--surface-2); z-index: 10; }
+    .table-wrap { overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; }
+    th, td { border-bottom:1px solid var(--border); text-align:left; padding:12px; vertical-align:top; }
+    /* IMPORTANT: make header non-sticky so it sits above first row (no overlap) */
+    thead th { background:var(--surface-2); position:static; }
     tbody tr:hover { background: color-mix(in srgb, var(--focus) 18%, transparent); }
 
     /* Feature grid */
-    .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; }
-    .card { grid-column: span 12; padding: 18px; border: 1px solid var(--border); background: var(--surface); border-radius: 16px; }
-    @media (min-width: 720px) { .card.sm6 { grid-column: span 6; } .card.sm4 { grid-column: span 4; } }
+    .grid { display:grid; grid-template-columns:repeat(12,1fr); gap:16px; }
+    .card { grid-column:span 12; padding:18px; border:1px solid var(--border); background:var(--surface); border-radius:16px; }
+    @media (min-width:720px){ .card.sm6{grid-column:span 6;} .card.sm4{grid-column:span 4;} }
 
     /* ROI calc */
-    .roi form { display: grid; gap: 12px; grid-template-columns: repeat(12, 1fr); }
-    .roi label { display: block; font-size: .9rem; color: var(--muted); margin-bottom: 6px; }
-    .roi .field { grid-column: span 12; }
-    .roi input, .roi select { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); color: var(--ink); }
-    @media (min-width: 720px) { .roi .field.h6 { grid-column: span 6; } .roi .field.h4 { grid-column: span 4; } }
-    .result { font-size: 1.25rem; font-weight: 700; margin-top: 8px; }
+    .roi form { display:grid; gap:12px; grid-template-columns:repeat(12,1fr); }
+    .roi label { display:block; font-size:.9rem; color:var(--muted); margin-bottom:6px; }
+    .roi .field { grid-column:span 12; }
+    .roi input, .roi select { width:100%; padding:10px; border-radius:10px; border:1px solid var(--border); background:var(--surface); color:var(--ink); }
+    @media (min-width:720px){ .roi .field.h6{grid-column:span 6;} .roi .field.h4{grid-column:span 4;} }
+    .result { font-size:1.25rem; font-weight:700; margin-top:8px; }
 
-    /* Details/summary disclosure with label swap (per your preference) */
-    details.disclose {
-      border: 1px dashed var(--border); border-radius: 12px; padding: 12px 14px; background: var(--surface);
-    }
-    details.disclose > summary { cursor: pointer; list-style: none; position: relative; padding-right: 24px; }
-    details.disclose > summary::marker { display: none; }
-    details.disclose > summary .open-label { display: inline; }
-    details.disclose[open] > summary .open-label { display: none; }
-    details.disclose > summary .close-label { display: none; }
-    details.disclose[open] > summary .close-label { display: inline; }
-    details.disclose > summary::after { content: "▾"; position: absolute; right: 0; top: 0; }
+    /* details/summary with label swap */
+    details.disclose { border:1px dashed var(--border); border-radius:12px; padding:12px 14px; background:var(--surface); }
+    details.disclose>summary { cursor:pointer; list-style:none; position:relative; padding-right:24px; }
+    details.disclose>summary::marker { display:none; }
+    details.disclose>summary .open-label { display:inline; }
+    details.disclose[open]>summary .open-label { display:none; }
+    details.disclose>summary .close-label { display:none; }
+    details.disclose[open]>summary .close-label { display:inline; }
+    details.disclose>summary::after { content:"▾"; position:absolute; right:0; top:0; }
 
     /* Footer */
-    footer { border-top: 1px solid var(--border); padding: 24px; text-align: center; color: var(--muted); }
+    footer { border-top:1px solid var(--border); padding:24px; text-align:center; color:var(--muted); }
 
     /* Lang switch */
-    .lang-switch { font-size: .9rem; margin-top: 8px; color: var(--muted); }
-    .lang-switch button { border: 1px solid var(--border); background: var(--surface); padding: 6px 10px; border-radius: 999px; margin-left: 8px; }
-    .lang-switch button.active { border-color: var(--brand); }
+    .lang-switch { font-size:.9rem; margin-top:8px; color:var(--muted); }
+    .lang-switch button { border:1px solid var(--border); background:var(--surface); padding:6px 10px; border-radius:999px; margin-left:8px; }
+    .lang-switch button.active { border-color:var(--brand); }
   </style>
 </head>
 
@@ -110,18 +110,12 @@
       servicio, registra leads, cotiza valuaciones, verifica pedidos de partes y escala con una persona cuando corresponde.
     </p>
 
-    <div class="badges" aria-label="Key highlights">
-      <span class="badge">Real‑time automation</span>
-      <span class="badge">VIN Solutions + Xtime/CDK</span>
-      <span class="badge">Bilingual (EN/ES)</span>
-      <span class="badge">Guardrails & Escalation</span>
-      <span class="badge">Citations to KB</span>
-    </div>
-
-    $1
+    <!-- Compact Request Demo button -->
+    <div class="cta-bar">
       <a class="btn primary compact" aria-label="Request a live demo by email"
          href="mailto:mpalmer@quirkcars.com?subject=Quirk%20AI%20Voice%20Demo%20Request&body=Hi%20Quirk%20AI%20Team%2C%0A%0AI'd%20like%20a%20demo%20of%20Quirk%20AI%20Voice.%0A%0ADealership%20name%3A%20%0AMain%20contact%20(name%20%2B%20role)%3A%20%0APhone%3A%20%0AEmail%3A%20%0APreferred%20demo%20times%20(ET)%3A%20%0A%0AWe%27re%20most%20interested%20in%3A%0A-%20Service%20scheduling%0A-%20Sales%20lead%20capture%0A-%20Trade%20appraisals%0A-%20Parts%20order%20status%0A-%20Bilingual%20flows%0A%0AAnything%20else%3F%20%0A%0AThanks!">Request Demo</a>
     </div>
+
     <div class="lang-switch" role="group" aria-label="Language">
       <span>Language:</span>
       <button type="button" class="active" data-lang="en">EN</button>
@@ -129,18 +123,7 @@
     </div>
   </section>
 
-  <!-- ======= STICKY SECTION NAV ======= -->
-  <nav class="section-nav" aria-label="Section navigation">
-    <div class="inner container">
-      <a href="#comparison" class="chip">Comparison</a>
-      <a href="#features" class="chip">Features</a>
-      <a href="#how" class="chip">How it Works</a>
-      <a href="#guardrails" class="chip">Guardrails</a>
-      <a href="#bilingual" class="chip">Bilingual</a>
-      <a href="#roi" class="chip">ROI Calculator</a>
-      <a href="#faq" class="chip">FAQ</a>
-    </div>
-  </nav>
+  <!-- NOTE: The circled “badges” row and the sticky chip nav were removed per your request. -->
 
   <!-- ======= COMPARISON TABLE ======= -->
   <section id="comparison" class="container">
@@ -193,7 +176,7 @@
         <span class="open-label">Open for more</span>
         <span class="close-label">Close</span>
       </summary>
-      <p style="margin-top:8px;">Escalation rules: confidence &lt; 0.6, angry sentiment, financial/legal topics, complex tech issues, or "talk to a person" → hand off with transcript + CRM ticket.</p>
+      <p style="margin-top:8px;">Escalation rules: confidence &lt; 0.6, angry sentiment, financial/legal topics, complex tech issues, or “talk to a person” → hand off with transcript + CRM ticket.</p>
     </details>
   </section>
 
@@ -234,11 +217,11 @@
     <div class="grid">
       <article class="card sm6">
         <h3>1) Conversation Layer</h3>
-        <p>Tier‑1 agent with dealership tone. Multimodal (voice/chat/email). English & Spanish.</p>
+        <p>Tier-1 agent with dealership tone. Multimodal (voice/chat/email). English & Spanish.</p>
       </article>
       <article class="card sm6">
         <h3>2) Tooling</h3>
-        <p>create_ticket, schedule_service, quote_trade, check_order_status — each call carries an <code>x_correlation_id</code> for traceability.</p>
+        <p><code>create_ticket</code>, <code>schedule_service</code>, <code>quote_trade</code>, <code>check_order_status</code> — each call carries an <code>x_correlation_id</code> for traceability.</p>
       </article>
       <article class="card sm6">
         <h3>3) CRM/DMS Mapping</h3>
@@ -268,7 +251,7 @@
       <article class="card sm6">
         <h3>What it will do</h3>
         <ul>
-          <li>Use KB‑only facts for hours/promos/policies.</li>
+          <li>Use KB-only facts for hours/promos/policies.</li>
           <li>Mask PII in logs; encrypt at rest.</li>
           <li>Quote only when the DMS/KB explicitly allows it.</li>
         </ul>
@@ -287,7 +270,7 @@
   <!-- ======= BILINGUAL ======= -->
   <section id="bilingual" class="container">
     <h2 class="center-text">Bilingual: English & Spanish</h2>
-    <p class="center-text">Mid‑call language switching with concise, professional tone.</p>
+    <p class="center-text">Mid-call language switching with concise, professional tone.</p>
     <details class="disclose">
       <summary>
         <span class="open-label">Open sample dialogue</span>
@@ -295,7 +278,7 @@
       </summary>
       <div style="margin-top:8px;">
         <p><strong>Caller:</strong> “¿Puedo llevar mi camioneta mañana para servicio?”</p>
-        <p><strong>Agent:</strong> “Sí, tengo disponibilidad a las 8:30 a. m. ¿Quiere transporte de regreso?”</p>
+        <p><strong>Agent:</strong> “Sí, tengo disponibilidad a las 8:30 a. m. ¿Quiere transporte de regreso?”</p>
       </div>
     </details>
   </section>
@@ -303,7 +286,7 @@
   <!-- ======= ROI CALCULATOR ======= -->
   <section id="roi" class="container roi">
     <h2 class="center-text">Estimate Your ROI</h2>
-    <p class="center-text">Quick, back‑of‑the‑napkin savings based on call deflection and handle‑time reductions.</p>
+    <p class="center-text">Quick, back-of-the-napkin savings based on call deflection and handle-time reductions.</p>
     <form aria-label="ROI calculator" oninput="calcROI()">
       <div class="field h4">
         <label for="calls">Inbound calls per month</label>
