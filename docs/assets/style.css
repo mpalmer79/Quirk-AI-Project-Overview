@@ -365,3 +365,20 @@ footer.footer { flex-shrink: 0; }
   background: #fafafa;
   font-size: .95rem;
 }
+/* Creatio logo inside card header — sized to match the former H2 */
+.q-logo-heading {
+  margin: 0 0 6px;
+  /* keep the same space as other q-card h2 elements */
+}
+.q-logo-heading .logo-creatio {
+  display: block;
+  height: 28px;    /* roughly matches 1.25rem heading presence */
+  width: auto;
+}
+
+/* Small screens: tuck it down a bit */
+@media (max-width: 640px) {
+  .q-logo-heading .logo-creatio {
+    height: 24px;
+  }
+}
