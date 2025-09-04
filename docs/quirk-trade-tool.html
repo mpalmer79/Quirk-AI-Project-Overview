@@ -65,6 +65,19 @@
     .dealer-list a:hover {
       text-decoration: underline;
     }
+
+    /* Make the right-side "Project Library" match the centered title */
+    .topbar-title-link {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: clamp(16px, 1.8vw, 20px);
+      line-height: 1;
+    }
+    .topbar-title-link:hover,
+    .topbar-title-link:focus {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -77,10 +90,9 @@
       <!-- Center title -->
       <div class="topbar-title">Quirk Trade Tool</div>
 
-      <!-- Right-side nav -->
-      <nav class="topbar-menu">
-        <a href="./quirk-ai-voice.html">Quirk AI Voice</a>
-        <a href="./project-library.html">Project Library</a>
+      <!-- Right: single Project Library link (mirrors VIN Solutions bar) -->
+      <nav class="topbar-menu" aria-label="Secondary Navigation">
+        <a class="topbar-title-link" href="./project-library.html">Project Library</a>
       </nav>
     </div>
   </header>
