@@ -84,7 +84,7 @@
       font-weight: 700;
       transition: transform .06s ease;
       background: #fff;
-      white-space: nowrap; /* keep buttons on one line */
+      white-space: nowrap;
     }
     .q-cta:hover { transform: translateY(-1px); text-decoration: none; }
     .q-cta-small { padding: 8px 12px; font-size: 0.95rem; }
@@ -125,13 +125,13 @@
     .q-disclosure[open] .label-open { display: none; }
     .q-disclosure[open] .label-close { display: inline; }
 
-    /* Salesforce size tweak to align with Creatio visually */
+    /* Salesforce size tweak */
     .q-logo-heading .logo-salesforce { height: 34px; width: auto; }
     @media (max-width: 640px){
       .q-logo-heading .logo-salesforce { height: 30px; }
     }
 
-    /* Make right-side Project Library link match the centered title */
+    /* Right-side Project Library link */
     .topbar-menu .lib-link {
       color: #fff;
       text-decoration: none;
@@ -142,10 +142,10 @@
     .topbar-menu .lib-link:hover,
     .topbar-menu .lib-link:focus { text-decoration: underline; }
 
-    /* New: tidy/centered button row inside the report card */
+    /* Center helpers */
     .q-actions { display:flex; gap:12px; align-items:center; justify-content:center; }
-    .q-actions.nowrap { flex-wrap: nowrap; } /* keep all three buttons on one line */
-    .q-center { text-align:center; }          /* helper for centered text blocks */
+    .q-actions.nowrap { flex-wrap: nowrap; }
+    .q-center { text-align:center; }
 
     /* Footer */
     .q-footer { max-width:1080px; margin: 28px auto 36px; padding: 0 20px; text-align:center; color:#666; }
@@ -414,47 +414,6 @@
           </details>
         </article>
       </div>
-
-      <!-- monday.com CRM (new) -->
-      <div class="q-col-6">
-        <article class="q-card">
-          <h2 class="q-logo-heading">
-            <a href="https://monday.com/blog/crm-and-sales/crm-for-automotive-industry/" target="_blank" rel="noopener">
-              <!-- Save your logo as assets/logo_mondaycrm.png -->
-              <img class="logo-monday" src="assets/logo_mondaycrm.png" alt="monday.com CRM">
-            </a>
-          </h2>
-
-          <p class="clamp-2">
-            monday.com CRM integrates with OpenAI; no pre-built PBS Systems integration—connecting to PBS requires a custom solution.
-          </p>
-
-          <details class="q-disclosure">
-            <summary class="q-cta q-cta-small" role="button" aria-controls="monday-more">
-              <span class="label-open">Expand</span>
-              <span class="label-close">Collapse</span>
-            </summary>
-            <div id="monday-more" class="q-long">
-              <p><strong>monday.com CRM integrates with OpenAI, but there is no direct, pre-built integration with PBS Dealer Systems.</strong> A custom solution would be necessary to connect with PBS.</p>
-
-              <p><strong>monday.com and OpenAI integration</strong></p>
-              <p>monday.com has built-in AI capabilities and supports integrations with OpenAI through several methods.</p>
-              <ul>
-                <li><strong>Native features:</strong> Uses OpenAI’s GPT models (and others) to power content generation, email writing, and task summaries.</li>
-                <li><strong>Integration apps:</strong> Marketplace apps or platforms like Make (Integromat), Zapier, or n8n can wire OpenAI to monday.com to automate workflows.</li>
-                <li><strong>API:</strong> Developers can use monday.com’s robust API to build custom apps that connect OpenAI for highly specific use cases.</li>
-              </ul>
-
-              <p><strong>monday.com and PBS Dealer Systems</strong></p>
-              <p>There is no readily available integration for PBS Dealer Systems in the monday.com marketplace or standard connectors.</p>
-              <ul>
-                <li><strong>Custom integration:</strong> Use monday.com’s API to build a bespoke connection to PBS (internal devs or a hired developer).</li>
-                <li><strong>Middleware platforms:</strong> You can also craft a custom workflow using Make or Zapier by leveraging monday.com’s API and any available PBS connectivity options.</li>
-              </ul>
-            </div>
-          </details>
-        </article>
-      </div>
     </section>
 
     <!-- =======================
@@ -470,31 +429,13 @@
             Executive summary and matrix covering AI depth, PBS DMS integration realities, cost ranges, and multi-rooftop fit.
           </p>
 
-          <!-- Centered buttons on a single line -->
+          <!-- Single centered button that opens the PDF in a new tab -->
           <div class="q-actions nowrap" style="margin-top:14px;">
             <a class="q-cta q-cta-small" target="_blank" rel="noopener"
-               href="docs/assets/CRM_Comparison_report_by_Claude_Research_mode.pdf"
+               href="assets/CRM_Comparison_report_by_Claude_Research_mode.pdf"
                aria-label="View the CRM Comparison report PDF in a new tab">
               View PDF
             </a>
-            <a class="q-cta q-cta-small" target="_blank" rel="noopener"
-               href="https://docs.google.com/gview?embedded=1&url=https%3A%2F%2Fmpalmer79.github.io%2FQuirk-AI-Project-Overview%2Fdocs%2Fassets%2FCRM_Comparison_report_by_Claude_Research_mode.pdf"
-               aria-label="Open the CRM Comparison report in Google Viewer">
-              Open in Google Viewer
-            </a>
-            <a id="toggle-preview" class="q-cta q-cta-small" href="#crm-report-preview">
-              Open inline preview (PDF)
-            </a>
-          </div>
-
-          <!-- Inline preview panel (hidden until toggled) -->
-          <div id="crm-report-preview" class="q-long" hidden style="margin-top:12px;">
-            <embed
-              src="docs/assets/CRM_Comparison_report_by_Claude_Research_mode.pdf#view=FitH"
-              type="application/pdf"
-              width="100%"
-              height="640"
-              style="border:1px solid var(--quirk-border); border-radius:12px;" />
           </div>
         </article>
       </div>
@@ -506,26 +447,5 @@
     <hr />
     <p>&copy; 2025 Quirk AI — VIN Solutions Alternative</p>
   </footer>
-
-  <!-- Tiny toggle script for inline preview (removes duplicate bottom button) -->
-  <script>
-    (function () {
-      const btn = document.getElementById('toggle-preview');
-      const panel = document.getElementById('crm-report-preview');
-      if (!btn || !panel) return;
-
-      btn.addEventListener('click', function (e) {
-        e.preventDefault();
-        const isHidden = panel.hasAttribute('hidden');
-        if (isHidden) {
-          panel.removeAttribute('hidden');
-          btn.textContent = 'Close preview';
-        } else {
-          panel.setAttribute('hidden', '');
-          btn.textContent = 'Open inline preview (PDF)';
-        }
-      });
-    })();
-  </script>
 </body>
 </html>
