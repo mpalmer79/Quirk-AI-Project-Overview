@@ -1,4 +1,4 @@
-<!doctype html>
+<!doctype html> 
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -150,6 +150,9 @@
     }
     .topbar-menu .lib-link:hover,
     .topbar-menu .lib-link:focus { text-decoration: underline; }
+
+    /* New: tidy button row inside the report card */
+    .q-actions { display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
   </style>
 </head>
 <body>
@@ -257,7 +260,7 @@
             </a>
           </h2>
 
-          <p class="clamp-2">
+        <p class="clamp-2">
             Fullpath integrates with OpenAI, but there is no public information indicating a direct integration with PBS Systems. Fullpath focuses on integrations relevant to its business as a customer data and experience platform (CDXP) for automotive dealerships.
           </p>
 
@@ -454,12 +457,55 @@
           </details>
         </article>
       </div>
-
     </section>
 
-    <div class="q-note">
-      Tip: Pair any CRM with Quirk’s AI overlay to keep tasks, activities, and appointments flowing inside VIN while messages stay personalized and fast.
-    </div>
+    <!-- =======================
+         Comparison Report (new)
+         ======================= -->
+    <section class="q-grid" style="margin-top:22px" aria-label="CRM comparison report">
+      <div class="q-col-12">
+        <article class="q-card">
+          <h2>CRM Comparison Report — Six Platforms vs VIN Solutions</h2>
+          <p class="q-bullets" style="margin-left:0;">
+            Executive summary and matrix covering AI depth, PBS/DMS integration realities, cost ranges, and multi-rooftop fit.
+          </p>
+
+          <div class="q-actions" style="margin-top:10px;">
+            <!-- Viewable PDF: opens native PDF viewer on iOS/Android -->
+            <a class="q-cta q-cta-small" target="_blank" rel="noopener"
+               href="docs/assets/CRM_Comparison_report_by_Claude_Research_mode.pdf"
+               aria-label="View the CRM Comparison report PDF in a new tab">
+              View PDF
+            </a>
+
+            <!-- Google web viewer (helpful on phones without a PDF app) -->
+            <a class="q-cta q-cta-small" target="_blank" rel="noopener"
+               href="https://docs.google.com/gview?embedded=1&url=https%3A%2F%2Fmpalmer79.github.io%2FQuirk-AI-Project-Overview%2Fdocs%2Fassets%2FCRM_Comparison_report_by_Claude_Research_mode.pdf"
+               aria-label="Open the CRM Comparison report in Google Viewer">
+              Open in Google Viewer
+            </a>
+          </div>
+
+          <!-- Inline, expandable PDF preview -->
+          <details class="q-disclosure" style="margin-top:12px;">
+            <summary class="q-cta q-cta-small" role="button" aria-controls="crm-report-preview">
+              <span class="label-open">Open inline preview (PDF)</span>
+              <span class="label-close">Close preview</span>
+            </summary>
+            <div id="crm-report-preview" class="q-long" style="margin-top:8px;">
+              <embed
+                src="docs/assets/CRM_Comparison_report_by_Claude_Research_mode.pdf#view=FitH"
+                type="application/pdf"
+                width="100%"
+                height="640"
+                style="border:1px solid var(--quirk-border); border-radius:12px;" />
+            </div>
+          </details>
+        </article>
+      </div>
+    </section>
+
+    <!-- Removed: the old q-note "Tip" block -->
   </div>
 </body>
 </html>
