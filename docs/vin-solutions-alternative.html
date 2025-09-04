@@ -31,19 +31,18 @@
       text-align: center;
       margin: 24px 0 32px;
     }
-    .q-hero .q-eyebrow {
-      display: inline-block;
-      font-size: .825rem;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: var(--quirk-green);
-      font-weight: 700;
-      background: rgba(11,110,55,.08);
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(11,110,55,.18);
-      margin-bottom: 10px;
+    /* NEW: wordmark in place of the pill */
+    .q-hero .q-eyebrow-logo{
+      display:block;
+      height:40px;          /* desktop height */
+      width:auto;
+      margin: 0 auto 12px;  /* centered + spacing below */
+      object-fit: contain;
     }
+    @media (max-width:640px){
+      .q-hero .q-eyebrow-logo{ height:34px; }
+    }
+
     .q-hero h1 {
       margin: 0 0 10px;
       font-size: clamp(1.75rem, 2.7vw, 2.25rem);
@@ -84,7 +83,7 @@
       font-weight: 700;
       transition: transform .06s ease;
       background: #fff;
-      white-space: nowrap;
+      white-space: nowrap; /* keep buttons on one line */
     }
     .q-cta:hover { transform: translateY(-1px); text-decoration: none; }
     .q-cta-small { padding: 8px 12px; font-size: 0.95rem; }
@@ -125,13 +124,13 @@
     .q-disclosure[open] .label-open { display: none; }
     .q-disclosure[open] .label-close { display: inline; }
 
-    /* Salesforce size tweak */
+    /* Salesforce size tweak to align with Creatio visually */
     .q-logo-heading .logo-salesforce { height: 34px; width: auto; }
     @media (max-width: 640px){
       .q-logo-heading .logo-salesforce { height: 30px; }
     }
 
-    /* Right-side Project Library link */
+    /* Make right-side Project Library link match the centered title */
     .topbar-menu .lib-link {
       color: #fff;
       text-decoration: none;
@@ -142,15 +141,10 @@
     .topbar-menu .lib-link:hover,
     .topbar-menu .lib-link:focus { text-decoration: underline; }
 
-    /* Center helpers */
+    /* Tidy/centered actions (used in report card) */
     .q-actions { display:flex; gap:12px; align-items:center; justify-content:center; }
     .q-actions.nowrap { flex-wrap: nowrap; }
     .q-center { text-align:center; }
-
-    /* Footer */
-    .q-footer { max-width:1080px; margin: 28px auto 36px; padding: 0 20px; text-align:center; color:#666; }
-    .q-footer hr { border:0; border-top:1px solid rgba(0,0,0,.08); margin: 0 0 10px; }
-    .q-footer p { margin:0; }
   </style>
 </head>
 <body>
@@ -168,7 +162,9 @@
 
   <div class="q-wrap">
     <section class="q-hero">
-      <span class="q-eyebrow">BDC • Appointment-First</span>
+      <!-- REPLACED: pill -> QUIRK wordmark -->
+      <img class="q-eyebrow-logo" src="assets/quirk-wordmark.png" alt="QUIRK" />
+
       <h1>Top Alternatives to <span style="color:var(--quirk-green)">VIN Solutions</span></h1>
       <p>Quirk’s perspective on modern CRM/BDC options that improve response speed, reduce manual tasks, and book more appointments.</p>
     </section>
@@ -403,12 +399,19 @@
                 <li><strong>Deep research connector:</strong> With a paid OpenAI subscription, query your CRM data in natural language within ChatGPT to get instant insights.</li>
                 <li><strong>Content generation:</strong> Generate email drafts, social posts, and more using OpenAI models inside HubSpot.</li>
               </ul>
+
+              <p><strong>HubSpot and PBS Dealer Systems integration</strong></p>
+              <p>HubSpot does not have a pre-built app for PBS Dealer Systems. To integrate HubSpot with PBS, you have two primary options:</p>
+              <ul>
+                <li><strong>Option 1 – Third-party platform:</strong> Use Zapier, n8n, or APIcenter to connect and automate data syncs.</li>
+                <li><strong>Option 2 – Custom build:</strong> Use HubSpot’s open APIs (or a HubSpot Integration Partner) to create a two-way sync tailored to your workflows.</li>
+              </ul>
             </div>
           </details>
         </article>
       </div>
 
-      <!-- monday.com CRM (restored) -->
+      <!-- monday.com CRM -->
       <div class="q-col-6">
         <article class="q-card">
           <h2 class="q-logo-heading">
@@ -450,22 +453,19 @@
     </section>
 
     <!-- =======================
-         Comparison Report (updated)
+         Comparison Report (View PDF only)
          ======================= -->
     <section class="q-grid" style="margin-top:22px" aria-label="CRM comparison report">
       <div class="q-col-12">
         <article class="q-card">
-          <!-- Centered, one-line title -->
           <h2 class="q-center">CRM Platform Comparison Report</h2>
-          <!-- Centered summary line -->
           <p class="q-center" style="margin-top:6px; color:var(--quirk-muted);">
             Executive summary and matrix covering AI depth, PBS DMS integration realities, cost ranges, and multi-rooftop fit.
           </p>
 
-          <!-- Single centered button that opens the PDF in a new tab -->
           <div class="q-actions nowrap" style="margin-top:14px;">
             <a class="q-cta q-cta-small" target="_blank" rel="noopener"
-               href="assets/CRM_Comparison_report_by_Claude_Research_mode.pdf"
+               href="docs/assets/CRM_Comparison_report_by_Claude_Research_mode.pdf"
                aria-label="View the CRM Comparison report PDF in a new tab">
               View PDF
             </a>
@@ -474,11 +474,5 @@
       </div>
     </section>
   </div>
-
-  <!-- Footer -->
-  <footer class="q-footer" role="contentinfo">
-    <hr />
-    <p>&copy; 2025 Quirk AI — VIN Solutions Alternative</p>
-  </footer>
 </body>
 </html>
