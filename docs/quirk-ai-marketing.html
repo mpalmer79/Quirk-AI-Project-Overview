@@ -19,14 +19,28 @@
   <link rel="stylesheet" href="assets/style.css" />
   <link rel="stylesheet" href="assets/quirk-ai-marketing.css" />
   <style>
-    .footer-logo {
+    .footer-logos {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+      flex-wrap: wrap; /* allows wrapping on smaller screens */
       margin: 2rem 0 1rem;
-      text-align: center;
     }
-    .footer-logo img {
-      max-width: 715px; /* half size of original image */
+    .footer-logos img {
+      max-width: 715px; /* half-size */
+      width: 100%;
       height: auto;
-      display: inline-block;
+      display: block;
+    }
+    @media (max-width: 768px) {
+      .footer-logos {
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+      .footer-logos img {
+        max-width: 90%; /* scale for phones */
+      }
     }
     .footer .copyright {
       text-align: center;
@@ -302,16 +316,19 @@
   </main>
 
   <footer class="container footer">
-    <div class="footer-logo">
+    <div class="footer-logos">
       <a href="https://www.fullpath.com/oem-program/gm/" target="_blank" rel="noopener">
         <img src="assets/GM_FullPath.png" alt="GM Fullpath OEM Program" />
+      </a>
+      <a href="https://www.fullpath.com/oem-program/subaru/" target="_blank" rel="noopener">
+        <img src="assets/Subaru_FullPath.png" alt="Subaru Fullpath OEM Program" />
       </a>
     </div>
     <p class="copyright">© 2025 Quirk AI – Marketing</p>
   </footer>
 
   <script>
-    // simple year stamp
+    // simple year stamp (not needed anymore but kept for consistency)
     document.getElementById('year')?.textContent = new Date().getFullYear();
   </script>
 </body>
