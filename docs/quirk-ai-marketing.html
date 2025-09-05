@@ -24,11 +24,11 @@
       justify-content: center;
       align-items: center;
       gap: 2rem;
-      flex-wrap: wrap; /* allows wrapping on smaller screens */
+      flex-wrap: wrap;
       margin: 2rem 0 1rem;
     }
     .footer-logos img {
-      max-width: 715px; /* half-size */
+      max-width: 715px;
       width: 100%;
       height: auto;
       display: block;
@@ -39,7 +39,7 @@
         gap: 1.5rem;
       }
       .footer-logos img {
-        max-width: 90%; /* scale for phones */
+        max-width: 90%;
       }
     }
     .footer .copyright {
@@ -47,6 +47,15 @@
       font-size: 0.9rem;
       color: #555;
       margin-top: 1rem;
+    }
+    .journey-image {
+      text-align: center;
+      margin: 2rem 0;
+    }
+    .journey-image img {
+      max-width: 1000px;
+      width: 100%;
+      height: auto;
     }
   </style>
 </head>
@@ -91,6 +100,11 @@
         <span class="kpi-label">Content Live</span>
       </div>
     </section>
+
+    <!-- Journey Image -->
+    <div class="journey-image">
+      <img src="assets/Journey.png" alt="Customer Journey Map" />
+    </div>
 
     <!-- Resources -->
     <section id="resources" class="section" aria-labelledby="resources-title">
@@ -326,10 +340,5 @@
     </div>
     <p class="copyright">© 2025 Quirk AI – Marketing</p>
   </footer>
-
-  <script>
-    // simple year stamp (not needed anymore but kept for consistency)
-    document.getElementById('year')?.textContent = new Date().getFullYear();
-  </script>
 </body>
 </html>
