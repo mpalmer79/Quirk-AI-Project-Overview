@@ -1,0 +1,103 @@
+/* ===== Local page enhancements for Quirk AI Marketing ===== */
+
+/* Topbar sizing parity */
+.topbar-menu { font-size: clamp(16px, 1.8vw, 20px); }
+.topbar-title-link {
+  color: #fff; text-decoration: none; font-weight: 600; font-size: inherit; line-height: 1;
+}
+.topbar-title-link:hover, .topbar-title-link:focus { text-decoration: underline; }
+
+/* Layout */
+.page-wrap { max-width: 1100px; margin: 0 auto; padding: 24px 20px 72px; }
+.title { text-align: center; font-size: clamp(28px, 4vw, 40px); font-weight: 800; margin: 24px 0 8px; color: #0f172a; }
+.subtitle { text-align: center; color: #475569; margin-bottom: 18px; }
+
+/* Buttons */
+.btn {
+  display: inline-block; border: 0; background: #0f7a2f; color: #fff;
+  padding: 12px 16px; border-radius: 12px; font-weight: 700; text-decoration: none;
+  box-shadow: 0 1px 0 rgba(0,0,0,.06), 0 6px 16px rgba(16, 185, 129, .15);
+}
+.btn:hover { filter: brightness(1.05); transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+.btn-outline { background: #fff; color: #0f7a2f; border: 2px solid #0f7a2f; }
+.btn-ghost { background: transparent; color: #0f7a2f; border: 2px dashed #b6e2c7; }
+.btn-small { padding: 8px 12px; border-radius: 10px; font-weight: 700; }
+
+.quick-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+
+/* KPI strip */
+.kpi-strip { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; margin: 20px 0 28px; }
+.kpi { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 14px 12px; text-align: center; }
+.kpi-value { display: block; font-size: 20px; font-weight: 800; color: #0f7a2f; }
+.kpi-label { font-size: 12px; color: #475569; }
+
+/* Sections */
+.section { margin-top: 32px; }
+.section-head { display: grid; gap: 6px; margin-bottom: 10px; }
+.section h2 { font-size: clamp(22px, 3vw, 28px); margin: 0; }
+.muted { color: #64748b; }
+
+/* Cards */
+.card-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; }
+.card {
+  background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 16px;
+  box-shadow: 0 1px 0 rgba(0,0,0,.04), 0 8px 22px rgba(2,6,23,.04);
+}
+.card.compact { padding: 14px; }
+.card-title { margin: 0 0 6px; font-size: 16px; font-weight: 800; color: #0f172a; }
+.card-text { margin: 0 0 12px; color: #334155; }
+.card-actions { display: flex; gap: 10px; }
+.link { color: #0f7a2f; text-decoration: none; font-weight: 700; }
+.link:hover, .link:focus { text-decoration: underline; }
+
+@media (max-width: 960px) { .card-grid { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+@media (max-width: 640px) { .card-grid { grid-template-columns: 1fr; } }
+
+/* Two-column content inside disclosures */
+.two-col { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; align-items: start; }
+.aside {
+  background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 12px;
+}
+.disclaimer { font-size: 13px; color: #0f172a; }
+
+/* Bullets inside cards/blocks */
+.bullets { margin: 8px 0 0 18px; color: #334155; }
+
+/* Disclosure (details/summary) with Open/Close label swap */
+.disclosure {
+  border: 1px solid #e2e8f0; border-radius: 16px; background: #fff; margin: 10px 0; overflow: clip;
+}
+.disclosure > summary {
+  list-style: none; cursor: pointer; padding: 14px 16px; font-weight: 800;
+  background: #f0fdf4; color: #065f46; display: flex; align-items: center; gap: 10px;
+}
+.disclosure > summary::-webkit-details-marker { display: none; }
+.disclosure .open-label { display: inline; }
+.disclosure .close-label { display: none; }
+.disclosure[open] .open-label { display: none; }
+.disclosure[open] .close-label { display: inline; }
+.disclosure-body { padding: 16px; border-top: 1px solid #e2e8f0; }
+.disclosure.small > summary { padding: 10px 12px; }
+.code-snippet {
+  display: block; background: #0b1220; color: #e2e8f0; padding: 12px; border-radius: 12px;
+  white-space: pre-wrap; user-select: all; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+}
+
+/* Tools grid */
+.tools-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; }
+.tool { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 16px;
+  box-shadow: 0 1px 0 rgba(0,0,0,.04), 0 8px 22px rgba(2,6,23,.04); }
+.tool h3 { margin: 0 0 6px; font-size: 16px; font-weight: 800; }
+.tool p { margin: 0 0 12px; color: #334155; }
+
+@media (max-width: 960px) { .tools-grid { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+@media (max-width: 640px) { .tools-grid { grid-template-columns: 1fr; } }
+
+/* Footer */
+.footer { margin-top: 40px; }
+
+/* Reduced motion */
+@media (prefers-reduced-motion: no-preference) {
+  .btn { transition: transform .1s ease, filter .1s ease; }
+}
