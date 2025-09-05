@@ -116,3 +116,28 @@
   color: #555;
   margin-top: 1rem;
 }
+.footer-logos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap; /* allows wrapping on smaller screens */
+  margin: 2rem 0 1rem;
+}
+
+.footer-logos img {
+  max-width: 715px; /* same half-size rule */
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .footer-logos {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .footer-logos img {
+    max-width: 90%; /* scale nicely for phones */
+  }
+}
