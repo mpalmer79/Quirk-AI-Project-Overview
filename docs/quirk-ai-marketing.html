@@ -18,6 +18,23 @@
 
   <link rel="stylesheet" href="assets/style.css" />
   <link rel="stylesheet" href="assets/quirk-ai-marketing.css" />
+  <style>
+    .footer-logo {
+      margin: 2rem 0 1rem;
+      text-align: center;
+    }
+    .footer-logo img {
+      max-width: 715px; /* half size of original image */
+      height: auto;
+      display: inline-block;
+    }
+    .footer .copyright {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #555;
+      margin-top: 1rem;
+    }
+  </style>
 </head>
 <body>
   <!-- ======= Top Navigation Bar (same structure as quirk-trade-tool) ======= -->
@@ -285,17 +302,17 @@
   </main>
 
   <footer class="container footer">
-    <p>&copy; <span id="year"></span> Quirk Auto — Marketing</p>
     <div class="footer-logo">
       <a href="https://www.fullpath.com/oem-program/gm/" target="_blank" rel="noopener">
         <img src="assets/GM_FullPath.png" alt="GM Fullpath OEM Program" />
       </a>
     </div>
+    <p class="copyright">© 2025 Quirk AI – Marketing</p>
   </footer>
 
   <script>
     // simple year stamp
-    document.getElementById('year').textContent = new Date().getFullYear();
+    document.getElementById('year')?.textContent = new Date().getFullYear();
   </script>
 </body>
 </html>
