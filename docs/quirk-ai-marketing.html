@@ -5,67 +5,285 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Quirk AI Marketing</title>
 
-  <!-- Force browser/UI to render in light mode -->
+  <!-- Force light mode -->
   <meta name="color-scheme" content="light">
 
   <!-- Keep URLs resolving under the project site -->
   <base href="/Quirk-AI-Project-Overview/">
 
+  <!-- SEO basics -->
+  <meta name="description" content="Central hub for Quirk Auto’s AI-powered marketing: campaigns, resources, SEO calendar, creative, and tools." />
+  <meta property="og:title" content="Quirk AI Marketing" />
+  <meta property="og:description" content="Central hub for campaigns, resources, and AI tools." />
+
   <link rel="stylesheet" href="assets/style.css" />
-
-  <style>
-    /* Match the header sizing used on quirk-trade-tool.html */
-    .topbar-menu { font-size: clamp(16px, 1.8vw, 20px); }
-    .topbar-title-link {
-      color: #fff;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: inherit;
-      line-height: 1;
-    }
-    .topbar-title-link:hover,
-    .topbar-title-link:focus { text-decoration: underline; }
-
-    /* Light placeholder layout (blank slate for now) */
-    .page-wrap {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 24px 20px 56px;
-    }
-    .title {
-      text-align: center;
-      font-size: 2rem;
-      font-weight: 700;
-      margin: 32px 0 12px;
-      color: #111;
-    }
-    .muted { color: #666; text-align: center; }
-  </style>
+  <link rel="stylesheet" href="assets/quirk-ai-marketing.css" />
 </head>
 <body>
   <!-- ======= Top Navigation Bar (same structure as quirk-trade-tool) ======= -->
   <header class="topbar" role="banner">
     <div class="topbar-inner">
-      <!-- Left: HOME link -->
       <a class="home-link" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
-
-      <!-- Center title -->
       <div class="topbar-title">Quirk AI Marketing</div>
-
-      <!-- Right: Project Library link -->
       <nav class="topbar-menu" aria-label="Secondary Navigation">
         <a class="topbar-title-link" href="./project-library.html">Project Library</a>
       </nav>
     </div>
   </header>
 
-  <!-- ======= Page Content (blank slate for now) ======= -->
+  <!-- ======= Page Content ======= -->
   <main class="page-wrap">
-    <h1 class="title">Quirk AI Marketing</h1>
-    <p class="muted">Content coming soon.</p>
+    <!-- Hero -->
+    <section class="hero" aria-labelledby="page-title">
+      <h1 id="page-title" class="title">Quirk AI Marketing</h1>
+      <p class="subtitle">Brand-consistent campaigns, tools, and templates for Chevrolet, Buick GMC, Kia, and Volkswagen in New Hampshire.</p>
+
+      <div class="quick-actions" role="group" aria-label="Quick Actions">
+        <a class="btn" href="#resources">View Resources</a>
+        <a class="btn btn-outline" href="#campaigns">Open Campaigns</a>
+        <a class="btn btn-ghost" href="#tools">AI Tools</a>
+      </div>
+    </section>
+
+    <!-- KPI strip (optional placeholder) -->
+    <section class="kpi-strip" aria-label="KPI Highlights">
+      <div class="kpi">
+        <span class="kpi-value" aria-label="Q4 focus">Q4</span>
+        <span class="kpi-label">Focus Period</span>
+      </div>
+      <div class="kpi">
+        <span class="kpi-value">4</span>
+        <span class="kpi-label">Core Brands</span>
+      </div>
+      <div class="kpi">
+        <span class="kpi-value">SEO</span>
+        <span class="kpi-label">Content Live</span>
+      </div>
+    </section>
+
+    <!-- Resources -->
+    <section id="resources" class="section" aria-labelledby="resources-title">
+      <div class="section-head">
+        <h2 id="resources-title">Key Resources</h2>
+        <p class="muted">Brand, campaign calendars, playbooks, and reference docs.</p>
+      </div>
+
+      <div class="card-grid">
+        <article class="card">
+          <h3 class="card-title">Brand Guidelines</h3>
+          <p class="card-text">Logo usage, colors, typography, voice & tone.</p>
+          <div class="card-actions">
+            <a class="link" href="#" aria-label="Open Brand Guidelines PDF">Open</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <h3 class="card-title">Q4 Campaign Calendar</h3>
+          <p class="card-text">Dates, offers, channels & deliverables by week.</p>
+          <div class="card-actions">
+            <a class="link" href="#" aria-label="Open Q4 Campaign Calendar">Open</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <h3 class="card-title">SEO Content Calendar (Q4)</h3>
+          <p class="card-text">Evergreen + seasonal posts mapped to NH search demand.</p>
+          <div class="card-actions">
+            <a class="link" href="#" aria-label="Open SEO Content Calendar">Open</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <h3 class="card-title">Winter AI Campaign</h3>
+          <p class="card-text">Snow-season positioning, creative, and ad copy sets.</p>
+          <div class="card-actions">
+            <a class="link" href="#" aria-label="Open Winter AI Campaign">Open</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <h3 class="card-title">Trade & Appraisal Tools</h3>
+          <p class="card-text">Sight-Unseen Appraisal and Quirk Trade Tool integrations.</p>
+          <div class="card-actions">
+            <a class="link" href="./docs/quirk-trade-tool.html" aria-label="Open Quirk Trade Tool">Open</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <h3 class="card-title">Website Reference</h3>
+          <p class="card-text">Component patterns, SEO tips, and UX conventions.</p>
+          <div class="card-actions">
+            <a class="link" href="#" aria-label="Open Website Reference">Open</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Campaigns with Open/Close disclosure -->
+    <section id="campaigns" class="section" aria-labelledby="campaigns-title">
+      <div class="section-head">
+        <h2 id="campaigns-title">Campaigns</h2>
+        <p class="muted">Channel-ready copy blocks, creative notes, and required disclaimers.</p>
+      </div>
+
+      <!-- Chevrolet -->
+      <details class="disclosure" open>
+        <summary>
+          <span class="open-label">Open for Chevrolet</span>
+          <span class="close-label">Close Chevrolet</span>
+        </summary>
+        <div class="disclosure-body">
+          <div class="two-col">
+            <div>
+              <h3>Positioning</h3>
+              <p>Trucks & SUVs built for New England—reliability, towing, winter confidence.</p>
+              <h4>Social Post (Short)</h4>
+              <p><strong>Silverado Season:</strong> Tackle NH winter like a pro. Remote start, 4x4 confidence, and room for every weekend plan. <em>#QuirkChevy #NHTrucks</em></p>
+              <h4>Email Snippet</h4>
+              <p>Get ready for snow—and savings. Explore Silverado and Equinox with winter-ready features and transparent pricing.</p>
+            </div>
+            <aside class="aside">
+              <h4>Required Disclaimer</h4>
+              <p class="disclaimer">See dealer for details. Tax, title, and fees extra.</p>
+            </aside>
+          </div>
+        </div>
+      </details>
+
+      <!-- Buick GMC -->
+      <details class="disclosure">
+        <summary>
+          <span class="open-label">Open for Buick GMC</span>
+          <span class="close-label">Close Buick GMC</span>
+        </summary>
+        <div class="disclosure-body">
+          <div class="two-col">
+            <div>
+              <h3>Positioning</h3>
+              <p>Premium comfort + capability—quiet cabins, advanced safety, winter-smart AWD.</p>
+              <h4>Website Block</h4>
+              <p><strong>Yukon & Acadia:</strong> Room for family, cargo for ski weekends, tech for every mile.</p>
+            </div>
+            <aside class="aside">
+              <h4>Required Disclaimer</h4>
+              <p class="disclaimer">See dealer for details. Tax, title, and fees extra.</p>
+            </aside>
+          </div>
+        </div>
+      </details>
+
+      <!-- Kia -->
+      <details class="disclosure">
+        <summary>
+          <span class="open-label">Open for Kia</span>
+          <span class="close-label">Close Kia</span>
+        </summary>
+        <div class="disclosure-body">
+          <div class="two-col">
+            <div>
+              <h3>Positioning</h3>
+              <p>Value, tech, and warranty confidence—great for first-time buyers and commuters.</p>
+              <h4>Ad Copy (Responsive Search)</h4>
+              <ul class="bullets">
+                <li>Kia SUVs in Stock | Transparent Pricing</li>
+                <li>Winter-Ready AWD | Test-Drive Today</li>
+                <li>Shop Quirk Kia NH | Value Meets Tech</li>
+              </ul>
+            </div>
+            <aside class="aside">
+              <h4>Required Disclaimer</h4>
+              <p class="disclaimer">See dealer for details. Tax, title, and fees extra.</p>
+            </aside>
+          </div>
+        </div>
+      </details>
+
+      <!-- Volkswagen -->
+      <details class="disclosure">
+        <summary>
+          <span class="open-label">Open for Volkswagen</span>
+          <span class="close-label">Close Volkswagen</span>
+        </summary>
+        <div class="disclosure-body">
+          <div class="two-col">
+            <div>
+              <h3>Positioning</h3>
+              <p>European feel, safety, and efficiency—great on I-93 and winter roads.</p>
+              <h4>Social Post (Short)</h4>
+              <p><strong>Tiguan</strong> with available 4MOTION®—comfort meets winter agility. <em>#QuirkVW #NHWinter</em></p>
+            </div>
+            <aside class="aside">
+              <h4>Required Disclaimer</h4>
+              <p class="disclaimer">See dealer for details. Tax, title, and fees extra.</p>
+            </aside>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <!-- SEO & Content -->
+    <section id="seo" class="section" aria-labelledby="seo-title">
+      <div class="section-head">
+        <h2 id="seo-title">SEO & Content</h2>
+        <p class="muted">Evergreen + seasonal topics tailored to NH drivers and weather.</p>
+      </div>
+
+      <div class="card-grid">
+        <article class="card compact">
+          <h3 class="card-title">Winter Prep Guide</h3>
+          <p class="card-text">Tires, remote start, AWD tips, and safety checks.</p>
+          <a class="link" href="#" aria-label="Open Winter Prep Guide">Open</a>
+        </article>
+
+        <article class="card compact">
+          <h3 class="card-title">Truck Towing 101</h3>
+          <p class="card-text">Payload vs. towing, hitch classes, and NH trailer rules.</p>
+          <a class="link" href="#" aria-label="Open Truck Towing 101">Open</a>
+        </article>
+
+        <article class="card compact">
+          <h3 class="card-title">EVs in Cold Weather</h3>
+          <p class="card-text">Range realities, charging at home, and warm-up tips.</p>
+          <a class="link" href="#" aria-label="Open EVs in Cold Weather">Open</a>
+        </article>
+      </div>
+    </section>
+
+    <!-- Tools -->
+    <section id="tools" class="section" aria-labelledby="tools-title">
+      <div class="section-head">
+        <h2 id="tools-title">Tools</h2>
+        <p class="muted">Prompts, templates, and integrations for faster production.</p>
+      </div>
+
+      <div class="tools-grid">
+        <article class="tool">
+          <h3>Prompt Library</h3>
+          <p>Pre-built prompts for social, email, and ad variants with NH tie-ins.</p>
+          <a class="btn btn-small" href="#">Open Library</a>
+        </article>
+
+        <article class="tool">
+          <h3>Disclosure Snippet</h3>
+          <p>Copy-paste legal disclaimer with accessibility-friendly pattern.</p>
+          <details class="disclosure small">
+            <summary>
+              <span class="open-label">Open for snippet</span>
+              <span class="close-label">Close snippet</span>
+            </summary>
+            <pre class="code-snippet" tabindex="0">See dealer for details. Tax, title, and fees extra.</pre>
+          </details>
+        </article>
+
+        <article class="tool">
+          <h3>Report Builder</h3>
+          <p>Compile social activity into a master PDF from June 1, 2025 onward.</p>
+          <a class="btn btn-small btn-outline" href="#">Build Report</a>
+        </article>
+      </div>
+    </section>
   </main>
 
-  <!-- Optional footer to match site polish -->
   <footer class="container footer">
     <p>&copy; <span id="year"></span> Quirk Auto — Marketing</p>
   </footer>
