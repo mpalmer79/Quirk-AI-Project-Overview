@@ -1,1 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quirk AI Marketing</title>
 
+  <!-- Force browser/UI to render in light mode -->
+  <meta name="color-scheme" content="light">
+
+  <!-- Keep URLs resolving under the project site -->
+  <base href="/Quirk-AI-Project-Overview/">
+
+  <link rel="stylesheet" href="assets/style.css" />
+
+  <style>
+    /* Match the header sizing used on quirk-trade-tool.html */
+    .topbar-menu { font-size: clamp(16px, 1.8vw, 20px); }
+    .topbar-title-link {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: inherit;
+      line-height: 1;
+    }
+    .topbar-title-link:hover,
+    .topbar-title-link:focus { text-decoration: underline; }
+
+    /* Light placeholder layout (blank slate for now) */
+    .page-wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 24px 20px 56px;
+    }
+    .title {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 32px 0 12px;
+      color: #111;
+    }
+    .muted { color: #666; text-align: center; }
+  </style>
+</head>
+<body>
+  <!-- ======= Top Navigation Bar (same structure as quirk-trade-tool) ======= -->
+  <header class="topbar" role="banner">
+    <div class="topbar-inner">
+      <!-- Left: HOME link -->
+      <a class="home-link" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
+
+      <!-- Center title -->
+      <div class="topbar-title">Quirk AI Marketing</div>
+
+      <!-- Right: Project Library link -->
+      <nav class="topbar-menu" aria-label="Secondary Navigation">
+        <a class="topbar-title-link" href="./project-library.html">Project Library</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ======= Page Content (blank slate for now) ======= -->
+  <main class="page-wrap">
+    <h1 class="title">Quirk AI Marketing</h1>
+    <p class="muted">Content coming soon.</p>
+  </main>
+
+  <!-- Optional footer to match site polish -->
+  <footer class="container footer">
+    <p>&copy; <span id="year"></span> Quirk Auto — Marketing</p>
+  </footer>
+
+  <script>
+    // simple year stamp
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
