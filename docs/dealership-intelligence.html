@@ -21,6 +21,12 @@
     .section-title { font-size: 1.35rem; font-weight: 800; color:#0f172a; margin: 0 0 8px; border-bottom: 3px solid #0b6e37; padding-bottom: 6px; }
     .section-title.center { text-align: center; }  /* center titles where requested */
 
+    /* Pills row (matches hero buttons on index) */
+    .pill-row { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 10px; }
+    .btn { display:inline-block; padding:10px 14px; border-radius:999px; border:1px solid rgba(11,110,55,.22); color:#0b6e37; text-decoration:none; font-weight:700; background:#fff; line-height:1; }
+    .btn:hover{ text-decoration:none; transform:translateY(-1px); }
+    .btn.primary{ background:#0b6e37; color:#fff; border-color:#0b6e37; }
+
     /* Cards + grid */
     .grid { display:grid; gap:14px; grid-template-columns: repeat(12,1fr); }
     .card { background:#fff; border:1px solid #e5e7eb; border-radius:14px; padding:14px; box-shadow:0 6px 16px rgba(2,6,23,.06); }
@@ -54,9 +60,6 @@
     /* CTA panel */
     .cta { background: linear-gradient(0deg, rgba(11,110,55,.06), rgba(11,110,55,.06)), #fff;
            border:1px solid #e5e7eb; border-radius:16px; padding:22px; text-align:center; }
-    .btn { display:inline-block; padding:10px 14px; border-radius:999px; border:1px solid rgba(11,110,55,.22); color:#0b6e37; text-decoration:none; font-weight:700; background:#fff; }
-    .btn:hover{ text-decoration:none; transform:translateY(-1px); }
-    .btn.primary{ background:#0b6e37; color:#fff; border-color:#0b6e37; }
 
     /* Make right "Project Library" match center title size (like Quirk Trade Tool) */
     .topbar-menu { font-size: clamp(16px, 1.8vw, 20px); }
@@ -83,9 +86,16 @@
     <section class="section">
       <p class="lead">
         The Quirk AI Workplace Verification system integrates facial recognition technology with your existing biometric
-        time clock to ensure employees are present in appropriate areas during work hours. Is is designed specifically for
-        automotive dealership operations with a compliance-first architecture. "Click for Demo" pill "Click for code" pill
+        time clock to ensure employees are present in appropriate areas during work hours. It is designed specifically for
+        automotive dealership operations with a compliance-first architecture.
       </p>
+
+      <!-- New pills row -->
+      <div class="pill-row" role="group" aria-label="Quick actions">
+        <a class="btn" href="#demo">Click for demo</a>
+        <a class="btn" href="#code">Click for code</a>
+        <a class="btn" href="#install">Click here for Install</a>
+      </div>
     </section>
 
     <!-- ===================== System Overview ===================== -->
@@ -124,7 +134,7 @@
           <tbody>
             <tr>
               <th>Camera Coverage</th>
-              <td>100 IP cameras across dealership areas</td>
+              <td>100 IP cameras across four dealerships</td>
             </tr>
             <tr>
               <th>Employee Capacity</th>
