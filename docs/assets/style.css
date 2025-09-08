@@ -418,3 +418,108 @@ footer.footer { flex-shrink: 0; }
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0,0,0,.15);
 }
+/* ===== Quirk Demo — Polish Pack (safe to paste after your current styles) ===== */
+
+/* 1) Color tokens for consistency */
+:root{
+  --q-green:#0b6e37;
+  --q-ink:#0f172a;
+  --q-sub:#334155;
+  --q-muted:#64748b;
+  --q-line:#e5e7eb;
+  --q-shadow:0 10px 24px rgba(2,6,23,.18);
+  --q-shadow-sm:0 6px 16px rgba(2,6,23,.10);
+}
+
+/* 2) Topbar: subtle depth + crisper hover/focus */
+.topbar{
+  backdrop-filter: saturate(1.1) blur(2px);
+  box-shadow: 0 1px 0 rgba(2,6,23,.06);
+}
+.topbar a,
+.topbar .topbar-title-link{
+  transition: color .18s ease, opacity .18s ease, text-decoration-color .18s ease;
+}
+.topbar a:hover,
+.topbar .topbar-title-link:hover{
+  text-decoration-color: currentColor;
+  opacity:.92;
+}
+.topbar a:focus-visible,
+.topbar .topbar-title-link:focus-visible{
+  outline: 3px solid color-mix(in srgb, var(--q-green) 70%, #fff);
+  outline-offset: 2px;
+  border-radius:8px;
+}
+
+/* 3) Page rhythm: a little more breathing room on large screens; tighter on small */
+.page-wrap{
+  padding: clamp(24px, 4vw, 48px) 16px clamp(56px, 8vw, 80px);
+  max-width: 1200px;
+}
+
+/* 4) Video card: gentler radius, soft hover lift, better shadow on mobile */
+.video-box{
+  border-radius: 16px;
+  box-shadow: var(--q-shadow);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.video-box:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(2,6,23,.22);
+}
+
+/* 5) Summary panel: refined typography + nicer list markers */
+.summary-panel{
+  border: 1px solid var(--q-line);
+  border-radius: 16px;
+  box-shadow: var(--q-shadow-sm);
+  background: linear-gradient(0deg, rgba(11,110,55,.03), rgba(11,110,55,.03)), #fff;
+}
+.summary-title{
+  color: var(--q-ink);
+  letter-spacing: .2px;
+}
+.summary-lead{ color: var(--q-sub); }
+.summary-list{
+  margin: 10px 0 0 20px;
+  color: var(--q-sub);
+}
+.summary-list li{ 
+  margin-bottom: 10px; 
+}
+.summary-list li::marker{
+  color: var(--q-green);
+}
+
+/* 6) Link style inside summary for any future refs */
+.summary-panel a{
+  color: var(--q-green);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.summary-panel a:hover{ opacity:.9; }
+
+/* 7) Accessibility: reduce motion preference respected */
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}
+
+/* 8) Very small devices: make text and paddings comfortable */
+@media (max-width: 380px){
+  .summary-panel{ padding: 14px; }
+  .summary-title{ font-size: 18px; }
+  .summary-lead, .summary-list{ font-size: 14px; }
+}
+
+/* 9) Optional: a neat “section cap” under the video */
+.video-wrap{ margin-bottom: 12px; }
+.summary-wrap{ position: relative; }
+.summary-wrap::before{
+  content:"";
+  position:absolute; left:50%; transform:translateX(-50%);
+  top:-12px; width: 72px; height: 4px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--q-green) 70%, #fff);
+  opacity:.35;
+}
