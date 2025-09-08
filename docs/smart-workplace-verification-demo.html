@@ -39,6 +39,39 @@
       border: 0;
       display: block;
     }
+
+    /* TL;DR panel styling */
+    .summary-wrap { display: grid; place-items: center; margin-top: 28px; }
+    .summary-panel {
+      width: min(1100px, 92vw);
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      box-shadow: 0 8px 20px rgba(2,6,23,.10);
+      padding: clamp(16px, 3.2vw, 28px);
+    }
+    .summary-title {
+      margin: 0 0 10px;
+      font-size: clamp(18px, 2.6vw, 22px);
+      line-height: 1.2;
+      font-weight: 800;
+      color: #0f172a;
+      text-align: left;
+    }
+    .summary-lead {
+      margin: 0 0 10px;
+      color: #334155;
+      line-height: 1.6;
+      font-size: clamp(14px, 1.9vw, 16px);
+    }
+    .summary-list {
+      margin: 8px 0 0 18px;
+      color: #334155;
+      line-height: 1.65;
+      font-size: clamp(14px, 1.9vw, 16px);
+    }
+    .summary-list li { margin-bottom: 8px; }
+    .note { color:#64748b; font-size: clamp(12px, 1.7vw, 14px); margin-top: 8px; }
   </style>
 </head>
 <body>
@@ -72,6 +105,26 @@
           referrerpolicy="strict-origin-when-cross-origin"
           allowfullscreen>
         </iframe>
+      </div>
+    </section>
+
+    <!-- ======= TL;DR Summary ======= -->
+    <section class="summary-wrap" aria-label="Video TL;DR">
+      <div class="summary-panel">
+        <h2 class="summary-title">TL;DR — Video Summary</h2>
+        <p class="summary-lead">
+          BioEnable positions AI biometrics as the next step for workforce management—linking facial recognition,
+          access control, and real-time monitoring with analytics to modernize attendance and security.
+        </p>
+        <ul class="summary-list">
+          <li><strong>What it is:</strong> AI-powered attendance with facial recognition, smart access control, live monitoring, and dashboards for instant insights.</li>
+          <li><strong>Why it matters:</strong> Aims to replace manual time-tracking and fragmented systems with a unified, digital workplace experience.</li>
+          <li><strong>How it fits:</strong> Designed to integrate with existing infrastructure so organizations don’t need major system changes.</li>
+          <li><strong>Results claimed in video:</strong> Reduced admin workload and improved shift accuracy (example cited: ~30% admin cost reduction in 3 months).</li>
+          <li><strong>Who it serves:</strong> On-site, hybrid, and remote teams—marketed as scalable and “future-ready.”</li>
+          <li><strong>Big picture:</strong> Vendor frames AI biometrics as a necessary upgrade for efficiency, security, and visibility going forward.</li>
+        </ul>
+        <p class="note">Summary based on the video transcript provided.</p>
       </div>
     </section>
   </main>
