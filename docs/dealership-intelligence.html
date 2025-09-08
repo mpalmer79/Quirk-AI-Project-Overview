@@ -19,10 +19,9 @@
     .lead        { margin: 18px 0 6px; color:#475569; font-size:1.05rem; }
     .section     { margin: 18px 0 20px; }
     .section-title { font-size: 1.35rem; font-weight: 800; color:#0f172a; margin: 0 0 8px; border-bottom: 3px solid #0b6e37; padding-bottom: 6px; }
-    /* CENTER the requested section titles */
-    .section-title.center { text-align: center; }
+    .section-title.center { text-align: center; }  /* center titles where requested */
 
-    /* Cards */
+    /* Cards + grid */
     .grid { display:grid; gap:14px; grid-template-columns: repeat(12,1fr); }
     .card { background:#fff; border:1px solid #e5e7eb; border-radius:14px; padding:14px; box-shadow:0 6px 16px rgba(2,6,23,.06); }
     .col-12{ grid-column: span 12; }
@@ -33,6 +32,11 @@
 
     .card h3 { margin:0 0 6px; font-size:1.02rem; color:#0b6e37; font-weight:800; }
     .muted { color:#475569; }
+
+    /* Center text INSIDE the Intelligent Alert System cards only */
+    .alerts .card,
+    .alerts .card h3,
+    .alerts .card p { text-align: center; }
 
     /* Spec table */
     .table-wrap { overflow-x:auto; }
@@ -174,9 +178,9 @@
     <!-- ===================== Intelligent Alert System ===================== -->
     <section class="section">
       <h2 class="section-title center">Intelligent Alert System</h2>
-      <p class="muted">Our if/then logic engine provides contextual alerts based on employee status, location, and time:</p>
+      <p class="muted" style="text-align:center;">Our if/then logic engine provides contextual alerts based on employee status, location, and time:</p>
 
-      <div class="grid" aria-label="Alert types">
+      <div class="grid alerts" aria-label="Alert types">
         <div class="card col-4">
           <h3>Verified Presence</h3>
           <p class="muted">Employee clocked in + detected in appropriate area = normal verification logged.</p>
