@@ -62,6 +62,15 @@
     .alerts .card h3,
     .alerts .card p { text-align: center; }
 
+    /* Center the single After-Hours card on desktop */
+    .alerts .after-hours {
+      grid-column: 4 / span 6;   /* centers across 6 of 12 columns */
+      justify-self: center;
+    }
+    @media (max-width: 900px){
+      .alerts .after-hours { grid-column: span 12; }
+    }
+
     /* Spec table */
     .table-wrap { overflow-x:auto; }
     table { width:100%; border-collapse: collapse; background:#fff; border:1px solid #e5e7eb; border-radius:12px; }
@@ -93,7 +102,6 @@
     .docx-list { margin: 0 0 12px 20px; color:#334155; }
     .docx-questions { margin-top: 14px; border-top:1px dashed #e5e7eb; padding-top:12px; }
     .small-note { font-size:.9rem; color:#475569; }
-    /* Make sure long lines are comfortable on phones */
     @media (max-width:640px){
       .docx-block { padding: 0 2px; }
     }
@@ -245,7 +253,9 @@
           <h3>Time Clock Discrepancy</h3>
           <p class="muted">Employee present but not clocked in = potential time-theft alert.</p>
         </div>
-        <div class="card col-6">
+
+        <!-- Centered single card -->
+        <div class="card after-hours">
           <h3>After-Hours Detection</h3>
           <p class="muted">Security alerts for unauthorized after-hours presence.</p>
         </div>
