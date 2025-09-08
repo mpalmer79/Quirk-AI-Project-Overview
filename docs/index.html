@@ -122,6 +122,22 @@
     .detail-label { font-weight: 600; color: #0f172a; }
     .detail-value { color: #111; }
 
+    /* ===== NEW: center the Status badge within each card =====
+       The Status row is the first .project-detail in every card.
+       We collapse it to a single column, hide the label, and center the pill. */
+    .project-item .project-details .project-detail:first-child {
+      grid-template-columns: 1fr !important;
+      align-items: center;
+    }
+    .project-item .project-details .project-detail:first-child .detail-label {
+      display: none;
+    }
+    .project-item .project-details .project-detail:first-child .detail-value {
+      justify-self: center;
+      text-align: center;
+      width: 100%;
+    }
+
     /* Status badges */
     .badge {
       display: inline-block;
