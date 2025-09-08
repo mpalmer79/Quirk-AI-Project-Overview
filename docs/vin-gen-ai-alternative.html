@@ -13,27 +13,375 @@
 
   <!-- Sitewide styles (topbar, fonts, watermark rules, etc.) -->
   <link rel="stylesheet" href="assets/style.css" />
+
+  <style>
+    /* ===== Page-scoped polish for VIN Gen AI Alternative ===== */
+    .page-wrap { max-width: 1080px; margin: 0 auto; padding: 28px 20px 72px; }
+    .hero { text-align: center; margin: 16px 0 24px; }
+    .hero h1 { margin: 0 0 8px; font-size: clamp(1.6rem, 3vw, 2.2rem); }
+    .hero p { margin: 0; color: #475569; }
+
+    .toc { display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin: 20px 0 24px; }
+    .toc a { display: block; text-decoration: none; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 14px; }
+    .toc a:hover { background: #f8fafc; }
+
+    .kpi-grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); margin: 12px 0 24px; }
+    .tile { border: 1px solid #e2e8f0; border-radius: 16px; padding: 16px 14px; background: #fff; }
+    .tile h3 { margin: 0 0 6px; font-size: 1.1rem; }
+    .tile .num { font-size: 1.6rem; font-weight: 800; }
+
+    .section { margin: 28px 0; }
+    .section h2 { margin: 0 0 8px; font-size: clamp(1.25rem, 2.6vw, 1.6rem); }
+    .muted { color: #475569; }
+
+    .cards { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+    .card { border: 1px solid #e2e8f0; border-radius: 16px; background: #fff; padding: 16px; }
+    .card h3 { margin: 0 0 6px; font-size: 1.05rem; }
+    .card p { margin: 6px 0 0; }
+
+    details { border: 1px dashed #e2e8f0; border-radius: 12px; padding: 12px 14px; background: #fff; }
+    details + details { margin-top: 10px; }
+    summary { cursor: pointer; font-weight: 600; }
+    summary::marker { color: #0b6e37; }
+
+    .table { width: 100%; border-collapse: collapse; }
+    .table th, .table td { border: 1px solid #e2e8f0; padding: 10px; text-align: left; }
+    .table th { background: #f8fafc; font-weight: 600; }
+
+    .callout { border-left: 4px solid #0b6e37; background: #f6fff9; padding: 10px 12px; border-radius: 8px; }
+    .small { font-size: .92rem; }
+
+    .cta { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); }
+    .btn { display:inline-block; border:1px solid #0b6e37; padding:10px 14px; border-radius:10px; text-decoration:none; }
+    .btn:hover { background:#0b6e37; color:#fff; }
+
+    /* keep footer centered (uses your global .footer) */
+  </style>
 </head>
 <body class="page">
 
-  <!-- ======= Top Navigation Bar (cloned style) ======= -->
+  <!-- ======= Top Navigation Bar ======= -->
   <header class="topbar" role="banner">
     <div class="topbar-inner">
-      <!-- Left: HOME -->
       <a class="home-link" href="./">HOME</a>
-
-      <!-- Center: page title -->
       <div class="topbar-title">VIN Gen AI Alternative</div>
-
-      <!-- Right: Project Library -->
       <nav class="topbar-menu" aria-label="Secondary Navigation">
         <a class="topbar-title-link" href="project-library.html">Project Library</a>
       </nav>
     </div>
   </header>
 
-  <!-- No additional page content per request; watermark is preserved via global CSS -->
-  <main class="page-wrap"></main>
+  <!-- ======= Page Content ======= -->
+  <main class="page-wrap" id="top">
+    <section class="hero">
+      <h1>VIN Gen&nbsp;AI Alternative — Appointment-First Automation</h1>
+      <p class="muted">Designed for BDC teams to respond faster, book more shows, and keep every touch logged in VIN Solutions.</p>
+    </section>
+
+    <!-- On this page -->
+    <nav class="toc" aria-label="On this page">
+      <a href="#executive-summary">Executive Summary</a>
+      <a href="#kpis">Target KPIs</a>
+      <a href="#workflow">Workflow Comparison</a>
+      <a href="#library">Smart Response Library</a>
+      <a href="#training">Training & Roleplay</a>
+      <a href="#inventory">Inventory & Incentives Integration</a>
+      <a href="#insights">Desk Log Insights</a>
+      <a href="#timeline">Implementation Timeline</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+
+    <!-- Executive Summary -->
+    <section id="executive-summary" class="section">
+      <h2>Executive Summary</h2>
+      <p class="muted">VIN Solutions remains your CRM backbone. The Gen&nbsp;AI layer personalizes emails/SMS/call prompts in real time, injects inventory & incentives, and auto-logs tasks/appointments in VIN.</p>
+
+      <div class="cards">
+        <div class="card">
+          <h3>Current Pain (VIN-only)</h3>
+          <ul class="small">
+            <li>Canned templates feel impersonal</li>
+            <li>Heavy manual personalization & task follow-up</li>
+            <li>Slow response on busy days</li>
+            <li>Appointments depend on agent skill</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Gen AI Overlay</h3>
+          <ul class="small">
+            <li>&lt; 5-minute responses with inventory & incentives</li>
+            <li>Tasks/appointments created & logged in VIN</li>
+            <li>Consistent appointment push with 2 time options</li>
+            <li>Projected +15–20% appointment conversion lift</li>
+          </ul>
+        </div>
+      </div>
+
+      <details class="section">
+        <summary>Open for more (proof points & examples)</summary>
+        <div class="callout small" style="margin-top:10px">
+          <strong>Examples</strong>: “We have 3 Traverses in stock including RS; $1,500 customer cash + 2.9% APR. Can I reserve one for Thursday evening or Saturday morning?”  
+          Consistent, urgent, appointment-first language used across email/SMS/phone prompts.
+        </div>
+      </details>
+    </section>
+
+    <!-- KPIs -->
+    <section id="kpis" class="section">
+      <h2>Target KPIs</h2>
+      <div class="kpi-grid">
+        <div class="tile">
+          <h3>Appointment Conversion</h3>
+          <div class="num">+15–20%</div>
+          <div class="muted small">within 6 months</div>
+        </div>
+        <div class="tile">
+          <h3>Response Speed</h3>
+          <div class="num">&lt; 5 min</div>
+          <div class="muted small">avg compose+send</div>
+        </div>
+        <div class="tile">
+          <h3>Staff Workload</h3>
+          <div class="num">−30%</div>
+          <div class="muted small">manual tasks/emails</div>
+        </div>
+        <div class="tile">
+          <h3>Follow-up Compliance</h3>
+          <div class="num">95%+</div>
+          <div class="muted small">VIN tasks on time</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Workflow Comparison -->
+    <section id="workflow" class="section">
+      <h2>Workflow Comparison</h2>
+      <div class="cards">
+        <div class="card">
+          <h3>VIN Solutions (Today)</h3>
+          <ol class="small">
+            <li>New lead → manual template pick</li>
+            <li>Agent edits pricing/inventory</li>
+            <li>Manual task & appt creation</li>
+            <li>Follow-ups depend on agent</li>
+          </ol>
+        </div>
+        <div class="card">
+          <h3>Gen AI Alternative (Overlay)</h3>
+          <ol class="small">
+            <li>Lead hits VIN → AI pulls inventory + incentives</li>
+            <li>AI composes email/SMS w/ 2 appt slots (&lt;5 min)</li>
+            <li>Auto-logs activity & creates VIN task/appointment</li>
+            <li>AI re-nudges at 24/48h; manager escalates at 7d</li>
+          </ol>
+        </div>
+      </div>
+
+      <details class="section">
+        <summary>Open for more (sample activity log fields)</summary>
+        <div class="small" style="margin-top:8px">
+          <ul>
+            <li><code>activity_note(html)</code> with inventory & incentive tokens</li>
+            <li><code>lead_id</code>, <code>suggested_times</code>, <code>task_due_at</code></li>
+            <li><code>appointment(start/end)</code> on acceptance</li>
+          </ul>
+        </div>
+      </details>
+    </section>
+
+    <!-- Smart Response Library -->
+    <section id="library" class="section">
+      <h2>Smart Response Library (Sampler)</h2>
+      <p class="muted">Standardized email/SMS/call prompts that always push toward an appointment.</p>
+
+      <div class="cards">
+        <div class="card">
+          <h3>New Internet Lead — Inventory</h3>
+          <p class="small"><strong>Email</strong>: “Hi [Name], we currently have <em>[stock_count]</em> [Model] in stock including [trim]. This week: <em>[cash_rebate]</em> + <em>[apr_rate]</em>. Would Thursday 6:15pm or Saturday 10:30am work for a quick drive?”</p>
+        </div>
+        <div class="card">
+          <h3>Best Price Inquiry</h3>
+          <p class="small">“The [Model] is $[price] with incentives. I can have one ready for you — does Thursday evening or Saturday morning work best?”</p>
+        </div>
+        <div class="card">
+          <h3>“I’m Just Shopping”</h3>
+          <p class="small">“Totally understand. How about a quick 15-minute no-obligation test drive? It’ll help you compare. Thursday or Saturday?”</p>
+        </div>
+        <div class="card">
+          <h3>No Response 24/48h</h3>
+          <p class="small">Light nudge with inventory/incentive reminder and two new times. Auto-schedules in VIN.</p>
+        </div>
+      </div>
+
+      <details class="section">
+        <summary>Open for more (all 20 scenarios list)</summary>
+        <div class="small" style="margin-top:8px">
+          Includes: Trade-In Interest, Lease vs Purchase, Appointment Confirmation, Reschedule, Missed Appt Recovery, Post-Test-Drive, Manager Escalation, Final-Chance Closeout, Post-Sale Thank You, Unsold Visit Follow-Up, End-of-Month Push, Credit-Challenged, Out-of-Area, Vehicle On-Order, Vehicle Sold — Alternatives, Service-to-Sales Equity Mining, and more.
+        </div>
+      </details>
+    </section>
+
+    <!-- Training & Roleplay -->
+    <section id="training" class="section">
+      <h2>Training & Roleplay</h2>
+      <p class="muted">Run calls twice: first with a typical VIN template, then with AI prompts. Measure whether the appointment was secured.</p>
+
+      <div class="cards">
+        <div class="card">
+          <h3>Traverse Example (Phone)</h3>
+          <p class="small"><strong>AI prompt</strong>: mention stock count → cite incentive → offer two times. Consistent appointment push beats generic invites.</p>
+        </div>
+        <div class="card">
+          <h3>Objection Handling</h3>
+          <p class="small">Reassure → low-commitment visit → two time options. Keeps the conversation alive and directed to a show.</p>
+        </div>
+      </div>
+
+      <details class="section">
+        <summary>Open for more (quick drill checklist)</summary>
+        <ul class="small" style="margin-top:8px">
+          <li>Pair up (customer/agent)</li>
+          <li>Run VIN style → score outcome</li>
+          <li>Run AI style → score outcome</li>
+          <li>Note confidence, clarity, and appointment set</li>
+        </ul>
+      </details>
+    </section>
+
+    <!-- Inventory & Incentives Integration -->
+    <section id="inventory" class="section">
+      <h2>Inventory & Incentives Integration</h2>
+      <p class="muted">AI reads live website inventory and OEM programs, then injects tokens into responses while keeping work inside VIN.</p>
+
+      <div class="cards">
+        <div class="card">
+          <h3>Data & Endpoints</h3>
+          <ul class="small">
+            <li><strong>Inventory</strong>: <code>GET /inventory.json</code> (stock_number, vin, year, trim, status, price, photo, updated_at)</li>
+            <li><strong>Incentives</strong>: <code>GET /incentives?make=&amp;model=&amp;zip=</code> (cash_rebate, apr, term, expiry)</li>
+            <li><strong>Tokens</strong>: [[stock_count]], [[model_trim]], [[cash_rebate]], [[apr_rate]], [[two_appt_options]], [[primary_photo]]</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Event Flow</h3>
+          <ol class="small">
+            <li>New lead arrives in VIN</li>
+            <li>AI pulls inventory + incentives</li>
+            <li>Composes email/SMS (&lt;5 min) with two slots</li>
+            <li>Logs Activity + creates Task/Appt in VIN</li>
+            <li>Handles replies; sends confirmation/reminder</li>
+          </ol>
+        </div>
+      </div>
+
+      <details class="section">
+        <summary>Open for more (fallbacks & SLAs)</summary>
+        <div class="small" style="margin-top:8px">
+          If inventory feed unreachable → serve cache ≤15 min & flag “stale”.  
+          If incentives timeout → omit incentives line, keep appointment CTA.  
+          Price/availability mismatch → add “subject to prior sale” + closest alternative.
+        </div>
+      </details>
+    </section>
+
+    <!-- Desk Log Insights -->
+    <section id="insights" class="section">
+      <h2>Desk Log Insights (Snapshot)</h2>
+      <p class="muted">Where automation helps most: faster first replies and auto-nudges when staff are busy.</p>
+
+      <div class="cards">
+        <div class="card">
+          <h3>Funnel Summary</h3>
+          <table class="table small" aria-label="Funnel summary">
+            <thead><tr><th>Stage</th><th>Count</th><th>Conv from prior</th></tr></thead>
+            <tbody>
+              <tr><td>Leads Created</td><td>17</td><td>—</td></tr>
+              <tr><td>Contacted</td><td>9</td><td>-47%</td></tr>
+              <tr><td>Appointments Set</td><td>0</td><td>-100%</td></tr>
+              <tr><td>Showroom Visits</td><td>0</td><td>—</td></tr>
+              <tr><td>Deals</td><td>0</td><td>—</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <h3>Response Time Buckets</h3>
+          <table class="table small" aria-label="Response times">
+            <thead><tr><th>Bucket</th><th>Count</th></tr></thead>
+            <tbody>
+              <tr><td>1–24 hrs</td><td>9</td></tr>
+              <tr><td>No Attempt</td><td>8</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="callout small" style="margin-top:12px">
+        <strong>Opportunity</strong>: Auto-compose within 5 minutes + 24/48-hour re-nudges + manager escalation at day 7 closes the gap from “contacted” to “appointments set.”
+      </div>
+    </section>
+
+    <!-- Implementation Timeline -->
+    <section id="timeline" class="section">
+      <h2>Implementation Timeline</h2>
+      <div class="cards">
+        <div class="card">
+          <h3>Phase 1: Discovery/Design (M1-2)</h3>
+          <ul class="small">
+            <li>Map BDC workflows; pick top 20–30 scenarios</li>
+            <li>Draft templates; assemble AI training set</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Phase 2: Build/Pilot (M3-4)</h3>
+          <ul class="small">
+            <li>Email automation + VIN integration</li>
+            <li>Pilot with small BDC group; track KPIs</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Phase 3: Full Email Deploy (M5)</h3>
+          <ul class="small">
+            <li>Roll to full team; monitor response speed & conversions</li>
+            <li>Scope real-time phone prompts</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Phase 4-5: Expansion (M6-12)</h3>
+          <ul class="small">
+            <li>Phone assist + live inventory feeds</li>
+            <li>Scale to additional rooftops; continuous improvement</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="section">
+      <h2>FAQ</h2>
+
+      <details>
+        <summary>Will AI replace our BDC agents?</summary>
+        <p class="small" style="margin-top:8px">No—AI drafts and nudges; people close. The system standardizes quality and speed so agents spend more time on high-value conversations.</p>
+      </details>
+
+      <details>
+        <summary>Does everything stay inside VIN Solutions?</summary>
+        <p class="small" style="margin-top:8px">Yes. Activities, tasks, and appointments are written back to VIN. Email threads sync to the lead record so reporting stays intact.</p>
+      </details>
+
+      <details>
+        <summary>How do incentives and inventory stay accurate?</summary>
+        <p class="small" style="margin-top:8px">We read your live site feed and OEM programs. On any timeout or mismatch, messages add “subject to prior sale” and keep the appointment CTA.</p>
+      </details>
+
+      <div class="section cta">
+        <a class="btn" href="#library">View all response scenarios</a>
+        <a class="btn" href="#training">Run roleplay drills</a>
+        <a class="btn" href="#inventory">See integration details</a>
+      </div>
+    </section>
+
+  </main>
 
   <!-- Footer -->
   <footer class="footer">
