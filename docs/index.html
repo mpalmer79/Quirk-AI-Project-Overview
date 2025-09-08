@@ -107,7 +107,7 @@
     }
     .green-title { color:#0b6e37; font-weight:800; }
 
-    /* ===== NEW: center the project headers within each card ===== */
+    /* Center the project headers within each card */
     .project-item .project-name { text-align: center; }
     .project-item .project-name a { display: inline-block; }
 
@@ -122,9 +122,7 @@
     .detail-label { font-weight: 600; color: #0f172a; }
     .detail-value { color: #111; }
 
-    /* ===== NEW: center the Status badge within each card =====
-       The Status row is the first .project-detail in every card.
-       We collapse it to a single column, hide the label, and center the pill. */
+    /* Center the Status badge (first detail row) */
     .project-item .project-details .project-detail:first-child {
       grid-template-columns: 1fr !important;
       align-items: center;
@@ -184,7 +182,6 @@
           <a class="btn btn-primary" href="project-library.html">Open Project Library</a>
           <a class="btn" href="vin-solutions-alternative.html" target="_blank" rel="noopener">VIN Solutions Alternatives</a>
           <a class="btn" href="quirk-ai-voice.html" target="_blank" rel="noopener">AI Voice Agents</a>
-          <!-- NEW pill: same-window link -->
           <a class="btn" href="quirk-ai-marketing.html">Quirk AI Marketing</a>
         </div>
       </div>
@@ -195,7 +192,7 @@
   <main class="projects-wrap" id="projects">
     <div class="projects-grid">
 
-      <!-- Quirk Trade Tool -->
+      <!-- Row 1 - Left: Quirk Trade Tool -->
       <article class="project-item">
         <h2 class="project-name">
           <a href="quirk-trade-tool.html" target="_blank" rel="noopener">Quirk Trade Tool</a>
@@ -220,7 +217,7 @@
         </div>
       </article>
 
-      <!-- VIN Solutions Alternative -->
+      <!-- Row 1 - Right: VIN Solutions Alternative -->
       <article class="project-item">
         <h2 class="project-name">
           <a href="vin-solutions-alternative.html" target="_blank" rel="noopener">VIN Solutions Alternative</a>
@@ -245,7 +242,57 @@
         </div>
       </article>
 
-      <!-- AI Voice Agents -->
+      <!-- Row 2 - Left: VIN Gen AI Alternative -->
+      <article class="project-item">
+        <h2 class="project-name">
+          <a href="vin-gen-ai-alternative.html" target="_blank" rel="noopener">VIN Gen AI Alternative</a>
+        </h2>
+        <p class="project-lead">AI overlay to compose replies, inject inventory/incentives, and push appointments.</p>
+        <div class="project-details">
+          <div class="project-detail">
+            <span class="detail-label">Status:</span>
+            <span class="detail-value"><span class="badge status-live">Near Launch</span></span>
+          </div>
+          <div class="project-detail">
+            <span class="detail-label">Est. Annual Savings:</span>
+            <span class="detail-value">$383,600/year.</span>
+          </div>
+          <div class="project-detail">
+            <span class="detail-label">Notes:</span>
+            <span class="detail-value">Requires Chrome rollout and quick training for 18 stores.</span>
+          </div>
+        </div>
+        <div class="project-actions">
+          <a class="btn" href="vin-gen-ai-alternative.html" target="_blank" rel="noopener">Open</a>
+        </div>
+      </article>
+
+      <!-- Row 2 - Right: Quirk AI Marketing -->
+      <article class="project-item">
+        <h2 class="project-name">
+          <a href="quirk-ai-marketing.html">Quirk AI Marketing</a>
+        </h2>
+        <p class="project-lead">AI driven campaigns for successful Enterprise level marketing solutions</p>
+        <div class="project-details">
+          <div class="project-detail">
+            <span class="detail-label">Status:</span>
+            <span class="detail-value"><span class="badge status-dev">In Development</span></span>
+          </div>
+          <div class="project-detail">
+            <span class="detail-label">Est. Annual Impact:</span>
+            <span class="detail-value">&nbsp;</span>
+          </div>
+          <div class="project-detail">
+            <span class="detail-label">Notes:</span>
+            <span class="detail-value">Central hub for brand-consistent campaigns, resources, and AI tools across Chevrolet, Buick GMC, Kia, and Volkswagen.<br>NH-ready calendars and templates with required disclaimers to launch faster across social, email, web, and ads.</span>
+          </div>
+        </div>
+        <div class="project-actions">
+          <a class="btn" href="quirk-ai-marketing.html">Open</a>
+        </div>
+      </article>
+
+      <!-- Row 3 - Left: AI Voice Agents (NUMA Replacement) -->
       <article class="project-item">
         <h2 class="project-name">
           <a href="quirk-ai-voice.html" target="_blank" rel="noopener">AI Voice Agents (NUMA Replacement)</a>
@@ -271,7 +318,7 @@
         </div>
       </article>
 
-      <!-- Quirk AI Voice (moved up into this position) -->
+      <!-- Row 3 - Right: Quirk AI Voice -->
       <article class="project-item">
         <h2 class="project-name">
           <a class="green-title" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/quirk-ai-voice-sales.html" target="_blank" rel="noopener">
@@ -301,32 +348,7 @@
         </div>
       </article>
 
-      <!-- Quirk AI Marketing -->
-      <article class="project-item">
-        <h2 class="project-name">
-          <a href="quirk-ai-marketing.html">Quirk AI Marketing</a>
-        </h2>
-        <p class="project-lead">AI driven campaigns for successful Enterprise level marketing solutions</p>
-        <div class="project-details">
-          <div class="project-detail">
-            <span class="detail-label">Status:</span>
-            <span class="detail-value"><span class="badge status-dev">In Development</span></span>
-          </div>
-          <div class="project-detail">
-            <span class="detail-label">Est. Annual Impact:</span>
-            <span class="detail-value">&nbsp;</span>
-          </div>
-          <div class="project-detail">
-            <span class="detail-label">Notes:</span>
-            <span class="detail-value">Central hub for brand-consistent campaigns, resources, and AI tools across Chevrolet, Buick GMC, Kia, and Volkswagen.<br>NH-ready calendars and templates with required disclaimers to launch faster across social, email, web, and ads.</span>
-          </div>
-        </div>
-        <div class="project-actions">
-          <a class="btn" href="quirk-ai-marketing.html">Open</a>
-        </div>
-      </article>
-
-      <!-- NEW: Smart Workplace Verification -->
+      <!-- Row 4 - Single: Smart Workplace Verification -->
       <article class="project-item">
         <h2 class="project-name">
           <a class="green-title" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/dealership-intelligence.html">
@@ -355,31 +377,6 @@
         </div>
       </article>
 
-      <!-- VIN Gen AI Alternative (moved down into this position) -->
-      <article class="project-item">
-        <h2 class="project-name">
-          <a href="vin-gen-ai-alternative.html" target="_blank" rel="noopener">VIN Gen AI Alternative</a>
-        </h2>
-        <p class="project-lead">AI overlay to compose replies, inject inventory/incentives, and push appointments.</p>
-        <div class="project-details">
-          <div class="project-detail">
-            <span class="detail-label">Status:</span>
-            <span class="detail-value"><span class="badge status-live">Near Launch</span></span>
-          </div>
-          <div class="project-detail">
-            <span class="detail-label">Est. Annual Savings:</span>
-            <span class="detail-value">$383,600/year.</span>
-          </div>
-          <div class="project-detail">
-            <span class="detail-label">Notes:</span>
-            <span class="detail-value">Requires Chrome rollout and quick training for 18 stores.</span>
-          </div>
-        </div>
-        <div class="project-actions">
-          <a class="btn" href="vin-gen-ai-alternative.html" target="_blank" rel="noopener">Open</a>
-        </div>
-      </article>
-
     </div>
   </main>
 
@@ -389,40 +386,3 @@
   </footer>
 </body>
 </html>
-<script>
-  (function () {
-    // 1) Put the exact card titles here, in the order you want (L→R, row by row)
-    const desired = [
-      "Quirk Trade Tool",
-      "VIN Solutions Alternative",
-      "VIN Gen AI Alternative",
-      "Quirk AI Marketing",
-      "AI Voice Agents (NUMA Replacement)",
-      "Quirk AI Voice",
-      "Smart Workplace Verification"
-    ];
-
-    // 2) Find the grid container that holds your cards (try common selectors)
-    const container =
-      document.querySelector('[data-grid="projects"]') ||
-      document.querySelector('#projects') ||
-      document.querySelector('.cards-grid') ||
-      document.querySelector('.grid') ||
-      document.querySelector('.project-grid');
-
-    if (!container) return;
-
-    // 3) Index cards by their <h3> title text
-    const allCards = Array.from(container.children);
-    const titleOf = el => (el.querySelector('h3')?.textContent || '').trim();
-    const byTitle = new Map(allCards.map(c => [titleOf(c), c]));
-
-    // 4) Build new order: append matches first, then any leftovers
-    const ordered = [];
-    desired.forEach(t => { if (byTitle.has(t)) ordered.push(byTitle.get(t)); });
-    allCards.forEach(c => { if (!ordered.includes(c)) ordered.push(c); });
-
-    // 5) Re-append in the new order
-    ordered.forEach(c => container.appendChild(c));
-  })();
-</script>
