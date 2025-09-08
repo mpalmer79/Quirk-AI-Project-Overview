@@ -21,9 +21,27 @@
     .section-title { font-size: 1.35rem; font-weight: 800; color:#0f172a; margin: 0 0 8px; border-bottom: 3px solid #0b6e37; padding-bottom: 6px; }
     .section-title.center { text-align: center; }
 
-    /* Pills row (matches hero buttons on index) */
-    .pill-row { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 10px; }
-    .btn { display:inline-block; padding:10px 14px; border-radius:999px; border:1px solid rgba(11,110,55,.22); color:#0b6e37; text-decoration:none; font-weight:700; background:#fff; line-height:1; }
+    /* Pills row (match hero buttons on index) — CENTERED */
+    .pill-row {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;   /* center pills horizontally */
+      align-items: center;       /* center vertically when wrapping */
+      width: 100%;
+    }
+    .btn {
+      display:inline-block;
+      padding:10px 14px;
+      border-radius:999px;
+      border:1px solid rgba(11,110,55,.22);
+      color:#0b6e37;
+      text-decoration:none;
+      font-weight:700;
+      background:#fff;
+      line-height:1;
+    }
     .btn:hover{ text-decoration:none; transform:translateY(-1px); }
     .btn.primary{ background:#0b6e37; color:#fff; border-color:#0b6e37; }
 
@@ -90,11 +108,10 @@
         automotive dealership operations with a compliance-first architecture.
       </p>
 
-      <!-- Pills row -->
+      <!-- Pills row (centered) -->
       <div class="pill-row" role="group" aria-label="Quick actions">
-        <!-- UPDATED: open demo in same window -->
-        <a class="btn" href="smart-workplace-verification-demo.html">View demo</a>
-        <a class="btn" href="https://claude.ai/public/artifacts/8fa578b8-25ab-4f25-ad26-672a55774384" target="_blank" rel="noopener">Show me the code</a>
+        <a class="btn" href="smart-workplace-verification-demo.html">Click for demo</a>
+        <a class="btn" href="https://claude.ai/public/artifacts/8fa578b8-25ab-4f25-ad26-672a55774384" target="_blank" rel="noopener">Click for code</a>
         <a class="btn" href="#install">Click here for Install</a>
       </div>
     </section>
@@ -227,7 +244,7 @@
     </section>
 
     <!-- ===================== CTA ===================== -->
-    <section class="section">
+    <section class="section" id="install">
       <div class="cta">
         <h3 style="margin:0 0 8px; font-size:1.2rem; font-weight:800; color:#0f172a;">Ready to Enhance Workplace Security?</h3>
         <p class="muted" style="margin:0 0 12px;">Contact our development team to discuss implementation timeline and dealership-specific customization options.</p>
