@@ -27,8 +27,8 @@
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
-      justify-content: center;   /* center pills horizontally */
-      align-items: center;       /* center vertically when wrapping */
+      justify-content: center;
+      align-items: center;
       width: 100%;
     }
     .btn {
@@ -77,7 +77,26 @@
 
     /* CTA panel */
     .cta { background: linear-gradient(0deg, rgba(11,110,55,.06), rgba(11,110,55,.06)), #fff;
-           border:1px solid #e5e7eb; border-radius:16px; padding:22px; text-align:center; }
+           border:1px solid #e5e7eb; border-radius:16px; padding:22px; text-align:left; }
+
+    /* ===== DOCX-like typography for the “Is it possible?” section ===== */
+    .docx-block { max-width: 820px; margin: 0 auto; }
+    .docx-title {
+      font-size: clamp(20px, 4.5vw, 24px);
+      font-weight: 800;
+      text-align: center;
+      color: #0f172a;
+      margin: 0 0 12px;
+    }
+    .docx-paragraph { color:#334155; line-height:1.65; margin: 0 0 12px; }
+    .docx-subhead   { font-weight: 800; color:#0f172a; margin: 14px 0 8px; }
+    .docx-list { margin: 0 0 12px 20px; color:#334155; }
+    .docx-questions { margin-top: 14px; border-top:1px dashed #e5e7eb; padding-top:12px; }
+    .small-note { font-size:.9rem; color:#475569; }
+    /* Make sure long lines are comfortable on phones */
+    @media (max-width:640px){
+      .docx-block { padding: 0 2px; }
+    }
 
     /* Make right "Project Library" match center title size (like Quirk Trade Tool) */
     .topbar-menu { font-size: clamp(16px, 1.8vw, 20px); }
@@ -233,75 +252,61 @@
       </div>
     </section>
 
-    <!-- ===================== Compliance & Security ===================== -->
-    <section class="section">
-      <h2 class="section-title center">Compliance & Security</h2>
-
-      <div class="card">
-        <ul class="muted" style="margin:0; padding-left: 18px;">
-          <li><strong>Privacy Protection:</strong> Encrypted facial data storage with automatic 30-day purge.</li>
-          <li><strong>Admin Access Logging:</strong> All report generation and system access tracked.</li>
-          <li><strong>Remote Monitoring:</strong> Secure admin dashboard for multi-location oversight.</li>
-          <li><strong>Audit Trails:</strong> Complete verification event logging for compliance reviews.</li>
-          <li><strong>Data Security:</strong> SQLite database with role-based access controls.</li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- ===================== CTA ===================== -->
-    <section class="section" id="install">
+    <!-- ===================== “Is it possible?” (DOCX-formatted panel) ===================== -->
+    <section class="section" id="install" aria-labelledby="possible-title">
       <div class="cta">
-        <h3 style="margin:0 0 8px; font-size:1.2rem; font-weight:800; color:#0f172a;">Is it possible?</h3>
-        <p class="muted" style="margin:0 0 12px;">Facial recognition software that integrates with Paycom. Check employee 
-          activity while they are in the workplace against their timecard. Are they still on the premises while clocked in? 
-          Let's create an AI powered solution for this.
-          
-          While no current software automatically and continuously checks employee activity against time cards using facial 
-          recognition with Paycom, it is technologically possible to build such a system. There are third-party vendors that 
-          offer AI-powered facial recognition time clocks and monitoring, and these can be integrated with HR platforms like Paycom. 
+        <div class="docx-block">
+          <h3 id="possible-title" class="docx-title">Is it possible?</h3>
 
-          How an AI-powered system for continuous monitoring would work
-          A theoretical system with these capabilities would be far more invasive than a simple biometric time clock and would need to be 
-          built with special consideration for privacy and legality.
-          Surveillance hardware: Companies would install AI-powered camera systems, not just at entrances and exits, but throughout the workplace floor.
+          <p class="docx-paragraph">
+            <strong>Facial recognition software that integrates with Paycom.</strong> Check employee activity while they are
+            in the workplace against their timecard. Are they still on the premises while clocked in? Let’s create an AI-powered
+            solution for this.
+          </p>
 
-          Facial tracking: The AI would identify and verify employees by continuously matching their faces with a database of pre-registered facial templates. 
-          This would allow the system to track employee movements in real-time.
+          <p class="docx-paragraph">
+            While no current software automatically and continuously checks employee activity against time cards using facial
+            recognition with Paycom, it is technologically possible to build such a system. There are third-party vendors that
+            offer AI-powered facial recognition time clocks and monitoring, and these can be integrated with HR platforms like
+            Paycom.
+          </p>
 
-          Premise verification: The software could use the camera data to confirm an employee is still on the premises while clocked in. 
-          If an employee leaves a designated area, or the system loses track of them, it could trigger an alert.
-          
-          Activity cross-reference: The system could compare the AI's tracking data against timecard information in a payroll platform like Paycom, likely via API integration. 
-          This would allow managers to identify and flag discrepancies, such as an employee who has been off-premises but remains clocked in. 
+          <h4 class="docx-subhead">How an AI-powered system for continuous monitoring would work</h4>
+          <p class="docx-paragraph small-note">A theoretical system with these capabilities would be more invasive than a simple
+            biometric time clock and would need to be built with special consideration for privacy and legality.</p>
+          <ul class="docx-list">
+            <li><strong>Surveillance hardware:</strong> Install AI-powered camera systems not just at entrances and exits, but throughout the workplace floor.</li>
+            <li><strong>Facial tracking:</strong> Continuously match faces with a database of pre-registered templates to track movements in real time.</li>
+            <li><strong>Premise verification:</strong> Confirm an employee is still on the premises while clocked in; trigger an alert if they leave a designated area or are lost by the system.</li>
+            <li><strong>Activity cross-reference:</strong> Compare AI tracking data with timecard information in Paycom (likely via API) to flag discrepancies such as off-premises while clocked in.</li>
+          </ul>
 
-          Legal and ethical concerns
-          Building a system for continuous tracking raises far greater legal and ethical issues than a time clock.
+          <h4 class="docx-subhead">Legal and ethical concerns</h4>
+          <p class="docx-paragraph">Building a system for continuous tracking raises far greater legal and ethical issues than a time clock.</p>
+          <ul class="docx-list">
+            <li><strong>Consent and notice:</strong> Several states (e.g., Illinois, Texas, Washington) regulate the collection of biometric information; Illinois’s BIPA is especially strict and requires prior written notice and consent.</li>
+            <li><strong>Increased litigation risk:</strong> Potential for large class-action lawsuits over biometric privacy violations, particularly in jurisdictions like Illinois.</li>
+            <li><strong>Privacy invasion and morale:</strong> Continuous facial recognition monitoring may erode trust and harm morale; it can have a chilling effect on the workforce.</li>
+            <li><strong>Bias and discrimination:</strong> Facial recognition algorithms can exhibit significant biases against people of color and women, leading to discriminatory outcomes and legal exposure.</li>
+            <li><strong>Mission creep:</strong> Technology might be expanded to track other metrics (e.g., engagement, time on task) without additional consent.</li>
+          </ul>
 
-          Consent and notice: Laws in several states, including Illinois, Texas, and Washington, govern the collection of biometric information. 
-          Illinois's Biometric Information Privacy Act (BIPA) is especially strict, giving employees the right to sue employers who collect their biometric 
-          data without prior written notice and consent.
+          <h4 class="docx-subhead">Existing Paycom alternatives</h4>
+          <p class="docx-paragraph">Less intrusive, still robust time-tracking options that don’t rely on continuous facial recognition monitoring:</p>
+          <ul class="docx-list">
+            <li><strong>Microfence:</strong> Bluetooth beacons in workplace zones; employees can clock in/out in the Paycom app only within range, confirming on-site presence.</li>
+            <li><strong>Geofencing:</strong> GPS-based virtual boundary limits clock in/out to a designated area via the Paycom mobile app.</li>
+            <li><strong>App-based biometrics:</strong> Fingerprint or Face ID secures the app itself (separate from workplace monitoring).</li>
+          </ul>
 
-          Increased litigation risk: The potential for large class-action lawsuits over biometric privacy violations, particularly in jurisdictions 
-          like Illinois, is a major deterrent for employers considering such technology.
+          <p class="docx-paragraph small-note">AI responses may include mistakes. Learn more.</p>
 
-          Privacy invasion and morale: Employees have a reasonable expectation of privacy in the workplace, and continuous facial recognition monitoring could be seen as an egregious violation. This can erode trust, harm morale, and create a chilling effect on the workforce.
-Bias and discrimination: Numerous studies have demonstrated that facial recognition algorithms can exhibit significant biases against people of color and women, potentially leading to discriminatory outcomes. An employer could be held liable under anti-discrimination laws for such biased results.
-Mission creep: The technology could be expanded to track other metrics, such as employee engagement or time spent on specific tasks, without further consent. 
-Existing Paycom alternatives
-Paycom offers less intrusive, but still robust, time-tracking alternatives that do not rely on continuous facial recognition monitoring. 
-Microfence: Uses Bluetooth beacons placed in specific workplace zones. Employees can clock in or out with the Paycom app only when they are within range of a beacon, which confirms they are physically on-site.
-Geofencing: Uses GPS technology to create a virtual geographic boundary. Employees can only clock in or out via the Paycom mobile app if they are within the designated area.
-App-based biometrics: The Paycom app allows for fingerprint or Face ID authentication to secure the app itself, but this is separate from workplace monitoring. 
-AI responses may include mistakes. Learn more
-
-
-
-
-What other Paycom time tracking tools help prevent time theft?
-
-How does Microfence ensure employee privacy while verifying location?
-
-What are some less privacy-invasive alternatives to facial recognition for workforce management?</a>
+          <div class="docx-questions">
+            <p class="docx-paragraph"><strong>What other Paycom time-tracking tools help prevent time theft?</strong></p>
+            <p class="docx-paragraph"><strong>How does Microfence ensure employee privacy while verifying location?</strong></p>
+            <p class="docx-paragraph"><strong>What are some less privacy-invasive alternatives to facial recognition for workforce management?</strong></p>
+          </div>
+        </div>
       </div>
     </section>
 
