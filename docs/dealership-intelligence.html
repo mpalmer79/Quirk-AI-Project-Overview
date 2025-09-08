@@ -1,1 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Smart Workplace Verification</title>
+
+  <!-- Force browser/UI to render in light mode -->
+  <meta name="color-scheme" content="light">
+
+  <!-- Keep all relative paths rooted to the GitHub Pages project -->
+  <base href="/Quirk-AI-Project-Overview/">
+
+  <!-- Global site styles (includes the Quirk AI watermark via body::before) -->
+  <link rel="stylesheet" href="assets/style.css" />
+
+  <style>
+    /* Match the quirk-trade-tool topbar exactly */
+    .topbar-menu { font-size: clamp(16px, 1.8vw, 20px); }
+    .topbar-title-link {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: inherit;
+      line-height: 1;
+    }
+    .topbar-title-link:hover,
+    .topbar-title-link:focus { text-decoration: underline; }
+
+    /* Page body */
+    .page-wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 24px 20px 56px;
+      position: relative; /* sits above the watermark from style.css */
+      z-index: 1;
+    }
+    .title {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 32px 0 12px;
+      color: #111;
+    }
+    .lead {
+      text-align: center;
+      color: #475569;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <!-- ======= Top Navigation Bar (identical layout to quirk-trade-tool) ======= -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <!-- Left: HOME link -->
+      <a class="home-link" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
+
+      <!-- Center title -->
+      <div class="topbar-title">Smart Workplace Verification</div>
+
+      <!-- Right: Project Library link -->
+      <nav class="topbar-menu" aria-label="Secondary Navigation">
+        <a class="topbar-title-link" href="./project-library.html">Project Library</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ======= Page Content ======= -->
+  <main class="page-wrap">
+    <h1 class="title">Smart Workplace Verification</h1>
+    <p class="lead">[Placeholder] Central hub for dealership workplace verification tools and documentation.</p>
+  </main>
+
+  <!-- Footer (optional) -->
+  <footer class="container footer">
+    <p>&copy; <span id="year"></span> Quirk Auto — Smart Workplace Verification</p>
+  </footer>
+
+  <script>
+    // simple year stamp
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
 
