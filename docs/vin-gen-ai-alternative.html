@@ -25,6 +25,11 @@
     .toc a { display: block; text-decoration: none; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 14px; }
     .toc a:hover { background: #f8fafc; }
 
+    /* Quick Docs button row (opens PDFs in new tab) */
+    .button-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin:8px 0 24px;}
+    .btn { display:inline-block; border:1px solid #0b6e37; padding:10px 14px; border-radius:10px; text-decoration:none; color:#0b6e37; font-weight:600; text-align:center; background:#fff; }
+    .btn:hover { background:#0b6e37; color:#fff; }
+
     .kpi-grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); margin: 12px 0 24px; }
     .tile { border: 1px solid #e2e8f0; border-radius: 16px; padding: 16px 14px; background: #fff; }
     .tile h3 { margin: 0 0 6px; font-size: 1.1rem; }
@@ -51,17 +56,8 @@
     .callout { border-left: 4px solid #0b6e37; background: #f6fff9; padding: 10px 12px; border-radius: 8px; }
     .small { font-size: .92rem; }
 
-    .cta { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); }
-    .btn { display:inline-block; border:1px solid #0b6e37; padding:10px 14px; border-radius:10px; text-decoration:none; }
-    .btn:hover { background:#0b6e37; color:#fff; }
-
-    /* Downloads */
-    .dl-grid { display:grid; gap:12px; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); }
-    .dl { border:1px solid #e2e8f0; border-radius:14px; padding:14px; background:#fff; }
-    .dl h3 { margin:0 0 6px; font-size:1.02rem; }
-    .dl p { margin:6px 0 10px; }
-    .dl a { display:inline-block; text-decoration:none; border:1px solid #0b6e37; padding:8px 12px; border-radius:10px; }
-    .dl a:hover { background:#0b6e37; color:#fff; }
+    /* Footer */
+    .footer { text-align:center; padding:24px 12px; color:#64748b; }
   </style>
 </head>
 <body class="page">
@@ -97,6 +93,22 @@
       <a href="#downloads">Downloads</a>
       <a href="#faq">FAQ</a>
     </nav>
+
+    <!-- Quick Docs buttons (opens PDFs in new tab; matches /docs/assets/) -->
+    <div class="button-grid">
+      <a class="btn" target="_blank" rel="noopener" href="docs/assets/Executive_Summary_VIN_vs_GenAI.pdf">Executive Summary</a>
+      <a class="btn" target="_blank" rel="noopener" href="docs/assets/Quirk_AI_Target_KPIs.pdf">Target KPIs</a>
+      <a class="btn" target="_blank" rel="noopener" href="docs/assets/VINS%20vs%20Gen%20AI%20Alternative%20summary.pdf">Workflow Comparison</a>
+      <a class="btn" target="_blank" rel="noopener" href="docs/assets/BDC_Smart_Response_Library_Full.pdf">Smart Response Library</a>
+
+      <a class="btn" target="_blank" rel="noopener" href="docs/assets/BDC_Training_Packet_v2.pdf">Training & Roleplay</a>
+      <a class="btn" target="_blank" rel="noopener" href="docs/assets/GenAI_Inventory_Integration_OnePager_v3.pdf">Inventory & Incentives Integration</a>
+      <a class="btn" target="_blank" rel="noopener" href="docs/assets/desklog_analysis_summary.pdf">Desk Log Insights</a>
+      <a class="btn" target="_blank" rel="noopener" href="docs/assets/BDC_Smart_Response_Project_Plan.pdf">Implementation Timeline</a>
+
+      <a class="btn" target="_blank" rel="noopener" href="docs/assets/Quirk_AI_Project_PDFs.zip">Downloads</a>
+      <a class="btn" target="_blank" rel="noopener" href="docs/assets/Quirk_AI_VIN_GenAI_FAQ.pdf">FAQ</a>
+    </div>
 
     <!-- Executive Summary -->
     <section id="executive-summary" class="section">
@@ -366,70 +378,67 @@
       <h2>Downloads</h2>
       <p class="muted">Save or print one-pagers, training packets, and response libraries.</p>
 
-      <div class="dl-grid">
-        <div class="dl">
+      <div class="cards">
+        <div class="card">
           <h3>Executive Summary — VIN vs Gen AI</h3>
           <p class="small">High-level comparison of current VIN workflow and the AI overlay.</p>
-          <a href="assets/docs/VINS%20vs%20Gen%20AI%20Alternative%20summary.pdf" download>Download PDF</a>
+          <p><a class="btn" target="_blank" rel="noopener" href="docs/assets/Executive_Summary_VIN_vs_GenAI.pdf">Open PDF</a></p>
         </div>
 
-        <div class="dl">
+        <div class="card">
           <h3>Smart Response Library (Full — 20 Scenarios)</h3>
           <p class="small">Ready-to-use email, SMS, and call prompts for the BDC.</p>
-          <a href="assets/docs/BDC_Smart_Response_Library_Full.pdf" download>Download PDF</a>
+          <p><a class="btn" target="_blank" rel="noopener" href="docs/assets/BDC_Smart_Response_Library_Full.pdf">Open PDF</a></p>
         </div>
 
-        <div class="dl">
-          <h3>Smart Response Library (v1 Sampler)</h3>
-          <p class="small">Starter set for quick adoption and training.</p>
-          <a href="assets/docs/BDC_Smart_Response_Library_v1.pdf" download>Download PDF</a>
-        </div>
-
-        <div class="dl">
+        <div class="card">
           <h3>Training Packet (AI vs VIN)</h3>
           <p class="small">Roleplay scripts and drills to drive appointment-setting.</p>
-          <a href="assets/docs/BDC_AI_Training_Packet.pdf" download>Download PDF</a>
+          <p><a class="btn" target="_blank" rel="noopener" href="docs/assets/BDC_Training_Packet_v2.pdf">Open PDF</a></p>
         </div>
 
-        <div class="dl">
+        <div class="card">
           <h3>Inventory Integration — One-Pager</h3>
           <p class="small">How live inventory & incentives flow into responses; VIN writebacks.</p>
-          <a href="assets/docs/GenAI_Inventory_Integration_OnePager_v3.pdf" download>Download PDF</a>
+          <p><a class="btn" target="_blank" rel="noopener" href="docs/assets/GenAI_Inventory_Integration_OnePager_v3.pdf">Open PDF</a></p>
         </div>
 
-        <div class="dl">
+        <div class="card">
           <h3>Project Plan</h3>
           <p class="small">Phases, milestones, success metrics, roles & responsibilities.</p>
-          <a href="assets/docs/BDC_Smart_Response_Project_Plan.pdf" download>Download PDF</a>
+          <p><a class="btn" target="_blank" rel="noopener" href="docs/assets/BDC_Smart_Response_Project_Plan.pdf">Open PDF</a></p>
         </div>
 
-        <div class="dl">
+        <div class="card">
           <h3>Desk Log Analysis (Snapshot)</h3>
           <p class="small">Funnel, response times, and lead source contact rates.</p>
-          <a href="assets/docs/desklog_analysis_summary.pdf" download>Download PDF</a>
+          <p><a class="btn" target="_blank" rel="noopener" href="docs/assets/desklog_analysis_summary.pdf">Open PDF</a></p>
         </div>
 
-        <div class="dl">
-          <h3>Presentation Deck</h3>
-          <p class="small">Executive slides for buy-in and rollout.</p>
-          <a href="assets/docs/VINS%20vs%20Generative%20AI%20Alternative%20Summary%20PowerPoint.pptx" download>Download PPTX</a>
+        <div class="card">
+          <h3>Workflow Comparison (Slide or Image)</h3>
+          <p class="small">Overview of VIN vs Gen AI process steps.</p>
+          <p><a class="btn" target="_blank" rel="noopener" href="docs/assets/VINS%20vs%20Gen%20AI%20Alternative%20summary.pdf">Open PDF</a></p>
+        </div>
+
+        <div class="card">
+          <h3>Full Bundle (ZIP)</h3>
+          <p class="small">All leadership-ready PDFs in one package.</p>
+          <p><a class="btn" target="_blank" rel="noopener" href="docs/assets/Quirk_AI_Project_PDFs.zip">Open ZIP</a></p>
+        </div>
+
+        <div class="card">
+          <h3>FAQ</h3>
+          <p class="small">Answers for managers and agents on rollout, KPIs, and workflow.</p>
+          <p><a class="btn" target="_blank" rel="noopener" href="docs/assets/Quirk_AI_VIN_GenAI_FAQ.pdf">Open PDF</a></p>
         </div>
       </div>
-
-      <details class="section" style="margin-top:14px">
-        <summary>Open for more (how to host files here)</summary>
-        <div class="small" style="margin-top:6px">
-          Place PDFs/PPTX in <code>/assets/docs/</code> (or <code>/docs/</code>) in this repo.  
-          Update the <code>href</code> paths above if you choose a different folder or filenames.
-        </div>
-      </details>
     </section>
 
     <!-- FAQ -->
     <section id="faq" class="section">
       <h2>FAQ</h2>
 
-      <!-- Expanded FAQ 1 -->
       <details>
         <summary>Will AI replace our BDC agents?</summary>
         <div class="small" style="margin-top:8px">
@@ -437,87 +446,37 @@
           <p><strong>What AI handles</strong></p>
           <ul>
             <li>Composes personalized emails/SMS with inventory & incentives in under 5 minutes.</li>
-            <li>Creates/updates VIN Solutions activities, tasks, and appointments so nothing slips.</li>
+            <li>Creates/updates VIN activities, tasks, and appointments so nothing slips.</li>
             <li>Sends 24/48-hour re-nudges and day-7 manager escalation, consistently.</li>
-            <li>Provides real-time talk tracks for common objections (payment, availability, “just shopping”).</li>
+            <li>Provides real-time talk tracks for common objections.</li>
           </ul>
-          <p><strong>What agents do (human-in-the-loop)</strong></p>
+          <p><strong>What agents do</strong></p>
           <ul>
-            <li>Approve/modify outbound messages when needed and make the actual calls.</li>
+            <li>Approve/modify outbound messages as needed and make the calls.</li>
             <li>Handle pricing nuance, trade-value conversations, and relationship building.</li>
             <li>Confirm appointment details, coordinate vehicles, and close for the show.</li>
           </ul>
-          <p><strong>Quality guardrails</strong></p>
-          <ul>
-            <li>Manager-visible audit trail in VIN Solutions for every touch.</li>
-            <li>Safe defaults when data is missing (e.g., omit incentives line; keep appointment CTA).</li>
-            <li>Clear disclaimers (“subject to prior sale”) and alternatives when exact vehicle isn’t available.</li>
-          </ul>
-          <div class="callout" style="margin-top:10px">
-            <strong>Bottom line:</strong> AI standardizes great habits (speed, personalization, consistent appointment pushes). Your team keeps control and spends more time talking to customers.
-          </div>
         </div>
       </details>
 
-      <!-- Expanded FAQ 2 -->
       <details>
         <summary>Does everything stay inside VIN Solutions?</summary>
         <div class="small" style="margin-top:8px">
-          <p><strong>Yes—VIN Solutions remains the system of record.</strong> The AI layer writes back every interaction so reporting and accountability live in one place.</p>
-          <p><strong>What’s written to VIN</strong></p>
+          <p><strong>Yes—VIN remains the system of record.</strong> The AI layer writes back every interaction so reporting and accountability live in one place.</p>
           <ul>
-            <li><strong>Activities:</strong> full message body (HTML note), who/when, and any tokens used.</li>
+            <li><strong>Activities:</strong> full message body (HTML note), who/when, and tokens used.</li>
             <li><strong>Tasks:</strong> auto-created follow-ups with due dates to maintain compliance.</li>
             <li><strong>Appointments:</strong> proposed times and confirmed start/end once the customer accepts.</li>
-            <li><strong>Email thread sync:</strong> replies are associated to the lead record for a complete history.</li>
-          </ul>
-          <p><strong>Why this matters</strong></p>
-          <ul>
-            <li>No “shadow CRM”—lead status, touch count, and outcomes are accurate in VIN.</li>
-            <li>Managers can coach from a single timeline (speed to first touch, nudge cadence, outcome).</li>
-            <li>Reporting (conversion, show rate, SLA adherence) stays intact for the BDC and Sales.</li>
-          </ul>
-          <p><strong>Controls & security</strong></p>
-          <ul>
-            <li>Respects VIN permissions/roles; agents only see what they should.</li>
-            <li>Every AI action is attributable (who triggered, when, and what changed).</li>
           </ul>
         </div>
       </details>
 
-      <!-- Expanded FAQ 3 -->
       <details>
         <summary>How do incentives and inventory stay accurate?</summary>
         <div class="small" style="margin-top:8px">
-          <p><strong>Live data, with sensible fallbacks.</strong> The system reads your website inventory feed and OEM program endpoints before composing a message. If anything is unavailable, it defaults to safe language that still drives an appointment.</p>
-          <p><strong>Primary sources</strong></p>
-          <ul>
-            <li><strong>Inventory feed:</strong> <code>GET /inventory.json</code> (VIN, stock#, year/make/model/trim, status, price/MSRP, colors, primary photo, updated_at).</li>
-            <li><strong>Incentives API:</strong> <code>GET /incentives?make=&amp;model=&amp;zip=</code> (cash rebate, APR, lease cash, term, expiry, disclaimer).</li>
-          </ul>
-          <p><strong>Response logic</strong></p>
-          <ul>
-            <li>Pulls fresh data at compose time (target end-to-end &lt; 5 minutes from lead creation).</li>
-            <li>Maps values into templates (e.g., [[stock_count]], [[apr_rate]], [[cash_rebate]], [[two_appt_options]]).</li>
-            <li>If feeds time out or are missing values, the message <em>omits</em> specifics and keeps the appointment CTA.</li>
-          </ul>
-          <p><strong>Accuracy & fallbacks</strong></p>
-          <ul>
-            <li>If the inventory feed is unreachable, serve cache ≤15 minutes old and flag “stale” in the note.</li>
-            <li>On price/availability mismatch, add “subject to prior sale” and propose the closest in-stock alternative.</li>
-            <li>Agents can override any line item before sending (human-in-the-loop).</li>
-          </ul>
-          <div class="callout" style="margin-top:10px">
-            <strong>Source of truth:</strong> VIN on the lead record + your website’s live feed. Messages are designed to be accurate by default and cautious when data is uncertain—without losing momentum toward an appointment.
-          </div>
+          <p>Live data with sensible fallbacks: if feeds are missing, the message omits specifics and keeps the appointment CTA; cache ≤15 minutes if inventory is unreachable.</p>
         </div>
       </details>
-
-      <div class="section cta">
-        <a class="btn" href="#library">View all response scenarios</a>
-        <a class="btn" href="#training">Run roleplay drills</a>
-        <a class="btn" href="#inventory">See integration details</a>
-      </div>
     </section>
 
   </main>
