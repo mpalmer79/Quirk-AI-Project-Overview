@@ -1,86 +1,206 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Smart Workplace Verification</title>
-
-  <!-- Force browser/UI to render in light mode -->
-  <meta name="color-scheme" content="light">
-
-  <!-- Keep all relative paths rooted to the GitHub Pages project -->
-  <base href="/Quirk-AI-Project-Overview/">
-
-  <!-- Global site styles (includes the Quirk AI watermark via body::before) -->
-  <link rel="stylesheet" href="assets/style.css" />
-
-  <style>
-    /* Match the quirk-trade-tool topbar exactly */
-    .topbar-menu { font-size: clamp(16px, 1.8vw, 20px); }
-    .topbar-title-link {
-      color: #fff;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: inherit;
-      line-height: 1;
-    }
-    .topbar-title-link:hover,
-    .topbar-title-link:focus { text-decoration: underline; }
-
-    /* Page body */
-    .page-wrap {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 24px 20px 56px;
-      position: relative; /* sits above the watermark from style.css */
-      z-index: 1;
-    }
-    .title {
-      text-align: center;
-      font-size: 2rem;
-      font-weight: 700;
-      margin: 32px 0 12px;
-      color: #111;
-    }
-    .lead {
-      text-align: center;
-      color: #475569;
-      margin: 0;
-    }
-  </style>
+ <meta charset="utf-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1" />
+ <title>Smart Workplace Verification</title>
+ <!-- Force browser/UI to render in light mode -->
+ <meta name="color-scheme" content="light">
+ <!-- Keep all relative paths rooted to the GitHub Pages project -->
+ <base href="/Quirk-AI-Project-Overview/">
+ <!-- Global site styles (includes the Quirk AI watermark via body::before) -->
+ <link rel="stylesheet" href="assets/style.css" />
+ <style>
+   /* Match the quirk-trade-tool topbar exactly */
+   .topbar-menu { font-size: clamp(16px, 1.8vw, 20px); }
+   .topbar-title-link {
+     color: #fff;
+     text-decoration: none;
+     font-weight: 600;
+     font-size: inherit;
+     line-height: 1;
+   }
+   .topbar-title-link:hover,
+   .topbar-title-link:focus { text-decoration: underline; }
+   
+   /* Page body */
+   .page-wrap {
+     max-width: 1000px;
+     margin: 0 auto;
+     padding: 24px 20px 56px;
+     position: relative;
+     z-index: 1;
+   }
+   .title {
+     text-align: center;
+     font-size: 2rem;
+     font-weight: 700;
+     margin: 32px 0 12px;
+     color: #111;
+   }
+   .lead {
+     text-align: center;
+     color: #475569;
+     margin: 0 0 32px;
+     font-size: 1.1rem;
+   }
+ </style>
 </head>
 <body>
-  <!-- ======= Top Navigation Bar (identical layout to quirk-trade-tool) ======= -->
-  <header class="topbar">
-    <div class="topbar-inner">
-      <!-- Left: HOME link -->
-      <a class="home-link" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
+ <!-- ======= Top Navigation Bar ======= -->
+ <header class="topbar">
+   <div class="topbar-inner">
+     <a class="home-link" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
+     <div class="topbar-title">Smart Workplace Verification</div>
+     <nav class="topbar-menu" aria-label="Secondary Navigation">
+       <a class="topbar-title-link" href="./project-library.html">Project Library</a>
+     </nav>
+   </div>
+ </header>
 
-      <!-- Center title -->
-      <div class="topbar-title">Smart Workplace Verification</div>
+ <!-- ======= Page Content ======= -->
+ <main class="page-wrap">
+   <h1 class="title">Smart Workplace Verification</h1>
+   <p class="lead">AI-powered facial recognition system for automotive dealership employee verification and workplace security compliance.</p>
+   
+   <span class="status-badge status-development">In Development</span>
 
-      <!-- Right: Project Library link -->
-      <nav class="topbar-menu" aria-label="Secondary Navigation">
-        <a class="topbar-title-link" href="./project-library.html">Project Library</a>
-      </nav>
-    </div>
-  </header>
+   <!-- Overview Section -->
+   <section class="section">
+     <h2 class="section-title">System Overview</h2>
+     <p>Our Smart Workplace Verification system integrates facial recognition technology with your existing biometric time clock system to ensure employees are present in appropriate areas during work hours. Designed specifically for automotive dealership operations with compliance-first architecture.</p>
+     
+     <div class="feature-grid">
+       <div class="feature-card">
+         <h3 class="feature-title">12 IP Camera Network</h3>
+         <p class="feature-desc">Comprehensive coverage across entrances, sales areas, service departments, and showroom with intelligent area-based monitoring.</p>
+       </div>
+       <div class="feature-card">
+         <h3 class="feature-title">Biometric Integration</h3>
+         <p class="feature-desc">Seamless sync with your existing fingerprint time clock system to cross-reference attendance data.</p>
+       </div>
+       <div class="feature-card">
+         <h3 class="feature-title">Department-Based Access</h3>
+         <p class="feature-desc">Role-specific area permissions ensure Sales, Service, and Management staff are monitored appropriately.</p>
+       </div>
+       <div class="feature-card">
+         <h3 class="feature-title">Automotive Compliance</h3>
+         <p class="feature-desc">30-day data retention, admin audit trails, and industry-specific security protocols built-in.</p>
+       </div>
+     </div>
+   </section>
 
-  <!-- ======= Page Content ======= -->
-  <main class="page-wrap">
-    <h1 class="title">Smart Workplace Verification</h1>
-    <p class="lead">[Placeholder] Central hub for dealership workplace verification tools and documentation.</p>
-  </main>
+   <!-- Technical Specifications -->
+   <section class="section">
+     <h2 class="section-title">Technical Specifications</h2>
+     <ul class="tech-list">
+       <li>
+         <span class="tech-label">Camera Coverage</span>
+         <span class="tech-value">12 IP cameras across dealership areas</span>
+       </li>
+       <li>
+         <span class="tech-label">Employee Capacity</span>
+         <span class="tech-value">100+ employees supported</span>
+       </li>
+       <li>
+         <span class="tech-label">Operating Hours</span>
+         <span class="tech-value">Mon-Thu: 8AM-8PM, Fri-Sat: 7AM-6PM, Sun: 10AM-5PM (Sales)</span>
+       </li>
+       <li>
+         <span class="tech-label">Data Retention</span>
+         <span class="tech-value">30 days automatic cleanup</span>
+       </li>
+       <li>
+         <span class="tech-label">Platform</span>
+         <span class="tech-value">Windows-compatible with SQLite database</span>
+       </li>
+       <li>
+         <span class="tech-label">Integration</span>
+         <span class="tech-value">Biometric time clock sync capability</span>
+       </li>
+     </ul>
+   </section>
 
-  <!-- Footer (optional) -->
-  <footer class="container footer">
-    <p>&copy; <span id="year"></span> Quirk Auto — Smart Workplace Verification</p>
-  </footer>
+   <!-- Monitoring Areas -->
+   <section class="section">
+     <h2 class="section-title">Monitored Areas</h2>
+     <div class="compliance-grid">
+       <div class="compliance-item">
+         <div class="compliance-number">4</div>
+         <div class="compliance-label">Entrance Cameras</div>
+       </div>
+       <div class="compliance-item">
+         <div class="compliance-number">2</div>
+         <div class="compliance-label">Sales Desk</div>
+       </div>
+       <div class="compliance-item">
+         <div class="compliance-number">3</div>
+         <div class="compliance-label">Showroom</div>
+       </div>
+       <div class="compliance-item">
+         <div class="compliance-number">2</div>
+         <div class="compliance-label">Service Dept</div>
+       </div>
+       <div class="compliance-item">
+         <div class="compliance-number">1</div>
+         <div class="compliance-label">Service Writer</div>
+       </div>
+     </div>
+   </section>
 
-  <script>
-    // simple year stamp
-    document.getElementById('year').textContent = new Date().getFullYear();
-  </script>
+   <!-- Alert System -->
+   <section class="section">
+     <h2 class="section-title">Intelligent Alert System</h2>
+     <p>Our if/then logic engine provides contextual alerts based on employee status, location, and time:</p>
+     
+     <div class="feature-grid">
+       <div class="feature-card">
+         <h3 class="feature-title">Verified Presence</h3>
+         <p class="feature-desc">Employee clocked in + detected in appropriate area = Normal verification logged</p>
+       </div>
+       <div class="feature-card">
+         <h3 class="feature-title">Unauthorized Area</h3>
+         <p class="feature-desc">Department mismatch alerts (e.g., Sales staff in Service area)</p>
+       </div>
+       <div class="feature-card">
+         <h3 class="feature-title">Time Clock Discrepancy</h3>
+         <p class="feature-desc">Employee present but not clocked in = Potential time theft alert</p>
+       </div>
+       <div class="feature-card">
+         <h3 class="feature-title">After-Hours Detection</h3>
+         <p class="feature-desc">Security alerts for unauthorized after-hours presence</p>
+       </div>
+     </div>
+   </section>
+
+   <!-- Compliance & Security -->
+   <section class="section">
+     <h2 class="section-title">Compliance & Security</h2>
+     <p>Built for automotive industry compliance requirements with enterprise-grade security:</p>
+     <ul>
+       <li><strong>Privacy Protection:</strong> Encrypted facial data storage with automatic 30-day purge</li>
+       <li><strong>Admin Access Logging:</strong> All report generation and system access tracked</li>
+       <li><strong>Remote Monitoring:</strong> Secure admin dashboard for multi-location oversight</li>
+       <li><strong>Audit Trails:</strong> Complete verification event logging for compliance reviews</li>
+       <li><strong>Data Security:</strong> SQLite database with role-based access controls</li>
+     </ul>
+   </section>
+
+   <!-- Call to Action -->
+   <section class="section cta-section">
+     <h2 class="cta-title">Ready to Enhance Workplace Security?</h2>
+     <p class="cta-text">Contact our development team to discuss implementation timeline and dealership-specific customization options.</p>
+     <a href="mailto:admin@quirkautoga.com?subject=Smart%20Workplace%20Verification%20Implementation" class="btn-cta">Request Implementation Details</a>
+   </section>
+ </main>
+
+ <!-- Footer -->
+ <footer class="footer">
+   <small>&copy; <span id="year"></span> Quirk Auto — Smart Workplace Verification</small>
+ </footer>
+
+ <script>
+   document.getElementById('year').textContent = new Date().getFullYear();
+ </script>
 </body>
 </html>
-
