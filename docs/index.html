@@ -389,3 +389,40 @@
   </footer>
 </body>
 </html>
+<script>
+  (function () {
+    // 1) Put the exact card titles here, in the order you want (L→R, row by row)
+    const desired = [
+      "Quirk Trade Tool",
+      "VIN Solutions Alternative",
+      "VIN Gen AI Alternative",
+      "Quirk AI Marketing",
+      "AI Voice Agents (NUMA Replacement)",
+      "Quirk AI Voice",
+      "Smart Workplace Verification"
+    ];
+
+    // 2) Find the grid container that holds your cards (try common selectors)
+    const container =
+      document.querySelector('[data-grid="projects"]') ||
+      document.querySelector('#projects') ||
+      document.querySelector('.cards-grid') ||
+      document.querySelector('.grid') ||
+      document.querySelector('.project-grid');
+
+    if (!container) return;
+
+    // 3) Index cards by their <h3> title text
+    const allCards = Array.from(container.children);
+    const titleOf = el => (el.querySelector('h3')?.textContent || '').trim();
+    const byTitle = new Map(allCards.map(c => [titleOf(c), c]));
+
+    // 4) Build new order: append matches first, then any leftovers
+    const ordered = [];
+    desired.forEach(t => { if (byTitle.has(t)) ordered.push(byTitle.get(t)); });
+    allCards.forEach(c => { if (!ordered.includes(c)) ordered.push(c); });
+
+    // 5) Re-append in the new order
+    ordered.forEach(c => container.appendChild(c));
+  })();
+</script>
