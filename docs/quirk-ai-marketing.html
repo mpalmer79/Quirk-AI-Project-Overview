@@ -53,21 +53,20 @@
     /* ---------- Card title centering (library cards, SEO cards, etc.) ---------- */
     .card .card-title { text-align: center; }
 
-    /* ========== NEW: Center the hero title, subtitle, and quick-action pills ========== */
+    /* ========== Center the hero title, subtitle, and quick-action pills ========== */
     .hero .title { text-align: center; }
     .hero .subtitle { text-align: center; max-width: 1100px; margin: 0 auto; }
 
     .quick-actions {
       display: flex;
-      justify-content: center;  /* center horizontally */
+      justify-content: center;
       align-items: center;
       gap: 10px;
-      margin: 14px auto 0;      /* place just under the subtitle */
+      margin: 14px auto 0;
       width: 100%;
-      max-width: 1100px;        /* align with page width */
+      max-width: 1100px;
     }
 
-    /* Ensure pill sizing looks consistent across widths */
     .quick-actions .btn,
     .quick-actions .btn-primary,
     .quick-actions .btn-outline,
@@ -76,17 +75,41 @@
       text-align: center;
     }
 
-    /* ========== NEW: Center the major section headers ========== */
+    /* ========== Center the major section headers ========== */
     .section .section-head { text-align: center; }
     .section .section-head h2 { margin-left: auto; margin-right: auto; }
     .section .section-head .muted { margin-left: auto; margin-right: auto; }
 
     /* Tighten top spacing so sections sit neatly below the KPIs */
     .section { scroll-margin-top: 80px; }
+
+    /* ========== NEW: Campaign summary pills (center + auto width with 1ch each side) ========== */
+    .disclosure > summary {
+      list-style: none;
+      display: flex;
+      justify-content: center;   /* center the pill */
+      padding: 0;
+      cursor: pointer;
+    }
+    .disclosure > summary::-webkit-details-marker { display: none; }
+
+    /* Make the open/close labels identically styled, width = content + 2ch */
+    .disclosure > summary .open-label,
+    .disclosure > summary .close-label {
+      display: inline-block;
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      color: #065f46;
+      font-weight: 700;
+      border-radius: 999px;
+      padding: 8px 1ch;          /* exactly one “space” on either side */
+      white-space: nowrap;
+      margin: 8px auto;
+    }
   </style>
 </head>
 <body>
-  <!-- ======= Top Navigation Bar (same structure as quirk-trade-tool) ======= -->
+  <!-- ======= Top Navigation Bar ======= -->
   <header class="topbar" role="banner">
     <div class="topbar-inner">
       <a class="home-link" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
@@ -104,13 +127,10 @@
       <h1 id="page-title" class="title">Quirk AI Marketing</h1>
       <p class="subtitle">Brand-consistent campaigns, tools, and templates for Chevrolet, Buick GMC, Kia, and Volkswagen in New Hampshire.</p>
 
-      <!-- Centered Quick Actions (order/targets preserved) -->
+      <!-- Centered Quick Actions -->
       <div class="quick-actions" role="group" aria-label="Quick Actions">
-        <!-- Left (white): Open Campaigns -->
         <a class="btn btn-outline" href="#campaigns">Open Campaigns</a>
-        <!-- Middle (green): View Resources -->
         <a class="btn btn-primary" href="#resources">View Resources</a>
-        <!-- Right: AI Tools -> Zapier (new window) -->
         <a class="btn btn-ghost" href="https://zapier.com/blog/best-ai-marketing-tools/" target="_blank" rel="noopener">AI Tools</a>
       </div>
     </section>
@@ -123,7 +143,6 @@
       </div>
       <div class="kpi">
         <span class="kpi-value">
-          <!-- Clickable 14 -> opens in new window; styling preserved -->
           <a href="https://www.quirkcars.com/contact-us/" target="_blank" rel="noopener" style="color:inherit; text-decoration:none;">14</a>
         </span>
         <span class="kpi-label">Core Brands</span>
@@ -208,8 +227,8 @@
       <!-- Chevrolet -->
       <details class="disclosure" open>
         <summary>
-          <span class="open-label">Open for Chevrolet</span>
-          <span class="close-label">Quirk Chevrolet</span>
+          <span class="open-label">Quirk Chevrolet NH - expand</span>
+          <span class="close-label">Close Quirk Chevrolet NH</span>
         </summary>
         <div class="disclosure-body">
           <div class="two-col">
@@ -232,7 +251,7 @@
       <!-- Buick GMC -->
       <details class="disclosure">
         <summary>
-          <span class="open-label">Open for Quirk Buick GMC</span>
+          <span class="open-label">Quirk Buick GMC - expand</span>
           <span class="close-label">Close Quirk Buick GMC</span>
         </summary>
         <div class="disclosure-body">
@@ -254,7 +273,7 @@
       <!-- Kia -->
       <details class="disclosure">
         <summary>
-          <span class="open-label">Open for Quirk Kia Manchester</span>
+          <span class="open-label">Quirk Kia Manchester - expand</span>
           <span class="close-label">Close Quirk Kia Manchester</span>
         </summary>
         <div class="disclosure-body">
@@ -280,7 +299,7 @@
       <!-- Volkswagen -->
       <details class="disclosure">
         <summary>
-          <span class="open-label">Open for Quirk Volkswagen NH</span>
+          <span class="open-label">Quirk Volkswagen NH - expand</span>
           <span class="close-label">Close Quirk Volkswagen NH</span>
         </summary>
         <div class="disclosure-body">
@@ -304,7 +323,7 @@
     <section id="seo" class="section" aria-labelledby="seo-title">
       <div class="section-head">
         <h2 id="seo-title">SEO & Content</h2>
-        <p class="muted">Evergreen + seasonal topics tailored to New Hampshire drivers and weather.</p>
+        <p class="muted">Evergreen + seasonal topics tailored to NH drivers and weather.</p>
       </div>
 
       <div class="card-grid">
@@ -316,7 +335,7 @@
 
         <article class="card compact">
           <h3 class="card-title">Truck Towing 101</h3>
-          <p class="card-text">Payload vs. towing, hitch classes, and New Hampshire trailer rules.</p>
+          <p class="card-text">Payload vs. towing, hitch classes, and NH trailer rules.</p>
           <a class="link" href="#" aria-label="Open Truck Towing 101">Open</a>
         </article>
 
@@ -368,7 +387,6 @@
       <a href="https://www.fullpath.com/oem-program/gm/" target="_blank" rel="noopener">
         <img src="assets/GM_FullPath.png" alt="GM Fullpath OEM Program" />
       </a>
-      <!-- NEW: Mazda in between GM and Subaru -->
       <a href="https://www.fullpath.com/oem-program/mazda/" target="_blank" rel="noopener">
         <img src="assets/Mazda.png" alt="Mazda Fullpath OEM Program" />
       </a>
