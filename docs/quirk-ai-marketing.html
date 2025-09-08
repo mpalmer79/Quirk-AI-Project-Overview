@@ -1,4 +1,4 @@
-<!doctype html>
+<!doctype html> 
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -34,13 +34,8 @@
       display: block;
     }
     @media (max-width: 768px) {
-      .footer-logos {
-        flex-direction: column;
-        gap: 1.5rem;
-      }
-      .footer-logos img {
-        max-width: 90%;
-      }
+      .footer-logos { flex-direction: column; gap: 1.5rem; }
+      .footer-logos img { max-width: 90%; }
     }
     .footer .copyright {
       text-align: center;
@@ -48,23 +43,11 @@
       color: #555;
       margin-top: 1rem;
     }
-    .journey-image {
-      text-align: center;
-      margin: 2rem 0;
-    }
-    .journey-image img {
-      max-width: 1000px;
-      width: 100%;
-      height: auto;
-    }
-    hr.divider {
-      border: none;
-      border-top: 1px solid #ddd;
-      margin: 2rem auto;
-      max-width: 1000px;
-    }
+    .journey-image { text-align: center; margin: 2rem 0; }
+    .journey-image img { max-width: 1000px; width: 100%; height: auto; }
+    hr.divider { border: none; border-top: 1px solid #ddd; margin: 2rem auto; max-width: 1000px; }
 
-    /* === Update: center-align titles inside cards (library cards, SEO cards, etc.) === */
+    /* Center-align titles inside cards (library cards, SEO cards, etc.) */
     .card .card-title { text-align: center; }
   </style>
 </head>
@@ -87,10 +70,14 @@
       <h1 id="page-title" class="title">Quirk AI Marketing</h1>
       <p class="subtitle">Brand-consistent campaigns, tools, and templates for Chevrolet, Buick GMC, Kia, and Volkswagen in New Hampshire.</p>
 
+      <!-- UPDATED pill order + targets -->
       <div class="quick-actions" role="group" aria-label="Quick Actions">
-        <a class="btn" href="#resources">View Resources</a>
+        <!-- Left (white): Open Campaigns -->
         <a class="btn btn-outline" href="#campaigns">Open Campaigns</a>
-        <a class="btn btn-ghost" href="#tools">AI Tools</a>
+        <!-- Middle (green): View Resources -->
+        <a class="btn btn-primary" href="#resources">View Resources</a>
+        <!-- Right: AI Tools -> Zapier (new window) -->
+        <a class="btn btn-ghost" href="https://zapier.com/blog/best-ai-marketing-tools/" target="_blank" rel="noopener">AI Tools</a>
       </div>
     </section>
 
@@ -101,7 +88,10 @@
         <span class="kpi-label">Focus Period</span>
       </div>
       <div class="kpi">
-        <span class="kpi-value">14</span>
+        <!-- Make 14 clickable; keep original styling by removing link decoration -->
+        <span class="kpi-value">
+          <a href="https://www.quirkcars.com/contact-us/" target="_blank" rel="noopener" style="color:inherit; text-decoration:none;">14</a>
+        </span>
         <span class="kpi-label">Core Brands</span>
       </div>
       <div class="kpi">
