@@ -47,15 +47,18 @@
     /* Comparison table */
     .table-wrap { overflow-x:auto; }
     table { width:100%; border-collapse:collapse; }
-    th, td { border-bottom:1px solid var(--border); text-align:left; padding:12px; vertical-align:top; }
-    /* IMPORTANT: make header non-sticky so it sits above first row (no overlap) */
-    thead th { background:var(--surface-2); position:static; }
+    th, td { border-bottom:1px solid var(--border); padding:12px; vertical-align:top; }
+    td { text-align:left; }
+    /* Center the header labels over each column */
+    thead th { background:var(--surface-2); position:static; text-align:center; }
     tbody tr:hover { background: color-mix(in srgb, var(--focus) 18%, transparent); }
 
     /* Feature grid */
     .grid { display:grid; grid-template-columns:repeat(12,1fr); gap:16px; }
     .card { grid-column:span 12; padding:18px; border:1px solid var(--border); background:var(--surface); border-radius:16px; }
     @media (min-width:720px){ .card.sm6{grid-column:span 6;} .card.sm4{grid-column:span 4;} }
+    /* Only center requested card titles */
+    .card .center-title { text-align:center; }
 
     /* ROI calc */
     .roi form { display:grid; gap:12px; grid-template-columns:repeat(12,1fr); }
@@ -77,11 +80,6 @@
 
     /* Footer */
     footer { border-top:1px solid var(--border); padding:24px; text-align:center; color:var(--muted); }
-
-    /* Lang switch */
-    .lang-switch { font-size:.9rem; margin-top:8px; color:var(--muted); }
-    .lang-switch button { border:1px solid var(--border); background:var(--surface); padding:6px 10px; border-radius:999px; margin-left:8px; }
-    .lang-switch button.active { border-color:var(--brand); }
 
     /* ===== NUMA logo inline replacements ===== */
     .numa-inline { display:inline-block; line-height:0; }
@@ -121,24 +119,11 @@
       captures voicemails; <strong>Quirk AI Voice</strong> handles real customer conversations in real time — books
       service, logs leads, quotes trades, checks parts orders, and escalates to a person when it should.
     </p>
-    <p id="hero-copy-es" hidden>
-      <a class="numa-inline" href="https://www.numa.com/" target="_blank" rel="noopener" aria-label="Open numa.com">
-        <img src="assets/numa_logo.png" alt="NUMA logo" />
-      </a>
-      captura buzones de voz; <strong>Quirk AI Voice</strong> maneja conversaciones reales en tiempo real — reserva
-      servicio, registra leads, cotiza valuaciones, verifica pedidos de partes y escala con una persona cuando corresponde.
-    </p>
 
     <!-- Compact Request Demo button -->
     <div class="cta-bar">
       <a class="btn primary compact" aria-label="Request a live demo by email"
          href="https://openai.github.io/openai-agents-js/guides/voice-agents/quickstart/">Build an OpenAI demo</a>
-    </div>
-
-    <div class="lang-switch" role="group" aria-label="Language">
-      <span>Language:</span>
-      <button type="button" class="active" data-lang="en">EN</button>
-      <button type="button" data-lang="es">ES</button>
     </div>
   </section>
 
@@ -211,15 +196,15 @@
     <h2 class="center-text">What You Get</h2>
     <div class="grid">
       <article class="card sm4">
-        <h3>Service Automation</h3>
+        <h3 class="center-title">Service Automation</h3>
         <p>Holds slots, captures RO context, transport flags, and confirms via SMS/email.</p>
       </article>
       <article class="card sm4">
-        <h3>Sales Lead Capture</h3>
+        <h3 class="center-title">Sales Lead Capture</h3>
         <p>Creates VIN Solutions lead + activity + appointment; trade snapshot included.</p>
       </article>
       <article class="card sm4">
-        <h3>Parts & Orders</h3>
+        <h3 class="center-title">Parts & Orders</h3>
         <p>Line items, fulfillment method/time, optional VIN; status checks in-channel.</p>
       </article>
       <article class="card sm4">
@@ -361,17 +346,6 @@
   </footer>
 
   <script>
-    // Language toggle (EN/ES)
-    const buttons = document.querySelectorAll('.lang-switch button');
-    const en = document.getElementById('hero-copy-en');
-    const es = document.getElementById('hero-copy-es');
-    buttons.forEach(btn => btn.addEventListener('click', () => {
-      buttons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      const lang = btn.dataset.lang;
-      if (lang === 'es') { es.hidden = false; en.hidden = true; } else { es.hidden = true; en.hidden = false; }
-    }));
-
     // ROI calculator
     function calcROI(){
       const calls = +document.getElementById('calls').value || 0;
