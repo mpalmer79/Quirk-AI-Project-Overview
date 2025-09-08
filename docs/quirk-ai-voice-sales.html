@@ -82,6 +82,14 @@
     .lang-switch { font-size:.9rem; margin-top:8px; color:var(--muted); }
     .lang-switch button { border:1px solid var(--border); background:var(--surface); padding:6px 10px; border-radius:999px; margin-left:8px; }
     .lang-switch button.active { border-color:var(--brand); }
+
+    /* ===== NUMA logo inline replacements ===== */
+    .numa-inline { display:inline-block; line-height:0; }
+    .numa-inline img { height:1em; vertical-align:-0.15em; width:auto; }
+    /* Larger variants for headings/table header */
+    .numa-h1 img { height:1.2em; }
+    .numa-h2 img { height:1.05em; }
+    .numa-th img { height:1.05em; }
   </style>
 </head>
 
@@ -100,13 +108,24 @@
 
   <!-- ======= HERO ======= -->
   <section class="container hero center-text" id="top">
-    <h1>Why Dealerships Choose <strong>Quirk AI Voice</strong> over NUMA</h1>
+    <h1>
+      Why Dealerships Choose <strong>Quirk AI Voice</strong> over
+      <a class="numa-inline numa-h1" href="https://www.numa.com/" target="_blank" rel="noopener" aria-label="Open numa.com">
+        <img src="assets/numa_logo.png" alt="NUMA logo" />
+      </a>
+    </h1>
     <p id="hero-copy-en">
-      NUMA captures voicemails; <strong>Quirk AI Voice</strong> handles real customer conversations in real time — books
+      <a class="numa-inline" href="https://www.numa.com/" target="_blank" rel="noopener" aria-label="Open numa.com">
+        <img src="assets/numa_logo.png" alt="NUMA logo" />
+      </a>
+      captures voicemails; <strong>Quirk AI Voice</strong> handles real customer conversations in real time — books
       service, logs leads, quotes trades, checks parts orders, and escalates to a person when it should.
     </p>
     <p id="hero-copy-es" hidden>
-      NUMA captura buzones de voz; <strong>Quirk AI Voice</strong> maneja conversaciones reales en tiempo real — reserva
+      <a class="numa-inline" href="https://www.numa.com/" target="_blank" rel="noopener" aria-label="Open numa.com">
+        <img src="assets/numa_logo.png" alt="NUMA logo" />
+      </a>
+      captura buzones de voz; <strong>Quirk AI Voice</strong> maneja conversaciones reales en tiempo real — reserva
       servicio, registra leads, cotiza valuaciones, verifica pedidos de partes y escala con una persona cuando corresponde.
     </p>
 
@@ -123,17 +142,24 @@
     </div>
   </section>
 
-  <!-- NOTE: The circled “badges” row and the sticky chip nav were removed per your request. -->
-
   <!-- ======= COMPARISON TABLE ======= -->
   <section id="comparison" class="container">
-    <h2 class="center-text">NUMA vs Quirk AI Voice</h2>
+    <h2 class="center-text">
+      <a class="numa-inline numa-h2" href="https://www.numa.com/" target="_blank" rel="noopener" aria-label="Open numa.com">
+        <img src="assets/numa_logo.png" alt="NUMA logo" />
+      </a>
+      &nbsp;vs Quirk AI Voice
+    </h2>
     <div class="table-wrap">
       <table class="table-centered">
         <thead>
           <tr>
             <th>Capability</th>
-            <th>NUMA</th>
+            <th>
+              <a class="numa-inline numa-th" href="https://www.numa.com/" target="_blank" rel="noopener" aria-label="Open numa.com">
+                <img src="assets/numa_logo.png" alt="NUMA logo" />
+              </a>
+            </th>
             <th>Quirk AI Voice</th>
           </tr>
         </thead>
