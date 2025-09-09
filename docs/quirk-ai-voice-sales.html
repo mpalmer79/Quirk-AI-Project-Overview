@@ -85,11 +85,12 @@
     /* Footer */
     footer { border-top:1px solid var(--border); padding:24px; text-align:center; color:var(--muted); }
 
-    /* ===== NUMA logo inline replacements ===== */
-    .numa-inline { display:inline-block; line-height:0; }
-    .numa-inline img { height:1em; vertical-align:-0.15em; width:auto; }
+    /* ===== Inline logo helpers (NUMA + QUIRK) ===== */
+    .numa-inline, .quirk-inline { display:inline-block; line-height:0; }
+    .numa-inline img, .quirk-inline img { height:1em; vertical-align:-0.15em; width:auto; }
+
     /* Larger variants for headings/table header */
-    .numa-h1 img { height:1.2em; }
+    .numa-h1 img, .quirk-h1 img { height:1.2em; } /* match sizes in H1 */
     .numa-h2 img { height:1.05em; }
     .numa-th img { height:1.05em; }
   </style>
@@ -111,16 +112,25 @@
   <!-- ======= HERO ======= -->
   <section class="container hero center-text" id="top">
     <h1>
-      Why Dealerships Choose <strong>Quirk AI Voice</strong> over
+      Why Dealerships Choose
+      <span class="quirk-inline quirk-h1" aria-label="Quirk AI">
+        <img src="assets/quirk-ai-logo.png" alt="Quirk AI logo" />
+      </span>
+      &nbsp;Voice over
       <a class="numa-inline numa-h1" href="https://www.numa.com/" target="_blank" rel="noopener" aria-label="Open numa.com">
         <img src="assets/numa_logo.png" alt="NUMA logo" />
       </a>
     </h1>
+
     <p id="hero-copy-en">
       <a class="numa-inline" href="https://www.numa.com/" target="_blank" rel="noopener" aria-label="Open numa.com">
         <img src="assets/numa_logo.png" alt="NUMA logo" />
       </a>
-      captures voicemails; <strong>Quirk AI Voice</strong> handles real customer conversations in real time — books
+      &nbsp;captures voicemails;&nbsp;
+      <span class="quirk-inline" aria-label="Quirk AI">
+        <img src="assets/quirk-ai-logo.png" alt="Quirk AI logo" />
+      </span>
+      &nbsp;handles real customer conversations in real time — books
       service, logs leads, quotes trades, checks parts orders, and escalates to a person when it should.
     </p>
 
