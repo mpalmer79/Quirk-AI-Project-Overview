@@ -26,8 +26,11 @@
     .q-col-6 { grid-column: span 6; }
     @media (max-width: 900px){ .q-col-6 { grid-column: span 12; } }
 
-    .q-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 14px; padding: 18px; box-shadow: 0 6px 16px rgba(2,6,23,.06); }
-    .q-card h2 { margin: 0 0 6px; font-size: 1.25rem; color: #0b6e37; font-weight: 800; }
+    .q-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 14px; padding: 18px; box-shadow: 0 6px 16px rgba(2,6,23,.06);
+      /* keep the Expand pill anchored bottom-left */
+      display: flex; flex-direction: column; min-height: 220px;
+    }
+    .q-card h2 { margin: 0 0 6px; font-size: 1.25rem; color: #0b6e37; font-weight: 800; text-align: center; }
     .q-card h2 a { color: inherit; text-decoration: none; }
     .q-card h2 a:hover { text-decoration: underline; }
     .q-bullets { margin: 10px 0 0 18px; color: #0f172a; }
@@ -39,6 +42,7 @@
     .q-cta { display:inline-block; margin-top:12px; padding:10px 14px; border-radius:999px; border:1px solid rgba(11,110,55,.22); color:#0b6e37; text-decoration:none; font-weight:700; background:#fff; }
     .q-cta:hover { text-decoration:none; transform: translateY(-1px); }
     .q-cta-small { padding:8px 12px; font-size:.95rem; }
+    .q-disclosure { margin-top: auto; } /* push the Expand control to the bottom of the card */
     .q-disclosure .label-close { display:none; }
     .q-disclosure[open] .label-open { display:none; }
     .q-disclosure[open] .label-close { display:inline; }
@@ -184,6 +188,22 @@
                 </a>
               </p>
               <p><a class="q-cta q-cta-small" href="assets/desklog_analysis_summary.pdf" target="_blank" rel="noopener">Desklog Analysis Summary</a></p>
+            </div>
+          </details>
+        </article>
+      </div>
+
+      <!-- NEW: Concept Ideas card -->
+      <div class="q-col-6">
+        <article class="q-card">
+          <h2>Concept Ideas</h2>
+          <p class="clamp-2">Early-stage concepts, prototypes, and blueprints to explore before full build-out.</p>
+          <details class="q-disclosure">
+            <summary class="q-cta q-cta-small">
+              <span class="label-open">Expand</span><span class="label-close">Collapse</span>
+            </summary>
+            <div class="q-long">
+              <p class="muted" style="margin-top:6px;">Add links or notes here as you flesh out concepts.</p>
             </div>
           </details>
         </article>
