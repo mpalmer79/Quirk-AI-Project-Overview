@@ -39,10 +39,14 @@
     .hero p { font-size: 1.1rem; line-height: 1.55; color: var(--muted); }
 
     /* CTA */
-    .cta-bar { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:8px; }
+    .cta-bar { display:flex; gap:12px; flex-wrap:wrap; justify-content:space-between; align-items:center; margin-top:8px; width:100%; }
     .btn { display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:999px; border:1px solid var(--border); background:var(--surface); text-decoration:none; color:var(--ink); }
     .btn.primary { background:var(--brand); border-color:var(--brand-dark); color:#fff; }
     .btn.compact { padding:8px 10px; font-size:.95rem; }
+    /* On small screens, keep both pills centered and stacked if needed */
+    @media (max-width: 640px){
+      .cta-bar { justify-content:center; }
+    }
 
     /* Comparison table */
     .table-wrap { overflow-x:auto; }
@@ -120,10 +124,13 @@
       service, logs leads, quotes trades, checks parts orders, and escalates to a person when it should.
     </p>
 
-    <!-- Compact Request Demo button -->
+    <!-- Two CTAs: left + right -->
     <div class="cta-bar">
-      <a class="btn primary compact" aria-label="Request a live demo by email"
+      <a class="btn primary compact" aria-label="Build an OpenAI Voice Agents demo (quickstart guide)"
          href="https://openai.github.io/openai-agents-js/guides/voice-agents/quickstart/">Build an OpenAI demo</a>
+
+      <a class="btn primary compact" aria-label="Open the OpenAI GPT Realtime API Voice agents page in a new tab"
+         href="https://openai.com/index/introducing-gpt-realtime/" target="_blank" rel="noopener">RealTime API Voice agents</a>
     </div>
   </section>
 
