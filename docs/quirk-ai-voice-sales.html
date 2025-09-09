@@ -22,6 +22,7 @@
   <link rel="stylesheet" href="assets/style.css" />
 
   <style>
+    /* Brand tokens used in this page */
     :root{
       --brand:#0b6e37; --brand-dark:#0a5d2f;
       --ink:#0f172a; --muted:#475569;
@@ -58,23 +59,21 @@
     @media (min-width:720px){ .card.sm6{grid-column:span 6;} .card.sm4{grid-column:span 4;} }
     .card .center-title { text-align:center; }
 
+    /* Guardrails header alignment */
+    #guardrails h3 { text-align:center; }
+
     /* ROI calc */
     .roi form { display:grid; gap:12px; grid-template-columns:repeat(12,1fr); }
     .roi label { display:block; font-size:.9rem; color:var(--muted); margin-bottom:6px; }
     .roi .field { grid-column:span 12; }
     .roi input, .roi select {
-      width:100%;
-      padding:10px;
-      border-radius:10px;
-      border:1px solid var(--border);
-      background:var(--surface);
-      color:var(--ink);
-      text-align:center; /* center values inside the inputs */
+      width:100%; padding:10px; border-radius:10px; border:1px solid var(--border);
+      background:var(--surface); color:var(--ink); text-align:center; /* center values */
     }
     @media (min-width:720px){ .roi .field.h6{grid-column:span 6;} .roi .field.h4{grid-column:span 4;} }
     .result { font-size:1.25rem; font-weight:700; margin-top:8px; }
 
-    /* details/summary with label swap — centered & bold */
+    /* details/summary with label swap (general) */
     details.disclose { border:1px dashed var(--border); border-radius:12px; padding:12px 14px; background:var(--surface); }
     details.disclose>summary { cursor:pointer; list-style:none; position:relative; padding-right:24px; text-align:center; }
     details.disclose>summary::marker { display:none; }
@@ -87,7 +86,7 @@
     /* Footer */
     footer { border-top:1px solid var(--border); padding:24px; text-align:center; color:var(--muted); }
 
-    /* Inline logo helpers */
+    /* ===== Inline logo helpers (NUMA + QUIRK) ===== */
     .numa-inline, .quirk-inline { display:inline-block; line-height:0; }
     .numa-inline img, .quirk-inline img { height:1em; vertical-align:-0.15em; width:auto; }
 
@@ -97,8 +96,16 @@
     /* NUMA sizes aligned */
     .numa-h1 img, .numa-h2 img, .numa-th img { height:1.2em; }
 
-    /* Center the guardrails card titles */
-    #guardrails .card h3 { text-align:center; }
+    /* ===== FAQ custom layout (first two visible, rest hidden) ===== */
+    .faq-item { text-align:left; margin:12px 0; padding:14px; border:1px solid var(--border); border-radius:12px; background:#fff; }
+    .faq-item p { margin:6px 0; }
+    .faq-toggle { text-align:center; margin:8px 0 0; }
+    .faq-toggle details { display:inline-block; padding:0; border:none; background:transparent; }
+    .faq-toggle details>summary {
+      display:inline-block; border:1px solid var(--border); border-radius:999px;
+      padding:8px 12px; background:#fff; font-weight:800;
+    }
+    .faq-more-list .faq-item { margin-top:12px; }
   </style>
 </head>
 
@@ -140,6 +147,7 @@
       service, logs leads, quotes trades, checks parts orders, and escalates to a person when it should.
     </p>
 
+    <!-- Two CTAs -->
     <div class="cta-bar">
       <a class="btn primary compact" aria-label="Build an OpenAI Voice Agents demo (quickstart guide)"
          href="https://openai.github.io/openai-agents-js/guides/voice-agents/quickstart/">Build an OpenAI demo</a>
@@ -359,79 +367,73 @@
     </form>
   </section>
 
-  <!-- ======= FAQ ======= -->
+  <!-- ======= FAQ (first two visible, rest behind toggle) ======= -->
   <section id="faq" class="container">
     <h2 class="center-text">FAQ</h2>
 
-    <details class="disclose">
-      <summary><span class="open-label">Open for more</span><span class="close-label">Close</span></summary>
-      <div style="margin-top:8px;">
-        <p><strong>Does it work with our existing schedulers and CRM?</strong><br>Yes—Xtime/CDK/Dealertrack for service and VIN Solutions for sales are supported via adapters.</p>
-        <p><strong>How do you handle escalations?</strong><br>Based on confidence, sentiment, complexity, or user request. We hand off with a CRM ticket and transcript link.</p>
-        <p><strong>What about privacy?</strong><br>PII is masked in logs and encrypted at rest; daily QA audits are performed.</p>
-      </div>
-    </details>
+    <!-- First two Q&As (always visible) -->
+    <div class="faq-item">
+      <p><strong>How long does implementation take?</strong></p>
+      <p>Typical pilot in 2–3 weeks: environment setup, adapter config, knowledge-base load, and agent tuning. Full rollout across stores is usually 4–6 weeks.</p>
+    </div>
 
-    <!-- Additional dealership questions -->
-    <details class="disclose" style="margin-top:8px;">
-      <summary>How long does implementation take?</summary>
-      <div style="margin-top:8px;">Typical pilot in 2–3 weeks: environment setup, adapter config, knowledge-base load, and agent tuning. Full rollout across stores is usually 4–6 weeks.</div>
-    </details>
+    <div class="faq-item">
+      <p><strong>What hours can the voice agent cover?</strong></p>
+      <p>24/7 by default. During store hours it cooperates with staff; off-hours it deflects to scheduling, lead capture, or creates a ticket with transcript.</p>
+    </div>
 
-    <details class="disclose" style="margin-top:8px;">
-      <summary>What hours can the voice agent cover?</summary>
-      <div style="margin-top:8px;">24/7 by default. During store hours it cooperates with staff; off-hours it deflects to scheduling, lead capture, or creates a ticket with transcript.</div>
-    </details>
+    <!-- Toggle for the remaining questions -->
+    <div class="faq-toggle">
+      <details class="disclose faq-more">
+        <summary>
+          <span class="open-label">Open for more</span>
+          <span class="close-label">Close</span>
+        </summary>
 
-    <details class="disclose" style="margin-top:8px;">
-      <summary>Can we choose the agent’s voice and tone?</summary>
-      <div style="margin-top:8px;">Yes. Voice, speaking rate, and tone are configurable per store. Intros, disclaimers, and language preferences are brand-consistent and editable.</div>
-    </details>
-
-    <details class="disclose" style="margin-top:8px;">
-      <summary>What reporting do managers get?</summary>
-      <div style="margin-top:8px;">Dashboard for CSAT, AHT, deflection %, escalation reasons, first-contact resolution, bookings/leads by source, and transcript search with sentiment.</div>
-    </details>
-
-    <details class="disclose" style="margin-top:8px;">
-      <summary>How does it authenticate customers?</summary>
-      <div style="margin-top:8px;">Lightweight identity checks (phone/email/VIN), plus optional one-time code via SMS. Sensitive flows can require staff approval before action.</div>
-    </details>
-
-    <details class="disclose" style="margin-top:8px;">
-      <summary>What languages are supported?</summary>
-      <div style="margin-top:8px;">English and Spanish with mid-call switching. Additional languages can be enabled on request for specific stores or campaigns.</div>
-    </details>
-
-    <details class="disclose" style="margin-top:8px;">
-      <summary>Where is our data stored?</summary>
-      <div style="margin-top:8px;">US-based storage. Transcripts and metadata are encrypted at rest, access is role-based, and retention can be set per dealership policy.</div>
-    </details>
-
-    <details class="disclose" style="margin-top:8px;">
-      <summary>How does it interact with our phone system?</summary>
-      <div style="margin-top:8px;">SIP/PSTN handoff or forwarding rules. We can front the main line, overflow queues, or after-hours routing without replacing your carrier.</div>
-    </details>
-
-    <details class="disclose" style="margin-top:8px;">
-      <summary>What happens if the caller asks for a person?</summary>
-      <div style="margin-top:8px;">Immediate escalation to a live desk with the transcript, intent, and any captured details (VIN/concern/parts list) to avoid repeating information.</div>
-    </details>
-
-    <details class="disclose" style="margin-top:8px;">
-      <summary>Is there a pilot or trial option?</summary>
-      <div style="margin-top:8px;">Yes. We recommend a 30-day pilot on one store and one primary use case (service scheduling or lead capture) to prove KPIs before group rollout.</div>
-    </details>
-
-    <details class="disclose" style="margin-top:8px;">
-      <summary>What’s the pricing model?</summary>
-      <div style="margin-top:8px;">Typically per-minute usage with volume tiers, plus optional flat fees for premium adapters and analytics. No long-term contract required for pilot.</div>
-    </details>
-
-    <details class="disclose" style="margin-top:8px;">
-      <summary>What uptime and support do we get?</summary>
-      <div style="margin-top:8px;">99.9% target uptime. Email/chat support with on-call incident response. Weekly QA reviews during rollout and monthly business reviews thereafter.</div>
-    </details>
+        <div class="faq-more-list">
+          <div class="faq-item">
+            <p><strong>Can we choose the agent’s voice and tone?</strong></p>
+            <p>Yes. Voice, speaking rate, and tone are configurable per store. Intros, disclaimers, and language preferences are brand-consistent and editable.</p>
+          </div>
+          <div class="faq-item">
+            <p><strong>What reporting do managers get?</strong></p>
+            <p>Dashboard for CSAT, AHT, deflection %, escalation reasons, first-contact resolution, bookings/leads by source, and transcript search with sentiment.</p>
+          </div>
+          <div class="faq-item">
+            <p><strong>How does it authenticate customers?</strong></p>
+            <p>Lightweight identity checks (phone/email/VIN), plus an optional one-time code via SMS. Sensitive flows can require staff approval before action.</p>
+          </div>
+          <div class="faq-item">
+            <p><strong>What languages are supported?</strong></p>
+            <p>English and Spanish with mid-call switching. Additional languages can be enabled on request for specific stores or campaigns.</p>
+          </div>
+          <div class="faq-item">
+            <p><strong>Where is our data stored?</strong></p>
+            <p>US-based storage. Transcripts and metadata are encrypted at rest, access is role-based, and retention can be set per dealership policy.</p>
+          </div>
+          <div class="faq-item">
+            <p><strong>How does it interact with our phone system?</strong></p>
+            <p>SIP/PSTN handoff or forwarding rules. We can front the main line, overflow queues, or after-hours routing without replacing your carrier.</p>
+          </div>
+          <div class="faq-item">
+            <p><strong>What happens if the caller asks for a person?</strong></p>
+            <p>Immediate escalation to a live desk with the transcript, intent, and any captured details (VIN/concern/parts list) to avoid repeating information.</p>
+          </div>
+          <div class="faq-item">
+            <p><strong>Is there a pilot or trial option?</strong></p>
+            <p>Yes. We recommend a 30-day pilot on one store and one primary use case (service scheduling or lead capture) to prove KPIs before group rollout.</p>
+          </div>
+          <div class="faq-item">
+            <p><strong>What’s the pricing model?</strong></p>
+            <p>Typically per-minute usage with volume tiers, plus optional flat fees for premium adapters and analytics. No long-term contract required for pilot.</p>
+          </div>
+          <div class="faq-item">
+            <p><strong>What uptime and support do we get?</strong></p>
+            <p>99.9% target uptime with monitored SLAs. Email/chat support, weekly QA reviews, and an escalation channel for critical issues.</p>
+          </div>
+        </div>
+      </details>
+    </div>
   </section>
 
   <footer class="container footer center-text">
@@ -441,10 +443,11 @@
   <script>
     // ROI calculator
     function calcROI(){
-      const calls   = +document.getElementById('calls').value   || 0;
-      const deflect = (+document.getElementById('deflect').value || 0) / 100;
-      const aht     = +document.getElementById('aht').value     || 0;
-      const cost    = +document.getElementById('cost').value    || 0;
+      const calls   = +document.getElementById('calls').value || 0;
+      const deflect = (+document.getElementById('deflect').value || 0)/100;
+      const aht     = +document.getElementById('aht').value || 0;
+      const cost    = +document.getElementById('cost').value || 0;
+      // conv is captured but not used in this simple back-of-napkin model
       const minutesSaved = calls * deflect * aht;
       const savings = minutesSaved * cost;
       const fmt = savings.toLocaleString(undefined, {style:'currency', currency:'USD', maximumFractionDigits:0});
@@ -453,7 +456,7 @@
     calcROI();
   </script>
 
-  <!-- Structured data for FAQ (SEO) -->
+  <!-- Optional: structured data (kept minimal for the two visible FAQs) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -461,78 +464,13 @@
     "mainEntity": [
       {
         "@type": "Question",
-        "name": "Does it work with our existing schedulers and CRM?",
-        "acceptedAnswer": {"@type": "Answer", "text": "Yes—Xtime/CDK/Dealertrack for service and VIN Solutions for sales are supported via adapters."}
-      },
-      {
-        "@type": "Question",
-        "name": "How do you handle escalations?",
-        "acceptedAnswer": {"@type": "Answer", "text": "Based on confidence, sentiment, complexity, or user request. We hand off with a CRM ticket and transcript link."}
-      },
-      {
-        "@type": "Question",
-        "name": "What about privacy?",
-        "acceptedAnswer": {"@type": "Answer", "text": "PII is masked in logs and encrypted at rest; daily QA audits are performed."}
-      },
-      {
-        "@type": "Question",
         "name": "How long does implementation take?",
-        "acceptedAnswer": {"@type": "Answer", "text": "Typical pilot in 2–3 weeks with configuration and training; full rollout generally 4–6 weeks."}
+        "acceptedAnswer": {"@type": "Answer", "text": "Typical pilot in 2–3 weeks: environment setup, adapter config, knowledge-base load, and agent tuning. Full rollout across stores is usually 4–6 weeks."}
       },
       {
         "@type": "Question",
         "name": "What hours can the voice agent cover?",
-        "acceptedAnswer": {"@type": "Answer", "text": "24/7. During store hours it cooperates with staff; off-hours it books, captures leads, or creates tickets."}
-      },
-      {
-        "@type": "Question",
-        "name": "Can we choose the agent’s voice and tone?",
-        "acceptedAnswer": {"@type": "Answer", "text": "Yes. Voice, speaking rate, tone, and scripts are configurable per store."}
-      },
-      {
-        "@type": "Question",
-        "name": "What reporting do managers get?",
-        "acceptedAnswer": {"@type": "Answer", "text": "CSAT, AHT, deflection, escalation reasons, FCR, bookings/leads by source, and transcript search with sentiment."}
-      },
-      {
-        "@type": "Question",
-        "name": "How does it authenticate customers?",
-        "acceptedAnswer": {"@type": "Answer", "text": "Phone/email/VIN checks with optional one-time codes; sensitive actions can require staff approval."}
-      },
-      {
-        "@type": "Question",
-        "name": "What languages are supported?",
-        "acceptedAnswer": {"@type": "Answer", "text": "English and Spanish with mid-call switching; more languages available on request."}
-      },
-      {
-        "@type": "Question",
-        "name": "Where is our data stored?",
-        "acceptedAnswer": {"@type": "Answer", "text": "US-based storage, encrypted at rest, role-based access, dealership-defined retention."}
-      },
-      {
-        "@type": "Question",
-        "name": "How does it interact with our phone system?",
-        "acceptedAnswer": {"@type": "Answer", "text": "SIP/PSTN handoff or forwarding rules; can front the main line, overflow queues, or after-hours routing."}
-      },
-      {
-        "@type": "Question",
-        "name": "What happens if the caller asks for a person?",
-        "acceptedAnswer": {"@type": "Answer", "text": "Immediate warm transfer to a desk with transcript and captured details to avoid repeats."}
-      },
-      {
-        "@type": "Question",
-        "name": "Is there a pilot or trial option?",
-        "acceptedAnswer": {"@type": "Answer", "text": "Yes. A 30-day pilot on one store/use case is typical to prove KPIs before wider rollout."}
-      },
-      {
-        "@type": "Question",
-        "name": "What’s the pricing model?",
-        "acceptedAnswer": {"@type": "Answer", "text": "Per-minute usage with volume tiers; optional flat fees for adapters/analytics; no long-term commitment for pilot."}
-      },
-      {
-        "@type": "Question",
-        "name": "What uptime and support do we get?",
-        "acceptedAnswer": {"@type": "Answer", "text": "99.9% target uptime, on-call incident response, weekly QA during rollout, and monthly business reviews."}
+        "acceptedAnswer": {"@type": "Answer", "text": "24/7 by default. During store hours it cooperates with staff; off-hours it deflects to scheduling, lead capture, or creates a ticket with transcript."}
       }
     ]
   }
