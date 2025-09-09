@@ -1,0 +1,36 @@
+{
+  "price_high": {
+    "triggers": ["too high", "price", "lower price", "best price"],
+    "probe": [
+      "Totally fair. Are you aiming for a monthly target or total out-the-door?",
+      "If we match the equipment you want, are you flexible on color or mileage?"
+    ],
+    "evidence": [
+      "We priced this {year} {make} {model} at {price}. That’s {market_diff}% {market_pos} the market for {zip}.",
+      "Comparable units: {comp_links}"
+    ],
+    "resolves": [
+      "Two ways to hit your target: {alt_term} months drops the payment by ${alt_payment_delta}/mo, or {alt_vehicle} keeps equipment and saves ${alt_price_delta}."
+    ],
+    "close": "Want me to lock that structure and hold the vehicle for you?"
+  },
+  "payment_high": {
+    "triggers": ["payment", "$", "per month"],
+    "probe": ["What monthly target are you trying to hit?"],
+    "evidence": [
+      "At ${term} months and {apr}% APR with ${down} down, this pencils at ~${payment}/mo."
+    ],
+    "resolves": [
+      "If we adjust to {term_alt} months, payment is ~${payment_alt}/mo. Adding ${down_alt} down gets you to ~${payment_with_down}/mo."
+    ],
+    "close": "Which option fits you best so I can save it to your quote?"
+  },
+  "trade_low": {
+    "triggers": ["trade", "value", "lowball"],
+    "probe": ["Can you share mileage and any packages or damage I should note?"],
+    "evidence": [
+      "Today’s range for similar {trade_year} {trade_make} {trade_model} is ${range_low}-${range_high} before reconditioning."
+    ],
+    "resolves": ["We can appraise the exact number on a quick photo set or a 10-minute drive-through."]
+  }
+}
