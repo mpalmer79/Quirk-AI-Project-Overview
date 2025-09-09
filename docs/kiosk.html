@@ -3,66 +3,228 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Quirk AI Sales Kiosk — Quirk</title>
-  <meta name="description" content="Clickable demo of a kiosk-driven AI automotive retail flow." />
+  <title>Quirk AI Sales Kiosk</title>
+  <meta name="color-scheme" content="light" />
   <base href="/Quirk-AI-Project-Overview/">
-
-  <!-- Tailwind (CDN) for styling to match your prototype -->
+  <!-- Tailwind (CDN) -->
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- React 18 + Babel for JSX-in-browser (zero-build demo) -->
+  <!-- React 18 + Babel (CDN) -->
   <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
   <style>
-    body { background:#f8fafc; }
+    /* Small polish for focus states */
+    :focus-visible { outline: 2px solid #34d399; outline-offset: 2px; }
   </style>
 </head>
-<body>
+<body class="bg-gradient-to-b from-emerald-50 to-slate-50 min-h-screen">
   <div id="root"></div>
 
-  <!-- Kiosk App (converted to plain JS + JSX) -->
   <script type="text/babel">
-    const { useState, useMemo } = React;
+    const { useMemo, useState } = React;
 
-    // ---- Sample inventory (replace with live feed) ----
-    const INVENTORY = [
-      {
-        vin: '1N4AL3AP1JC123456',
-        year: 2021, make: 'Nissan', model: 'Altima SV',
-        price: 19950, miles: 33210,
-        photo: 'https://images.unsplash.com/photo-1549921296-3b4a841f2b36?q=80&w=1200&auto=format&fit=crop',
-        features: ['Remote start', 'Safety Shield', 'CarPlay', 'Heated seats'],
-      },
-      {
-        vin: '2FMPK3J99KBB24680',
-        year: 2022, make: 'Ford', model: 'Edge SEL',
-        price: 26990, miles: 24500,
-        photo: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=1200&auto=format&fit=crop',
-        features: ['AWD', 'Co-Pilot360', 'Power liftgate', '18" alloys'],
-      },
-      {
-        vin: '5YJ3E1EA7KF317159',
-        year: 2021, make: 'Tesla', model: 'Model 3 SR+',
-        price: 28990, miles: 29800,
-        photo: 'https://images.unsplash.com/photo-1511397330067-5a9327f7a131?q=80&w=1200&auto=format&fit=crop',
-        features: ['Autopilot', 'Glass roof', 'Heated seats', 'Nav'],
-      },
+    // ----------------- Inventory Helpers -----------------
+    const PHOTO = {
+      Chevrolet: "https://images.unsplash.com/photo-1549921296-3b4a841f2b36?q=80&w=1200&auto=format&fit=crop",
+      GMC:       "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=1200&auto=format&fit=crop",
+      Buick:     "https://images.unsplash.com/photo-1525609004556-c46c7d6cf023?q=80&w=1200&auto=format&fit=crop",
+      Used:      "https://images.unsplash.com/photo-1511397330067-5a9327f7a131?q=80&w=1200&auto=format&fit=crop"
+    };
+
+    const MODEL_MAP = {
+      Chevrolet: ['Silverado 1500','Equinox','Traverse','Trax','Trailblazer','Malibu','Colorado','Blazer','Tahoe'],
+      GMC: ['Sierra 1500','Terrain','Acadia','Canyon','Yukon'],
+      Buick: ['Encore GX','Envision','Envista']
+    };
+
+    const COLORS = ['Black','White','Silver','Gray','Blue','Red','Green','Brown'];
+
+    function basePrice(make, model) {
+      const map = {
+        Chevrolet: {
+          'Trax': 21990, 'Trailblazer': 24990, 'Malibu': 24990, 'Equinox': 28990,
+          'Blazer': 34990, 'Traverse': 36990, 'Colorado': 33990, 'Silverado 1500': 38990, 'Tahoe': 58990
+        },
+        GMC: {
+          'Terrain': 30990, 'Acadia': 36990, 'Canyon': 35990, 'Sierra 1500': 41990, 'Yukon': 64990
+        },
+        Buick: {
+          'Envista': 23990, 'Encore GX': 27990, 'Envision': 33990
+        }
+      };
+      return (map[make] && map[make][model]) || 29990;
+    }
+
+    function vinFor(make, idx) {
+      const pfx = {Chevrolet:'1GC', GMC:'1GT', Buick:'1G4', Used:'2UX'}[make] || '3XX';
+      return pfx + String(100000000000000 + idx).slice(0,14);
+    }
+
+    function generateNewVehicles() {
+      const inv = [];
+      const pushFor = (make, count) => {
+        const models = MODEL_MAP[make];
+        for (let i = 0; i < count; i++) {
+          const model = models[i % models.length];
+          const color = COLORS[i % COLORS.length];
+          const year  = 2025;
+          const price = basePrice(make, model) + (i % 7) * 750;
+          inv.push({
+            vin: vinFor(make, i + (make==='Chevrolet'?1000: make==='GMC'?3000:5000)),
+            stockType: 'New',
+            year, make, model,
+            trim: (['LS','LT','LTZ','RS','Denali','Preferred','Avenir'])[i % 7],
+            price,
+            miles: 12 + (i % 9),
+            color,
+            photo: PHOTO[make],
+            features: ['CarPlay/Android Auto','Backup Camera','Alloy Wheels','Keyless Entry']
+          });
+        }
+      };
+      pushFor('Chevrolet', 75);
+      pushFor('GMC', 50);
+      pushFor('Buick', 25);
+      return inv;
+    }
+
+    // Seed a few used vehicles (from earlier demo)
+    const USED_SEED = [
+      { vin:'1N4AL3AP1JC123456', stockType:'Used', year:2021, make:'Nissan', model:'Altima SV', price:19950, miles:33210, color:'Gray',   photo:PHOTO.Used, features:['Remote start','Safety Shield','CarPlay','Heated seats'] },
+      { vin:'2FMPK3J99KBB24680', stockType:'Used', year:2022, make:'Ford',   model:'Edge SEL',   price:26990, miles:24500, color:'Black',  photo:PHOTO.Used, features:['AWD','Co-Pilot360','Power liftgate','18" alloys'] },
+      { vin:'5YJ3E1EA7KF317159', stockType:'Used', year:2021, make:'Tesla',  model:'Model 3 SR+', price:28990, miles:29800, color:'White',  photo:PHOTO.Used, features:['Autopilot','Glass roof','Heated seats','Nav'] }
     ];
 
-    const STEPS = [
-      'Welcome','Discovery','Vehicle Match','Payments',
-      'Trade-In','Credit Start','F&I Options','Review & Handoff'
-    ];
+    const INVENTORY = [...generateNewVehicles(), ...USED_SEED];
 
-    // Payment calculator — deterministic math (no AI)
+    // ----------------- Payment helpers -----------------
     function calcPayment(amount, aprPct, termMonths) {
       const r = aprPct / 100 / 12;
       if (r === 0) return amount / termMonths;
       return (r * amount) / (1 - Math.pow(1 + r, -termMonths));
     }
+    const STEPS = ['Welcome','Discovery','Vehicle Match','Payments','Trade-In','Credit Start','F&I Options','Review & Handoff'];
 
+    // ===================== App =====================
+    function App() {
+      const [step, setStep] = useState(0);
+      const [consent, setConsent] = useState({ sms:false, email:false, privacy:false });
+
+      const [profile, setProfile] = useState({
+        name:'', contact:'', useCase:'Commute', bodyStyle:'Sedan', budget:400, timeline:'This week'
+      });
+
+      const [selectedVin, setSelectedVin] = useState(null);
+      const [desk, setDesk] = useState({ price:0, down:2000, apr:6.9, term:72, taxesFees:995, products:{vsc:false,gap:false,maint:false} });
+      const [trade, setTrade] = useState({ vin:'', miles:'', condition:'Average', rangeLow:0, rangeHigh:0 });
+
+      const vehicle = useMemo(() => INVENTORY.find(v => v.vin === selectedVin) || null, [selectedVin]);
+      const productTotal = useMemo(() => (desk.products.vsc?1895:0) + (desk.products.gap?795:0) + (desk.products.maint?495:0), [desk.products]);
+      const amountFinanced = useMemo(() => {
+        const price = vehicle ? vehicle.price : desk.price;
+        const tradeMid = (trade.rangeLow + trade.rangeHigh) / 2 || 0;
+        const gross = price + desk.taxesFees + productTotal - Number(desk.down || 0) - tradeMid;
+        return Math.max(gross, 0);
+      }, [vehicle, desk.down, desk.taxesFees, productTotal, trade.rangeLow, trade.rangeHigh]);
+      const monthly = useMemo(() => calcPayment(amountFinanced, desk.apr, desk.term), [amountFinanced, desk.apr, desk.term]);
+
+      function next(){ setStep(s => Math.min(s+1, STEPS.length-1)); }
+      function back(){ setStep(s => Math.max(s-1, 0)); }
+
+      function estimateTradeRange() {
+        const base=12000;
+        const miles=parseInt(trade.miles||'0',10);
+        const adjMiles=Math.max(0,(60000-miles)*0.05);
+        const cond=trade.condition==='Great'?1500:(trade.condition==='Rough'?-1500:0);
+        const low=Math.max(500, base+adjMiles+cond-1500);
+        const high=Math.max(low+500, base+adjMiles+cond+1500);
+        setTrade(t => ({...t, rangeLow:Math.round(low), rangeHigh:Math.round(high)}));
+      }
+
+      function selectVehicle(vin) {
+        const v = INVENTORY.find(x => x.vin === vin);
+        if (v) {
+          setSelectedVin(v.vin);
+          setDesk(d => ({...d, price: v.price}));
+          setStep(3); // jump to Payments after choosing from Browse
+        }
+      }
+
+      return (
+        <div className="relative w-full min-h-screen">
+          {/* decorative glows */}
+          <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+            <div className="absolute -top-24 -left-24 h-72 w-72 rounded-full bg-emerald-300/30 blur-3xl"></div>
+            <div className="absolute -bottom-24 -right-24 h-72 w-72 rounded-full bg-sky-300/20 blur-3xl"></div>
+          </div>
+
+          <div className="max-w-6xl mx-auto px-4 sm:px-8 py-6 sm:py-10 relative">
+            {/* Header — Centered */}
+            <header className="mb-4 sm:mb-6 flex items-center justify-center text-center">
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-emerald-900">
+                Quirk AI Sales Kiosk
+              </h1>
+            </header>
+
+            {/* Stepper */}
+            <nav aria-label="Progress" className="mb-5 sm:mb-7">
+              <ol className="grid grid-cols-4 sm:grid-cols-8 gap-2">
+                {STEPS.map((label, i) => (
+                  <li key={label} className={`flex items-center gap-2 p-1 rounded-full ${i<=step?'bg-emerald-600 text-white':'bg-white/70 text-slate-600 border'} border-slate-200`}>
+                    <span className={`inline-flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold ${i<=step?'bg-white/20':'bg-slate-200 text-slate-700'}`}>{i+1}</span>
+                    <span className="hidden sm:block text-xs font-semibold truncate pr-1">{label}</span>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+
+            {/* Card */}
+            <div className="bg-white/90 backdrop-blur rounded-2xl shadow-2xl border border-slate-200 p-4 sm:p-6">
+              {step===0 && (
+                <Welcome
+                  consent={consent} setConsent={setConsent}
+                  profile={profile} setProfile={setProfile}
+                  onNext={next}
+                  onSelect={selectVehicle}
+                />
+              )}
+
+              {step===1 && (
+                <Discovery profile={profile} setProfile={setProfile} onNext={next} onBack={back} />
+              )}
+
+              {step===2 && (
+                <VehicleMatch selectedVin={selectedVin} onSelect={(vin)=>{ setSelectedVin(vin); next(); }} onBack={back} />
+              )}
+
+              {step===3 && (
+                <Payments
+                  vehicle={vehicle} desk={desk} setDesk={setDesk}
+                  monthly={monthly} amountFinanced={amountFinanced}
+                  onBack={back} onNext={next}
+                />
+              )}
+
+              {step===4 && (
+                <Trade trade={trade} setTrade={setTrade} estimate={estimateTradeRange} onBack={back} onNext={next} />
+              )}
+
+              {step===5 && <CreditStart onBack={back} onNext={next} />}
+
+              {step===6 && (
+                <FandI desk={desk} setDesk={setDesk} monthly={monthly} onBack={back} onNext={next} />
+              )}
+
+              {step===7 && (
+                <Review profile={profile} vehicle={vehicle} desk={desk} trade={trade} monthly={monthly} onBack={back} />
+              )}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ------------------------- Screens -------------------------
     function SectionTitle({ title, subtitle }) {
       return (
         <div className="mb-4">
@@ -81,31 +243,141 @@
       );
     }
 
-    function Welcome({ consent, setConsent, profile, setProfile, onNext }) {
+    function PrimaryButton(props){
+      const cls = (props.className || "") + " px-5 py-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-700 text-white font-semibold shadow hover:brightness-110 active:brightness-95";
+      return <button {...props} className={cls} />;
+    }
+
+    // ---------- Welcome + Browse Inventory -----------
+    function Welcome({ consent, setConsent, profile, setProfile, onNext, onSelect }) {
+      // Browse filters
+      const [filters, setFilters] = useState({
+        stockType: 'New',
+        make: '',
+        model: '',
+        color: '',
+        minPrice: '',
+        maxPrice: ''
+      });
+      const [page, setPage] = useState(1);
+      const perPage = 12;
+
+      const modelOptions = useMemo(() => filters.make ? MODEL_MAP[filters.make] : [], [filters.make]);
+
+      const results = useMemo(() => {
+        const min = Number(filters.minPrice || 0);
+        const max = Number(filters.maxPrice || 999999);
+        return INVENTORY.filter(v =>
+          (!filters.stockType || v.stockType === filters.stockType) &&
+          (!filters.make || v.make === filters.make) &&
+          (!filters.model || v.model === filters.model) &&
+          (!filters.color || v.color === filters.color) &&
+          (v.price >= min && v.price <= max)
+        );
+      }, [filters]);
+
+      const totalPages = Math.max(1, Math.ceil(results.length / perPage));
+      const pageItems  = results.slice((page-1)*perPage, page*perPage);
+
       return (
         <div>
-          <SectionTitle title="Welcome to Quirk" subtitle="I’ll match you to the right vehicle and payment in minutes." />
-          <div className="grid sm:grid-cols-2 gap-4">
+          <SectionTitle title="Welcome to Quirk Auto Dealers" subtitle="Start the guided flow or browse our inventory below." />
+
+          {/* Quick info / consent */}
+          <div className="grid sm:grid-cols-2 gap-4 mb-6">
             <Field label="Your name (optional)">
-              <input aria-label="Your name" className="w-full rounded-xl border p-3" value={profile.name} onChange={e => setProfile({ ...profile, name: e.target.value })} />
+              <input aria-label="Your name" className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300"
+                value={profile.name} onChange={e=>setProfile({...profile, name:e.target.value})}/>
             </Field>
             <Field label="Text or email to send your quote (optional)">
-              <input aria-label="Contact" className="w-full rounded-xl border p-3" placeholder="(555) 555-5555 or you@example.com" value={profile.contact} onChange={e => setProfile({ ...profile, contact: e.target.value })} />
+              <input aria-label="Contact" className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" placeholder="(555) 555-5555 or you@example.com"
+                value={profile.contact} onChange={e=>setProfile({...profile, contact:e.target.value})}/>
             </Field>
           </div>
 
-          <details className="mt-2">
+          {/* Browse Inventory */}
+          <div className="rounded-2xl border border-slate-200 p-4 bg-white/80">
+            <h3 className="text-lg font-bold text-emerald-800 mb-2 text-center">Browse Inventory</h3>
+            <div className="grid md:grid-cols-6 gap-3">
+              <Field label="Stock Type">
+                <select className="w-full rounded-xl border p-3" value={filters.stockType} onChange={e=>{setFilters({...filters, stockType:e.target.value}); setPage(1);}}>
+                  <option value="">Any</option>
+                  <option>New</option>
+                  <option>Used</option>
+                </select>
+              </Field>
+              <Field label="Make">
+                <select className="w-full rounded-xl border p-3" value={filters.make}
+                        onChange={e=>{ setFilters(f=>({...f, make:e.target.value, model:'' })); setPage(1); }}>
+                  <option value="">Any</option>
+                  <option>Chevrolet</option>
+                  <option>GMC</option>
+                  <option>Buick</option>
+                </select>
+              </Field>
+              <Field label="Model">
+                <select className="w-full rounded-xl border p-3" value={filters.model}
+                        onChange={e=>{ setFilters({...filters, model:e.target.value}); setPage(1); }} disabled={!filters.make}>
+                  <option value="">{filters.make ? 'Any' : 'Choose make first'}</option>
+                  {modelOptions.map(m => <option key={m}>{m}</option>)}
+                </select>
+              </Field>
+              <Field label="Color">
+                <select className="w-full rounded-xl border p-3" value={filters.color}
+                        onChange={e=>{ setFilters({...filters, color:e.target.value}); setPage(1); }}>
+                  <option value="">Any</option>
+                  {COLORS.map(c => <option key={c}>{c}</option>)}
+                </select>
+              </Field>
+              <Field label="Min Price ($)">
+                <input type="number" className="w-full rounded-xl border p-3" value={filters.minPrice}
+                       onChange={e=>{ setFilters({...filters, minPrice:e.target.value}); setPage(1); }}/>
+              </Field>
+              <Field label="Max Price ($)">
+                <input type="number" className="w-full rounded-xl border p-3" value={filters.maxPrice}
+                       onChange={e=>{ setFilters({...filters, maxPrice:e.target.value}); setPage(1); }}/>
+              </Field>
+            </div>
+
+            <div className="mt-3 text-sm text-slate-600">{results.length.toLocaleString()} vehicles found</div>
+
+            <div className="mt-3 grid md:grid-cols-3 gap-4">
+              {pageItems.map(v => (
+                <button key={v.vin} onClick={()=>onSelect(v.vin)}
+                        className="group text-left rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition p-3 bg-white">
+                  <div className="relative">
+                    <img src={v.photo} alt={`${v.make} ${v.model}`} className="w-full h-40 object-cover rounded-xl" />
+                    <span className="absolute bottom-2 left-2 text-xs px-2 py-1 rounded-full bg-black/60 text-white">{v.stockType}</span>
+                  </div>
+                  <div className="mt-2 font-semibold">{v.year} {v.make} {v.model}</div>
+                  <div className="text-emerald-700 font-extrabold text-lg">${v.price.toLocaleString()}</div>
+                  <div className="text-xs text-slate-600">{v.color} • {v.trim}</div>
+                </button>
+              ))}
+            </div>
+
+            {/* Pagination */}
+            <div className="mt-3 flex items-center justify-between">
+              <button className="px-3 py-2 rounded-xl border bg-white disabled:opacity-50"
+                      onClick={()=>setPage(p=>Math.max(1,p-1))} disabled={page<=1}>← Prev</button>
+              <div className="text-sm text-slate-600">Page {page} / {totalPages}</div>
+              <button className="px-3 py-2 rounded-xl border bg-white disabled:opacity-50"
+                      onClick={()=>setPage(p=>Math.min(totalPages,p+1))} disabled={page>=totalPages}>Next →</button>
+            </div>
+          </div>
+
+          <div className="mt-4 flex flex-wrap gap-3 justify-end">
+            <PrimaryButton onClick={onNext} aria-label="Start guided flow">Start Guided Flow →</PrimaryButton>
+          </div>
+
+          <details className="mt-3 text-sm">
             <summary className="cursor-pointer text-slate-600">Consent & privacy</summary>
-            <div className="grid sm:grid-cols-3 gap-3 mt-2">
-              <label className="flex items-center gap-2"><input type="checkbox" checked={consent.sms} onChange={e => setConsent({ ...consent, sms: e.target.checked })} /> SMS updates</label>
-              <label className="flex items-center gap-2"><input type="checkbox" checked={consent.email} onChange={e => setConsent({ ...consent, email: e.target.checked })} /> Email updates</label>
-              <label className="flex items-center gap-2"><input type="checkbox" checked={consent.privacy} onChange={e => setConsent({ ...consent, privacy: e.target.checked })} /> I agree to privacy policy</label>
+            <div className="grid sm:grid-cols-3 gap-3 mt-2 text-slate-700">
+              <label className="flex items-center gap-2"><input type="checkbox" checked={consent.sms} onChange={e=>setConsent({...consent, sms:e.target.checked})}/> SMS updates</label>
+              <label className="flex items-center gap-2"><input type="checkbox" checked={consent.email} onChange={e=>setConsent({...consent, email:e.target.checked})}/> Email updates</label>
+              <label className="flex items-center gap-2"><input type="checkbox" checked={consent.privacy} onChange={e=>setConsent({...consent, privacy:e.target.checked})}/> I agree to privacy policy</label>
             </div>
           </details>
-
-          <div className="mt-4 flex justify-end">
-            <button className="px-5 py-3 rounded-2xl bg-emerald-600 text-white font-semibold" onClick={onNext} aria-label="Start">Start →</button>
-          </div>
         </div>
       );
     }
@@ -116,54 +388,53 @@
           <SectionTitle title="Tell us what you need" subtitle="A few quick choices so we can tailor the match." />
           <div className="grid sm:grid-cols-2 gap-4">
             <Field label="Primary use">
-              <select className="w-full rounded-xl border p-3" value={profile.useCase} onChange={e => setProfile({ ...profile, useCase: e.target.value })}>
-                {['Commute', 'Family', 'Adventure', 'Business'].map(x => <option key={x}>{x}</option>)}
+              <select className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={profile.useCase} onChange={e=>setProfile({...profile, useCase:e.target.value})}>
+                {['Commute','Family','Adventure','Business'].map(x => <option key={x}>{x}</option>)}
               </select>
             </Field>
             <Field label="Preferred body style">
-              <select className="w-full rounded-xl border p-3" value={profile.bodyStyle} onChange={e => setProfile({ ...profile, bodyStyle: e.target.value })}>
-                {['Sedan', 'SUV', 'Truck', 'EV'].map(x => <option key={x}>{x}</option>)}
+              <select className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={profile.bodyStyle} onChange={e=>setProfile({...profile, bodyStyle:e.target.value})}>
+                {['Sedan','SUV','Truck','EV'].map(x => <option key={x}>{x}</option>)}
               </select>
             </Field>
             <Field label="Monthly budget target">
-              <input type="number" className="w-full rounded-xl border p-3" value={profile.budget} onChange={e => setProfile({ ...profile, budget: Number(e.target.value) })} />
+              <input type="number" className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={profile.budget} onChange={e=>setProfile({...profile, budget:Number(e.target.value)})}/>
             </Field>
             <Field label="Timeline">
-              <select className="w-full rounded-xl border p-3" value={profile.timeline} onChange={e => setProfile({ ...profile, timeline: e.target.value })}>
-                {['Today', 'This week', 'This month', 'Just researching'].map(x => <option key={x}>{x}</option>)}
+              <select className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={profile.timeline} onChange={e=>setProfile({...profile, timeline:e.target.value})}>
+                {['Today','This week','This month','Just researching'].map(x => <option key={x}>{x}</option>)}
               </select>
             </Field>
           </div>
           <div className="mt-4 flex justify-between">
-            <button className="px-4 py-2 rounded-xl border" onClick={onBack}>← Back</button>
-            <button className="px-5 py-3 rounded-2xl bg-emerald-600 text-white font-semibold" onClick={onNext}>See matches →</button>
+            <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={onBack}>← Back</button>
+            <PrimaryButton onClick={onNext}>See matches →</PrimaryButton>
           </div>
         </div>
       );
     }
 
     function VehicleMatch({ selectedVin, onSelect, onBack }) {
+      // show a short curated set (could be refined later)
+      const picks = INVENTORY.slice(0, 9);
       return (
         <div>
           <SectionTitle title="Best matches" subtitle="Tap a vehicle to continue." />
           <div className="grid md:grid-cols-3 gap-4">
-            {INVENTORY.map(v => (
-              <button key={v.vin} className={`text-left rounded-2xl border shadow-sm hover:shadow-md transition p-3 ${selectedVin === v.vin ? 'ring-4 ring-emerald-300' : ''}`} onClick={() => onSelect(v.vin)}>
-                <img src={v.photo} alt={`${v.make} ${v.model}`} className="w-full h-40 object-cover rounded-xl" />
+            {picks.map(v => (
+              <button key={v.vin} className={`group text-left rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition p-3 bg-white/90 ${selectedVin===v.vin?'ring-4 ring-emerald-300':''}`} onClick={()=>onSelect(v.vin)}>
+                <div className="relative">
+                  <img src={v.photo} alt={`${v.make} ${v.model}`} className="w-full h-44 object-cover rounded-xl" />
+                  <span className="absolute bottom-2 left-2 text-xs px-2 py-1 rounded-full bg-black/60 text-white">{v.miles.toLocaleString()} mi</span>
+                </div>
                 <div className="mt-2 font-semibold">{v.year} {v.make} {v.model}</div>
-                <div className="text-emerald-700 font-bold">${v.price.toLocaleString()}</div>
-                <div className="text-sm text-slate-600">{v.miles.toLocaleString()} miles</div>
-                <details className="mt-1">
-                  <summary className="text-sm text-slate-500">Open for more</summary>
-                  <ul className="list-disc ml-5 text-sm mt-1">
-                    {v.features.map(f => <li key={f}>{f}</li>)}
-                  </ul>
-                </details>
+                <div className="text-emerald-700 font-extrabold text-lg">${v.price.toLocaleString()}</div>
+                <div className="text-xs text-slate-600">{v.color} • {v.trim}</div>
               </button>
             ))}
           </div>
           <div className="mt-4 flex justify-between">
-            <button className="px-4 py-2 rounded-xl border" onClick={onBack}>← Back</button>
+            <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={onBack}>← Back</button>
             <span className="text-sm text-slate-500">Choose a vehicle to continue</span>
           </div>
         </div>
@@ -177,45 +448,50 @@
           <SectionTitle title="Build your payment" subtitle="Deterministic calculator; real taxes/fees plug in here." />
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <div className="rounded-xl border p-4">
+              <div className="rounded-xl border p-4 bg-white/90">
                 <div className="text-sm text-slate-600 mb-2">Vehicle price</div>
                 <div className="text-2xl font-bold">${price.toLocaleString()}</div>
                 <div className="grid grid-cols-2 gap-3 mt-4">
                   <Field label="Down payment">
-                    <input type="number" className="w-full rounded-xl border p-3" value={desk.down} onChange={e => setDesk({ ...desk, down: Number(e.target.value) })} />
+                    <input type="number" className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={desk.down} onChange={e=>setDesk({...desk, down:Number(e.target.value)})} />
                   </Field>
                   <Field label="Taxes & fees (est.)">
-                    <input type="number" className="w-full rounded-xl border p-3" value={desk.taxesFees} onChange={e => setDesk({ ...desk, taxesFees: Number(e.target.value) })} />
+                    <input type="number" className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={desk.taxesFees} onChange={e=>setDesk({...desk, taxesFees:Number(e.target.value)})} />
                   </Field>
                   <Field label="APR %">
-                    <input type="number" className="w-full rounded-xl border p-3" value={desk.apr} step={0.1} onChange={e => setDesk({ ...desk, apr: Number(e.target.value) })} />
+                    <input type="number" className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={desk.apr} step="0.1" onChange={e=>setDesk({...desk, apr:Number(e.target.value)})} />
                   </Field>
                   <Field label="Term (months)">
-                    <select className="w-full rounded-xl border p-3" value={desk.term} onChange={e => setDesk({ ...desk, term: Number(e.target.value) })}>
-                      {[36, 48, 60, 72, 84].map(n => <option key={n} value={n}>{n}</option>)}
+                    <select className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={desk.term} onChange={e=>setDesk({...desk, term:Number(e.target.value)})}>
+                      {[36,48,60,72,84].map(n => <option key={n} value={n}>{n}</option>)}
                     </select>
                   </Field>
                 </div>
                 <details className="mt-2">
                   <summary className="text-slate-600 cursor-pointer">Products</summary>
-                  <div className="grid sm:grid-cols-3 gap-3 mt-2">
-                    <label className="flex items-center gap-2"><input type="checkbox" checked={desk.products.vsc} onChange={e => setDesk({ ...desk, products: { ...desk.products, vsc: e.target.checked } })} /> VSC ($1,895)</label>
-                    <label className="flex items-center gap-2"><input type="checkbox" checked={desk.products.gap} onChange={e => setDesk({ ...desk, products: { ...desk.products, gap: e.target.checked } })} /> GAP ($795)</label>
-                    <label className="flex items-center gap-2"><input type="checkbox" checked={desk.products.maint} onChange={e => setDesk({ ...desk, products: { ...desk.products, maint: e.target.checked } })} /> Maintenance ($495)</label>
+                  <div className="grid sm:grid-cols-3 gap-3 mt-2 text-slate-700">
+                    <label className="flex items-center gap-2"><input type="checkbox" checked={desk.products.vsc} onChange={e=>setDesk({...desk, products:{...desk.products, vsc:e.target.checked}})} /> VSC ($1,895)</label>
+                    <label className="flex items-center gap-2"><input type="checkbox" checked={desk.products.gap} onChange={e=>setDesk({...desk, products:{...desk.products, gap:e.target.checked}})} /> GAP ($795)</label>
+                    <label className="flex items-center gap-2"><input type="checkbox" checked={desk.products.maint} onChange={e=>setDesk({...desk, products:{...desk.products, maint:e.target.checked}})} /> Maintenance ($495)</label>
                   </div>
                 </details>
               </div>
             </div>
-            <div className="rounded-2xl border p-4 bg-emerald-50">
+            <div className="rounded-2xl border p-4 bg-emerald-50/80">
               <div className="text-sm text-emerald-700">Estimated monthly</div>
               <div className="text-4xl font-extrabold text-emerald-800">${monthly.toFixed(0)}</div>
               <div className="text-sm text-slate-600 mt-2">Amount financed: ${amountFinanced.toLocaleString()}</div>
+              <div className="mt-3 flex flex-wrap gap-2 text-xs text-slate-700">
+                <span className="px-2 py-1 rounded-full bg-white border">APR {desk.apr}%</span>
+                <span className="px-2 py-1 rounded-full bg-white border">{desk.term} mos</span>
+                <span className="px-2 py-1 rounded-full bg-white border">Down ${Number(desk.down).toLocaleString()}</span>
+              </div>
               <p className="text-xs text-slate-500 mt-2">Estimates only; subject to lender approval, credit tier, LTV, and program rules. Your final payment may vary.</p>
             </div>
           </div>
           <div className="mt-4 flex justify-between">
-            <button className="px-4 py-2 rounded-xl border" onClick={onBack}>← Back</button>
-            <button className="px-5 py-3 rounded-2xl bg-emerald-600 text-white font-semibold" onClick={onNext}>Add trade →</button>
+            <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={onBack}>← Back</button>
+            <PrimaryButton onClick={onNext}>Add trade →</PrimaryButton>
           </div>
         </div>
       );
@@ -227,28 +503,28 @@
           <SectionTitle title="Trade-in pre-valuation" subtitle="Get a market-based range. Final number after in-person inspection." />
           <div className="grid md:grid-cols-3 gap-4">
             <Field label="VIN">
-              <input className="w-full rounded-xl border p-3" value={trade.vin} onChange={e => setTrade({ ...trade, vin: e.target.value })} placeholder="Scan or type VIN" />
+              <input className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={trade.vin} onChange={e=>setTrade({...trade, vin:e.target.value})} placeholder="Scan or type VIN" />
             </Field>
             <Field label="Mileage">
-              <input className="w-full rounded-xl border p-3" value={trade.miles} onChange={e => setTrade({ ...trade, miles: e.target.value })} placeholder="e.g., 45,500" />
+              <input className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={trade.miles} onChange={e=>setTrade({...trade, miles:e.target.value})} placeholder="e.g., 45,500" />
             </Field>
             <Field label="Condition">
-              <select className="w-full rounded-xl border p-3" value={trade.condition} onChange={e => setTrade({ ...trade, condition: e.target.value })}>
-                {['Great', 'Average', 'Rough'].map(x => <option key={x}>{x}</option>)}
+              <select className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={trade.condition} onChange={e=>setTrade({...trade, condition:e.target.value})}>
+                {['Great','Average','Rough'].map(x => <option key={x}>{x}</option>)}
               </select>
             </Field>
           </div>
           <div className="mt-2 flex gap-2">
-            <button className="px-4 py-2 rounded-xl border" onClick={estimate}>Estimate range</button>
-            {trade.rangeLow > 0 && (
+            <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={estimate}>Estimate range</button>
+            {trade.rangeLow>0 && (
               <div className="px-4 py-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800">
                 Estimated range: ${trade.rangeLow.toLocaleString()} – ${trade.rangeHigh.toLocaleString()}
               </div>
             )}
           </div>
           <div className="mt-4 flex justify-between">
-            <button className="px-4 py-2 rounded-xl border" onClick={onBack}>← Back</button>
-            <button className="px-5 py-3 rounded-2xl bg-emerald-600 text-white font-semibold" onClick={onNext}>Start credit →</button>
+            <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={onBack}>← Back</button>
+            <PrimaryButton onClick={onNext}>Start credit →</PrimaryButton>
           </div>
         </div>
       );
@@ -259,18 +535,18 @@
         <div>
           <SectionTitle title="Start your credit application" subtitle="Soft pull first. No impact to score until you consent to submit." />
           <div className="grid md:grid-cols-3 gap-4">
-            <Field label="Full name"><input className="w-full rounded-xl border p-3" /></Field>
-            <Field label="Email"><input className="w-full rounded-xl border p-3" /></Field>
-            <Field label="Mobile"><input className="w-full rounded-xl border p-3" /></Field>
-            <Field label="ZIP"><input className="w-full rounded-xl border p-3" /></Field>
-            <Field label="Income (monthly)"><input className="w-full rounded-xl border p-3" /></Field>
+            <Field label="Full name"><input className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" /></Field>
+            <Field label="Email"><input className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" /></Field>
+            <Field label="Mobile"><input className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" /></Field>
+            <Field label="ZIP"><input className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" /></Field>
+            <Field label="Income (monthly)"><input className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" /></Field>
             <Field label="Consent to soft pull">
               <label className="flex items-center gap-2"><input type="checkbox" /> I agree to a soft inquiry</label>
             </Field>
           </div>
           <div className="mt-4 flex justify-between">
-            <button className="px-4 py-2 rounded-xl border" onClick={onBack}>← Back</button>
-            <button className="px-5 py-3 rounded-2xl bg-emerald-600 text-white font-semibold" onClick={onNext}>Preview protection →</button>
+            <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={onBack}>← Back</button>
+            <PrimaryButton onClick={onNext}>Preview protection →</PrimaryButton>
           </div>
         </div>
       );
@@ -281,22 +557,22 @@
         <div>
           <SectionTitle title="Protect your purchase" subtitle="Add options and see the impact instantly." />
           <div className="grid sm:grid-cols-3 gap-4">
-            <label className="rounded-2xl border p-4 flex items-start gap-3">
-              <input type="checkbox" checked={desk.products.vsc} onChange={e => setDesk({ ...desk, products: { ...desk.products, vsc: e.target.checked } })} />
+            <label className="rounded-2xl border p-4 flex items-start gap-3 bg-white/90">
+              <input type="checkbox" checked={desk.products.vsc} onChange={e=>setDesk({...desk, products:{...desk.products, vsc:e.target.checked}})} />
               <div>
                 <div className="font-semibold">Vehicle Service Contract</div>
                 <div className="text-sm text-slate-600">Covers major repairs beyond factory warranty. +$1,895</div>
               </div>
             </label>
-            <label className="rounded-2xl border p-4 flex items-start gap-3">
-              <input type="checkbox" checked={desk.products.gap} onChange={e => setDesk({ ...desk, products: { ...desk.products, gap: e.target.checked } })} />
+            <label className="rounded-2xl border p-4 flex items-start gap-3 bg-white/90">
+              <input type="checkbox" checked={desk.products.gap} onChange={e=>setDesk({...desk, products:{...desk.products, gap:e.target.checked}})} />
               <div>
                 <div className="font-semibold">GAP</div>
                 <div className="text-sm text-slate-600">Protects against total loss payoff gap. +$795</div>
               </div>
             </label>
-            <label className="rounded-2xl border p-4 flex items-start gap-3">
-              <input type="checkbox" checked={desk.products.maint} onChange={e => setDesk({ ...desk, products: { ...desk.products, maint: e.target.checked } })} />
+            <label className="rounded-2xl border p-4 flex items-start gap-3 bg-white/90">
+              <input type="checkbox" checked={desk.products.maint} onChange={e=>setDesk({...desk, products:{...desk.products, maint:e.target.checked}})} />
               <div>
                 <div className="font-semibold">Maintenance</div>
                 <div className="text-sm text-slate-600">Prepaid maintenance services. +$495</div>
@@ -307,8 +583,8 @@
             Current estimated payment: <strong>${monthly.toFixed(0)}</strong>
           </div>
           <div className="mt-4 flex justify-between">
-            <button className="px-4 py-2 rounded-xl border" onClick={onBack}>← Back</button>
-            <button className="px-5 py-3 rounded-2xl bg-emerald-600 text-white font-semibold" onClick={onNext}>Review & handoff →</button>
+            <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={onBack}>← Back</button>
+            <PrimaryButton onClick={onNext}>Review & handoff →</PrimaryButton>
           </div>
         </div>
       );
@@ -319,7 +595,7 @@
         <div>
           <SectionTitle title="Review & handoff" subtitle="We’ll prep your buyer’s order and connect you to a manager or F&I." />
           <div className="grid md:grid-cols-2 gap-4">
-            <div className="rounded-2xl border p-4">
+            <div className="rounded-2xl border p-4 bg-white/90">
               <div className="font-semibold mb-2">Your picks</div>
               <ul className="text-sm text-slate-700 space-y-1">
                 <li><strong>Name:</strong> {profile.name || '—'}</li>
@@ -330,23 +606,23 @@
                 <li><strong>Trade range:</strong> {trade.rangeLow ? `$${trade.rangeLow.toLocaleString()}–$${trade.rangeHigh.toLocaleString()}` : '—'}</li>
               </ul>
             </div>
-            <div className="rounded-2xl border p-4">
+            <div className="rounded-2xl border p-4 bg-white/90">
               <div className="font-semibold mb-2">Deal preview</div>
               <ul className="text-sm text-slate-700 space-y-1">
                 <li><strong>Est. monthly:</strong> ${monthly.toFixed(0)}</li>
                 <li><strong>Down:</strong> ${Number(desk.down).toLocaleString()}</li>
                 <li><strong>APR/Term:</strong> {desk.apr}% • {desk.term} mos</li>
                 <li><strong>Taxes & fees:</strong> ${desk.taxesFees.toLocaleString()}</li>
-                <li><strong>Products:</strong> {(desk.products.vsc ? 'VSC ' : '') + (desk.products.gap ? 'GAP ' : '') + (desk.products.maint ? 'Maint' : '') || '—'}</li>
+                <li><strong>Products:</strong> {(desk.products.vsc?'VSC ':'') + (desk.products.gap?'GAP ':'') + (desk.products.maint?'Maint':'') || '—'}</li>
               </ul>
               <p className="text-xs text-slate-500 mt-2">This is a draft for review, not a binding offer. Final numbers subject to inspection and lender approval.</p>
             </div>
           </div>
           <div className="mt-4 flex flex-wrap gap-3 justify-between">
-            <button className="px-4 py-2 rounded-xl border" onClick={onBack}>← Back</button>
+            <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={onBack}>← Back</button>
             <div className="flex gap-2">
-              <button className="px-4 py-2 rounded-xl border bg-white">Raise hand for manager</button>
-              <button className="px-4 py-2 rounded-2xl bg-emerald-600 text-white font-semibold">Text me this summary</button>
+              <button className="px-4 py-2 rounded-xl border bg-white/90">Raise hand for manager</button>
+              <PrimaryButton>Text me this summary</PrimaryButton>
               <button className="px-4 py-2 rounded-2xl bg-emerald-700 text-white font-semibold">I’m ready now</button>
             </div>
           </div>
@@ -354,82 +630,8 @@
       );
     }
 
-    function KioskFlowDemo() {
-      const [step, setStep] = useState(0);
-      const [consent, setConsent] = useState({ sms: false, email: false, privacy: false });
-      const [profile, setProfile] = useState({ name: '', contact: '', useCase: 'Commute', bodyStyle: 'Sedan', budget: 400, timeline: 'This week' });
-      const [selectedVin, setSelectedVin] = useState(null);
-      const [desk, setDesk] = useState({ price: 0, down: 2000, apr: 6.9, term: 72, taxesFees: 995, products: { vsc: false, gap: false, maint: false } });
-      const [trade, setTrade] = useState({ vin: '', miles: '', condition: 'Average', rangeLow: 0, rangeHigh: 0 });
-
-      const vehicle = useMemo(() => INVENTORY.find(v => v.vin === selectedVin) || null, [selectedVin]);
-      const productTotal = useMemo(() => (desk.products.vsc?1895:0)+(desk.products.gap?795:0)+(desk.products.maint?495:0), [desk.products]);
-      const mid = (n) => (isFinite(n) && !isNaN(n) ? n : 0);
-      const amountFinanced = useMemo(() => {
-        const price = vehicle ? vehicle.price : desk.price;
-        const gross = price + desk.taxesFees + productTotal - Number(desk.down || 0) - mid((trade.rangeLow + trade.rangeHigh) / 2);
-        return Math.max(gross, 0);
-      }, [vehicle, desk.down, desk.taxesFees, productTotal, trade.rangeLow, trade.rangeHigh]);
-      const monthly = useMemo(() => calcPayment(amountFinanced, desk.apr, desk.term), [amountFinanced, desk.apr, desk.term]);
-
-      function next(){ setStep(s => Math.min(s+1, STEPS.length-1)); }
-      function back(){ setStep(s => Math.max(s-1, 0)); }
-      function estimateTradeRange(){
-        const base = 12000;
-        const miles = parseInt(trade.miles || '0', 10);
-        const adjMiles = Math.max(0, (60000 - miles) * 0.05);
-        const cond = trade.condition === 'Great' ? 1500 : (trade.condition === 'Rough' ? -1500 : 0);
-        const low = Math.max(500, base + adjMiles + cond - 1500);
-        const high = Math.max(low + 500, base + adjMiles + cond + 1500);
-        setTrade(t => ({ ...t, rangeLow: Math.round(low), rangeHigh: Math.round(high) }));
-      }
-      function selectVehicle(vin){
-        const v = INVENTORY.find(x => x.vin === vin);
-        if (v){ setSelectedVin(v.vin); setDesk(d => ({...d, price: v.price })); next(); }
-      }
-
-      return (
-        <div className="w-full min-h-screen bg-slate-50 p-4 sm:p-8">
-          <div className="max-w-6xl mx-auto">
-            <header className="flex items-center justify-between mb-4">
-              <h1 className="text-2xl font-extrabold tracking-tight text-emerald-800">AI Sales Kiosk</h1>
-              <div className="text-sm text-slate-500">{STEPS[step]}</div>
-            </header>
-
-            <ol className="grid grid-cols-4 sm:grid-cols-8 gap-2 mb-6" aria-label="Progress">
-              {STEPS.map((label, i) => (
-                <li key={label} className={`h-2 rounded-full ${i <= step ? 'bg-emerald-600' : 'bg-slate-300'}`} aria-label={label} />
-              ))}
-            </ol>
-
-            <div className="bg-white rounded-2xl shadow-xl border border-slate-200 p-4 sm:p-6">
-              {step===0 && <Welcome consent={consent} setConsent={setConsent} profile={profile} setProfile={setProfile} onNext={next} />}
-              {step===1 && <Discovery profile={profile} setProfile={setProfile} onNext={next} onBack={back} />}
-              {step===2 && <VehicleMatch selectedVin={selectedVin} onSelect={selectVehicle} onBack={back} />}
-              {step===3 && <Payments vehicle={vehicle} desk={desk} setDesk={setDesk} monthly={monthly} amountFinanced={amountFinanced} onBack={back} onNext={next} />}
-              {step===4 && <Trade trade={trade} setTrade={setTrade} estimate={estimateTradeRange} onBack={back} onNext={next} />}
-              {step===5 && <CreditStart onBack={back} onNext={next} />}
-              {step===6 && <FandI desk={desk} setDesk={setDesk} monthly={monthly} onBack={back} onNext={next} />}
-              {step===7 && <Review profile={profile} vehicle={vehicle} desk={desk} trade={trade} monthly={monthly} onBack={back} />}
-            </div>
-
-            <div className="flex justify-between items-center mt-4">
-              <button className="px-4 py-2 rounded-xl border border-slate-300 text-slate-700" onClick={back} disabled={step===0}>← Back</button>
-              <details className="text-sm">
-                <summary className="cursor-pointer text-slate-500">Open for more</summary>
-                <div className="mt-2 max-w-3xl text-slate-600">
-                  <p className="mb-2"><strong>Integration stubs:</strong> VIN Solutions (lead + appointment), payment API, RouteOne/Dealertrack soft pull, Accu-Trade/KBB trade, Darwin/MenuSys for F&I. Replace placeholders and enforce audit logging.</p>
-                  <p className="text-xs">Compliance: deterministic calculators; disclose taxes/fees/incentives; collect consent (GLBA/FTC/TCPA). Demo only.</p>
-                </div>
-              </details>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<KioskFlowDemo />);
+    // Render
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
   </script>
 </body>
 </html>
