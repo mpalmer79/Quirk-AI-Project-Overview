@@ -55,15 +55,13 @@
       pointer-events: none;
     }
 
-    /* Image grid (section 1) */
-    .image-grid {
+    /* ----- Image cards (shared look) ----- */
+    .img-card {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
+      place-items: center;
       margin-top: 32px;
-      align-items: center;
     }
-    .image-grid img {
+    .img-card img {
       width: 100%;
       height: auto;
       border-radius: 8px;
@@ -72,19 +70,13 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
 
-    /* Full-width block for section 2 */
-    .full-width-img {
-      margin-top: 36px;
-    }
-    .full-width-img img {
-      width: 100%;
-      height: auto;
-      max-width: 1000px;
-      border-radius: 8px;
-      border: 1px solid #e5e7eb;
-      background: #fff;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    }
+    /* 1) Top image: ~50% larger than the old half-width grid (now ~75% of container) */
+    .img-hero img { width: 75%; max-width: 900px; }
+
+    /* 2) QR image: REMOVED per your request */
+
+    /* 3) Bottom image: show at 75% of previous full width */
+    .img-75 img { width: 75%; max-width: 1000px; }
 
     /* ===== Top bar tweaks ===== */
     .topbar-menu { font-size: clamp(16px, 1.8vw, 20px); }
@@ -96,9 +88,7 @@
       line-height: 1;
     }
     .topbar-title-link:hover,
-    .topbar-title-link:focus {
-      text-decoration: underline;
-    }
+    .topbar-title-link:focus { text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -123,16 +113,15 @@
       to modernize check-ins, approvals, parts lookups, and follow-ups — powered by in-house AI.
     </p>
 
-    <!-- Section 1: App + QR side by side -->
-    <div class="image-grid">
+    <!-- (1) Enlarged app.png (~75% of content width) -->
+    <div class="img-card img-hero">
       <img src="assets/app.png" alt="Quirk AI Service app preview">
-      <img src="assets/99c54b55-9b74-4d6b-abc2-35e3dcf70172.png" alt="Expo QR code panel for Quirk AI Service app">
     </div>
 
-    <!-- Section 2: Full-width avif image -->
-    <div class="full-width-img">
+    <!-- (3) “Stay connected…” image shown at 75% width.
+         Uses AVIF with a PNG fallback for broader compatibility. -->
+    <div class="img-card img-75">
       <picture>
-        <!-- Optional PNG fallback for older browsers -->
         <source srcset="assets/app1.avif" type="image/avif">
         <img src="assets/app1.png" alt="Quirk AI Service full app preview">
       </picture>
