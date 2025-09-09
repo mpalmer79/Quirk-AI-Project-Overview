@@ -4,7 +4,11 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Quirk AI Sales Kiosk</title>
+
+  <!-- Force light UI (Step 1) -->
   <meta name="color-scheme" content="light" />
+  <meta name="theme-color" content="#ffffff" />
+
   <base href="/Quirk-AI-Project-Overview/">
 
   <!-- Quirk global styles (for footer consistency across site) -->
@@ -19,8 +23,39 @@
 
   <style>
     :focus-visible { outline: 2px solid #34d399; outline-offset: 2px; }
+
+    /* --- Watermark background (showroom image) --- */
+    /* Save your image as /docs/assets/kiosk.png */
+    body {
+      /* soft white wash over the showroom so UI stays readable */
+      background:
+        linear-gradient(rgba(255,255,255,.88), rgba(255,255,255,.88)),
+        url("assets/kiosk.png") center / cover fixed no-repeat !important;
+      min-height: 100vh;
+    }
+
+    /* --- Step 1 mobile/light-mode form control fixes (iOS/Android) --- */
+    input, select, textarea, button {
+      background: #ffffff !important;
+      color: #0f172a !important;
+      border-color: #e5e7eb !important;
+    }
+    select option { background:#ffffff; color:#0f172a; }
+    input::placeholder, textarea::placeholder { color: #94a3b8; }
+    /* prevent iOS dark autofill */
+    input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill {
+      -webkit-text-fill-color: #0f172a !important;
+      transition: background-color 5000s ease-in-out 0s;
+    }
+    /* nudge WebKit to prefer light form controls */
+    @supports (-webkit-touch-callout: none) {
+      :root { color-scheme: light; }
+      select, input, textarea { -webkit-appearance: none; }
+    }
   </style>
 </head>
+
+<!-- Tailwind background classes kept for safety; CSS above overrides with the watermark -->
 <body class="bg-gradient-to-b from-emerald-50 to-slate-50 min-h-screen">
   <div id="root"></div>
 
@@ -447,7 +482,7 @@
 
       const modelOptions = useMemo(() => filters.make ? MODEL_MAP[filters.make] : [], [filters.make]);
 
-      // Robust filter (case-insensitive) — fixes "Used" still showing "New"
+      // Robust filter (case-insensitive)
       const results = useMemo(() => {
         const min = Number(filters.minPrice || 0);
         const max = Number(filters.maxPrice || 999999);
