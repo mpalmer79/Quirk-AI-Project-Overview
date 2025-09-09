@@ -43,7 +43,6 @@
     .btn { display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:999px; border:1px solid var(--border); background:var(--surface); text-decoration:none; color:var(--ink); }
     .btn.primary { background:var(--brand); border-color:var(--brand-dark); color:#fff; }
     .btn.compact { padding:8px 10px; font-size:.95rem; }
-    /* On small screens, keep both pills centered and stacked if needed */
     @media (max-width: 640px){
       .cta-bar { justify-content:center; }
     }
@@ -53,7 +52,6 @@
     table { width:100%; border-collapse:collapse; }
     th, td { border-bottom:1px solid var(--border); padding:12px; vertical-align:top; }
     td { text-align:left; }
-    /* Center the header labels over each column */
     thead th { background:var(--surface-2); position:static; text-align:center; }
     tbody tr:hover { background: color-mix(in srgb, var(--focus) 18%, transparent); }
 
@@ -61,7 +59,6 @@
     .grid { display:grid; grid-template-columns:repeat(12,1fr); gap:16px; }
     .card { grid-column:span 12; padding:18px; border:1px solid var(--border); background:var(--surface); border-radius:16px; }
     @media (min-width:720px){ .card.sm6{grid-column:span 6;} .card.sm4{grid-column:span 4;} }
-    /* Only center requested card titles */
     .card .center-title { text-align:center; }
 
     /* ROI calc */
@@ -72,13 +69,13 @@
     @media (min-width:720px){ .roi .field.h6{grid-column:span 6;} .roi .field.h4{grid-column:span 4;} }
     .result { font-size:1.25rem; font-weight:700; margin-top:8px; }
 
-    /* details/summary with label swap */
+    /* details/summary with label swap — centered & bold per request */
     details.disclose { border:1px dashed var(--border); border-radius:12px; padding:12px 14px; background:var(--surface); }
-    details.disclose>summary { cursor:pointer; list-style:none; position:relative; padding-right:24px; }
+    details.disclose>summary { cursor:pointer; list-style:none; position:relative; padding-right:24px; text-align:center; }
     details.disclose>summary::marker { display:none; }
-    details.disclose>summary .open-label { display:inline; }
+    details.disclose>summary .open-label { display:inline; font-weight:800; }
     details.disclose[open]>summary .open-label { display:none; }
-    details.disclose>summary .close-label { display:none; }
+    details.disclose>summary .close-label { display:none; font-weight:800; }
     details.disclose[open]>summary .close-label { display:inline; }
     details.disclose>summary::after { content:"▾"; position:absolute; right:0; top:0; }
 
@@ -89,10 +86,13 @@
     .numa-inline, .quirk-inline { display:inline-block; line-height:0; }
     .numa-inline img, .quirk-inline img { height:1em; vertical-align:-0.15em; width:auto; }
 
-    /* Larger variants for headings/table header */
-    .numa-h1 img, .quirk-h1 img { height:1.2em; } /* match sizes in H1 */
-    .numa-h2 img { height:1.05em; }
-    .numa-th img { height:1.05em; }
+    /* Doubled Quirk logo for headers & hero (request #1 & #2) */
+    .quirk-h1 img { height:2.4em; vertical-align:-0.25em; } /* 100% increase from ~1.2em */
+
+    /* NUMA sizes aligned (request #4) */
+    .numa-h1 img { height:1.2em; }           /* top size */
+    .numa-h2 img { height:1.2em; }           /* match top */
+    .numa-th img { height:1.2em; }           /* table header same as top */
   </style>
 </head>
 
@@ -127,7 +127,8 @@
         <img src="assets/numa_logo.png" alt="NUMA logo" />
       </a>
       &nbsp;captures voicemails;&nbsp;
-      <span class="quirk-inline" aria-label="Quirk AI">
+      <!-- Request #2: make this the same size as #1 -->
+      <span class="quirk-inline quirk-h1" aria-label="Quirk AI">
         <img src="assets/quirk-ai-logo.png" alt="Quirk AI logo" />
       </span>
       &nbsp;handles real customer conversations in real time — books
@@ -147,10 +148,16 @@
   <!-- ======= COMPARISON TABLE ======= -->
   <section id="comparison" class="container">
     <h2 class="center-text">
-      <a class="numa-inline numa-h2" href="https://www.numa.com/" target="_blank" rel="noopener" aria-label="Open numa.com">
+      <!-- Request #4: NUMA logo same size as top -->
+      <a class="numa-inline numa-h1" href="https://www.numa.com/" target="_blank" rel="noopener" aria-label="Open numa.com">
         <img src="assets/numa_logo.png" alt="NUMA logo" />
       </a>
-      &nbsp;vs Quirk AI Voice
+      &nbsp;vs
+      <!-- Request #3: replace “Quirk AI” text with the logo (same big size), keep “Voice” -->
+      <span class="quirk-inline quirk-h1" aria-label="Quirk AI">
+        <img src="assets/quirk-ai-logo.png" alt="Quirk AI logo" />
+      </span>
+      &nbsp;Voice
     </h2>
     <div class="table-wrap">
       <table class="table-centered">
@@ -162,7 +169,13 @@
                 <img src="assets/numa_logo.png" alt="NUMA logo" />
               </a>
             </th>
-            <th>Quirk AI Voice</th>
+            <!-- Request #5: replace “Quirk AI” with big logo + keep “Voice” -->
+            <th>
+              <span class="quirk-inline quirk-h1" aria-label="Quirk AI">
+                <img src="assets/quirk-ai-logo.png" alt="Quirk AI logo" />
+              </span>
+              &nbsp;Voice
+            </th>
           </tr>
         </thead>
         <tbody>
