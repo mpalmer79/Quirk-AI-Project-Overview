@@ -80,7 +80,7 @@
     .img-hero a { display: inline-block; }
     .img-hero a:hover img { box-shadow: 0 6px 16px rgba(0,0,0,0.12); }
 
-    /* ---- New: three-phone grid under the PNG ---- */
+    /* ---- Three-phone grid ---- */
     .phone-grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -99,6 +99,27 @@
     }
     @media (min-width: 780px) {
       .phone-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    /* ---- New: two-phone grid for 4.jpg and 5.jpg ---- */
+    .pair-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-top: 16px;
+      justify-items: center;
+    }
+    .pair-grid img {
+      width: 100%;
+      max-width: 360px;
+      height: auto;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    @media (min-width: 780px) {
+      .pair-grid { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
@@ -139,11 +160,17 @@
       </picture>
     </div>
 
-    <!-- NEW: three screenshots under the PNG, as shown -->
+    <!-- Three screenshots -->
     <section class="phone-grid" aria-label="App screens">
       <img src="assets/1.jpg" alt="Schedule Service screen">
       <img src="assets/2.jpg" alt="My Vehicles screen">
       <img src="assets/3.jpg" alt="My Account screen">
+    </section>
+
+    <!-- New: two screenshots at the bottom (left = 4.jpg, right = 5.jpg) -->
+    <section class="pair-grid" aria-label="Additional app screens">
+      <img src="assets/4.jpg" alt="Additional screen 4">
+      <img src="assets/5.jpg" alt="Additional screen 5">
     </section>
   </main>
 
