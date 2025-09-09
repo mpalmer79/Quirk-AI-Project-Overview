@@ -6,98 +6,175 @@
   <title>Quirk AI Sales Kiosk</title>
   <meta name="color-scheme" content="light" />
   <base href="/Quirk-AI-Project-Overview/">
+
+  <!-- Quirk global styles (for footer consistency across site) -->
+  <link rel="stylesheet" href="assets/style.css" />
+
   <!-- Tailwind (CDN) -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- React 18 + Babel (CDN) -->
   <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
   <style>
-    /* Small polish for focus states */
     :focus-visible { outline: 2px solid #34d399; outline-offset: 2px; }
   </style>
 </head>
 <body class="bg-gradient-to-b from-emerald-50 to-slate-50 min-h-screen">
   <div id="root"></div>
 
+  <!-- Site-wide footer (matches other pages) -->
+  <footer class="footer">
+    <small>© 2025 Quirk AI — Sales Kiosk</small>
+  </footer>
+
   <script type="text/babel">
     const { useMemo, useState } = React;
 
-    // ----------------- Inventory Helpers -----------------
-    const PHOTO = {
-      Chevrolet: "https://images.unsplash.com/photo-1549921296-3b4a841f2b36?q=80&w=1200&auto=format&fit=crop",
-      GMC:       "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=1200&auto=format&fit=crop",
-      Buick:     "https://images.unsplash.com/photo-1525609004556-c46c7d6cf023?q=80&w=1200&auto=format&fit=crop",
-      Used:      "https://images.unsplash.com/photo-1511397330067-5a9327f7a131?q=80&w=1200&auto=format&fit=crop"
+    /* ===========================================================
+       PHOTOS (local, with safe fallback)
+       Place images under /docs/assets/kiosk-photos/ (optional).
+       =========================================================== */
+    const PHOTO_ROOT = 'assets/kiosk-photos/';
+
+    const MODEL_PHOTOS = {
+      Chevrolet: {
+        'Silverado 1500':'chevrolet-silverado-1500.jpg',
+        'Equinox':'chevrolet-equinox.jpg',
+        'Traverse':'chevrolet-traverse.jpg',
+        'Trax':'chevrolet-trax.jpg',
+        'Trailblazer':'chevrolet-trailblazer.jpg',
+        'Malibu':'chevrolet-malibu.jpg',
+        'Colorado':'chevrolet-colorado.jpg',
+        'Blazer':'chevrolet-blazer.jpg',
+        'Tahoe':'chevrolet-tahoe.jpg'
+      },
+      GMC: {
+        'Sierra 1500':'gmc-sierra-1500.jpg',
+        'Terrain':'gmc-terrain.jpg',
+        'Acadia':'gmc-acadia.jpg',
+        'Canyon':'gmc-canyon.jpg',
+        'Yukon':'gmc-yukon.jpg'
+      },
+      Buick: {
+        'Encore GX':'buick-encore-gx.jpg',
+        'Envision':'buick-envision.jpg',
+        'Envista':'buick-envista.jpg'
+      }
     };
 
+    const MAKE_DEFAULT = {
+      Chevrolet:'chevrolet-default.jpg',
+      GMC:'gmc-default.jpg',
+      Buick:'buick-default.jpg',
+      Used:'used-default.jpg'
+    };
+
+    function photoFor(make, model) {
+      const file =
+        (MODEL_PHOTOS[make] && MODEL_PHOTOS[make][model]) ||
+        MAKE_DEFAULT[make] || 'placeholder.jpg';
+      return `${PHOTO_ROOT}${file}`;
+    }
+
+    /* ===========================================================
+       INVENTORY GENERATION
+       - 170 NEW (Chevrolet 90 / GMC 55 / Buick 25)
+       - 30 USED (non-Buick/Chevrolet/GMC brands)
+       =========================================================== */
     const MODEL_MAP = {
-      Chevrolet: ['Silverado 1500','Equinox','Traverse','Trax','Trailblazer','Malibu','Colorado','Blazer','Tahoe'],
-      GMC: ['Sierra 1500','Terrain','Acadia','Canyon','Yukon'],
-      Buick: ['Encore GX','Envision','Envista']
+      Chevrolet:['Silverado 1500','Equinox','Traverse','Trax','Trailblazer','Malibu','Colorado','Blazer','Tahoe'],
+      GMC:['Sierra 1500','Terrain','Acadia','Canyon','Yukon'],
+      Buick:['Encore GX','Envision','Envista']
     };
-
     const COLORS = ['Black','White','Silver','Gray','Blue','Red','Green','Brown'];
 
     function basePrice(make, model) {
       const map = {
         Chevrolet: {
-          'Trax': 21990, 'Trailblazer': 24990, 'Malibu': 24990, 'Equinox': 28990,
-          'Blazer': 34990, 'Traverse': 36990, 'Colorado': 33990, 'Silverado 1500': 38990, 'Tahoe': 58990
+          'Trax':21990,'Trailblazer':24990,'Malibu':24990,'Equinox':28990,
+          'Blazer':34990,'Traverse':36990,'Colorado':33990,'Silverado 1500':38990,'Tahoe':58990
         },
-        GMC: {
-          'Terrain': 30990, 'Acadia': 36990, 'Canyon': 35990, 'Sierra 1500': 41990, 'Yukon': 64990
-        },
-        Buick: {
-          'Envista': 23990, 'Encore GX': 27990, 'Envision': 33990
-        }
+        GMC: { 'Terrain':30990,'Acadia':36990,'Canyon':35990,'Sierra 1500':41990,'Yukon':64990 },
+        Buick:{ 'Envista':23990,'Encore GX':27990,'Envision':33990 }
       };
       return (map[make] && map[make][model]) || 29990;
     }
 
-    function vinFor(make, idx) {
-      const pfx = {Chevrolet:'1GC', GMC:'1GT', Buick:'1G4', Used:'2UX'}[make] || '3XX';
-      return pfx + String(100000000000000 + idx).slice(0,14);
+    function vinFor(prefix, idx) {
+      return prefix + String(100000000000000 + idx).slice(0,14);
     }
 
     function generateNewVehicles() {
       const inv = [];
-      const pushFor = (make, count) => {
+      const add = (make, count, pfx) => {
         const models = MODEL_MAP[make];
-        for (let i = 0; i < count; i++) {
+        for (let i=0;i<count;i++){
           const model = models[i % models.length];
           const color = COLORS[i % COLORS.length];
-          const year  = 2025;
           const price = basePrice(make, model) + (i % 7) * 750;
           inv.push({
-            vin: vinFor(make, i + (make==='Chevrolet'?1000: make==='GMC'?3000:5000)),
-            stockType: 'New',
-            year, make, model,
-            trim: (['LS','LT','LTZ','RS','Denali','Preferred','Avenir'])[i % 7],
+            vin: vinFor(pfx, i+1000),
+            stockType:'New',
+            year:2025,
+            make, model,
+            trim:(['LS','LT','LTZ','RS','Denali','Preferred','Avenir'])[i%7],
             price,
             miles: 12 + (i % 9),
             color,
-            photo: PHOTO[make],
-            features: ['CarPlay/Android Auto','Backup Camera','Alloy Wheels','Keyless Entry']
+            photo: photoFor(make, model),
+            features:['CarPlay/Android Auto','Backup Camera','Alloy Wheels','Keyless Entry']
           });
         }
       };
-      pushFor('Chevrolet', 75);
-      pushFor('GMC', 50);
-      pushFor('Buick', 25);
-      return inv;
+      add('Chevrolet', 90, '1GC');
+      add('GMC', 55, '1GT');
+      add('Buick', 25, '1G4');
+      return inv; // 170
     }
 
-    // Seed a few used vehicles (from earlier demo)
-    const USED_SEED = [
-      { vin:'1N4AL3AP1JC123456', stockType:'Used', year:2021, make:'Nissan', model:'Altima SV', price:19950, miles:33210, color:'Gray',   photo:PHOTO.Used, features:['Remote start','Safety Shield','CarPlay','Heated seats'] },
-      { vin:'2FMPK3J99KBB24680', stockType:'Used', year:2022, make:'Ford',   model:'Edge SEL',   price:26990, miles:24500, color:'Black',  photo:PHOTO.Used, features:['AWD','Co-Pilot360','Power liftgate','18" alloys'] },
-      { vin:'5YJ3E1EA7KF317159', stockType:'Used', year:2021, make:'Tesla',  model:'Model 3 SR+', price:28990, miles:29800, color:'White',  photo:PHOTO.Used, features:['Autopilot','Glass roof','Heated seats','Nav'] }
-    ];
+    function generateUsedVehicles(count=30){
+      const usedMakes = {
+        Toyota:['Camry','RAV4','Tacoma'],
+        Honda:['Civic','CR-V','Accord'],
+        Ford:['Escape','Edge','F-150'],
+        Nissan:['Altima','Rogue','Sentra'],
+        Tesla:['Model 3','Model Y'],
+        Subaru:['Outback','Forester'],
+        Hyundai:['Tucson','Santa Fe'],
+        Kia:['Sportage','Sorento'],
+        Volkswagen:['Tiguan','Jetta'],
+        Mazda:['CX-5','Mazda3']
+      };
+      const makes = Object.keys(usedMakes);
+      const inv = [];
+      for (let i=0;i<count;i++){
+        const make = makes[i % makes.length];
+        const models = usedMakes[make];
+        const model = models[i % models.length];
+        const year = 2019 + (i % 6); // 2019–2024
+        const price = 17000 + (i % 14) * 1200;
+        const miles = 18000 + (i % 25) * 3100;
+        inv.push({
+          vin: vinFor('2UX', i+5000),
+          stockType:'Used',
+          year, make, model,
+          trim:(['Base','S','SE','SEL','Premium'])[i%5],
+          price, miles,
+          color: COLORS[(i+2) % COLORS.length],
+          photo: photoFor('Used','default'),
+          features:['CarPlay','Bluetooth','Alloys']
+        });
+      }
+      return inv; // 30
+    }
 
-    const INVENTORY = [...generateNewVehicles(), ...USED_SEED];
+    const INVENTORY = [...generateNewVehicles(), ...generateUsedVehicles(30)]; // 200 total
 
-    // ----------------- Payment helpers -----------------
+    /* ===========================================================
+       PAYMENT UTILS
+       =========================================================== */
     function calcPayment(amount, aprPct, termMonths) {
       const r = aprPct / 100 / 12;
       if (r === 0) return amount / termMonths;
@@ -105,7 +182,9 @@
     }
     const STEPS = ['Welcome','Discovery','Vehicle Match','Payments','Trade-In','Credit Start','F&I Options','Review & Handoff'];
 
-    // ===================== App =====================
+    /* ===========================================================
+       APP
+       =========================================================== */
     function App() {
       const [step, setStep] = useState(0);
       const [consent, setConsent] = useState({ sms:false, email:false, privacy:false });
@@ -146,7 +225,7 @@
         if (v) {
           setSelectedVin(v.vin);
           setDesk(d => ({...d, price: v.price}));
-          setStep(3); // jump to Payments after choosing from Browse
+          setStep(3);
         }
       }
 
@@ -224,7 +303,7 @@
       );
     }
 
-    // ------------------------- Screens -------------------------
+    /* ---------------------------------- UI helpers ---------------------------------- */
     function SectionTitle({ title, subtitle }) {
       return (
         <div className="mb-4">
@@ -233,7 +312,6 @@
         </div>
       );
     }
-
     function Field({ label, children }) {
       return (
         <label className="block mb-3">
@@ -242,15 +320,13 @@
         </label>
       );
     }
-
     function PrimaryButton(props){
       const cls = (props.className || "") + " px-5 py-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-700 text-white font-semibold shadow hover:brightness-110 active:brightness-95";
       return <button {...props} className={cls} />;
     }
 
-    // ---------- Welcome + Browse Inventory -----------
+    /* -------------------------------- Welcome + Browse -------------------------------- */
     function Welcome({ consent, setConsent, profile, setProfile, onNext, onSelect }) {
-      // Browse filters
       const [filters, setFilters] = useState({
         stockType: 'New',
         make: '',
@@ -264,16 +340,18 @@
 
       const modelOptions = useMemo(() => filters.make ? MODEL_MAP[filters.make] : [], [filters.make]);
 
+      // Robust filter (case-insensitive) — fixes "Used" still showing "New"
       const results = useMemo(() => {
         const min = Number(filters.minPrice || 0);
         const max = Number(filters.maxPrice || 999999);
-        return INVENTORY.filter(v =>
-          (!filters.stockType || v.stockType === filters.stockType) &&
-          (!filters.make || v.make === filters.make) &&
-          (!filters.model || v.model === filters.model) &&
-          (!filters.color || v.color === filters.color) &&
-          (v.price >= min && v.price <= max)
-        );
+        return INVENTORY.filter(v => {
+          const stockOK = !filters.stockType || v.stockType.toLowerCase() === filters.stockType.toLowerCase();
+          const makeOK  = !filters.make || v.make === filters.make;
+          const modelOK = !filters.model || v.model === filters.model;
+          const colorOK = !filters.color || v.color === filters.color;
+          const priceOK = v.price >= min && v.price <= max;
+          return stockOK && makeOK && modelOK && colorOK && priceOK;
+        });
       }, [filters]);
 
       const totalPages = Math.max(1, Math.ceil(results.length / perPage));
@@ -283,7 +361,6 @@
         <div>
           <SectionTitle title="Welcome to Quirk Auto Dealers" subtitle="Start the guided flow or browse our inventory below." />
 
-          {/* Quick info / consent */}
           <div className="grid sm:grid-cols-2 gap-4 mb-6">
             <Field label="Your name (optional)">
               <input aria-label="Your name" className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300"
@@ -300,10 +377,11 @@
             <h3 className="text-lg font-bold text-emerald-800 mb-2 text-center">Browse Inventory</h3>
             <div className="grid md:grid-cols-6 gap-3">
               <Field label="Stock Type">
-                <select className="w-full rounded-xl border p-3" value={filters.stockType} onChange={e=>{setFilters({...filters, stockType:e.target.value}); setPage(1);}}>
+                <select className="w-full rounded-xl border p-3" value={filters.stockType}
+                        onChange={e=>{setFilters({...filters, stockType:e.target.value}); setPage(1);}}>
                   <option value="">Any</option>
-                  <option>New</option>
-                  <option>Used</option>
+                  <option value="New">New</option>
+                  <option value="Used">Used</option>
                 </select>
               </Field>
               <Field label="Make">
@@ -346,7 +424,13 @@
                 <button key={v.vin} onClick={()=>onSelect(v.vin)}
                         className="group text-left rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition p-3 bg-white">
                   <div className="relative">
-                    <img src={v.photo} alt={`${v.make} ${v.model}`} className="w-full h-40 object-cover rounded-xl" />
+                    <img
+                      src={v.photo}
+                      alt={`${v.make} ${v.model}`}
+                      className="w-full h-40 object-cover rounded-xl"
+                      loading="lazy"
+                      onError={(e)=>{ e.currentTarget.onerror=null; e.currentTarget.src = PHOTO_ROOT + 'placeholder.jpg'; }}
+                    />
                     <span className="absolute bottom-2 left-2 text-xs px-2 py-1 rounded-full bg-black/60 text-white">{v.stockType}</span>
                   </div>
                   <div className="mt-2 font-semibold">{v.year} {v.make} {v.model}</div>
@@ -382,6 +466,7 @@
       );
     }
 
+    /* ------------------------------- Discovery / Matches / Deal ------------------------------- */
     function Discovery({ profile, setProfile, onNext, onBack }) {
       return (
         <div>
@@ -415,7 +500,6 @@
     }
 
     function VehicleMatch({ selectedVin, onSelect, onBack }) {
-      // show a short curated set (could be refined later)
       const picks = INVENTORY.slice(0, 9);
       return (
         <div>
@@ -424,7 +508,13 @@
             {picks.map(v => (
               <button key={v.vin} className={`group text-left rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition p-3 bg-white/90 ${selectedVin===v.vin?'ring-4 ring-emerald-300':''}`} onClick={()=>onSelect(v.vin)}>
                 <div className="relative">
-                  <img src={v.photo} alt={`${v.make} ${v.model}`} className="w-full h-44 object-cover rounded-xl" />
+                  <img
+                    src={v.photo}
+                    alt={`${v.make} ${v.model}`}
+                    className="w-full h-44 object-cover rounded-xl"
+                    loading="lazy"
+                    onError={(e)=>{ e.currentTarget.onerror=null; e.currentTarget.src = PHOTO_ROOT + 'placeholder.jpg'; }}
+                  />
                   <span className="absolute bottom-2 left-2 text-xs px-2 py-1 rounded-full bg-black/60 text-white">{v.miles.toLocaleString()} mi</span>
                 </div>
                 <div className="mt-2 font-semibold">{v.year} {v.make} {v.model}</div>
@@ -630,7 +720,6 @@
       );
     }
 
-    // Render
     ReactDOM.createRoot(document.getElementById('root')).render(<App />);
   </script>
 </body>
