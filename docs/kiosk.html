@@ -79,6 +79,76 @@
     }
 
     /* ===========================================================
+       OBJECTION PLAYBOOK + HELPER
+       =========================================================== */
+
+    // Inline playbook (you can move to assets/objections.json later)
+    const OBJECTION_LIB = {
+      price_high: {
+        triggers: ["price", "too high", "best price", "lower price"],
+        probe: "Totally fair. Are you aiming at a monthly target or out-the-door?",
+        evidence: "This {year} {make} {model} pencils at ${price} in today’s market.",
+        resolve: "Two ways to hit your target: {term_alt} months gets ~${payment_alt}/mo, or {alt_vehicle} saves ~${price_save}.",
+      },
+      payment_high: {
+        triggers: ["payment", "$", "per month"],
+        probe: "What monthly target are you trying to hit?",
+        evidence: "At {term} months and {apr}% with ${down} down, it’s ~${payment}/mo.",
+        resolve: "At {term_alt} months you’re ~${payment_alt}/mo. Or add ${down_alt} down → ~${payment_with_down}/mo.",
+      },
+      trade_low: {
+        triggers: ["trade", "value", "lowball", "trade value"],
+        probe: "Can you share mileage and any packages/damage I should note?",
+        evidence: "Similar vehicles appraise between ${range_low} and ${range_high} before recon.",
+        resolve: "I can lock it with a quick photo set or a 10-minute drive-through appraisal.",
+      },
+    };
+
+    // Fill {tokens} with live numbers/text from context
+    function renderPlay(obj, ctx) {
+      const fill = s => s?.replace(/\{(\w+)\}/g, (_, k) => (ctx[k] ?? ""));
+      return {
+        probe: fill(obj.probe),
+        evidence: fill(obj.evidence),
+        resolve: fill(obj.resolve),
+      };
+    }
+
+    function useObjection(triggerText, context) {
+      const [card, setCard] = React.useState(null);
+
+      React.useEffect(() => {
+        if (!triggerText) return;
+        const lower = triggerText.toLowerCase();
+        const key = Object.keys(OBJECTION_LIB).find(k =>
+          OBJECTION_LIB[k].triggers.some(t => lower.includes(t))
+        );
+        if (!key) return;
+        const msg = renderPlay(OBJECTION_LIB[key], context);
+        setCard({ key, ...msg });
+      }, [triggerText, context]);
+
+      return { card, dismiss: () => setCard(null) };
+    }
+
+    function ObjectionCard({ data, onClose, onProceed }) {
+      if (!data) return null;
+      return (
+        <div className="fixed bottom-4 right-4 z-50 max-w-md bg-white border border-slate-200 rounded-2xl shadow-xl p-4">
+          <div className="text-sm text-slate-700 space-y-2">
+            {data.probe && <p><strong>Quick question:</strong> {data.probe}</p>}
+            {data.evidence && <p>{data.evidence}</p>}
+            {data.resolve && <p><strong>Option:</strong> {data.resolve}</p>}
+            <div className="flex gap-2 pt-1">
+              <button className="px-3 py-2 rounded-xl border" onClick={onClose}>Dismiss</button>
+              {onProceed && <button className="px-3 py-2 rounded-xl bg-emerald-600 text-white" onClick={onProceed}>Proceed</button>}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    /* ===========================================================
        INVENTORY GENERATION
        - 170 NEW (Chevrolet 90 / GMC 55 / Buick 25)
        - 30 USED (non-Buick/Chevrolet/GMC brands)
@@ -197,6 +267,9 @@
       const [desk, setDesk] = useState({ price:0, down:2000, apr:6.9, term:72, taxesFees:995, products:{vsc:false,gap:false,maint:false} });
       const [trade, setTrade] = useState({ vin:'', miles:'', condition:'Average', rangeLow:0, rangeHigh:0 });
 
+      // === Objections state + context
+      const [objectionTrigger, setObjectionTrigger] = useState("");
+
       const vehicle = useMemo(() => INVENTORY.find(v => v.vin === selectedVin) || null, [selectedVin]);
       const productTotal = useMemo(() => (desk.products.vsc?1895:0) + (desk.products.gap?795:0) + (desk.products.maint?495:0), [desk.products]);
       const amountFinanced = useMemo(() => {
@@ -206,6 +279,28 @@
         return Math.max(gross, 0);
       }, [vehicle, desk.down, desk.taxesFees, productTotal, trade.rangeLow, trade.rangeHigh]);
       const monthly = useMemo(() => calcPayment(amountFinanced, desk.apr, desk.term), [amountFinanced, desk.apr, desk.term]);
+
+      // Live context passed to objection messages
+      const objectionContext = useMemo(() => ({
+        year:  (vehicle?.year ?? 2025),
+        make:  (vehicle?.make ?? ""),
+        model: (vehicle?.model ?? ""),
+        price: (vehicle ? vehicle.price : desk.price).toLocaleString(),
+        term: desk.term,
+        apr: desk.apr,
+        down: Number(desk.down).toLocaleString(),
+        payment: Math.round(monthly).toLocaleString(),
+        term_alt: desk.term === 72 ? 84 : 72,
+        payment_alt: Math.round(calcPayment(amountFinanced, desk.apr, desk.term === 72 ? 84 : 72)).toLocaleString(),
+        down_alt: 1000,
+        payment_with_down: Math.round(calcPayment(Math.max(amountFinanced-1000,0), desk.apr, desk.term)).toLocaleString(),
+        alt_vehicle: "similar unit with fewer options",
+        price_save: "1,500",
+        range_low: trade.rangeLow.toLocaleString(),
+        range_high: trade.rangeHigh.toLocaleString(),
+      }), [vehicle, desk, monthly, amountFinanced, trade]);
+
+      const { card, dismiss } = useObjection(objectionTrigger, objectionContext);
 
       function next(){ setStep(s => Math.min(s+1, STEPS.length-1)); }
       function back(){ setStep(s => Math.max(s-1, 0)); }
@@ -218,6 +313,9 @@
         const low=Math.max(500, base+adjMiles+cond-1500);
         const high=Math.max(low+500, base+adjMiles+cond+1500);
         setTrade(t => ({...t, rangeLow:Math.round(low), rangeHigh:Math.round(high)}));
+
+        // Trigger objection helper if range looks low
+        if (low < 9000) setObjectionTrigger("trade value");
       }
 
       function selectVehicle(vin) {
@@ -278,9 +376,15 @@
 
               {step===3 && (
                 <Payments
-                  vehicle={vehicle} desk={desk} setDesk={setDesk}
-                  monthly={monthly} amountFinanced={amountFinanced}
-                  onBack={back} onNext={next}
+                  vehicle={vehicle}
+                  desk={desk}
+                  setDesk={setDesk}
+                  monthly={monthly}
+                  amountFinanced={amountFinanced}
+                  onBack={back}
+                  onNext={next}
+                  onObjection={setObjectionTrigger}
+                  budgetTarget={profile.budget}
                 />
               )}
 
@@ -298,6 +402,9 @@
                 <Review profile={profile} vehicle={vehicle} desk={desk} trade={trade} monthly={monthly} onBack={back} />
               )}
             </div>
+
+            {/* Objection helper overlay */}
+            <ObjectionCard data={card} onClose={dismiss} />
           </div>
         </div>
       );
@@ -531,7 +638,14 @@
       );
     }
 
-    function Payments({ vehicle, desk, setDesk, monthly, amountFinanced, onBack, onNext }) {
+    function Payments({ vehicle, desk, setDesk, monthly, amountFinanced, onBack, onNext, onObjection, budgetTarget }) {
+      // Auto-fire objection if payment is well above customer's budget
+      React.useEffect(() => {
+        if (!budgetTarget) return;
+        const overBy = monthly - Number(budgetTarget);
+        if (overBy > 50) onObjection && onObjection("payment too high");  // matches payment_high
+      }, [monthly, budgetTarget, onObjection]);
+
       const price = vehicle ? vehicle.price : desk.price;
       return (
         <div>
