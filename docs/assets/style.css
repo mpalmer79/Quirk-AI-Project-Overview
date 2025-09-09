@@ -523,3 +523,34 @@ footer.footer { flex-shrink: 0; }
   background: color-mix(in srgb, var(--q-green) 70%, #fff);
   opacity:.35;
 }
+/* === Kiosk mobile/light form-control fix (place at EOF) === */
+.kiosk input,
+.kiosk select,
+.kiosk textarea,
+.kiosk button {
+  background: #fff !important;
+  color: #0f172a !important;
+  border-color: #e5e7eb !important;
+}
+
+/* Keep dropdown menu items visible */
+.kiosk select option {
+  background: #fff;
+  color: #0f172a;
+}
+
+/* Stop iOS/Android from forcing dark UI on controls */
+.kiosk input,
+.kiosk select,
+.kiosk textarea {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* iOS autofill text color */
+.kiosk input:-webkit-autofill,
+.kiosk textarea:-webkit-autofill,
+.kiosk select:-webkit-autofill {
+  -webkit-text-fill-color: #0f172a !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
