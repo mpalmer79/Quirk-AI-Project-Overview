@@ -70,25 +70,15 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
 
-    /* 1) Top image: ~50% larger than the old half-width grid (now ~75% of container) */
-    .img-hero img { width: 75%; max-width: 900px; }
+    /* Top image: increased ~50% from previous 75% -> now full container width */
+    .img-hero img { width: 100%; max-width: 1000px; }
 
-    /* 2) QR image: REMOVED per your request */
-
-    /* 3) Bottom image: show at 75% of previous full width */
+    /* Bottom image: show at 75% width */
     .img-75 img { width: 75%; max-width: 1000px; }
 
-    /* ===== Top bar tweaks ===== */
-    .topbar-menu { font-size: clamp(16px, 1.8vw, 20px); }
-    .topbar-title-link {
-      color: #fff;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: inherit;
-      line-height: 1;
-    }
-    .topbar-title-link:hover,
-    .topbar-title-link:focus { text-decoration: underline; }
+    /* Optional: show pointer on linked hero image */
+    .img-hero a { display: inline-block; }
+    .img-hero a:hover img { box-shadow: 0 6px 16px rgba(0,0,0,0.12); }
   </style>
 </head>
 <body>
@@ -113,13 +103,14 @@
       to modernize check-ins, approvals, parts lookups, and follow-ups — powered by Quirk AI.
     </p>
 
-    <!-- (1) Enlarged app.png (~75% of content width) -->
+    <!-- Top image: larger and clickable (opens in new tab) -->
     <div class="img-card img-hero">
-      <img src="assets/app.png" alt="Quirk AI Service app preview">
+      <a href="https://createanything.com/mobile-preview/54a62cc5-7f83-42a6-ae1c-a8ef7e84f22f?path=%2Faccount" target="_blank" rel="noopener">
+        <img src="assets/app.png" alt="Quirk AI Service app preview">
+      </a>
     </div>
 
-    <!-- (3) “Stay connected…” image shown at 75% width.
-         Uses AVIF with a PNG fallback for broader compatibility. -->
+    <!-- Bottom image at 75% width with AVIF + PNG fallback -->
     <div class="img-card img-75">
       <picture>
         <source srcset="assets/app1.avif" type="image/avif">
