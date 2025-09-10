@@ -35,7 +35,7 @@ body {
 html, body { height: 100%; }
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; /* Option A: keep Inter */
   color: #111;
   background: #fafafa;
   -webkit-font-smoothing: antialiased;
@@ -579,3 +579,41 @@ footer.footer { flex-shrink: 0; }
   -webkit-text-fill-color: #0f172a !important;
   transition: background-color 5000s ease-in-out 0s;
 }
+
+/* ========== High-tech glass card (modifier) ========== */
+.q-card.fx {
+  /* augments your existing .q-card (which lives inline in each page) */
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: saturate(1.05) blur(3px);
+  transition: transform .25s ease, box-shadow .25s ease;
+  /* optional subtle base shadow (plays nice with your inline card shadow) */
+  box-shadow: var(--shadow-1, 0 6px 16px rgba(2,6,23,.10));
+}
+
+.q-card.fx::after{
+  content:"";
+  position:absolute; inset:-1px;
+  border-radius: 16px;
+  background: conic-gradient(from var(--rot,0deg),
+              transparent 0 75%,
+              color-mix(in oklab, var(--brand, #0b6e37), #00ffc6 40%) 90%,
+              transparent);
+  /* “hollow” border effect */
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+
+  padding:1px;
+  opacity:.35;
+  pointer-events:none;
+  animation: spin 9s linear infinite;
+}
+
+.q-card.fx:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-2, 0 10px 30px rgba(2,6,23,.12));
+}
+
+@keyframes spin { to { --rot: 360deg; } }
