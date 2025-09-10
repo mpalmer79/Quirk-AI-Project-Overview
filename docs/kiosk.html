@@ -122,14 +122,14 @@
       price_high: {
         triggers: ["price", "too high", "best price", "lower price"],
         probe: "Totally fair. Are you aiming at a monthly target or out-the-door?",
-        evidence: "This {year} {make} {model} pencils at ${price} in today’s market.",
+        evidence: "This {year} {make} {model} pencils at ${price} in today's market.",
         resolve: "Two ways to hit your target: {term_alt} months gets ~${payment_alt}/mo, or {alt_vehicle} saves ~${price_save}.",
       },
       payment_high: {
         triggers: ["payment", "$", "per month"],
         probe: "What monthly target are you trying to hit?",
-        evidence: "At {term} months and {apr}% with ${down} down, it’s ~${payment}/mo.",
-        resolve: "At {term_alt} months you’re ~${payment_alt}/mo. Or add ${down_alt} down → ~${payment_with_down}/mo.",
+        evidence: "At {term} months and {apr}% with ${down} down, it's ~${payment}/mo.",
+        resolve: "At {term_alt} months you're ~${payment_alt}/mo. Or add ${down_alt} down → ~${payment_with_down}/mo.",
       },
       trade_low: {
         triggers: ["trade", "value", "lowball", "trade value"],
@@ -566,13 +566,12 @@
                 <button key={v.vin} onClick={()=>onSelect(v.vin)}
                         className="group text-left rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition p-3 bg-white">
                   <div className="relative">
-                    <img
-                      src={v.photo}
-                      alt={`${v.make} ${v.model}`}
-                      className="w-full h-40 object-cover rounded-xl"
-                      loading="lazy"
-                      onError={(e)=>{ e.currentTarget.onerror=null; e.currentTarget.src = PHOTO_ROOT + 'placeholder.jpg'; }}
-                    />
+                    <div className="w-full h-40 bg-gradient-to-br from-slate-200 to-slate-300 rounded-xl flex items-center justify-center">
+                      <div className="text-center text-slate-600">
+                        <div className="text-sm font-semibold">{v.make}</div>
+                        <div className="text-xs">{v.model}</div>
+                      </div>
+                    </div>
                     <span className="absolute bottom-2 left-2 text-xs px-2 py-1 rounded-full bg-black/60 text-white">{v.stockType}</span>
                   </div>
                   <div className="mt-2 font-semibold">{v.year} {v.make} {v.model}</div>
@@ -584,9 +583,6 @@
 
             {/* Pagination */}
             <div className="mt-3 flex items-center justify-between">
-              <button className="px-3 py-2 rounded-xl border bg-white disabled:opacity-50"
-                      onClick={()=>setPage(p=>Math.max(1,p-1))} disabled={page<=1}>← Prev</button>
-              <div className="text-sm text-slate-600">Page {page} / {totalPages}</div>
               <button className="px-3 py-2 rounded-xl border bg-white disabled:opacity-50"
                       onClick={()=>setPage(p=>Math.min(totalPages,p+1))} disabled={page>=totalPages}>Next →</button>
             </div>
@@ -650,13 +646,12 @@
             {picks.map(v => (
               <button key={v.vin} className={`group text-left rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition p-3 bg-white/90 ${selectedVin===v.vin?'ring-4 ring-emerald-300':''}`} onClick={()=>onSelect(v.vin)}>
                 <div className="relative">
-                  <img
-                    src={v.photo}
-                    alt={`${v.make} ${v.model}`}
-                    className="w-full h-44 object-cover rounded-xl"
-                    loading="lazy"
-                    onError={(e)=>{ e.currentTarget.onerror=null; e.currentTarget.src = PHOTO_ROOT + 'placeholder.jpg'; }}
-                  />
+                  <div className="w-full h-44 bg-gradient-to-br from-slate-200 to-slate-300 rounded-xl flex items-center justify-center">
+                    <div className="text-center text-slate-600">
+                      <div className="text-sm font-semibold">{v.make}</div>
+                      <div className="text-xs">{v.model}</div>
+                    </div>
+                  </div>
                   <span className="absolute bottom-2 left-2 text-xs px-2 py-1 rounded-full bg-black/60 text-white">{v.miles.toLocaleString()} mi</span>
                 </div>
                 <div className="mt-2 font-semibold">{v.year} {v.make} {v.model}</div>
@@ -832,7 +827,7 @@
     function Review({ profile, vehicle, desk, trade, monthly, onBack }) {
       return (
         <div>
-          <SectionTitle title="Review & handoff" subtitle="We’ll prep your buyer’s order and connect you to a manager or F&I." />
+          <SectionTitle title="Review & handoff" subtitle="We'll prep your buyer's order and connect you to a manager or F&I." />
           <div className="grid md:grid-cols-2 gap-4">
             <div className="rounded-2xl border p-4 bg-white/90">
               <div className="font-semibold mb-2">Your picks</div>
@@ -842,7 +837,7 @@
                 <li><strong>Use:</strong> {profile.useCase} • <strong>Body style:</strong> {profile.bodyStyle}</li>
                 <li><strong>Budget target:</strong> ${profile.budget}/mo</li>
                 <li><strong>Vehicle:</strong> {vehicle ? `${vehicle.year} ${vehicle.make} ${vehicle.model}` : '—'}</li>
-                <li><strong>Trade range:</strong> {trade.rangeLow ? `$${trade.rangeLow.toLocaleString()}–$${trade.rangeHigh.toLocaleString()}` : '—'}</li>
+                <li><strong>Trade range:</strong> {trade.rangeLow ? `${trade.rangeLow.toLocaleString()}–${trade.rangeHigh.toLocaleString()}` : '—'}</li>
               </ul>
             </div>
             <div className="rounded-2xl border p-4 bg-white/90">
@@ -862,7 +857,7 @@
             <div className="flex gap-2">
               <button className="px-4 py-2 rounded-xl border bg-white/90">Raise hand for manager</button>
               <PrimaryButton>Text me this summary</PrimaryButton>
-              <button className="px-4 py-2 rounded-2xl bg-emerald-700 text-white font-semibold">I’m ready now</button>
+              <button className="px-4 py-2 rounded-2xl bg-emerald-700 text-white font-semibold">I'm ready now</button>
             </div>
           </div>
         </div>
@@ -872,4 +867,7 @@
     ReactDOM.createRoot(document.getElementById('root')).render(<App />);
   </script>
 </body>
-</html>
+</html> disabled:opacity-50"
+                      onClick={()=>setPage(p=>Math.max(1,p-1))} disabled={page<=1}>← Prev</button>
+              <div className="text-sm text-slate-600">Page {page} / {totalPages}</div>
+              <button className="px-3 py-2 rounded-xl border bg-white
