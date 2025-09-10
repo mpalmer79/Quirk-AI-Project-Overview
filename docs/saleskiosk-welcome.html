@@ -68,6 +68,18 @@
 const { useMemo, useState } = React;
 
 /* ===========================================================
+   VEHICLE IMAGES
+   =========================================================== */
+const VEHICLE_IMAGES = {
+  '2025_Chevrolet_Silverado 1500': 'https://images.dealer.com/ddc/vehicles/2025/Chevrolet/Silverado%201500/Crew%20Cab/perspective/front-left/2025_24.png'
+};
+
+function getVehicleImage(year, make, model) {
+  const key = `${year}_${make}_${model}`;
+  return VEHICLE_IMAGES[key] || null;
+}
+
+/* ===========================================================
    PHOTOS (local, with safe fallback)
    Place images under /docs/assets/kiosk-photos/ (optional).
    =========================================================== */
@@ -588,23 +600,39 @@ function Welcome({ consent, setConsent, profile, setProfile, onNext, onSelect })
         <div className="mt-3 text-sm text-slate-600">{results.length.toLocaleString()} vehicles found</div>
 
         <div className="mt-3 grid md:grid-cols-3 gap-4">
-          {pageItems.map((v, index) => (
-            <button key={`vehicle-${index}-${v.vin.slice(-6)}`} onClick={()=>onSelect(v.vin)}
-                    className="group text-left rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition p-3 bg-white">
-              <div className="relative">
-                <div className="w-full h-40 bg-gradient-to-br from-slate-200 to-slate-300 rounded-xl flex items-center justify-center">
-                  <div className="text-center text-slate-600">
-                    <div className="text-sm font-semibold">{v.make}</div>
-                    <div className="text-xs">{v.model}</div>
+          {pageItems.map((v, index) => {
+            const vehicleImage = getVehicleImage(v.year, v.make, v.model);
+            
+            return (
+              <button key={`vehicle-${index}-${v.vin.slice(-6)}`} onClick={()=>onSelect(v.vin)}
+                      className="group text-left rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition p-3 bg-white">
+                <div className="relative">
+                  {vehicleImage ? (
+                    <img
+                      src={vehicleImage}
+                      alt={`${v.year} ${v.make} ${v.model}`}
+                      className="w-full h-40 object-cover rounded-xl"
+                      loading="lazy"
+                      onError={(e)=>{ 
+                        e.currentTarget.style.display = 'none';
+                        e.currentTarget.nextElementSibling.style.display = 'flex';
+                      }}
+                    />
+                  ) : null}
+                  <div className={`w-full h-40 bg-gradient-to-br from-slate-200 to-slate-300 rounded-xl flex items-center justify-center ${vehicleImage ? 'hidden' : ''}`}>
+                    <div className="text-center text-slate-600">
+                      <div className="text-sm font-semibold">{v.make}</div>
+                      <div className="text-xs">{v.model}</div>
+                    </div>
                   </div>
+                  <span className="absolute bottom-2 left-2 text-xs px-2 py-1 rounded-full bg-black/60 text-white">{v.stockType}</span>
                 </div>
-                <span className="absolute bottom-2 left-2 text-xs px-2 py-1 rounded-full bg-black/60 text-white">{v.stockType}</span>
-              </div>
-              <div className="mt-2 font-semibold">{v.year} {v.make} {v.model}</div>
-              <div className="text-emerald-700 font-extrabold text-lg">${v.price.toLocaleString()}</div>
-              <div className="text-xs text-slate-600">{v.color} • {v.trim}</div>
-            </button>
-          ))}
+                <div className="mt-2 font-semibold">{v.year} {v.make} {v.model}</div>
+                <div className="text-emerald-700 font-extrabold text-lg">${v.price.toLocaleString()}</div>
+                <div className="text-xs text-slate-600">{v.color} • {v.trim}</div>
+              </button>
+            );
+          })}
         </div>
 
         {/* Pagination */}
@@ -663,22 +691,38 @@ function VehicleMatch({ selectedVin, onSelect, onBack }) {
     <div>
       <SectionTitle title="Best matches" subtitle="Tap a vehicle to continue." />
       <div className="grid md:grid-cols-3 gap-4">
-        {picks.map((v, index) => (
-          <button key={`match-${index}-${v.vin.slice(-6)}`} className={`group text-left rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition p-3 bg-white/90 ${selectedVin===v.vin?'ring-4 ring-emerald-300':''}`} onClick={()=>onSelect(v.vin)}>
-            <div className="relative">
-              <div className="w-full h-44 bg-gradient-to-br from-slate-200 to-slate-300 rounded-xl flex items-center justify-center">
-                <div className="text-center text-slate-600">
-                  <div className="text-sm font-semibold">{v.make}</div>
-                  <div className="text-xs">{v.model}</div>
+        {picks.map((v, index) => {
+          const vehicleImage = getVehicleImage(v.year, v.make, v.model);
+          
+          return (
+            <button key={`match-${index}-${v.vin.slice(-6)}`} className={`group text-left rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition p-3 bg-white/90 ${selectedVin===v.vin?'ring-4 ring-emerald-300':''}`} onClick={()=>onSelect(v.vin)}>
+              <div className="relative">
+                {vehicleImage ? (
+                  <img
+                    src={vehicleImage}
+                    alt={`${v.year} ${v.make} ${v.model}`}
+                    className="w-full h-44 object-cover rounded-xl"
+                    loading="lazy"
+                    onError={(e)=>{ 
+                      e.currentTarget.style.display = 'none';
+                      e.currentTarget.nextElementSibling.style.display = 'flex';
+                    }}
+                  />
+                ) : null}
+                <div className={`w-full h-44 bg-gradient-to-br from-slate-200 to-slate-300 rounded-xl flex items-center justify-center ${vehicleImage ? 'hidden' : ''}`}>
+                  <div className="text-center text-slate-600">
+                    <div className="text-sm font-semibold">{v.make}</div>
+                    <div className="text-xs">{v.model}</div>
+                  </div>
                 </div>
+                <span className="absolute bottom-2 left-2 text-xs px-2 py-1 rounded-full bg-black/60 text-white">{v.miles.toLocaleString()} mi</span>
               </div>
-              <span className="absolute bottom-2 left-2 text-xs px-2 py-1 rounded-full bg-black/60 text-white">{v.miles.toLocaleString()} mi</span>
-            </div>
-            <div className="mt-2 font-semibold">{v.year} {v.make} {v.model}</div>
-            <div className="text-emerald-700 font-extrabold text-lg">${v.price.toLocaleString()}</div>
-            <div className="text-xs text-slate-600">{v.color} • {v.trim}</div>
-          </button>
-        ))}
+              <div className="mt-2 font-semibold">{v.year} {v.make} {v.model}</div>
+              <div className="text-emerald-700 font-extrabold text-lg">${v.price.toLocaleString()}</div>
+              <div className="text-xs text-slate-600">{v.color} • {v.trim}</div>
+            </button>
+          );
+        })}
       </div>
       <div className="mt-4 flex justify-between">
         <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={onBack}>← Back</button>
