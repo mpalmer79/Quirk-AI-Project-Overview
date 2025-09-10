@@ -1,20 +1,30 @@
 /* Load Inter once for the whole site */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300..900&display=swap');
 
-/* Design tokens (site-wide) */
+/* Enhanced design tokens (site-wide) */
 :root{
   --brand: #0b6e37;
+  --brand-light: #10b981;
+  --brand-dark: #064e3b;
   --ink: #0f172a;
   --muted: #64748b;
   --card: #ffffff;
   --line: #e5e7eb;
+  --accent: #6b7280;
+  --accent-glow: #6b728080;
+  --surface: #f8fafc;
+  --glass: rgba(255, 255, 255, 0.8);
 
-  /* optional neon accent */
-  --neon: #00ffc6;
-
-  /* shadows */
-  --shadow-1: 0 6px 16px rgba(2,6,23,.06);
-  --shadow-2: 0 10px 30px rgba(2,6,23,.12);
+  /* Enhanced shadows */
+  --shadow-1: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-2: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-3: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-glow: 0 0 20px rgba(107, 114, 128, 0.3);
+  
+  /* Gradients */
+  --gradient-brand: linear-gradient(135deg, var(--brand) 0%, var(--brand-light) 100%);
+  --gradient-surface: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  --gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%);
 }
 
 /* Apply the font everywhere */
@@ -22,12 +32,10 @@ body {
   font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
 
-
 /* ================================
    Quirk GenAI Alternative
-   Global Stylesheet (assets/style.css)
-   Optimized w/ HOME link + 1024 default logo + 254px modifier
-   + Watermark logo behind page content (absolute path for GitHub Pages)
+   Enhanced Global Stylesheet (assets/style.css)
+   High-tech professional design with gray accents
    ================================ */
 
 /* ---------- Base / Reset ---------- */
@@ -35,12 +43,16 @@ body {
 html, body { height: 100%; }
 body {
   margin: 0;
-  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; /* Option A: keep Inter */
-  color: #111;
-  background: #fafafa;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color: var(--ink);
+  background: var(--surface);
+  background-image: 
+    radial-gradient(circle at 20% 20%, rgba(107, 114, 128, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(11, 110, 55, 0.08) 0%, transparent 50%);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  position: relative; /* create stacking context for watermark */
+  position: relative;
+  min-height: 100vh;
 }
 
 a { color: #0b5; text-decoration: underline; }
@@ -128,37 +140,147 @@ main { max-width: 1100px; margin: 16px auto 48px; padding: 0 16px; position: rel
 .library-card .meta { display: block; font-size: .85rem; color: #777; margin-top: 4px; }
 
 /* =====================================
-   Topbar for HOME link + centered title + right menu (numa-alternative)
+   Enhanced Topbar with shimmer effect
    ===================================== */
-.topbar { background: var(--green, #0b6e37); }
-.topbar-inner { max-width: 1200px; margin: 0 auto; height: 56px; padding: 0 16px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; }
+.topbar { 
+  background: var(--gradient-brand);
+  backdrop-filter: blur(20px);
+  box-shadow: var(--shadow-2);
+  position: relative;
+  overflow: hidden;
+}
+
+.topbar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%, 100% { transform: translateX(-100%); }
+  50% { transform: translateX(100%); }
+}
+
+.topbar-inner { 
+  max-width: 1200px; 
+  margin: 0 auto; 
+  height: 64px; 
+  padding: 0 24px; 
+  display: grid; 
+  grid-template-columns: auto 1fr auto; 
+  align-items: center;
+  gap: 24px;
+  position: relative;
+  z-index: 1;
+}
 
 /* LEFT: HOME link */
-.home-link { justify-self: start; font: inherit; font-weight: 700; font-size: clamp(20px, 2.2vw, 24px); letter-spacing: 0.3px; color: #fff; text-decoration: none; line-height: 1; }
-.home-link:hover, .home-link:focus { text-decoration: underline; }
+.home-link { 
+  justify-self: start; 
+  font: inherit; 
+  font-weight: 800; 
+  font-size: clamp(20px, 2.2vw, 24px); 
+  letter-spacing: 0.3px; 
+  color: #fff; 
+  text-decoration: none; 
+  line-height: 1;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+}
+.home-link:hover, .home-link:focus { 
+  text-decoration: underline;
+  transform: scale(1.05);
+  text-shadow: 0 0 20px rgba(255,255,255,0.5);
+}
 
 /* CENTER: title */
-.topbar-title { justify-self: center; color: #fff; font-weight: 600; font-size: clamp(16px, 1.8vw, 20px); line-height: 1; text-align: center; }
+.topbar-title { 
+  justify-self: center; 
+  color: #fff; 
+  font-weight: 600; 
+  font-size: clamp(16px, 1.8vw, 20px); 
+  line-height: 1; 
+  text-align: center;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
 
 /* RIGHT: menu */
-.topbar-menu { justify-self: end; display: flex; gap: 24px; align-items: center; }
-.topbar-menu a { color: #fff; text-decoration: none; font: inherit; line-height: 1; }
-.topbar-menu a:hover, .topbar-menu a:focus { text-decoration: underline; }
+.topbar-menu { 
+  justify-self: end; 
+  display: flex; 
+  gap: 32px; 
+  align-items: center; 
+}
+.topbar-menu a { 
+  color: #fff; 
+  text-decoration: none; 
+  font: inherit; 
+  line-height: 1;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
 
-@media (max-width: 640px) { .topbar-inner { height: auto; padding: 8px 12px; } }
+.topbar-menu a::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255,255,255,0.2);
+  transition: left 0.3s ease;
+}
 
-/* ---------- Watermark (Logo behind content) ---------- */
+.topbar-menu a:hover::before {
+  left: 0;
+}
+
+.topbar-menu a:hover, .topbar-menu a:focus { 
+  text-decoration: underline;
+  background: rgba(255,255,255,0.1);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) { 
+  .topbar-inner { 
+    grid-template-columns: 1fr;
+    height: auto; 
+    padding: 16px; 
+    gap: 16px;
+  }
+  .topbar-menu {
+    justify-content: center;
+  }
+}
+
+/* ---------- Enhanced Watermark (Logo behind content) ---------- */
 /* Use absolute path so it resolves correctly on GitHub Pages under /Quirk-AI-Project-Overview/ */
 body::before {
   content: "";
-  position: fixed;           /* stays centered even when page scrolls */
-  inset: 0;                  /* fill viewport */
+  position: fixed;
+  inset: 0;
   background: url('/Quirk-AI-Project-Overview/assets/quirk-ai-logo.png') no-repeat center center;
-  background-size: clamp(260px, 35vw, 520px); /* responsive size */
-  opacity: 0.10;             /* 10% in light mode (reduced by 2%) */
-  pointer-events: none;      /* never intercept clicks */
-  z-index: 0;                /* sit behind main content */
+  background-size: clamp(300px, 40vw, 600px);
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 0;
+  animation: float 6s ease-in-out infinite;
 }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
 /* Ensure primary sections render above the watermark */
 header, main, .panel, .layout, .brand-box { position: relative; z-index: 1; }
 
@@ -172,18 +294,14 @@ header, main, .panel, .layout, .brand-box { position: relative; z-index: 1; }
   .library-card { background: #15181b; border-color: #2a2f35; }
   .library-card .title { color: #e9ecef; }
   .library-card .meta { color: #a7b0ba; }
-  /* 14% in dark mode (reduced by 2%) */
-  body::before { opacity: 0.14; }
+  body::before { opacity: 0.05; }
 }
-/* ===== Force LIGHT theme on mobile ===== */
 
-/* Always expose only the light color scheme to the browser */
+/* ===== Force LIGHT theme on mobile ===== */
 :root { color-scheme: light; }
 
-/* If any earlier rules used prefers-color-scheme:dark, neutralize them */
 @media (prefers-color-scheme: dark) {
   :root{
-    /* keep light values even when device is in dark mode */
     --bg:#ffffff;
     --card:#ffffff;
     --text:#0f172a;
@@ -193,99 +311,345 @@ header, main, .panel, .layout, .brand-box { position: relative; z-index: 1; }
   html, body { background:#fff; color:#0f172a; }
 }
 
-/* Mobile-specific hard override (keeps desktop behavior if desired) */
 @media (max-width: 768px), (hover:none) and (pointer:coarse) {
   :root { color-scheme: light !important; }
   html, body { background:#fff !important; color:#0f172a !important; }
   .card { background:#fff !important; }
   .muted, .subtitle { color:#475569 !important; }
 }
-/* === Quirk AI Voice hero alignment fix ===================== */
-/* Make the hero a tight 2-column grid: logo (fixed) + content (fluid) */
+
+/* === Enhanced Hero Logo with rotating glow ===================== */
 .grid-hero {
   display: grid;
-  grid-template-columns: 180px 1fr;  /* logo column + content */
-  column-gap: 24px;                  /* tighten spacing */
+  grid-template-columns: 180px 1fr;
+  column-gap: 32px;
   align-items: center;
 }
 
-/* Ensure the logo hugs the left edge of the container */
 .brand-box { 
   justify-self: start; 
-  margin: 0; 
+  margin: 0;
+  background: var(--gradient-glass);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 24px;
+  padding: 20px;
+  box-shadow: var(--shadow-2);
+  backdrop-filter: blur(20px);
+  position: relative;
+  overflow: hidden;
 }
+
+.brand-box::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(from 0deg, transparent, var(--accent-glow), transparent);
+  animation: rotate 4s linear infinite;
+  opacity: 0.5;
+}
+
+.brand-box::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  background: var(--gradient-glass);
+  border-radius: 22px;
+  backdrop-filter: blur(20px);
+}
+
+@keyframes rotate {
+  to { transform: rotate(360deg); }
+}
+
 .brand-box a,
 .brand-box img {
   display: block;
-  width: 180px;          /* adjust as needed (160–200 works well) */
+  width: 140px;
   height: auto;
   margin: 0;
+  position: relative;
+  z-index: 1;
 }
 
-/* Remove any extra left padding on the text column */
 .content-col {
   padding-left: 0 !important;
   margin-left: 0 !important;
 }
 
-/* Keep the hero's left edge aligned with the feature cards */
 .container {
-  max-width: 1100px;     /* match your site width */
+  max-width: 1200px;
   margin: 0 auto;
-  padding-left: 16px;
-  padding-right: 16px;
+  padding-left: 24px;
+  padding-right: 24px;
 }
 
-/* Tighten hero heading spacing */
 .container h1 {
   margin-top: 6px;
+  background: var(--gradient-brand);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-/* Mobile: stack logo above text, still left-aligned */
 @media (max-width: 720px) {
   .grid-hero {
     grid-template-columns: 1fr;
-    row-gap: 12px;
+    row-gap: 20px;
+    text-align: center;
   }
   .brand-box { 
-    order: -1; 
+    order: -1;
+    width: 120px;
+    height: 120px;
+    justify-self: center;
+  }
+  .brand-box img {
+    width: 80px;
   }
 }
-/* === Tiny polish (optional) ======================= */
-/* 1) Subtle depth under the green header bar */
-.topbar { box-shadow: 0 2px 6px rgba(0,0,0,.08); }
 
-/* 2) Extra breathing room on phones so content isn't tight under the bar */
-@media (max-width: 640px) {
-  main.page, .page-wrap { padding-top: 12px; }
+/* === Enhanced Buttons with slide effects ======================= */
+.btn {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  line-height: 1;
+  border: 2px solid transparent;
+  white-space: nowrap;
 }
 
-/* 3) Accessibility: clear focus rings for keyboard users on header links */
-.home-link:focus-visible,
-.topbar-menu a:focus-visible {
-  outline: 2px solid #fff;
-  outline-offset: 2px;
-  border-radius: 4px;
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s ease;
 }
+
+.btn:hover::before {
+  left: 100%;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-2);
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: var(--gradient-brand);
+  color: #fff;
+  box-shadow: var(--shadow-glow);
+}
+
+.btn-primary:hover {
+  box-shadow: var(--shadow-glow), var(--shadow-3);
+}
+
+.btn:not(.btn-primary) {
+  background: var(--gradient-glass);
+  color: var(--brand);
+  border-color: rgba(11, 110, 55, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+/* === Enhanced Project Cards ======================= */
+.projects-wrap {
+  max-width: 1200px;
+  margin: 24px auto 48px;
+  padding: 0 24px;
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 24px;
+}
+
+@media (max-width: 768px) {
+  .projects-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.project-item {
+  background: var(--gradient-surface);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: var(--shadow-2);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.project-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--gradient-brand);
+  transition: all 0.3s ease;
+}
+
+.project-item:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-3);
+  border-color: var(--accent-glow);
+}
+
+.project-item:hover::before {
+  height: 6px;
+  box-shadow: var(--shadow-glow);
+}
+
+.project-name {
+  margin: 0 0 8px;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--ink);
+  text-align: center;
+}
+
+.project-name a {
+  color: var(--brand);
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.project-name a:hover {
+  color: var(--brand-light);
+  text-shadow: 0 0 10px var(--accent-glow);
+}
+
+.project-lead {
+  color: var(--muted);
+  margin: 0 0 16px;
+  font-size: 1rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.project-details {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.project-detail {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.project-detail:first-child {
+  grid-template-columns: 1fr;
+  justify-items: center;
+}
+
+.project-detail:first-child .detail-label {
+  display: none;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: var(--ink);
+  font-size: 0.9rem;
+}
+
+.detail-value {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* Enhanced status badges with glow */
+.badge {
+  display: inline-block;
+  padding: 6px 16px;
+  line-height: 1;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border: 2px solid;
+  transition: all 0.3s ease;
+}
+
+.badge:hover {
+  transform: scale(1.05);
+}
+
+.status-live {
+  color: #065f46;
+  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+  border-color: #10b981;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+}
+
+.status-dev {
+  color: #1e40af;
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  border-color: #3b82f6;
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+
+.status-planning {
+  color: #7c3aed;
+  background: linear-gradient(135deg, #f5f3ff, #ede9fe);
+  border-color: #8b5cf6;
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+}
+
+.project-actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.project-actions .btn {
+  padding: 8px 16px;
+  font-size: 0.9rem;
+}
+
 /* === Global footer: centered on every page ================= */
 footer.footer {
   text-align: center;
-  margin: 24px auto 32px;   /* consistent spacing */
-  padding-top: 8px;
-  color: #555;
+  margin: 48px auto 32px;
+  padding: 24px;
+  background: var(--gradient-glass);
+  border-top: 1px solid rgba(255,255,255,0.3);
+  backdrop-filter: blur(10px);
 }
 
-/* optional: subtle divider */
-footer.footer { border-top: 1px solid rgba(0,0,0,.06); }
+footer.footer small {
+  color: var(--muted);
+  font-weight: 500;
+}
 
-/* keep footer at the bottom even on short pages (optional) */
 html, body { height: 100%; }
 body { display: flex; flex-direction: column; }
 main { flex: 1 0 auto; }
 footer.footer { flex-shrink: 0; }
 
 /* ===== Smart Workplace Verification Page Styles ===== */
-/* Content sections */
 .section {
   margin: 32px 0;
   background: #fff;
@@ -331,7 +695,6 @@ footer.footer { flex-shrink: 0; }
   font-size: 0.95rem;
 }
 
-/* Status indicators */
 .status-badge {
   display: inline-block;
   padding: 6px 12px;
@@ -347,13 +710,6 @@ footer.footer { flex-shrink: 0; }
   border: 1px solid #bfdbfe;
 }
 
-.status-planning {
-  background: #f5f3ff;
-  color: #6d28d9;
-  border: 1px solid #ddd6fe;
-}
-
-/* Compliance section */
 .compliance-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -382,7 +738,6 @@ footer.footer { flex-shrink: 0; }
   margin: 4px 0 0;
 }
 
-/* Tech specs */
 .tech-list {
   list-style: none;
   padding: 0;
@@ -409,7 +764,6 @@ footer.footer { flex-shrink: 0; }
   color: #475569;
 }
 
-/* Call-to-action */
 .cta-section {
   background: linear-gradient(135deg, #0b6e37 0%, #065f46 100%);
   color: #fff;
@@ -443,112 +797,8 @@ footer.footer { flex-shrink: 0; }
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0,0,0,.15);
 }
-/* ===== Quirk Demo — Polish Pack (safe to paste after your current styles) ===== */
 
-/* 1) Color tokens for consistency */
-:root{
-  --q-green:#0b6e37;
-  --q-ink:#0f172a;
-  --q-sub:#334155;
-  --q-muted:#64748b;
-  --q-line:#e5e7eb;
-  --q-shadow:0 10px 24px rgba(2,6,23,.18);
-  --q-shadow-sm:0 6px 16px rgba(2,6,23,.10);
-}
-
-/* 2) Topbar: subtle depth + crisper hover/focus */
-.topbar{
-  backdrop-filter: saturate(1.1) blur(2px);
-  box-shadow: 0 1px 0 rgba(2,6,23,.06);
-}
-.topbar a,
-.topbar .topbar-title-link{
-  transition: color .18s ease, opacity .18s ease, text-decoration-color .18s ease;
-}
-.topbar a:hover,
-.topbar .topbar-title-link:hover{
-  text-decoration-color: currentColor;
-  opacity:.92;
-}
-.topbar a:focus-visible,
-.topbar .topbar-title-link:focus-visible{
-  outline: 3px solid color-mix(in srgb, var(--q-green) 70%, #fff);
-  outline-offset: 2px;
-  border-radius:8px;
-}
-
-/* 3) Page rhythm: a little more breathing room on large screens; tighter on small */
-.page-wrap{
-  padding: clamp(24px, 4vw, 48px) 16px clamp(56px, 8vw, 80px);
-  max-width: 1200px;
-}
-
-/* 4) Video card: gentler radius, soft hover lift, better shadow on mobile */
-.video-box{
-  border-radius: 16px;
-  box-shadow: var(--q-shadow);
-  transition: transform .18s ease, box-shadow .18s ease;
-}
-.video-box:hover{
-  transform: translateY(-2px);
-  box-shadow: 0 14px 28px rgba(2,6,23,.22);
-}
-
-/* 5) Summary panel: refined typography + nicer list markers */
-.summary-panel{
-  border: 1px solid var(--q-line);
-  border-radius: 16px;
-  box-shadow: var(--q-shadow-sm);
-  background: linear-gradient(0deg, rgba(11,110,55,.03), rgba(11,110,55,.03)), #fff;
-}
-.summary-title{
-  color: var(--q-ink);
-  letter-spacing: .2px;
-}
-.summary-lead{ color: var(--q-sub); }
-.summary-list{
-  margin: 10px 0 0 20px;
-  color: var(--q-sub);
-}
-.summary-list li{ 
-  margin-bottom: 10px; 
-}
-.summary-list li::marker{
-  color: var(--q-green);
-}
-
-/* 6) Link style inside summary for any future refs */
-.summary-panel a{
-  color: var(--q-green);
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-.summary-panel a:hover{ opacity:.9; }
-
-/* 7) Accessibility: reduce motion preference respected */
-@media (prefers-reduced-motion: reduce){
-  *{ animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
-}
-
-/* 8) Very small devices: make text and paddings comfortable */
-@media (max-width: 380px){
-  .summary-panel{ padding: 14px; }
-  .summary-title{ font-size: 18px; }
-  .summary-lead, .summary-list{ font-size: 14px; }
-}
-
-/* 9) Optional: a neat “section cap” under the video */
-.video-wrap{ margin-bottom: 12px; }
-.summary-wrap{ position: relative; }
-.summary-wrap::before{
-  content:"";
-  position:absolute; left:50%; transform:translateX(-50%);
-  top:-12px; width: 72px; height: 4px;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--q-green) 70%, #fff);
-  opacity:.35;
-}
-/* === Kiosk mobile/light form-control fix (place at EOF) === */
+/* === Kiosk mobile/light form-control fix === */
 .kiosk input,
 .kiosk select,
 .kiosk textarea,
@@ -558,13 +808,11 @@ footer.footer { flex-shrink: 0; }
   border-color: #e5e7eb !important;
 }
 
-/* Keep dropdown menu items visible */
 .kiosk select option {
   background: #fff;
   color: #0f172a;
 }
 
-/* Stop iOS/Android from forcing dark UI on controls */
 .kiosk input,
 .kiosk select,
 .kiosk textarea {
@@ -572,7 +820,6 @@ footer.footer { flex-shrink: 0; }
   appearance: none;
 }
 
-/* iOS autofill text color */
 .kiosk input:-webkit-autofill,
 .kiosk textarea:-webkit-autofill,
 .kiosk select:-webkit-autofill {
@@ -582,13 +829,11 @@ footer.footer { flex-shrink: 0; }
 
 /* ========== High-tech glass card (modifier) ========== */
 .q-card.fx {
-  /* augments your existing .q-card (which lives inline in each page) */
   position: relative;
   overflow: hidden;
   backdrop-filter: saturate(1.05) blur(3px);
   transition: transform .25s ease, box-shadow .25s ease;
-  /* optional subtle base shadow (plays nice with your inline card shadow) */
-  box-shadow: var(--shadow-1, 0 6px 16px rgba(2,6,23,.10));
+  box-shadow: var(--shadow-1);
 }
 
 .q-card.fx::after{
@@ -597,14 +842,12 @@ footer.footer { flex-shrink: 0; }
   border-radius: 16px;
   background: conic-gradient(from var(--rot,0deg),
               transparent 0 75%,
-              color-mix(in oklab, var(--brand, #0b6e37), #00ffc6 40%) 90%,
+              color-mix(in oklab, var(--brand), var(--accent) 40%) 90%,
               transparent);
-  /* “hollow” border effect */
   mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
-
   padding:1px;
   opacity:.35;
   pointer-events:none;
@@ -613,10 +856,11 @@ footer.footer { flex-shrink: 0; }
 
 .q-card.fx:hover {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-2, 0 10px 30px rgba(2,6,23,.12));
+  box-shadow: var(--shadow-2);
 }
 
 @keyframes spin { to { --rot: 360deg; } }
+
 /* ===== VIN Alternatives: center a single card ===== */
 .q-card.-center {
   text-align: center;
@@ -628,9 +872,25 @@ footer.footer { flex-shrink: 0; }
   margin-right: auto;
 }
 .q-card.-center .q-bullets {
-  /* keep bullets readable while the block is centered */
   display: inline-block;
   text-align: left;
   margin: 10px auto 0;
-  padding-left: 1.1rem;  /* indent for bullets */
+  padding-left: 1.1rem;
+}
+
+/* Touch-friendly improvements for mobile */
+@media (hover: none) and (pointer: coarse) {
+  .btn:hover,
+  .project-item:hover,
+  .topbar-menu a:hover {
+    transform: none;
+  }
+  
+  .btn:active {
+    transform: scale(0.98);
+  }
+  
+  .project-item:active {
+    transform: translateY(-2px);
+  }
 }
