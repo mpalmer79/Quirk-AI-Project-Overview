@@ -121,7 +121,7 @@ const STEPS = ['Welcome','Discovery','Vehicle Match','Payments','Trade-In','Cred
 function App() {
   const [step, setStep] = useState(1); // Start at Discovery step
   const [profile, setProfile] = useState({
-    name:'', contact:'', useCase:'Commute', bodyStyle:'Sedan', budget:400, timeline:'This week'
+    name:'', contact:'', useCase:'Commute', bodyStyle:'Sedan', budget:450, timeline:'This week', annualMiles:'15,000', downPayment:5000
   });
   const [selectedVin, setSelectedVin] = useState(null);
   const [desk, setDesk] = useState({ price:0, down:2000, apr:6.9, term:72, taxesFees:995, products:{vsc:false,gap:false,maint:false} });
