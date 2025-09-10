@@ -503,15 +503,41 @@ function Welcome({ consent, setConsent, profile, setProfile, onNext, onSelect })
     <div>
       <SectionTitle title="Welcome to Quirk Auto Dealers" subtitle="Start the guided flow or browse our inventory below." />
 
-      <div className="grid sm:grid-cols-2 gap-4 mb-6">
-        <Field label="Your name (optional)">
-          <input aria-label="Your name" className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300"
-            value={profile.name} onChange={e=>setProfile({...profile, name:e.target.value})}/>
-        </Field>
-        <Field label="Text or email to send your quote (optional)">
-          <input aria-label="Contact" className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" placeholder="(555) 555-5555 or you@example.com"
-            value={profile.contact} onChange={e=>setProfile({...profile, contact:e.target.value})}/>
-        </Field>
+      {/* Start Guided Flow Pill */}
+      <div className="text-center mb-6">
+        <a href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/saleskiosk-guidedflow.html" 
+           className="inline-block px-6 py-3 rounded-full bg-gradient-to-r from-emerald-600 to-emerald-700 text-white font-semibold shadow hover:brightness-110 active:brightness-95 text-decoration-none">
+          Start Guided Flow
+        </a>
+      </div>
+
+      <div className="grid sm:grid-cols-2 gap-4 mb-4">
+        <div className="text-center">
+          <label className="block mb-3">
+            <span className="block text-sm font-semibold text-slate-700 mb-1">Your Name or Company Name</span>
+            <input aria-label="Your name" className="w-2/3 rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300"
+              value={profile.name} onChange={e=>setProfile({...profile, name:e.target.value})}/>
+          </label>
+        </div>
+        <div className="text-center">
+          <label className="block mb-3">
+            <span className="block text-sm font-semibold text-slate-700 mb-1">Text or email to send your quote</span>
+            <input aria-label="Contact" className="w-2/3 rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" placeholder="(555) 555-5555 or you@example.com"
+              value={profile.contact} onChange={e=>setProfile({...profile, contact:e.target.value})}/>
+          </label>
+        </div>
+      </div>
+
+      {/* Consent & privacy moved up */}
+      <div className="mb-6 text-center">
+        <details className="inline-block text-sm">
+          <summary className="cursor-pointer text-slate-600 px-4 py-2 rounded-full border border-slate-300 bg-white/80">Consent & privacy</summary>
+          <div className="grid sm:grid-cols-3 gap-3 mt-3 text-slate-700 bg-white/90 p-4 rounded-xl border border-slate-200">
+            <label className="flex items-center gap-2"><input type="checkbox" checked={consent.sms} onChange={e=>setConsent({...consent, sms:e.target.checked})}/> SMS updates</label>
+            <label className="flex items-center gap-2"><input type="checkbox" checked={consent.email} onChange={e=>setConsent({...consent, email:e.target.checked})}/> Email updates</label>
+            <label className="flex items-center gap-2"><input type="checkbox" checked={consent.privacy} onChange={e=>setConsent({...consent, privacy:e.target.checked})}/> I agree to privacy policy</label>
+          </div>
+        </details>
       </div>
 
       {/* Browse Inventory */}
@@ -594,15 +620,6 @@ function Welcome({ consent, setConsent, profile, setProfile, onNext, onSelect })
       <div className="mt-4 flex flex-wrap gap-3 justify-end">
         <PrimaryButton onClick={onNext} aria-label="Start guided flow">Start Guided Flow →</PrimaryButton>
       </div>
-
-      <details className="mt-3 text-sm">
-        <summary className="cursor-pointer text-slate-600">Consent & privacy</summary>
-        <div className="grid sm:grid-cols-3 gap-3 mt-2 text-slate-700">
-          <label className="flex items-center gap-2"><input type="checkbox" checked={consent.sms} onChange={e=>setConsent({...consent, sms:e.target.checked})}/> SMS updates</label>
-          <label className="flex items-center gap-2"><input type="checkbox" checked={consent.email} onChange={e=>setConsent({...consent, email:e.target.checked})}/> Email updates</label>
-          <label className="flex items-center gap-2"><input type="checkbox" checked={consent.privacy} onChange={e=>setConsent({...consent, privacy:e.target.checked})}/> I agree to privacy policy</label>
-        </div>
-      </details>
     </div>
   );
 }
