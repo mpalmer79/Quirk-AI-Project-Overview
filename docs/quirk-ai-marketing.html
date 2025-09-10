@@ -83,17 +83,16 @@
     /* Tighten top spacing so sections sit neatly below the KPIs */
     .section { scroll-margin-top: 80px; }
 
-    /* ========== NEW: Campaign summary pills (center + auto width with 1ch each side) ========== */
+    /* ========== Centered disclosure pills ========== */
     .disclosure > summary {
       list-style: none;
       display: flex;
-      justify-content: center;   /* center the pill */
+      justify-content: center;
       padding: 0;
       cursor: pointer;
     }
     .disclosure > summary::-webkit-details-marker { display: none; }
 
-    /* Make the open/close labels identically styled, width = content + 2ch */
     .disclosure > summary .open-label,
     .disclosure > summary .close-label {
       display: inline-block;
@@ -102,16 +101,20 @@
       color: #065f46;
       font-weight: 700;
       border-radius: 999px;
-      padding: 8px 1ch;          /* exactly one “space” on either side */
+      padding: 8px 1ch;
       white-space: nowrap;
       margin: 8px auto;
     }
+
+    /* ========== NEW: two-column layout for campaign pills (desktop) ========== */
+    .campaigns-grid { display: grid; gap: 16px; grid-template-columns: 1fr; }
+    @media (min-width: 900px){ .campaigns-grid { grid-template-columns: 1fr 1fr; } }
   </style>
 </head>
 <body>
   <div class="home-wrap">
-  <a class="home-btn" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
-</div>
+    <a class="home-btn" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
+  </div>
 
   <!-- ======= Top Navigation Bar ======= -->
   <header class="topbar" role="banner">
@@ -228,99 +231,108 @@
         <p class="muted">Channel-ready copy blocks, creative notes, and required disclaimers.</p>
       </div>
 
-      <!-- Chevrolet -->
-      <details class="disclosure" open>
-        <summary>
-          <span class="open-label">Quirk Chevrolet NH - expand</span>
-          <span class="close-label">Close Quirk Chevrolet NH</span>
-        </summary>
-        <div class="disclosure-body">
-          <div class="two-col">
-            <div>
-              <h3>Positioning</h3>
-              <p>Trucks & SUVs built for New England—reliability, towing, winter confidence.</p>
-              <h4>Social Post (Short)</h4>
-              <p><strong>Silverado Season:</strong> Tackle NH winter like a pro. Remote start, 4x4 confidence, and room for every weekend plan. <em>#QuirkChevy #NHTrucks</em></p>
-              <h4>Email Snippet</h4>
-              <p>Get ready for snow—and savings. Explore Silverado and Equinox with winter-ready features and transparent pricing.</p>
+      <!-- Two-column pill layout (desktop) -->
+      <div class="campaigns-grid">
+        <!-- LEFT COLUMN -->
+        <div>
+          <!-- Chevrolet (open by default — keep behavior) -->
+          <details class="disclosure" open>
+            <summary>
+              <span class="open-label">Quirk Chevrolet NH - expand</span>
+              <span class="close-label">Close Quirk Chevrolet NH</span>
+            </summary>
+            <div class="disclosure-body">
+              <div class="two-col">
+                <div>
+                  <h3>Positioning</h3>
+                  <p>Trucks & SUVs built for New England—reliability, towing, winter confidence.</p>
+                  <h4>Social Post (Short)</h4>
+                  <p><strong>Silverado Season:</strong> Tackle NH winter like a pro. Remote start, 4x4 confidence, and room for every weekend plan. <em>#QuirkChevy #NHTrucks</em></p>
+                  <h4>Email Snippet</h4>
+                  <p>Get ready for snow—and savings. Explore Silverado and Equinox with winter-ready features and transparent pricing.</p>
+                </div>
+                <aside class="aside">
+                  <h4>Required Disclaimer</h4>
+                  <p class="disclaimer">See dealer for details. Tax, title, and fees extra.</p>
+                </aside>
+              </div>
             </div>
-            <aside class="aside">
-              <h4>Required Disclaimer</h4>
-              <p class="disclaimer">See dealer for details. Tax, title, and fees extra.</p>
-            </aside>
-          </div>
-        </div>
-      </details>
+          </details>
 
-      <!-- Buick GMC -->
-      <details class="disclosure">
-        <summary>
-          <span class="open-label">Quirk Buick GMC - expand</span>
-          <span class="close-label">Close Quirk Buick GMC</span>
-        </summary>
-        <div class="disclosure-body">
-          <div class="two-col">
-            <div>
-              <h3>Positioning</h3>
-              <p>Premium comfort + capability—quiet cabins, advanced safety, winter-smart AWD.</p>
-              <h4>Website Block</h4>
-              <p><strong>Yukon & Acadia:</strong> Room for family, cargo for ski weekends, tech for every mile.</p>
+          <!-- Buick GMC -->
+          <details class="disclosure">
+            <summary>
+              <span class="open-label">Quirk Buick GMC - expand</span>
+              <span class="close-label">Close Quirk Buick GMC</span>
+            </summary>
+            <div class="disclosure-body">
+              <div class="two-col">
+                <div>
+                  <h3>Positioning</h3>
+                  <p>Premium comfort + capability—quiet cabins, advanced safety, winter-smart AWD.</p>
+                  <h4>Website Block</h4>
+                  <p><strong>Yukon &amp; Acadia:</strong> Room for family, cargo for ski weekends, tech for every mile.</p>
+                </div>
+                <aside class="aside">
+                  <h4>Required Disclaimer</h4>
+                  <p class="disclaimer">See dealer for details. Tax, title, and fees extra.</p>
+                </aside>
+              </div>
             </div>
-            <aside class="aside">
-              <h4>Required Disclaimer</h4>
-              <p class="disclaimer">See dealer for details. Tax, title, and fees extra.</p>
-            </aside>
-          </div>
+          </details>
         </div>
-      </details>
 
-      <!-- Kia -->
-      <details class="disclosure">
-        <summary>
-          <span class="open-label">Quirk Kia Manchester - expand</span>
-          <span class="close-label">Close Quirk Kia Manchester</span>
-        </summary>
-        <div class="disclosure-body">
-          <div class="two-col">
-            <div>
-              <h3>Positioning</h3>
-              <p>Value, tech, and warranty confidence—great for first-time buyers and commuters.</p>
-              <h4>Ad Copy (Responsive Search)</h4>
-              <ul class="bullets">
-                <li>Kia SUVs in Stock | Transparent Pricing</li>
-                <li>Winter-Ready AWD | Test-Drive Today</li>
-                <li>Shop Quirk Kia NH | Value Meets Tech</li>
-              </ul>
+        <!-- RIGHT COLUMN -->
+        <div>
+          <!-- Kia -->
+          <details class="disclosure">
+            <summary>
+              <span class="open-label">Quirk Kia Manchester - expand</span>
+              <span class="close-label">Close Quirk Kia Manchester</span>
+            </summary>
+            <div class="disclosure-body">
+              <div class="two-col">
+                <div>
+                  <h3>Positioning</h3>
+                  <p>Value, tech, and warranty confidence—great for first-time buyers and commuters.</p>
+                  <h4>Ad Copy (Responsive Search)</h4>
+                  <ul class="bullets">
+                    <li>Kia SUVs in Stock | Transparent Pricing</li>
+                    <li>Winter-Ready AWD | Test-Drive Today</li>
+                    <li>Shop Quirk Kia NH | Value Meets Tech</li>
+                  </ul>
+                </div>
+                <aside class="aside">
+                  <h4>Required Disclaimer</h4>
+                  <p class="disclaimer">See dealer for details. Tax, title, and fees extra.</p>
+                </aside>
+              </div>
             </div>
-            <aside class="aside">
-              <h4>Required Disclaimer</h4>
-              <p class="disclaimer">See dealer for details. Tax, title, and fees extra.</p>
-            </aside>
-          </div>
-        </div>
-      </details>
+          </details>
 
-      <!-- Volkswagen -->
-      <details class="disclosure">
-        <summary>
-          <span class="open-label">Quirk Volkswagen NH - expand</span>
-          <span class="close-label">Close Quirk Volkswagen NH</span>
-        </summary>
-        <div class="disclosure-body">
-          <div class="two-col">
-            <div>
-              <h3>Positioning</h3>
-              <p>European feel, safety, and efficiency—great on I-93 and winter roads.</p>
-              <h4>Social Post (Short)</h4>
-              <p><strong>Tiguan</strong> with available 4MOTION®—comfort meets winter agility. <em>#QuirkVW #NHWinter</em></p>
+          <!-- Volkswagen -->
+          <details class="disclosure">
+            <summary>
+              <span class="open-label">Quirk Volkswagen NH - expand</span>
+              <span class="close-label">Close Quirk Volkswagen NH</span>
+            </summary>
+            <div class="disclosure-body">
+              <div class="two-col">
+                <div>
+                  <h3>Positioning</h3>
+                  <p>European feel, safety, and efficiency—great on I-93 and winter roads.</p>
+                  <h4>Social Post (Short)</h4>
+                  <p><strong>Tiguan</strong> with available 4MOTION®—comfort meets winter agility. <em>#QuirkVW #NHWinter</em></p>
+                </div>
+                <aside class="aside">
+                  <h4>Required Disclaimer</h4>
+                  <p class="disclaimer">See dealer for details. Tax, title, and fees extra.</p>
+                </aside>
+              </div>
             </div>
-            <aside class="aside">
-              <h4>Required Disclaimer</h4>
-              <p class="disclaimer">See dealer for details. Tax, title, and fees extra.</p>
-            </aside>
-          </div>
+          </details>
         </div>
-      </details>
+      </div>
     </section>
 
     <!-- SEO & Content -->
