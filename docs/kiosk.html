@@ -392,24 +392,16 @@
 
             {/* Card */}
             <div className="bg-white/90 backdrop-blur rounded-2xl shadow-2xl border border-slate-200 p-4 sm:p-6">
+            
               {step===0 && (
-                <Welcome
-                  consent={consent} setConsent={setConsent}
-                  profile={profile} setProfile={setProfile}
-                  onNext={next}
-                  onSelect={selectVehicle}
-                />
-              )}
-
-              {step===1 && (
                 <Discovery profile={profile} setProfile={setProfile} onNext={next} onBack={back} />
               )}
 
-              {step===2 && (
+              {step===1 && (
                 <VehicleMatch selectedVin={selectedVin} onSelect={(vin)=>{ setSelectedVin(vin); next(); }} onBack={back} />
               )}
 
-              {step===3 && (
+              {step===2 && (
                 <Payments
                   vehicle={vehicle}
                   desk={desk}
@@ -423,17 +415,17 @@
                 />
               )}
 
-              {step===4 && (
+              {step===3 && (
                 <Trade trade={trade} setTrade={setTrade} estimate={estimateTradeRange} onBack={back} onNext={next} />
               )}
 
-              {step===5 && <CreditStart onBack={back} onNext={next} />}
+              {step===4 && <CreditStart onBack={back} onNext={next} />}
 
-              {step===6 && (
+              {step===5 && (
                 <FandI desk={desk} setDesk={setDesk} monthly={monthly} onBack={back} onNext={next} />
               )}
 
-              {step===7 && (
+              {step===6 && (
                 <Review profile={profile} vehicle={vehicle} desk={desk} trade={trade} monthly={monthly} onBack={back} />
               )}
             </div>
@@ -467,54 +459,7 @@
       return <button {...props} className={cls} />;
     }
 
-    /* -------------------------------- Welcome + Browse -------------------------------- */
-    function Welcome({ consent, setConsent, profile, setProfile, onNext, onSelect }) {
-      const [filters, setFilters] = useState({
-        stockType: 'New',
-        make: '',
-        model: '',
-        color: '',
-        minPrice: '',
-        maxPrice: ''
-      });
-      const [page, setPage] = useState(1);
-      const perPage = 12;
-
-      const modelOptions = useMemo(() => filters.make ? MODEL_MAP[filters.make] : [], [filters.make]);
-
-      // Robust filter (case-insensitive)
-      const results = useMemo(() => {
-        const min = Number(filters.minPrice || 0);
-        const max = Number(filters.maxPrice || 999999);
-        return INVENTORY.filter(v => {
-          const stockOK = !filters.stockType || v.stockType.toLowerCase() === filters.stockType.toLowerCase();
-          const makeOK  = !filters.make || v.make === filters.make;
-          const modelOK = !filters.model || v.model === filters.model;
-          const colorOK = !filters.color || v.color === filters.color;
-          const priceOK = v.price >= min && v.price <= max;
-          return stockOK && makeOK && modelOK && colorOK && priceOK;
-        });
-      }, [filters]);
-
-      const totalPages = Math.max(1, Math.ceil(results.length / perPage));
-      const pageItems  = results.slice((page-1)*perPage, page*perPage);
-
-      return (
-        <div>
-          <SectionTitle title="Welcome to Quirk Auto Dealers" subtitle="Start the guided flow or browse our inventory below." />
-
-          <div className="grid sm:grid-cols-2 gap-4 mb-6">
-            <Field label="Your name (optional)">
-              <input aria-label="Your name" className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300"
-                value={profile.name} onChange={e=>setProfile({...profile, name:e.target.value})}/>
-            </Field>
-            <Field label="Text or email to send your quote (optional)">
-              <input aria-label="Contact" className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" placeholder="(555) 555-5555 or you@example.com"
-                value={profile.contact} onChange={e=>setProfile({...profile, contact:e.target.value})}/>
-            </Field>
-          </div>
-
-          {/* Browse Inventory */}
+              {/* Browse Inventory */}
           <div className="rounded-2xl border border-slate-200 p-4 bg-white/80">
             <h3 className="text-lg font-bold text-emerald-800 mb-2 text-center">Browse Inventory</h3>
             <div className="grid md:grid-cols-6 gap-3">
