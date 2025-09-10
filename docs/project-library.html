@@ -13,12 +13,38 @@
   <style>
     /* ===== Page-scoped polish matching your other docs ===== */
     .q-wrap { max-width: 1080px; margin: 0 auto; padding: 24px 20px 64px; }
+
+    /* Tech hero (keeps your spacing and border) */
     .q-hero {
       border-radius: 16px; padding: 28px 20px; margin: 18px 0 24px;
       border: 1px solid #e5e7eb;
       background: linear-gradient(0deg, rgba(11,110,55,0.06), rgba(11,110,55,0.06)), #fff;
       text-align: center;
+
+      /* new bits for the tech look */
+      position: relative;
+      overflow: hidden;
     }
+    .q-hero::before{
+      content:"";
+      position:absolute; inset:-20%;
+      background:
+        radial-gradient(60rem 60rem at 80% -10%, rgba(0,255,198,.16), transparent 40%),
+        conic-gradient(from 180deg at 50% 50%, rgba(11,110,55,.09), transparent 60%);
+      filter: blur(12px);
+      pointer-events:none;
+    }
+    .q-hero::after{
+      content:"";
+      position:absolute; inset:0;
+      background-image:
+        linear-gradient(transparent 23px, rgba(11,110,55,.10) 24px),
+        linear-gradient(90deg, transparent 23px, rgba(11,110,55,.10) 24px);
+      background-size: 24px 24px;
+      opacity:.15;
+      pointer-events:none;
+    }
+
     .q-hero h1 { margin: 0 0 8px; font-size: clamp(1.6rem, 2.4vw, 2.1rem); font-weight: 800; color: #0f172a; }
     .q-hero p { margin: 0; color: #475569; }
 
@@ -26,7 +52,8 @@
     .q-col-6 { grid-column: span 6; }
     @media (max-width: 900px){ .q-col-6 { grid-column: span 12; } }
 
-    .q-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 14px; padding: 18px; box-shadow: 0 6px 16px rgba(2,6,23,.06);
+    .q-card {
+      background: #fff; border: 1px solid #e5e7eb; border-radius: 14px; padding: 18px; box-shadow: 0 6px 16px rgba(2,6,23,.06);
       /* keep the Expand pill anchored bottom-left */
       display: flex; flex-direction: column; min-height: 220px;
     }
@@ -174,99 +201,98 @@
         </article>
       </div>
 
-      <!-- Automated Follow-up & KPIs (EXPANDED) -->
-<div class="q-col-6">
-  <article class="q-card">
-    <h2>Automated Follow-up & KPIs</h2>
-    <p class="clamp-2">
-      Appointment-first cadence aligned to VIN tasks. Faster replies, higher conversion, tighter compliance.
-    </p>
+      <!-- Automated Follow-up & KPIs (EXPANDED + fixed <details>) -->
+      <div class="q-col-6">
+        <article class="q-card">
+          <h2>Automated Follow-up & KPIs</h2>
+          <p class="clamp-2">
+            Appointment-first cadence aligned to VIN tasks. Faster replies, higher conversion, tighter compliance.
+          </p>
 
-    <details class="q-disclosure"
-      <summary class="q-cta q-cta-small"><span class="label-open">Expand</span><span class="label-close">Collapse</span></summary>
-      <div class="q-long">
+          <details class="q-disclosure">
+            <summary class="q-cta q-cta-small"><span class="label-open">Expand</span><span class="label-close">Collapse</span></summary>
+            <div class="q-long">
 
-        <!-- Why it matters -->
-        <h3 style="margin:10px 0 6px;">Why it matters</h3>
-        <ul class="q-bullets">
-          <li><strong>Speed:</strong> Sub-5-minute replies win the first touch and set the tone.</li>
-          <li><strong>Consistency:</strong> Prebuilt touches prevent “lead drift” and uneven follow-up.</li>
-          <li><strong>Compliance:</strong> Tasks/appointments stay inside VIN for full visibility.</li>
-        </ul>
+              <!-- Why it matters -->
+              <h3 style="margin:10px 0 6px;">Why it matters</h3>
+              <ul class="q-bullets">
+                <li><strong>Speed:</strong> Sub-5-minute replies win the first touch and set the tone.</li>
+                <li><strong>Consistency:</strong> Prebuilt touches prevent “lead drift” and uneven follow-up.</li>
+                <li><strong>Compliance:</strong> Tasks/appointments stay inside VIN for full visibility.</li>
+              </ul>
 
-        <!-- 14-day cadence -->
-        <h3 style="margin:14px 0 6px;">14-Day Follow-up Cadence</h3>
-        <ul class="q-bullets">
-          <li><strong>Day 1:</strong> Immediate personalized Email + SMS (inventory, incentive, <em>two time options</em>).</li>
-          <li><strong>Day 2:</strong> Phone call attempt (AI objection prompts).</li>
-          <li><strong>Day 3:</strong> Follow-up Email: trim/options + quick value props.</li>
-          <li><strong>Day 5:</strong> SMS nudge: “Still interested?” + appointment push.</li>
-          <li><strong>Day 7:</strong> Manager escalation touch (credibility + urgency).</li>
-          <li><strong>Day 10:</strong> Alternatives (similar vehicles or payment route).</li>
-          <li><strong>Day 14:</strong> Final chance / closeout incentive + two time options.</li>
-        </ul>
+              <!-- 14-day cadence -->
+              <h3 style="margin:14px 0 6px;">14-Day Follow-up Cadence</h3>
+              <ul class="q-bullets">
+                <li><strong>Day 1:</strong> Immediate personalized Email + SMS (inventory, incentive, <em>two time options</em>).</li>
+                <li><strong>Day 2:</strong> Phone call attempt (AI objection prompts).</li>
+                <li><strong>Day 3:</strong> Follow-up Email: trim/options + quick value props.</li>
+                <li><strong>Day 5:</strong> SMS nudge: “Still interested?” + appointment push.</li>
+                <li><strong>Day 7:</strong> Manager escalation touch (credibility + urgency).</li>
+                <li><strong>Day 10:</strong> Alternatives (similar vehicles or payment route).</li>
+                <li><strong>Day 14:</strong> Final chance / closeout incentive + two time options.</li>
+              </ul>
 
-        <!-- KPI table -->
-        <h3 style="margin:14px 0 6px;">Core KPIs</h3>
-        <table>
-          <tr><th>KPI</th><th>Target</th></tr>
-          <tr><td>Average Response Time</td><td>&lt; 5 minutes</td></tr>
-          <tr><td>Appointment Conversion Lift</td><td>+15–20%</td></tr>
-          <tr><td>Email/SMS Engagement</td><td>+10–15%</td></tr>
-          <tr><td>Manual Workload Reduction</td><td>≥ 30%</td></tr>
-          <tr><td>VIN Task Compliance</td><td>≥ 95%</td></tr>
-          <tr><td>Replies per Lead</td><td>Track baseline → improve</td></tr>
-          <tr><td>Show Rate</td><td>Track baseline → improve</td></tr>
-        </table>
+              <!-- KPI table -->
+              <h3 style="margin:14px 0 6px;">Core KPIs</h3>
+              <table>
+                <tr><th>KPI</th><th>Target</th></tr>
+                <tr><td>Average Response Time</td><td>&lt; 5 minutes</td></tr>
+                <tr><td>Appointment Conversion Lift</td><td>+15–20%</td></tr>
+                <tr><td>Email/SMS Engagement</td><td>+10–15%</td></tr>
+                <tr><td>Manual Workload Reduction</td><td>≥ 30%</td></tr>
+                <tr><td>VIN Task Compliance</td><td>≥ 95%</td></tr>
+                <tr><td>Replies per Lead</td><td>Track baseline → improve</td></tr>
+                <tr><td>Show Rate</td><td>Track baseline → improve</td></tr>
+              </table>
 
-        <!-- How to run weekly -->
-        <h3 style="margin:14px 0 6px;">Weekly Ops Rhythm</h3>
-        <ul class="q-bullets">
-          <li><strong>Monday:</strong> Review desklog funnel (leads → contacted → appts → shows → deals).</li>
-          <li><strong>Mid-week:</strong> Listen to two calls/rep; coach on appointment-first prompts.</li>
-          <li><strong>Friday:</strong> Scorecard update; highlight wins, stuck leads, and next week’s tests.</li>
-        </ul>
+              <!-- How to run weekly -->
+              <h3 style="margin:14px 0 6px;">Weekly Ops Rhythm</h3>
+              <ul class="q-bullets">
+                <li><strong>Monday:</strong> Review desklog funnel (leads → contacted → appts → shows → deals).</li>
+                <li><strong>Mid-week:</strong> Listen to two calls/rep; coach on appointment-first prompts.</li>
+                <li><strong>Friday:</strong> Scorecard update; highlight wins, stuck leads, and next week’s tests.</li>
+              </ul>
 
-        <!-- Downloads -->
-        <p style="margin:12px 0 2px;"><strong>Downloads</strong></p>
-        <p class="muted" style="margin:0 0 8px;">Templates, playbooks, and reference docs:</p>
-        <p style="margin:0 0 6px;">
-          <a class="q-cta q-cta-small" href="assets/Quirk_BDC_Scorecard_Fillable.pdf" target="_blank" rel="noopener">
-            📊 Open BDC Scorecard (PDF)
-          </a>
-          <a class="q-cta q-cta-small" href="assets/desklog_analysis_summary.pdf" target="_blank" rel="noopener">
-            📈 Desklog Analysis Summary
-          </a>
-        </p>
-        <p style="margin:0 0 6px;">
-          <a class="q-cta q-cta-small" href="assets/BDC_Smart_Response_Project_Plan.pdf" target="_blank" rel="noopener">
-            📋 Smart Response Project Plan (KPIs & Rollout)
-          </a>
-          <a class="q-cta q-cta-small" href="assets/BDC_Smart_Response_Library_Full.pdf" target="_blank" rel="noopener">
-            🧰 Follow-up Templates (Full Library)
-          </a>
-        </p>
-        <p style="margin:0;">
-          <a class="q-cta q-cta-small" href="assets/GenAI_Inventory_Integration_OnePager_v3.pdf" target="_blank" rel="noopener">
-            🔌 Inventory & Incentives Integration (One-Pager)
-          </a>
-        </p>
+              <!-- Downloads -->
+              <p style="margin:12px 0 2px;"><strong>Downloads</strong></p>
+              <p class="muted" style="margin:0 0 8px;">Templates, playbooks, and reference docs:</p>
+              <p style="margin:0 0 6px;">
+                <a class="q-cta q-cta-small" href="assets/Quirk_BDC_Scorecard_Fillable.pdf" target="_blank" rel="noopener">
+                  📊 Open BDC Scorecard (PDF)
+                </a>
+                <a class="q-cta q-cta-small" href="assets/desklog_analysis_summary.pdf" target="_blank" rel="noopener">
+                  📈 Desklog Analysis Summary
+                </a>
+              </p>
+              <p style="margin:0 0 6px;">
+                <a class="q-cta q-cta-small" href="assets/BDC_Smart_Response_Project_Plan.pdf" target="_blank" rel="noopener">
+                  📋 Smart Response Project Plan (KPIs & Rollout)
+                </a>
+                <a class="q-cta q-cta-small" href="assets/BDC_Smart_Response_Library_Full.pdf" target="_blank" rel="noopener">
+                  🧰 Follow-up Templates (Full Library)
+                </a>
+              </p>
+              <p style="margin:0;">
+                <a class="q-cta q-cta-small" href="assets/GenAI_Inventory_Integration_OnePager_v3.pdf" target="_blank" rel="noopener">
+                  🔌 Inventory & Incentives Integration (One-Pager)
+                </a>
+              </p>
 
-        <!-- Notes for managers -->
-        <div class="q-note" style="margin-top:14px;">
-          <h3 style="margin:0 0 6px;">Manager Tips</h3>
-          <ul class="q-bullets" style="margin:6px 0 0 18px;">
-            <li>Make “two time options” mandatory in every first touch.</li>
-            <li>Escalate to a named manager on Day 7 (don’t skip).</li>
-            <li>Use desklog gaps (e.g., high “No Attempt”) to trigger call blocks the same day.</li>
-          </ul>
-        </div>
+              <!-- Notes for managers -->
+              <div class="q-note" style="margin-top:14px;">
+                <h3 style="margin:0 0 6px;">Manager Tips</h3>
+                <ul class="q-bullets" style="margin:6px 0 0 18px;">
+                  <li>Make “two time options” mandatory in every first touch.</li>
+                  <li>Escalate to a named manager on Day 7 (don’t skip).</li>
+                  <li>Use desklog gaps (e.g., high “No Attempt”) to trigger call blocks the same day.</li>
+                </ul>
+              </div>
 
+            </div>
+          </details>
+        </article>
       </div>
-    </details>
-  </article>
-</div>
-
 
       <!-- NEW: Concept Ideas card -->
       <div class="q-col-6">
