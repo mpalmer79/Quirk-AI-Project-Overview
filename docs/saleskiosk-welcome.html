@@ -643,8 +643,8 @@
         <div>
           <SectionTitle title="Best matches" subtitle="Tap a vehicle to continue." />
           <div className="grid md:grid-cols-3 gap-4">
-            {picks.map(v => (
-              <button key={v.vin} className={`group text-left rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition p-3 bg-white/90 ${selectedVin===v.vin?'ring-4 ring-emerald-300':''}`} onClick={()=>onSelect(v.vin)}>
+            {picks.map((v, index) => (
+              <button key={`${v.vin}-match-${index}`} className={`group text-left rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition p-3 bg-white/90 ${selectedVin===v.vin?'ring-4 ring-emerald-300':''}`} onClick={()=>onSelect(v.vin)}>
                 <div className="relative">
                   <div className="w-full h-44 bg-gradient-to-br from-slate-200 to-slate-300 rounded-xl flex items-center justify-center">
                     <div className="text-center text-slate-600">
