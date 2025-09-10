@@ -10,3 +10,18 @@ docs/
   js/
     shared.js                ← small helpers (calcPayment, photoFor, etc., later)
   img/                       ← images if/when you need them
+
+==============================================
+
+docs/
+  kiosk.html   ← replace with kiosk.inventory-as-js.html
+  saleskiosk-welcome.html
+  data/
+    inventory.js
+    model_map.js
+    colors.js
+  css/         ← optional for shared styles
+  js/          ← optional for shared helpers later
+
+==============================================
+
