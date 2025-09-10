@@ -1,3 +1,28 @@
+/* Load Inter once for the whole site */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300..900&display=swap');
+
+/* Design tokens (site-wide) */
+:root{
+  --brand: #0b6e37;
+  --ink: #0f172a;
+  --muted: #64748b;
+  --card: #ffffff;
+  --line: #e5e7eb;
+
+  /* optional neon accent */
+  --neon: #00ffc6;
+
+  /* shadows */
+  --shadow-1: 0 6px 16px rgba(2,6,23,.06);
+  --shadow-2: 0 10px 30px rgba(2,6,23,.12);
+}
+
+/* Apply the font everywhere */
+body {
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+
 /* ================================
    Quirk GenAI Alternative
    Global Stylesheet (assets/style.css)
