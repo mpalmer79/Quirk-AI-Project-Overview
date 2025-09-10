@@ -74,6 +74,17 @@
     .q-disclosure[open] .label-open { display:none; }
     .q-disclosure[open] .label-close { display:inline; }
 
+    /* New: summary chevron animation */
+    .q-cta.q-cta-small { display:inline-flex; align-items:center; gap:6px; }
+    .chev {
+      transform: rotate(0deg);
+      transition: transform .25s ease;
+      margin-right: 2px;
+      flex: 0 0 auto;
+      vertical-align: -1px;
+    }
+    .q-disclosure[open] .chev { transform: rotate(180deg); }
+
     .q-note { margin-top: 24px; padding: 16px; border: 1px dashed #e5e7eb; border-radius: 12px; background:#fafafa; color:#475569; }
     .q-note h3 { margin: 0 0 8px; color:#0f172a; font-size:1.05rem; }
 
@@ -99,7 +110,7 @@
 
     <!-- Library cards -->
     <section class="q-grid" aria-label="Library">
-      <!-- REPLACED: First card now Quirk AI Marketing -->
+      <!-- Quirk AI Marketing -->
       <div class="q-col-6">
         <article class="q-card">
           <h2><a href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/quirk-ai-marketing.html">Quirk AI Marketing</a></h2>
@@ -107,7 +118,12 @@
             AI-driven marketing strategies enable dealerships to target the right buyers with the most effective message, leading to increased engagement and higher conversion rates. Staying ahead of AI trends is critical for dealerships that want to remain competitive and build long-term customer loyalty in an evolving market.
           </p>
           <details class="q-disclosure">
-            <summary class="q-cta q-cta-small"><span class="label-open">Expand</span><span class="label-close">Collapse</span></summary>
+            <summary class="q-cta q-cta-small">
+              <svg class="chev" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <span class="label-open">Expand</span><span class="label-close">Collapse</span>
+            </summary>
             <div class="q-long">
               <p><a class="q-cta q-cta-small" href="assets/Quirk_AI_Marketing_Agent_Plan.pdf" target="_blank" rel="noopener">Quirk AI Marketing Agent Plan (PDF)</a></p>
               <p><a class="q-cta q-cta-small" href="assets/Quirk_AI_Phase1_Playbook.pdf" target="_blank" rel="noopener">Phase 1 Playbook (0–90 Days)</a></p>
@@ -124,7 +140,12 @@
           <h2><a href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/vin-solutions-alternative.html">VIN Solutions Alternatives</a></h2>
           <p class="clamp-2">Creatio, Fullpath, Salesforce, and Tekion compared through an appointment-first lens.</p>
           <details class="q-disclosure">
-            <summary class="q-cta q-cta-small"><span class="label-open">Expand</span><span class="label-close">Collapse</span></summary>
+            <summary class="q-cta q-cta-small">
+              <svg class="chev" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <span class="label-open">Expand</span><span class="label-close">Collapse</span>
+            </summary>
             <div class="q-long">
               <p>
                 <a class="q-cta q-cta-small"
@@ -144,11 +165,14 @@
           <h2>Scripts & Training</h2>
           <p class="clamp-2">Appointment-first call flows, AI usage, and onboarding resources for the team.</p>
           <details class="q-disclosure">
-            <summary class="q-cta q-cta-small"><span class="label-open">Expand</span><span class="label-close">Collapse</span></summary>
+            <summary class="q-cta q-cta-small">
+              <svg class="chev" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <span class="label-open">Expand</span><span class="label-close">Collapse</span>
+            </summary>
             <div class="q-long">
-              <!-- NEW LINK -->
               <p><a class="q-cta q-cta-small" href="assets/Ultimate%20Car%20Sales%20Playbook%20%28modern%20%2B%20Traditional%29.pdf" target="_blank" rel="noopener">Sales Training (PDF)</a></p>
-
               <p><a class="q-cta q-cta-small" href="assets/BDC_AI_Call_Script.pdf" target="_blank" rel="noopener">BDC AI Call Script (PDF)</a></p>
               <p><a class="q-cta q-cta-small" href="assets/BDC_Training_Packet_v2.pdf" target="_blank" rel="noopener">BDC Training Packet v2</a></p>
               <p><a class="q-cta q-cta-small" href="assets/BDC_AI_Training_Packet.pdf" target="_blank" rel="noopener">BDC AI Training Packet</a></p>
@@ -163,12 +187,16 @@
           <h2>Smart Response Library</h2>
           <p class="clamp-2">VIN GenAI Alternative section. Helpful knowledge articles. Ready-to-use email/SMS replies for new leads, price, credit, appointment setting, and more.</p>
           <details class="q-disclosure">
-            <summary class="q-cta q-cta-small"><span class="label-open">Expand</span><span class="label-close">Collapse</span></summary>
+            <summary class="q-cta q-cta-small">
+              <svg class="chev" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <span class="label-open">Expand</span><span class="label-close">Collapse</span>
+            </summary>
             <div class="q-long">
               <p><a class="q-cta q-cta-small" href="assets/BDC_Smart_Response_Library_Full.pdf" target="_blank" rel="noopener">Open Full Library (PDF)</a></p>
               <p class="muted">Archive: <a href="assets/BDC_Smart_Response_Library_v1.pdf" target="_blank" rel="noopener">v1</a></p>
 
-              <!-- Chrome Extension docs links -->
               <hr style="border:none;border-top:1px solid #e5e7eb;margin:12px 0;">
               <p class="muted" style="margin:0 0 6px;">Chrome Extension (use the library inside VIN Solutions):</p>
               <p style="margin:0 0 6px;">
@@ -192,7 +220,12 @@
           <h2>Inventory & Incentives</h2>
           <p class="clamp-2">Personalize messages with real-time inventory + OEM offers to lift conversion.</p>
           <details class="q-disclosure">
-            <summary class="q-cta q-cta-small"><span class="label-open">Expand</span><span class="label-close">Collapse</span></summary>
+            <summary class="q-cta q-cta-small">
+              <svg class="chev" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <span class="label-open">Expand</span><span class="label-close">Collapse</span>
+            </summary>
             <div class="q-long">
               <p><a class="q-cta q-cta-small" href="assets/GenAI_Inventory_Integration_OnePager_v3.pdf" target="_blank" rel="noopener">Integration One-Pager</a></p>
               <p><a class="q-cta q-cta-small" href="assets/VINS%20vs%20Gen%20AI%20Alternative%20summary.pdf" target="_blank" rel="noopener">VINS vs GenAI Summary (PDF)</a></p>
@@ -201,7 +234,7 @@
         </article>
       </div>
 
-      <!-- Automated Follow-up & KPIs (EXPANDED + fixed <details>) -->
+      <!-- Automated Follow-up & KPIs -->
       <div class="q-col-6">
         <article class="q-card">
           <h2>Automated Follow-up & KPIs</h2>
@@ -210,7 +243,12 @@
           </p>
 
           <details class="q-disclosure">
-            <summary class="q-cta q-cta-small"><span class="label-open">Expand</span><span class="label-close">Collapse</span></summary>
+            <summary class="q-cta q-cta-small">
+              <svg class="chev" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <span class="label-open">Expand</span><span class="label-close">Collapse</span>
+            </summary>
             <div class="q-long">
 
               <!-- Why it matters -->
@@ -294,22 +332,21 @@
         </article>
       </div>
 
-      <!-- NEW: Concept Ideas card -->
+      <!-- Concept Ideas -->
       <div class="q-col-6">
         <article class="q-card">
           <h2>Concept Ideas</h2>
           <p class="clamp-2">Early-stage concepts, prototypes, and blueprints to explore before full build-out.</p>
 
-          <!-- Existing concept PDF link -->
           <p><a class="q-cta q-cta-small" href="assets/AI_Auto_Sales_Kiosk_Blueprint_Landscape.pdf" target="_blank" rel="noopener">Futuristic AI Kiosk Sales Process</a></p>
-          <!-- NEW: Launch kiosk demo link -->
           <p><a class="q-cta q-cta-small" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/saleskiosk-welcome.html" target="_blank" rel="noopener">Launch Quirk AI Sales Kiosk</a></p>
-          <!-- NEW: Code PDF link requested -->
           <p><a class="q-cta q-cta-small" href="assets/Quirk%20AI%20Sales%20Kiosk%20code%20with%20Objection%20handling.pdf" target="_blank" rel="noopener">Quirk Sales Kiosk Show me the code (includes objection handling)</a></p>
 
-          <!-- UPDATED: Expand with 5 PDF links -->
           <details class="q-disclosure">
             <summary class="q-cta q-cta-small">
+              <svg class="chev" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
               <span class="label-open">Expand</span><span class="label-close">Collapse</span>
             </summary>
             <div class="q-long">
