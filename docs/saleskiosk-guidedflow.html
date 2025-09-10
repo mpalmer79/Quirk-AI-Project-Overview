@@ -217,9 +217,9 @@ function Discovery({ profile, setProfile, onNext, onBack }) {
   return (
     <div>
       <SectionTitle title="Tell us what you need" subtitle="A few quick choices so we can tailor the match." />
-      <div className="grid sm:grid-cols-2 gap-6">
+      <div className="grid sm:grid-cols-3 gap-6">
         <div className="flex flex-col items-center">
-          <label className="block mb-3 w-full max-w-xs">
+          <label className="block mb-3 w-full max-w-48">
             <span className="block text-sm font-semibold text-slate-700 mb-1 text-center">Primary use</span>
             <select className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={profile.useCase} onChange={e=>setProfile({...profile, useCase:e.target.value})}>
               {['Commute','Family','Adventure','Business'].map(x => <option key={x}>{x}</option>)}
@@ -236,8 +236,19 @@ function Discovery({ profile, setProfile, onNext, onBack }) {
         </div>
         <div className="flex flex-col items-center">
           <label className="block mb-3 w-full max-w-xs">
+            <span className="block text-sm font-semibold text-slate-700 mb-1 text-center">Estimated Annual Mileage Driven</span>
+            <select className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={profile.annualMiles || '15,000'} onChange={e=>setProfile({...profile, annualMiles:e.target.value})}>
+              {['10,000','12,000','15,000','20,000'].map(x => <option key={x}>{x} miles</option>)}
+            </select>
+          </label>
+        </div>
+        <div className="flex flex-col items-center">
+          <label className="block mb-3 w-full max-w-48">
             <span className="block text-sm font-semibold text-slate-700 mb-1 text-center">Monthly budget target</span>
-            <input type="number" className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={profile.budget} onChange={e=>setProfile({...profile, budget:Number(e.target.value)})}/>
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-600">$</span>
+              <input type="number" className="w-full rounded-xl border p-3 pl-8 focus:ring-2 focus:ring-emerald-300" value={profile.budget} onChange={e=>setProfile({...profile, budget:Number(e.target.value)})} placeholder="450"/>
+            </div>
           </label>
         </div>
         <div className="flex flex-col items-center">
@@ -246,6 +257,15 @@ function Discovery({ profile, setProfile, onNext, onBack }) {
             <select className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={profile.timeline} onChange={e=>setProfile({...profile, timeline:e.target.value})}>
               {['Today','This week','This month','Just researching'].map(x => <option key={x}>{x}</option>)}
             </select>
+          </label>
+        </div>
+        <div className="flex flex-col items-center">
+          <label className="block mb-3 w-full max-w-xs">
+            <span className="block text-sm font-semibold text-slate-700 mb-1 text-center">Initial investment (20% recommended by Lenders)</span>
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-600">$</span>
+              <input type="number" className="w-full rounded-xl border p-3 pl-8 focus:ring-2 focus:ring-emerald-300" value={profile.downPayment || 5000} onChange={e=>setProfile({...profile, downPayment:Number(e.target.value)})} placeholder="5000"/>
+            </div>
           </label>
         </div>
       </div>
