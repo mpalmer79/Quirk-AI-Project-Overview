@@ -617,3 +617,20 @@ footer.footer { flex-shrink: 0; }
 }
 
 @keyframes spin { to { --rot: 360deg; } }
+/* ===== VIN Alternatives: center a single card ===== */
+.q-card.-center {
+  text-align: center;
+}
+.q-card.-center > h2,
+.q-card.-center > p,
+.q-card.-center > .q-kicker {
+  margin-left: auto;
+  margin-right: auto;
+}
+.q-card.-center .q-bullets {
+  /* keep bullets readable while the block is centered */
+  display: inline-block;
+  text-align: left;
+  margin: 10px auto 0;
+  padding-left: 1.1rem;  /* indent for bullets */
+}
