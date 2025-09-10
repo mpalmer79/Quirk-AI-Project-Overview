@@ -217,25 +217,37 @@ function Discovery({ profile, setProfile, onNext, onBack }) {
   return (
     <div>
       <SectionTitle title="Tell us what you need" subtitle="A few quick choices so we can tailor the match." />
-      <div className="grid sm:grid-cols-2 gap-4">
-        <Field label="Primary use">
-          <select className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={profile.useCase} onChange={e=>setProfile({...profile, useCase:e.target.value})}>
-            {['Commute','Family','Adventure','Business'].map(x => <option key={x}>{x}</option>)}
-          </select>
-        </Field>
-        <Field label="Preferred body style">
-          <select className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={profile.bodyStyle} onChange={e=>setProfile({...profile, bodyStyle:e.target.value})}>
-            {['Sedan','SUV','Truck','EV'].map(x => <option key={x}>{x}</option>)}
-          </select>
-        </Field>
-        <Field label="Monthly budget target">
-          <input type="number" className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={profile.budget} onChange={e=>setProfile({...profile, budget:Number(e.target.value)})}/>
-        </Field>
-        <Field label="Timeline">
-          <select className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={profile.timeline} onChange={e=>setProfile({...profile, timeline:e.target.value})}>
-            {['Today','This week','This month','Just researching'].map(x => <option key={x}>{x}</option>)}
-          </select>
-        </Field>
+      <div className="grid sm:grid-cols-2 gap-6">
+        <div className="flex flex-col items-center">
+          <label className="block mb-3 w-full max-w-xs">
+            <span className="block text-sm font-semibold text-slate-700 mb-1 text-center">Primary use</span>
+            <select className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={profile.useCase} onChange={e=>setProfile({...profile, useCase:e.target.value})}>
+              {['Commute','Family','Adventure','Business'].map(x => <option key={x}>{x}</option>)}
+            </select>
+          </label>
+        </div>
+        <div className="flex flex-col items-center">
+          <label className="block mb-3 w-full max-w-xs">
+            <span className="block text-sm font-semibold text-slate-700 mb-1 text-center">Preferred body style</span>
+            <select className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={profile.bodyStyle} onChange={e=>setProfile({...profile, bodyStyle:e.target.value})}>
+              {['Sedan','SUV','Truck','EV'].map(x => <option key={x}>{x}</option>)}
+            </select>
+          </label>
+        </div>
+        <div className="flex flex-col items-center">
+          <label className="block mb-3 w-full max-w-xs">
+            <span className="block text-sm font-semibold text-slate-700 mb-1 text-center">Monthly budget target</span>
+            <input type="number" className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={profile.budget} onChange={e=>setProfile({...profile, budget:Number(e.target.value)})}/>
+          </label>
+        </div>
+        <div className="flex flex-col items-center">
+          <label className="block mb-3 w-full max-w-xs">
+            <span className="block text-sm font-semibold text-slate-700 mb-1 text-center">Timeline</span>
+            <select className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={profile.timeline} onChange={e=>setProfile({...profile, timeline:e.target.value})}>
+              {['Today','This week','This month','Just researching'].map(x => <option key={x}>{x}</option>)}
+            </select>
+          </label>
+        </div>
       </div>
       <div className="mt-4 flex justify-between">
         <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={onBack}>← Back</button>
