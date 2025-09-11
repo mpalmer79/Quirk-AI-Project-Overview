@@ -54,6 +54,98 @@
       z-index: 0;
       pointer-events: none;
     }
+
+    /* ---------- Disclosure pattern ---------- */
+    .sections {
+      margin-top: 28px;
+      text-align: left;
+    }
+
+    details.disclosure {
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      margin: 16px 0;
+      overflow: hidden;
+    }
+
+    details.disclosure[open] { box-shadow: 0 6px 16px rgba(0,0,0,0.08); }
+
+    details.disclosure > summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 16px 18px;
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: #0b1220;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(0deg, #ffffff 0%, #fafafa 100%);
+    }
+
+    /* caret */
+    details.disclosure > summary::before {
+      content: "▸";
+      transition: transform 0.2s ease;
+      color: var(--brand-green);
+      font-size: 1.1rem;
+      margin-right: 2px;
+    }
+    details.disclosure[open] > summary::before { transform: rotate(90deg); }
+
+    /* Open/Close label swap */
+    .label-open,
+    .label-close {
+      font-weight: 700;
+      color: var(--brand-green);
+      border: 1px solid #cfe9db;
+      background: #ecfdf5;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: .75rem;
+      letter-spacing: .02em;
+    }
+    .label-close { display: none; }
+    details[open] .label-open { display: none; }
+    details[open] .label-close { display: inline-block; }
+
+    .panel {
+      padding: 18px;
+      border-top: 1px solid #eef2f7;
+      font-size: 0.98rem;
+      line-height: 1.55;
+      color: #0f172a;
+      background: #fff;
+    }
+
+    .panel h3 {
+      margin: 8px 0 6px;
+      font-size: 1.05rem;
+      color: #0b6e37;
+    }
+
+    .panel .cols {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    @media (min-width: 860px) {
+      .panel .cols { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .kbd {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: .85rem;
+      background: #f6f8fa;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      padding: 2px 6px;
+    }
+
+    ul.tight { margin: 8px 0 0 18px; }
+    ul.tight li { margin: 6px 0; }
   </style>
 </head>
 <body>
@@ -81,11 +173,184 @@
       AI powered tools designed for parts advisors and our customers.
       Our goal is to modernize the transactional process for Retail, Wholesale and Internal workflow by maximizing the use of automated efficiency, LLM and machine learning — powered by Quirk AI.
     </p>
+
+    <!-- ========= Collapsible Sections ========= -->
+    <div class="sections">
+
+      <!-- 1. Scale & Scope -->
+      <details class="disclosure">
+        <summary>
+          <span class="label-open">Open</span>
+          <span class="label-close">Close</span>
+          Scale & Scope of QuirkParts
+        </summary>
+        <div class="panel">
+          <div class="cols">
+            <div>
+              <h3>Operation Overview</h3>
+              <ul class="tight">
+                <li>Multi-brand OEM parts operation serving retail, wholesale, and internal service.</li>
+                <li>Centralized high-capacity warehouse footprint with rapid fulfillment.</li>
+                <li>Brand-specific storefronts (e.g., Dodge, Subaru, Jeep) to drive fitment accuracy and conversion.</li>
+              </ul>
+              <h3>Core Strengths</h3>
+              <ul class="tight">
+                <li>Deep catalog coverage across major OEMs.</li>
+                <li>National e-commerce reach plus regional B2B delivery routes.</li>
+                <li>Service lane integration (VIN-first lookups, technician parts carts).</li>
+              </ul>
+            </div>
+            <div>
+              <h3>Key Opportunities</h3>
+              <ul class="tight">
+                <li>Network-wide demand forecasting to tighten turns and reduce aged stock.</li>
+                <li>Robotics/ASRS for faster picks in small-parts, fast-mover zones.</li>
+                <li>Unified data layer for pricing, availability, and fitment across channels.</li>
+              </ul>
+              <div style="margin-top:10px;font-size:.95rem;">
+                Handy link templates:  
+                <span class="kbd">quirkparts.com/dodge-parts-and-accessories</span> ·
+                <span class="kbd">/subaru-parts-and-accessories</span> ·
+                <span class="kbd">/jeep-parts-and-accessories</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- 2. Advanced Tech -->
+      <details class="disclosure">
+        <summary>
+          <span class="label-open">Open</span>
+          <span class="label-close">Close</span>
+          Advanced Tech for Parts Operations (2025)
+        </summary>
+        <div class="panel">
+          <h3>AI / LLM Use-Cases</h3>
+          <ul class="tight">
+            <li><strong>Natural-language & VIN search:</strong> “Clip for trunk latch on 2018 Wrangler” → exact OEM PN with supersessions.</li>
+            <li><strong>Image recognition:</strong> Photo → part identification, catalog diagram hot-spotting.</li>
+            <li><strong>Advisor copilot:</strong> Cross-catalog lookup, price/availability, warranty & TSB references in one console.</li>
+            <li><strong>Conversational CX:</strong> Web chat & phone IVR that quotes stock/price, creates carts, and schedules pickup/ship.</li>
+          </ul>
+
+          <h3>Machine Learning</h3>
+          <ul class="tight">
+            <li><strong>Demand forecasting:</strong> seasonal & VIN-park trends; hub vs spoke stocking; automatic reorder points.</li>
+            <li><strong>Dynamic pricing:</strong> elasticity by channel (retail, wholesale, marketplace), competitive crawls, margin guardrails.</li>
+            <li><strong>Slotting optimization:</strong> ABC velocity → shelf/VLM locations to minimize walk time.</li>
+          </ul>
+
+          <h3>Automation & Robotics</h3>
+          <ul class="tight">
+            <li><strong>ASRS / VLMs:</strong> Goods-to-person for small SKUs; integrates with pick-to-light and DMS.</li>
+            <li><strong>AMRs & conveyors:</strong> Zone pickups & tote routing; batch-picking waves for high-volume times.</li>
+            <li><strong>Cycle-count automation:</strong> Vision robots/drones for nightly counts; 99%+ location accuracy.</li>
+          </ul>
+
+          <h3>IoT & Data Fabric</h3>
+          <ul class="tight">
+            <li>RFID/weight-sensing bins for auto-decrement; mislabeled/empty-bin alerts.</li>
+            <li>Unified event stream (orders, picks, receipts) → real-time dashboards & anomaly detection.</li>
+            <li>APIs to DMS/ERP/e-comm: Reynolds/CDK, PartsLink, Shopify/Headless, WMS.</li>
+          </ul>
+        </div>
+      </details>
+
+      <!-- 3. Competitive Benchmark -->
+      <details class="disclosure">
+        <summary>
+          <span class="label-open">Open</span>
+          <span class="label-close">Close</span>
+          Competitive Benchmark — Group1, AutoNation, Penske, Sonic
+        </summary>
+        <div class="panel">
+          <div class="cols">
+            <div>
+              <h3>Group 1 Automotive</h3>
+              <ul class="tight">
+                <li>Predictive inventory & network balancing to reduce overstock.</li>
+                <li>Fixed-ops scheduling & outreach driving parts pull-through.</li>
+                <li>Dedicated e-comm footprint for OEM parts.</li>
+              </ul>
+              <h3>AutoNation</h3>
+              <ul class="tight">
+                <li>Nationwide parts e-commerce with VIN-fitment.</li>
+                <li>Multi-brand assortment; store network as micro-fulfillment.</li>
+                <li>Data-driven stocking & margin optimization.</li>
+              </ul>
+            </div>
+            <div>
+              <h3>Penske Automotive</h3>
+              <ul class="tight">
+                <li>Process excellence; hub-and-spoke parts logistics.</li>
+                <li>Luxury OEM complexity managed via ASRS & strict controls.</li>
+                <li>Predictive maintenance DNA from truck leasing arm.</li>
+              </ul>
+              <h3>Sonic Automotive</h3>
+              <ul class="tight">
+                <li>Omnichannel, AI-forward platform investments.</li>
+                <li>Digital-first CX; efficiencies extend to fixed ops.</li>
+                <li>Emphasis on speed and transparency across channels.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- 4. Action Plan -->
+      <details class="disclosure" open>
+        <summary>
+          <span class="label-open">Open</span>
+          <span class="label-close">Close</span>
+          Action Plan for Quirk AI — Parts
+        </summary>
+        <div class="panel">
+          <h3>Phase 0 — Foundations (30–60 days)</h3>
+          <ul class="tight">
+            <li>Stand up a <strong>unified parts index</strong> (catalog + supersessions + price + on-hand + lead-time).</li>
+            <li>Expose a secure <strong>Parts Graph API</strong> (fitment, substitutes, availability) to web/app/advisors.</li>
+            <li>Instrument <strong>events</strong>: search → add-to-cart → pick → ship; build live dashboards.</li>
+          </ul>
+
+          <h3>Phase 1 — Advisor & Customer Intelligence (60–120 days)</h3>
+          <ul class="tight">
+            <li>Deploy <strong>LLM Advisor Copilot</strong> (VIN decode, multi-catalog lookup, price/ETA, upsell kits).</li>
+            <li>Add <strong>image-to-part</strong> beta on site + internal tool for counter team.</li>
+            <li>Launch <strong>conversational chat/IVR</strong> for stock, quotes, order status, and B2B reorders.</li>
+          </ul>
+
+          <h3>Phase 2 — Inventory Science (120–180 days)</h3>
+          <ul class="tight">
+            <li><strong>ML forecasting</strong> per SKU/site; auto min/max & reorder proposals with human approval.</li>
+            <li><strong>Slotting optimizer</strong>: re-map fast movers near pack stations; measure walk-time saved.</li>
+            <li><strong>Dynamic pricing</strong> with guardrails by channel and customer segment.</li>
+          </ul>
+
+          <h3>Phase 3 — Automation (pilot → scale)</h3>
+          <ul class="tight">
+            <li>Pilot <strong>ASRS/VLM</strong> for small parts; integrate pick-to-light & WMS.</li>
+            <li>Introduce <strong>AMRs</strong> for tote moves; wave picking for batch orders.</li>
+            <li>Nightly <strong>vision cycle counts</strong>; exception queue to human.</li>
+          </ul>
+
+          <h3>KPIs to Track</h3>
+          <ul class="tight">
+            <li>Fill rate, backorder rate, days on hand, inventory turns.</li>
+            <li>Pick rate (lines/hr), walk distance, order cycle time, accuracy.</li>
+            <li>First-time-right part rate, return rate, CX CSAT/NPS.</li>
+            <li>Gross margin by channel; aged inventory & write-downs.</li>
+          </ul>
+        </div>
+      </details>
+
+    </div>
+    <!-- ========= /Collapsible Sections ========= -->
   </main>
 
   <!-- ======= Footer ======= -->
   <footer class="container footer">
-    <p>&copy; 2025 Quirk AI — Service</p>
+    <p>&copy; 2025 Quirk AI — Parts</p>
   </footer>
 </body>
 </html>
