@@ -159,6 +159,28 @@
       transition: background .2s;
     }
     .btn-demo:hover { background: #09582c; }
+
+    /* --------- ROI table (Robotics section) --------- */
+    .roi-scroll { overflow-x: auto; }
+    .roi-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+    }
+    .roi-table th, .roi-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #eef2f7;
+      text-align: left;
+      white-space: nowrap;
+    }
+    .roi-table thead th {
+      background: #f8fafc;
+      font-weight: 700;
+    }
+    .roi-table tbody tr:hover { background: #fafafa; }
   </style>
 </head>
 <body>
@@ -375,6 +397,107 @@
             <li>First-time-right part rate, return rate, CX CSAT/NPS.</li>
             <li>Gross margin by channel; aged inventory & write-downs.</li>
           </ul>
+        </div>
+      </details>
+
+      <!-- 5. Robotics & Automation -->
+      <details class="disclosure">
+        <summary>
+          <span class="label-open">Open</span>
+          <span class="label-close">Close</span>
+          Robotics & Automation — Picking, Packing, Sorting, AGVs
+        </summary>
+
+        <div class="panel">
+          <div class="cols">
+            <div>
+              <h3>Quirk Facilities (Context)</h3>
+              <ul class="tight">
+                <li><strong>Quincy, MA:</strong> 200,000 sq ft, multi-level.</li>
+                <li><strong>Manchester, NH:</strong> 200,000 sq ft, multi-level.</li>
+                <li>Objective: higher throughput, lower labor per order, fewer errors.</li>
+              </ul>
+
+              <h3>What MOPAR Is Doing (Pattern)</h3>
+              <ul class="tight">
+                <li>High-density grid (AutoStore-style) with robots retrieving bins.</li>
+                <li>Robots feed <em>human</em> pack stations for QC, packing, shipping.</li>
+                <li>Benefits: speed, accuracy, compact footprint; scale robots up as volume grows.</li>
+              </ul>
+
+              <h3>Your Options (Layered)</h3>
+              <ul class="tight">
+                <li><strong>Packing Automation:</strong> fit-to-size carton makers + pack stations → labor ↓, corrugate/void fill ↓, DIM weight ↓.</li>
+                <li><strong>Sorting Automation:</strong> modular robotic/cross-belt sorters → high items/hr, near-zero mis-sorts, peak smoothing.</li>
+                <li><strong>AGVs/AMRs:</strong> tote/pallet moves between floors/zones, 24/7, safer than forklifts, scalable fleets.</li>
+              </ul>
+            </div>
+
+            <div>
+              <h3>How AI/ML Fits</h3>
+              <ul class="tight">
+                <li><strong>Vision & ID:</strong> camera/AI for item verification, box selection, damage checks.</li>
+                <li><strong>Dynamic slotting:</strong> ML assigns fast movers to optimal locations; walk time ↓.</li>
+                <li><strong>Forecasting:</strong> ML for demand → min/max & reorder proposals auto-generated.</li>
+                <li><strong>Flow orchestration:</strong> WES/WMS uses ML to balance waves, robots, and stations.</li>
+              </ul>
+
+              <h3>Business Wins (Summary)</h3>
+              <ul class="tight">
+                <li>Labor savings from fewer touches and automated transport.</li>
+                <li>Throughput & cycle-time gains (more lines/hr, later ship cutoffs).</li>
+                <li>Error & return reduction via machine-verified sort/pack.</li>
+                <li>Space efficiency; delay building expansions.</li>
+              </ul>
+            </div>
+          </div>
+
+          <h3 style="margin-top:14px;">Ballpark CapEx & ROI (Illustrative)</h3>
+          <div class="roi-scroll">
+            <table class="roi-table">
+              <thead>
+                <tr>
+                  <th>Automation Area</th>
+                  <th>Typical Initial CapEx</th>
+                  <th>ROI @ Year 1</th>
+                  <th>ROI @ Year 3</th>
+                  <th>ROI @ Year 5</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Packing Automation</strong></td>
+                  <td>$0.3–0.5M / line</td>
+                  <td>~60% (partial payback)</td>
+                  <td>~180% (payback)</td>
+                  <td>~300% (≈3×)</td>
+                </tr>
+                <tr>
+                  <td><strong>Sorting Automation</strong></td>
+                  <td>$1–2M (modular to large)</td>
+                  <td>~40%</td>
+                  <td>~120% (≈breakeven)</td>
+                  <td>~200% (≈2×)</td>
+                </tr>
+                <tr>
+                  <td><strong>AGVs/AMRs</strong></td>
+                  <td>$0.5–1.0M (fleet + SW)</td>
+                  <td>~50%</td>
+                  <td>~150% (payback)</td>
+                  <td>~250% (≈2.5×)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p style="font-size:.9rem;color:#555;margin-top:6px;">
+            Assumptions: steady utilization, 2–3 shift coverage, labor/material/accuracy savings realized; exact numbers depend on volumes, wages, vendor quotes, and integration scope.
+          </p>
+
+          <p style="margin-top:12px;">
+            <a href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/parts_api_swagger.html" target="_blank" rel="noopener noreferrer" class="btn-demo">🔗 Swagger API Explorer</a>
+            &nbsp;&nbsp;
+            <a href="https://quirk-ai-parts-demos-m99uzwbajpxrdt5rgo8rzi.streamlit.app/" target="_blank" rel="noopener noreferrer" class="btn-demo">🤖 Advisor Copilot</a>
+          </p>
         </div>
       </details>
 
