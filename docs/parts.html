@@ -146,6 +146,19 @@
 
     ul.tight { margin: 8px 0 0 18px; }
     ul.tight li { margin: 6px 0; }
+
+    /* Demo buttons */
+    .btn-demo {
+      display: inline-block;
+      padding: 10px 16px;
+      border-radius: 8px;
+      background: var(--brand-green);
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background .2s;
+    }
+    .btn-demo:hover { background: #09582c; }
   </style>
 </head>
 <body>
@@ -344,13 +357,44 @@
         </div>
       </details>
 
+      <!-- Demo Stubs -->
+      <details class="disclosure">
+        <summary>
+          <span class="label-open">Open</span>
+          <span class="label-close">Close</span>
+          Demo — Parts Graph API
+        </summary>
+        <div class="panel">
+          <p>This demo will expose Quirk’s unified <strong>Parts Graph API</strong> — powering VIN-first lookup, supersessions, pricing, and availability across all brands.</p>
+          <p style="margin-top:12px;">
+            <a href="https://example.com/parts-graph-api-demo" target="_blank" class="btn-demo">🔗 Launch API Explorer</a>
+          </p>
+          <p style="font-size:.9rem;color:#555;">(Currently points to a placeholder URL — replace with your API prototype or Swagger UI endpoint.)</p>
+        </div>
+      </details>
+
+      <details class="disclosure">
+        <summary>
+          <span class="label-open">Open</span>
+          <span class="label-close">Close</span>
+          Demo — Advisor Copilot
+        </summary>
+        <div class="panel">
+          <p>The <strong>Advisor Copilot</strong> is an AI assistant for parts staff: VIN decoding, cross-catalog lookup, price/ETA checks, and upsell kits in one console.</p>
+          <p style="margin-top:12px;">
+            <a href="https://example.com/advisor-copilot-demo" target="_blank" class="btn-demo">🤖 Try Copilot</a>
+          </p>
+          <p style="font-size:.9rem;color:#555;">(Placeholder — wire to a Streamlit app, sandbox UI, or your LLM prototype when ready.)</p>
+        </div>
+      </details>
+
     </div>
     <!-- ========= /Collapsible Sections ========= -->
   </main>
 
   <!-- ======= Footer ======= -->
   <footer class="container footer">
-    <p>&copy; 2025 Quirk AI — Parts</p>
+    <p>&copy; 2025 Quirk AI — Service</p>
   </footer>
 </body>
 </html>
