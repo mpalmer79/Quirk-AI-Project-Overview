@@ -88,31 +88,36 @@
 
     /* ===== Inline logo helpers (NUMA + QUIRK) ===== */
     .numa-inline, .quirk-inline { display:inline-block; line-height:0; }
-    .numa-inline img, .quirk-inline img { height:1em; vertical-align:-0.15em; width:auto; }
 
-    /* Doubled Quirk logo for headers & hero */
-    .quirk-h1 img { height:2.4em; vertical-align:-0.25em; }
+    /* Item 1/2/3: push Quirk logo DOWN slightly to center with text */
+    .quirk-inline img { height:1em; vertical-align:0.12em; width:auto; }      /* was -0.15em */
+    .quirk-h1 img { height:2.4em; vertical-align:0.10em; }                    /* was -0.25em */
 
-    /* NUMA sizes aligned */
-    .numa-h1 img, .numa-h2 img, .numa-th img { height:1.2em; }
+    /* Item 4: nudge NUMA logos DOWN slightly for alignment */
+    .numa-inline img { height:1em; vertical-align:0.12em; width:auto; }
+    .numa-h1 img, .numa-h2 img, .numa-th img { height:1.2em; vertical-align:0.14em; }
 
-    /* ===== FAQ custom layout (first two visible, rest hidden) ===== */
-    .faq-item { text-align:left; margin:12px 0; padding:14px; border:1px solid var(--border); border-radius:12px; background:#fff; }
-    .faq-item p { margin:6px 0; }
-    .faq-toggle { text-align:center; margin:8px 0 0; }
-    .faq-toggle details { display:inline-block; padding:0; border:none; background:transparent; }
-    .faq-toggle details>summary {
-      display:inline-block; border:1px solid var(--border); border-radius:999px;
-      padding:8px 12px; background:#fff; font-weight:800;
+    /* Item 5: tight badge for Quirk logo + Voice (remove excess white width) */
+    .brand-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px;
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:12px;
+      width:fit-content;           /* keep it only as wide as content */
+      max-width:100%;
+      line-height:1;               /* keeps badge tight */
     }
-    .faq-more-list .faq-item { margin-top:12px; }
+    .brand-badge .quirk-inline img{ height:1.2em; vertical-align:0; } /* within badge, keep logo centered */
   </style>
 </head>
 
 <body class="light">
   <div class="home-wrap">
-  <a class="home-btn" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
-</div>
+    <a class="home-btn" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
+  </div>
 
   <!-- ======= Top Navigation Bar ======= -->
   <header class="topbar">
@@ -167,11 +172,14 @@
       <a class="numa-inline numa-h1" href="https://www.numa.com/" target="_blank" rel="noopener" aria-label="Open numa.com">
         <img src="assets/numa_logo.png" alt="NUMA logo" />
       </a>
-      &nbsp;vs
-      <span class="quirk-inline quirk-h1" aria-label="Quirk AI">
-        <img src="assets/quirk-ai-logo.png" alt="Quirk AI logo" />
+      &nbsp;vs&nbsp;
+      <!-- Item 5 badge version -->
+      <span class="brand-badge" aria-label="Quirk AI Voice">
+        <span class="quirk-inline quirk-h1">
+          <img src="assets/quirk-ai-logo.png" alt="Quirk AI logo" />
+        </span>
+        <span>Voice</span>
       </span>
-      &nbsp;Voice
     </h2>
     <div class="table-wrap">
       <table class="table-centered">
@@ -184,10 +192,13 @@
               </a>
             </th>
             <th>
-              <span class="quirk-inline quirk-h1" aria-label="Quirk AI">
-                <img src="assets/quirk-ai-logo.png" alt="Quirk AI logo" />
+              <!-- Item 5 badge also applied in table header cell -->
+              <span class="brand-badge" aria-label="Quirk AI Voice">
+                <span class="quirk-inline quirk-h1">
+                  <img src="assets/quirk-ai-logo.png" alt="Quirk AI logo" />
+                </span>
+                <span>Voice</span>
               </span>
-              &nbsp;Voice
             </th>
           </tr>
         </thead>
