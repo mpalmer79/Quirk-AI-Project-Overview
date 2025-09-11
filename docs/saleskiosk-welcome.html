@@ -1,4 +1,4 @@
-<!doctype html>
+<!doctype html> 
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -25,16 +25,14 @@
     :focus-visible { outline: 2px solid #34d399; outline-offset: 2px; }
 
     /* --- Watermark background (showroom image) --- */
-    /* Save your image as /docs/assets/kiosk.png */
     body {
-      /* soft white wash over the showroom so UI stays readable */
       background:
         linear-gradient(rgba(255,255,255,.88), rgba(255,255,255,.88)),
         url("assets/kiosk.png") center / cover fixed no-repeat !important;
       min-height: 100vh;
     }
 
-    /* --- Step 1 mobile/light-mode form control fixes (iOS/Android) --- */
+    /* --- Base form control reset (light mode) --- */
     input, select, textarea, button {
       background: #ffffff !important;
       color: #0f172a !important;
@@ -42,20 +40,24 @@
     }
     select option { background:#ffffff; color:#0f172a; }
     input::placeholder, textarea::placeholder { color: #94a3b8; }
-    /* prevent iOS dark autofill */
     input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill {
       -webkit-text-fill-color: #0f172a !important;
       transition: background-color 5000s ease-in-out 0s;
     }
-    /* nudge WebKit to prefer light form controls */
     @supports (-webkit-touch-callout: none) {
       :root { color-scheme: light; }
       select, input, textarea { -webkit-appearance: none; }
     }
+
+    /* --- SPECIFIC tweaks requested --- */
+    /* Very light green background for the two top inputs; force over base rule */
+    #nameField, #contactField {
+      background: #ecfdf5 !important;     /* light emerald */
+      color: #0f172a !important;          /* black-like text */
+    }
   </style>
 </head>
 
-<!-- Tailwind background classes kept for safety; CSS above overrides with the watermark -->
 <body class="bg-gradient-to-b from-emerald-50 to-slate-50 min-h-screen">
   <div id="root"></div>
 
@@ -80,7 +82,6 @@ const VEHICLE_IMAGES = {
   '2025_Chevrolet_Colorado':      'assets/2025-colorado.jpg',
   '2025_Chevrolet_Blazer':        'assets/2025-blazer.jpg',
   '2025_Chevrolet_Tahoe':         'assets/2025-tahoe.jpg', 
-  
 };
 
 function getVehicleImage(year, make, model) {
@@ -90,7 +91,6 @@ function getVehicleImage(year, make, model) {
 
 /* ===========================================================
    PHOTOS (local, with safe fallback)
-   Place images under /docs/assets/kiosk-photos/ (optional).
    =========================================================== */
 const PHOTO_ROOT = 'assets/kiosk-photos/';
 
@@ -137,8 +137,6 @@ function photoFor(make, model) {
 /* ===========================================================
    OBJECTION PLAYBOOK + HELPER
    =========================================================== */
-
-// Inline playbook (you can move to assets/objections.json later)
 const OBJECTION_LIB = {
   price_high: {
     triggers: ["price", "too high", "best price", "lower price"],
@@ -160,7 +158,6 @@ const OBJECTION_LIB = {
   },
 };
 
-// Fill {tokens} with live numbers/text from context
 function renderPlay(obj, ctx) {
   const fill = s => s?.replace(/\{(\w+)\}/g, (_, k) => (ctx[k] ?? ""));
   return {
@@ -205,9 +202,7 @@ function ObjectionCard({ data, onClose, onProceed }) {
 }
 
 /* ===========================================================
-   INVENTORY GENERATION
-   - 170 NEW (Chevrolet 90 / GMC 55 / Buick 25)
-   - 30 USED (non-Buick/Chevrolet/GMC brands)
+   INVENTORY GENERATION (170 NEW + 30 USED = 200)
    =========================================================== */
 const MODEL_MAP = {
   Chevrolet:['Silverado 1500','Equinox','Traverse','Trax','Trailblazer','Malibu','Colorado','Blazer','Tahoe'],
@@ -257,7 +252,7 @@ function generateNewVehicles() {
   add('Chevrolet', 90, '1GC');
   add('GMC', 55, '1GT');
   add('Buick', 25, '1G4');
-  return inv; // 170
+  return inv;
 }
 
 function generateUsedVehicles(count=30){
@@ -279,7 +274,7 @@ function generateUsedVehicles(count=30){
     const make = makes[i % makes.length];
     const models = usedMakes[make];
     const model = models[i % models.length];
-    const year = 2019 + (i % 6); // 2019–2024
+    const year = 2019 + (i % 6);
     const price = 17000 + (i % 14) * 1200;
     const miles = 18000 + (i % 25) * 3100;
     inv.push({
@@ -293,7 +288,7 @@ function generateUsedVehicles(count=30){
       features:['CarPlay','Bluetooth','Alloys']
     });
   }
-  return inv; // 30
+  return inv;
 }
 
 const INVENTORY = [...generateNewVehicles(), ...generateUsedVehicles(30)]; // 200 total
@@ -323,7 +318,6 @@ function App() {
   const [desk, setDesk] = useState({ price:0, down:2000, apr:6.9, term:72, taxesFees:995, products:{vsc:false,gap:false,maint:false} });
   const [trade, setTrade] = useState({ vin:'', miles:'', condition:'Average', rangeLow:0, rangeHigh:0 });
 
-  // === Objections state + context
   const [objectionTrigger, setObjectionTrigger] = useState("");
 
   const vehicle = useMemo(() => INVENTORY.find(v => v.vin === selectedVin) || null, [selectedVin]);
@@ -336,7 +330,6 @@ function App() {
   }, [vehicle, desk.down, desk.taxesFees, productTotal, trade.rangeLow, trade.rangeHigh]);
   const monthly = useMemo(() => calcPayment(amountFinanced, desk.apr, desk.term), [amountFinanced, desk.apr, desk.term]);
 
-  // Live context passed to objection messages
   const objectionContext = useMemo(() => ({
     year:  (vehicle?.year ?? 2025),
     make:  (vehicle?.make ?? ""),
@@ -369,8 +362,6 @@ function App() {
     const low=Math.max(500, base+adjMiles+cond-1500);
     const high=Math.max(low+500, base+adjMiles+cond+1500);
     setTrade(t => ({...t, rangeLow:Math.round(low), rangeHigh:Math.round(high)}));
-
-    // Trigger objection helper if range looks low
     if (low < 9000) setObjectionTrigger("trade value");
   }
 
@@ -392,14 +383,12 @@ function App() {
       </div>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-8 py-6 sm:py-10 relative">
-        {/* Header — Centered */}
         <header className="mb-4 sm:mb-6 flex items-center justify-center text-center">
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-emerald-900">
             Quirk AI Sales Kiosk
           </h1>
         </header>
 
-        {/* Stepper */}
         <nav aria-label="Progress" className="mb-5 sm:mb-7">
           <ol className="grid grid-cols-4 sm:grid-cols-8 gap-2">
             {STEPS.map((label, i) => (
@@ -411,7 +400,6 @@ function App() {
           </ol>
         </nav>
 
-        {/* Card */}
         <div className="bg-white/90 backdrop-blur rounded-2xl shadow-2xl border border-slate-200 p-4 sm:p-6">
           {step===0 && (
             <Welcome
@@ -459,7 +447,6 @@ function App() {
           )}
         </div>
 
-        {/* Objection helper overlay */}
         <ObjectionCard data={card} onClose={dismiss} />
       </div>
     </div>
@@ -491,7 +478,7 @@ function PrimaryButton(props){
 /* -------------------------------- Welcome + Browse -------------------------------- */
 function Welcome({ consent, setConsent, profile, setProfile, onNext, onSelect }) {
   const [filters, setFilters] = useState({
-    stockType: 'New',
+    stockType: '',       // DEFAULT "Any"
     make: '',
     model: '',
     color: '',
@@ -503,7 +490,6 @@ function Welcome({ consent, setConsent, profile, setProfile, onNext, onSelect })
 
   const modelOptions = useMemo(() => filters.make ? MODEL_MAP[filters.make] : [], [filters.make]);
 
-  // Robust filter (case-insensitive)
   const results = useMemo(() => {
     const min = Number(filters.minPrice || 0);
     const max = Number(filters.maxPrice || 999999);
@@ -524,7 +510,6 @@ function Welcome({ consent, setConsent, profile, setProfile, onNext, onSelect })
     <div>
       <SectionTitle title="Welcome to Quirk Auto Dealers" subtitle="Start the guided flow or browse our inventory below." />
 
-      {/* Start Guided Flow Pill */}
       <div className="text-center mb-6">
         <a href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/saleskiosk-guidedflow.html" 
            className="inline-block px-6 py-3 rounded-full bg-gradient-to-r from-emerald-600 to-emerald-700 text-white font-semibold shadow hover:brightness-110 active:brightness-95 text-decoration-none">
@@ -532,33 +517,45 @@ function Welcome({ consent, setConsent, profile, setProfile, onNext, onSelect })
         </a>
       </div>
 
-      <div className="grid sm:grid-cols-2 gap-4 mb-4">
+      {/* Inputs row */}
+      <div className="grid sm:grid-cols-2 gap-4 mb-1">
         <div className="text-center">
-          <label className="block mb-3">
+          <label className="block mb-1">
             <span className="block text-sm font-semibold text-slate-700 mb-1">Your Name or Company Name</span>
-            <input aria-label="Your name" className="w-2/3 rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300"
+            <input id="nameField" aria-label="Your name"
+              className="w-2/3 rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300 text-slate-900"
               value={profile.name} onChange={e=>setProfile({...profile, name:e.target.value})}/>
           </label>
         </div>
         <div className="text-center">
-          <label className="block mb-3">
+          <label className="block mb-1">
             <span className="block text-sm font-semibold text-slate-700 mb-1">Text or email to send your quote</span>
-            <input aria-label="Contact" className="w-2/3 rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" placeholder="(555) 555-5555 or you@example.com"
+            <input id="contactField" aria-label="Contact"
+              className="w-2/3 rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300 text-slate-900"
+              placeholder="(555) 555-5555 or you@example.com"
               value={profile.contact} onChange={e=>setProfile({...profile, contact:e.target.value})}/>
           </label>
         </div>
       </div>
 
-      {/* Consent & privacy moved up */}
-      <div className="mb-6 text-center">
-        <details className="inline-block text-sm">
-          <summary className="cursor-pointer text-slate-600 px-4 py-2 rounded-full border border-slate-300 bg-white/80">Consent & privacy</summary>
-          <div className="grid sm:grid-cols-3 gap-3 mt-3 text-slate-700 bg-white/90 p-4 rounded-xl border border-slate-200">
-            <label className="flex items-center gap-2"><input type="checkbox" checked={consent.sms} onChange={e=>setConsent({...consent, sms:e.target.checked})}/> SMS updates</label>
-            <label className="flex items-center gap-2"><input type="checkbox" checked={consent.email} onChange={e=>setConsent({...consent, email:e.target.checked})}/> Email updates</label>
-            <label className="flex items-center gap-2"><input type="checkbox" checked={consent.privacy} onChange={e=>setConsent({...consent, privacy:e.target.checked})}/> I agree to privacy policy</label>
-          </div>
-        </details>
+      {/* Row beneath inputs: Consent centered under Name; Next centered under Contact */}
+      <div className="grid sm:grid-cols-2 gap-4 mb-6">
+        <div className="text-center">
+          <details className="inline-block text-sm">
+            <summary className="cursor-pointer text-slate-600 px-4 py-2 rounded-full border border-slate-300 bg-white/80">Consent & privacy</summary>
+            <div className="grid sm:grid-cols-3 gap-3 mt-3 text-slate-700 bg-white/90 p-4 rounded-xl border border-slate-200">
+              <label className="flex items-center gap-2"><input type="checkbox" checked={consent.sms} onChange={e=>setConsent({...consent, sms:e.target.checked})}/> SMS updates</label>
+              <label className="flex items-center gap-2"><input type="checkbox" checked={consent.email} onChange={e=>setConsent({...consent, email:e.target.checked})}/> Email updates</label>
+              <label className="flex items-center gap-2"><input type="checkbox" checked={consent.privacy} onChange={e=>setConsent({...consent, privacy:e.target.checked})}/> I agree to privacy policy</label>
+            </div>
+          </details>
+        </div>
+        <div className="text-center">
+          <button className="px-6 py-3 rounded-full bg-emerald-600 text-white font-semibold shadow hover:brightness-110"
+                  onClick={onNext}>
+            Next
+          </button>
+        </div>
       </div>
 
       {/* Browse Inventory */}
@@ -611,7 +608,6 @@ function Welcome({ consent, setConsent, profile, setProfile, onNext, onSelect })
         <div className="mt-3 grid md:grid-cols-3 gap-4">
           {pageItems.map((v, index) => {
             const vehicleImage = getVehicleImage(v.year, v.make, v.model);
-            
             return (
               <button key={`vehicle-${index}-${v.vin.slice(-6)}`} onClick={()=>onSelect(v.vin)}
                       className="group text-left rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition p-3 bg-white">
@@ -702,7 +698,6 @@ function VehicleMatch({ selectedVin, onSelect, onBack }) {
       <div className="grid md:grid-cols-3 gap-4">
         {picks.map((v, index) => {
           const vehicleImage = getVehicleImage(v.year, v.make, v.model);
-          
           return (
             <button key={`match-${index}-${v.vin.slice(-6)}`} className={`group text-left rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition p-3 bg-white/90 ${selectedVin===v.vin?'ring-4 ring-emerald-300':''}`} onClick={()=>onSelect(v.vin)}>
               <div className="relative">
@@ -742,11 +737,10 @@ function VehicleMatch({ selectedVin, onSelect, onBack }) {
 }
 
 function Payments({ vehicle, desk, setDesk, monthly, amountFinanced, onBack, onNext, onObjection, budgetTarget }) {
-  // Auto-fire objection if payment is well above customer's budget
   React.useEffect(() => {
     if (!budgetTarget) return;
     const overBy = monthly - Number(budgetTarget);
-    if (overBy > 50) onObjection && onObjection("payment too high");  // matches payment_high
+    if (overBy > 50) onObjection && onObjection("payment too high");
   }, [monthly, budgetTarget, onObjection]);
 
   const price = vehicle ? vehicle.price : desk.price;
