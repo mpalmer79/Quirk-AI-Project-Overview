@@ -32,14 +32,16 @@
       min-height: 100vh;
     }
 
-    /* --- Base form control reset (light mode) --- */
+    /* --- Mobile/light-mode form control defaults --- */
     input, select, textarea, button {
+      /* We'll override with inline styles where needed */
       background: #ffffff !important;
       color: #0f172a !important;
       border-color: #e5e7eb !important;
     }
     select option { background:#ffffff; color:#0f172a; }
     input::placeholder, textarea::placeholder { color: #94a3b8; }
+    /* iOS autofill */
     input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill {
       -webkit-text-fill-color: #0f172a !important;
       transition: background-color 5000s ease-in-out 0s;
@@ -48,30 +50,35 @@
       :root { color-scheme: light; }
       select, input, textarea { -webkit-appearance: none; }
     }
-
-    /* --- SPECIFIC tweaks requested --- */
-    /* Very light green background for the two top inputs; force over base rule */
-    #nameField, #contactField {
-      background: #ecfdf5 !important;     /* light emerald */
-      color: #0f172a !important;          /* black-like text */
-    }
   </style>
 </head>
 
 <body class="bg-gradient-to-b from-emerald-50 to-slate-50 min-h-screen">
   <div id="root"></div>
 
-  <!-- Site-wide footer (matches other pages) -->
+  <!-- Site-wide footer -->
   <footer class="footer">
     <small>© 2025 Quirk AI — Sales Kiosk</small>
   </footer>
 
 <script type="text/babel">
-const { useMemo, useState } = React;
+const { useMemo, useState, useEffect } = React;
 
-/* ===========================================================
-   VEHICLE IMAGES
-   =========================================================== */
+/* ========================= Analytics + Storage ========================= */
+function track(event, data = {}) {
+  try {
+    const now = new Date().toISOString();
+    const row = { event, at: now, ...data };
+    const key = "analytics";
+    const arr = JSON.parse(localStorage.getItem(key) || "[]");
+    arr.push(row);
+    localStorage.setItem(key, JSON.stringify(arr));
+  } catch {}
+}
+const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
+const load = (k, def) => { try { const v = JSON.parse(localStorage.getItem(k)); return (v ?? def); } catch { return def; } };
+
+/* =============================== VEHICLE IMAGES =============================== */
 const VEHICLE_IMAGES = {
   '2025_Chevrolet_Silverado 1500': 'assets/2025-silverado-1500.jpg',
   '2025_Chevrolet_Equinox':       'assets/2025-equinox.jpg',
@@ -81,20 +88,15 @@ const VEHICLE_IMAGES = {
   '2025_Chevrolet_Malibu':        'assets/2025-malibu.jpg',
   '2025_Chevrolet_Colorado':      'assets/2025-colorado.jpg',
   '2025_Chevrolet_Blazer':        'assets/2025-blazer.jpg',
-  '2025_Chevrolet_Tahoe':         'assets/2025-tahoe.jpg',
-  '2019_Toyota_Camry':             'assets/camry.jpg'
+  '2025_Chevrolet_Tahoe':         'assets/2025-tahoe.jpg', 
 };
-
 function getVehicleImage(year, make, model) {
   const key = `${year}_${make}_${model}`;
   return VEHICLE_IMAGES[key] || null;
 }
 
-/* ===========================================================
-   PHOTOS (local, with safe fallback)
-   =========================================================== */
+/* =============================== PHOTOS =============================== */
 const PHOTO_ROOT = 'assets/kiosk-photos/';
-
 const MODEL_PHOTOS = {
   Chevrolet: {
     'Silverado 1500':'chevrolet-silverado-1500.jpg',
@@ -120,24 +122,13 @@ const MODEL_PHOTOS = {
     'Envista':'buick-envista.jpg'
   }
 };
-
-const MAKE_DEFAULT = {
-  Chevrolet:'chevrolet-default.jpg',
-  GMC:'gmc-default.jpg',
-  Buick:'buick-default.jpg',
-  Used:'used-default.jpg'
-};
-
+const MAKE_DEFAULT = { Chevrolet:'chevrolet-default.jpg', GMC:'gmc-default.jpg', Buick:'buick-default.jpg', Used:'used-default.jpg' };
 function photoFor(make, model) {
-  const file =
-    (MODEL_PHOTOS[make] && MODEL_PHOTOS[make][model]) ||
-    MAKE_DEFAULT[make] || 'placeholder.jpg';
+  const file = (MODEL_PHOTOS[make] && MODEL_PHOTOS[make][model]) || MAKE_DEFAULT[make] || 'placeholder.jpg';
   return `${PHOTO_ROOT}${file}`;
 }
 
-/* ===========================================================
-   OBJECTION PLAYBOOK + HELPER
-   =========================================================== */
+/* =========================== OBJECTION PLAYBOOK =========================== */
 const OBJECTION_LIB = {
   price_high: {
     triggers: ["price", "too high", "best price", "lower price"],
@@ -158,19 +149,12 @@ const OBJECTION_LIB = {
     resolve: "I can lock it with a quick photo set or a 10-minute drive-through appraisal.",
   },
 };
-
 function renderPlay(obj, ctx) {
   const fill = s => s?.replace(/\{(\w+)\}/g, (_, k) => (ctx[k] ?? ""));
-  return {
-    probe: fill(obj.probe),
-    evidence: fill(obj.evidence),
-    resolve: fill(obj.resolve),
-  };
+  return { probe: fill(obj.probe), evidence: fill(obj.evidence), resolve: fill(obj.resolve) };
 }
-
 function useObjection(triggerText, context) {
   const [card, setCard] = React.useState(null);
-
   React.useEffect(() => {
     if (!triggerText) return;
     const lower = triggerText.toLowerCase();
@@ -181,10 +165,8 @@ function useObjection(triggerText, context) {
     const msg = renderPlay(OBJECTION_LIB[key], context);
     setCard({ key, ...msg });
   }, [triggerText, context]);
-
   return { card, dismiss: () => setCard(null) };
 }
-
 function ObjectionCard({ data, onClose, onProceed }) {
   if (!data) return null;
   return (
@@ -202,16 +184,13 @@ function ObjectionCard({ data, onClose, onProceed }) {
   );
 }
 
-/* ===========================================================
-   INVENTORY GENERATION (170 NEW + 30 USED = 200)
-   =========================================================== */
+/* =========================== INVENTORY GENERATION =========================== */
 const MODEL_MAP = {
   Chevrolet:['Silverado 1500','Equinox','Traverse','Trax','Trailblazer','Malibu','Colorado','Blazer','Tahoe'],
   GMC:['Sierra 1500','Terrain','Acadia','Canyon','Yukon'],
   Buick:['Encore GX','Envision','Envista']
 };
 const COLORS = ['Black','White','Silver','Gray','Blue','Red','Green','Brown'];
-
 function basePrice(make, model) {
   const map = {
     Chevrolet: {
@@ -223,11 +202,7 @@ function basePrice(make, model) {
   };
   return (map[make] && map[make][model]) || 29990;
 }
-
-function vinFor(prefix, idx) {
-  return prefix + String(100000000000000 + idx).slice(0,14);
-}
-
+function vinFor(prefix, idx) { return prefix + String(100000000000000 + idx).slice(0,14); }
 function generateNewVehicles() {
   const inv = [];
   const add = (make, count, pfx) => {
@@ -253,9 +228,8 @@ function generateNewVehicles() {
   add('Chevrolet', 90, '1GC');
   add('GMC', 55, '1GT');
   add('Buick', 25, '1G4');
-  return inv;
+  return inv; // 170
 }
-
 function generateUsedVehicles(count=30){
   const usedMakes = {
     Toyota:['Camry','RAV4','Tacoma'],
@@ -289,14 +263,11 @@ function generateUsedVehicles(count=30){
       features:['CarPlay','Bluetooth','Alloys']
     });
   }
-  return inv;
+  return inv; // 30
 }
-
 const INVENTORY = [...generateNewVehicles(), ...generateUsedVehicles(30)]; // 200 total
 
-/* ===========================================================
-   PAYMENT UTILS
-   =========================================================== */
+/* ================================ PAYMENT UTILS ================================ */
 function calcPayment(amount, aprPct, termMonths) {
   const r = aprPct / 100 / 12;
   if (r === 0) return amount / termMonths;
@@ -304,22 +275,25 @@ function calcPayment(amount, aprPct, termMonths) {
 }
 const STEPS = ['Welcome','Discovery','Vehicle Match','Payments','Trade-In','Credit Start','F&I Options','Review & Handoff'];
 
-/* ===========================================================
-   APP
-   =========================================================== */
+/* ==================================== APP ==================================== */
 function App() {
-  const [step, setStep] = useState(0);
-  const [consent, setConsent] = useState({ sms:false, email:false, privacy:false });
-
-  const [profile, setProfile] = useState({
+  const [step, setStep] = useState(load("kiosk_step", 0));
+  const [consent, setConsent] = useState(load("kiosk_consent", { sms:false, email:false, privacy:false }));
+  const [profile, setProfile] = useState(load("kiosk_profile", {
     name:'', contact:'', useCase:'Commute', bodyStyle:'Sedan', budget:400, timeline:'This week'
-  });
-
-  const [selectedVin, setSelectedVin] = useState(null);
-  const [desk, setDesk] = useState({ price:0, down:2000, apr:6.9, term:72, taxesFees:995, products:{vsc:false,gap:false,maint:false} });
-  const [trade, setTrade] = useState({ vin:'', miles:'', condition:'Average', rangeLow:0, rangeHigh:0 });
-
+  }));
+  const [selectedVin, setSelectedVin] = useState(load("kiosk_selectedVin", null));
+  const [desk, setDesk] = useState(load("kiosk_desk", { price:0, down:2000, apr:6.9, term:72, taxesFees:995, products:{vsc:false,gap:false,maint:false} }));
+  const [trade, setTrade] = useState(load("kiosk_trade", { vin:'', miles:'', condition:'Average', rangeLow:0, rangeHigh:0 }));
   const [objectionTrigger, setObjectionTrigger] = useState("");
+
+  /* ---- persist to localStorage ---- */
+  useEffect(()=>save("kiosk_step", step), [step]);
+  useEffect(()=>save("kiosk_profile", profile), [profile]);
+  useEffect(()=>save("kiosk_consent", consent), [consent]);
+  useEffect(()=>save("kiosk_selectedVin", selectedVin), [selectedVin]);
+  useEffect(()=>save("kiosk_desk", desk), [desk]);
+  useEffect(()=>save("kiosk_trade", trade), [trade]);
 
   const vehicle = useMemo(() => INVENTORY.find(v => v.vin === selectedVin) || null, [selectedVin]);
   const productTotal = useMemo(() => (desk.products.vsc?1895:0) + (desk.products.gap?795:0) + (desk.products.maint?495:0), [desk.products]);
@@ -365,7 +339,6 @@ function App() {
     setTrade(t => ({...t, rangeLow:Math.round(low), rangeHigh:Math.round(high)}));
     if (low < 9000) setObjectionTrigger("trade value");
   }
-
   function selectVehicle(vin) {
     const v = INVENTORY.find(x => x.vin === vin);
     if (v) {
@@ -406,19 +379,16 @@ function App() {
             <Welcome
               consent={consent} setConsent={setConsent}
               profile={profile} setProfile={setProfile}
-              onNext={next}
+              onValidatedNext={()=>{ track('welcome_next', {source:'next_button'}); next(); }}
               onSelect={selectVehicle}
             />
           )}
-
           {step===1 && (
-            <Discovery profile={profile} setProfile={setProfile} onNext={next} onBack={back} />
+            <Discovery profile={profile} setProfile={setProfile} onNext={()=>{ track('discovery_next'); next(); }} onBack={back} />
           )}
-
           {step===2 && (
-            <VehicleMatch selectedVin={selectedVin} onSelect={(vin)=>{ setSelectedVin(vin); next(); }} onBack={back} />
+            <VehicleMatch selectedVin={selectedVin} onSelect={(vin)=>{ setSelectedVin(vin); track('vehicle_selected', {vin}); next(); }} onBack={back} />
           )}
-
           {step===3 && (
             <Payments
               vehicle={vehicle}
@@ -427,22 +397,18 @@ function App() {
               monthly={monthly}
               amountFinanced={amountFinanced}
               onBack={back}
-              onNext={next}
+              onNext={()=>{ track('payments_next'); next(); }}
               onObjection={setObjectionTrigger}
               budgetTarget={profile.budget}
             />
           )}
-
           {step===4 && (
-            <Trade trade={trade} setTrade={setTrade} estimate={estimateTradeRange} onBack={back} onNext={next} />
+            <Trade trade={trade} setTrade={setTrade} estimate={estimateTradeRange} onBack={back} onNext={()=>{ track('trade_next'); next(); }} />
           )}
-
-          {step===5 && <CreditStart onBack={back} onNext={next} />}
-
+          {step===5 && <CreditStart onBack={back} onNext={()=>{ track('credit_next'); next(); }} />}
           {step===6 && (
-            <FandI desk={desk} setDesk={setDesk} monthly={monthly} onBack={back} onNext={next} />
+            <FandI desk={desk} setDesk={setDesk} monthly={monthly} onBack={back} onNext={()=>{ track('fandi_next'); next(); }} />
           )}
-
           {step===7 && (
             <Review profile={profile} vehicle={vehicle} desk={desk} trade={trade} monthly={monthly} onBack={back} />
           )}
@@ -454,7 +420,7 @@ function App() {
   );
 }
 
-/* ---------------------------------- UI helpers ---------------------------------- */
+/* ------------------------------ UI helpers ------------------------------ */
 function SectionTitle({ title, subtitle }) {
   return (
     <div className="mb-4">
@@ -476,18 +442,16 @@ function PrimaryButton(props){
   return <button {...props} className={cls} />;
 }
 
-/* -------------------------------- Welcome + Browse -------------------------------- */
-function Welcome({ consent, setConsent, profile, setProfile, onNext, onSelect }) {
-  const [filters, setFilters] = useState({
-    stockType: '',       // DEFAULT "Any"
-    make: '',
-    model: '',
-    color: '',
-    minPrice: '',
-    maxPrice: ''
-  });
+/* ------------------------ Welcome + Browse (with validation) ------------------------ */
+function Welcome({ consent, setConsent, profile, setProfile, onValidatedNext, onSelect }) {
+  // default filters to "Any" for Stock Type → 200 vehicles
+  const [filters, setFilters] = useState(load("kiosk_filters", {
+    stockType: '', make: '', model: '', color: '', minPrice: '', maxPrice: ''
+  }));
   const [page, setPage] = useState(1);
   const perPage = 12;
+
+  useEffect(()=>save("kiosk_filters", filters), [filters]);
 
   const modelOptions = useMemo(() => filters.make ? MODEL_MAP[filters.make] : [], [filters.make]);
 
@@ -507,56 +471,88 @@ function Welcome({ consent, setConsent, profile, setProfile, onNext, onSelect })
   const totalPages = Math.max(1, Math.ceil(results.length / perPage));
   const pageItems  = results.slice((page-1)*perPage, page*perPage);
 
+  /* --------- validation helpers --------- */
+  const [errors, setErrors] = useState({ name:'', contact:'' });
+  const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const phoneDigits = s => (s||'').replace(/\D/g,'');
+  function validate() {
+    const newErr = { name:'', contact:'' };
+    if (!profile.name.trim()) newErr.name = 'Please enter your name or company.';
+    const c = profile.contact.trim();
+    const ok = emailRe.test(c) || phoneDigits(c).length === 10;
+    if (!ok) newErr.contact = 'Enter a valid email or 10-digit phone.';
+    setErrors(newErr);
+    return !newErr.name && !newErr.contact;
+  }
+  function handleNext() {
+    if (validate()) onValidatedNext();
+  }
+
+  const guidedHref = "https://mpalmer79.github.io/Quirk-AI-Project-Overview/saleskiosk-guidedflow.html?utm_source=kiosk&utm_medium=welcome_banner&utm_campaign=guided_flow";
+
   return (
     <div>
       <SectionTitle title="Welcome to Quirk Auto Dealers" subtitle="Start the guided flow or browse our inventory below." />
 
+      {/* Start Guided Flow Pill with UTM + tracking */}
       <div className="text-center mb-6">
-        <a href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/saleskiosk-guidedflow.html" 
+        <a href={guidedHref}
+           onClick={()=>track('guided_flow_link', {placement:'banner'})}
            className="inline-block px-6 py-3 rounded-full bg-gradient-to-r from-emerald-600 to-emerald-700 text-white font-semibold shadow hover:brightness-110 active:brightness-95 text-decoration-none">
           Start Guided Flow
         </a>
       </div>
 
-      {/* Inputs row */}
-      <div className="grid sm:grid-cols-2 gap-4 mb-1">
+      <div className="grid sm:grid-cols-2 gap-4 mb-2">
         <div className="text-center">
           <label className="block mb-1">
             <span className="block text-sm font-semibold text-slate-700 mb-1">Your Name or Company Name</span>
-            <input id="nameField" aria-label="Your name"
-              className="w-2/3 rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300 text-slate-900"
-              value={profile.name} onChange={e=>setProfile({...profile, name:e.target.value})}/>
+            <input
+              aria-label="Your name"
+              className={`w-2/3 rounded-xl border p-3 focus:ring-2 ${errors.name ? 'border-red-500 focus:ring-red-300' : 'focus:ring-emerald-300'}`}
+              value={profile.name}
+              onChange={e=>setProfile({...profile, name:e.target.value})}
+              style={{backgroundColor:'#ecfdf5', color:'#0f172a'}}
+            />
           </label>
+          {errors.name && <div className="text-xs text-red-600 mt-1">{errors.name}</div>}
         </div>
+
         <div className="text-center">
           <label className="block mb-1">
             <span className="block text-sm font-semibold text-slate-700 mb-1">Text or email to send your quote</span>
-            <input id="contactField" aria-label="Contact"
-              className="w-2/3 rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300 text-slate-900"
+            <input
+              aria-label="Contact"
+              className={`w-2/3 rounded-xl border p-3 focus:ring-2 ${errors.contact ? 'border-red-500 focus:ring-red-300' : 'focus:ring-emerald-300'}`}
               placeholder="(555) 555-5555 or you@example.com"
-              value={profile.contact} onChange={e=>setProfile({...profile, contact:e.target.value})}/>
+              value={profile.contact}
+              onChange={e=>setProfile({...profile, contact:e.target.value})}
+              style={{backgroundColor:'#ecfdf5', color:'#0f172a'}}
+            />
           </label>
+          {errors.contact && <div className="text-xs text-red-600 mt-1">{errors.contact}</div>}
         </div>
       </div>
 
-      {/* Row beneath inputs: Consent centered under Name; Next centered under Contact */}
-      <div className="grid sm:grid-cols-2 gap-4 mb-6">
-        <div className="text-center">
-          <details className="inline-block text-sm">
-            <summary className="cursor-pointer text-slate-600 px-4 py-2 rounded-full border border-slate-300 bg-white/80">Consent & privacy</summary>
-            <div className="grid sm:grid-cols-3 gap-3 mt-3 text-slate-700 bg-white/90 p-4 rounded-xl border border-slate-200">
-              <label className="flex items-center gap-2"><input type="checkbox" checked={consent.sms} onChange={e=>setConsent({...consent, sms:e.target.checked})}/> SMS updates</label>
-              <label className="flex items-center gap-2"><input type="checkbox" checked={consent.email} onChange={e=>setConsent({...consent, email:e.target.checked})}/> Email updates</label>
-              <label className="flex items-center gap-2"><input type="checkbox" checked={consent.privacy} onChange={e=>setConsent({...consent, privacy:e.target.checked})}/> I agree to privacy policy</label>
-            </div>
-          </details>
-        </div>
-        <div className="text-center">
-          <button className="px-6 py-3 rounded-full bg-emerald-600 text-white font-semibold shadow hover:brightness-110"
-                  onClick={onNext}>
-            Next
-          </button>
-        </div>
+      {/* Consent & privacy (centered under name) */}
+      <div className="mb-4 text-center">
+        <details className="inline-block text-sm">
+          <summary className="cursor-pointer text-slate-600 px-4 py-2 rounded-full border border-slate-300 bg-white/80">Consent & privacy</summary>
+          <div className="grid sm:grid-cols-3 gap-3 mt-3 text-slate-700 bg-white/90 p-4 rounded-xl border border-slate-200">
+            <label className="flex items-center gap-2"><input type="checkbox" checked={consent.sms} onChange={e=>setConsent({...consent, sms:e.target.checked})}/> SMS updates</label>
+            <label className="flex items-center gap-2"><input type="checkbox" checked={consent.email} onChange={e=>setConsent({...consent, email:e.target.checked})}/> Email updates</label>
+            <label className="flex items-center gap-2"><input type="checkbox" checked={consent.privacy} onChange={e=>setConsent({...consent, privacy:e.target.checked})}/> I agree to privacy policy</label>
+          </div>
+        </details>
+      </div>
+
+      {/* "Next" under contact (moves to Discovery on valid) */}
+      <div className="mb-6 text-center">
+        <button
+          onClick={handleNext}
+          className="px-6 py-3 rounded-full bg-emerald-600 text-white font-semibold shadow hover:brightness-110 active:brightness-95">
+          Next
+        </button>
       </div>
 
       {/* Browse Inventory */}
@@ -651,8 +647,13 @@ function Welcome({ consent, setConsent, profile, setProfile, onNext, onSelect })
         </div>
       </div>
 
+      {/* Secondary call-to-action with UTM + tracking */}
       <div className="mt-4 flex flex-wrap gap-3 justify-end">
-        <PrimaryButton onClick={onNext} aria-label="Switch to guided flow">Switch to Guided Flow →</PrimaryButton>
+        <a href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/saleskiosk-guidedflow.html?utm_source=kiosk&utm_medium=footer_button&utm_campaign=guided_flow"
+           className="px-5 py-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-700 text-white font-semibold shadow hover:brightness-110 active:brightness-95"
+           onClick={()=>track('guided_flow_link', {placement:'footer_button'})}>
+          Switch to Guided Flow →
+        </a>
       </div>
     </div>
   );
@@ -738,7 +739,7 @@ function VehicleMatch({ selectedVin, onSelect, onBack }) {
 }
 
 function Payments({ vehicle, desk, setDesk, monthly, amountFinanced, onBack, onNext, onObjection, budgetTarget }) {
-  React.useEffect(() => {
+  useEffect(() => {
     if (!budgetTarget) return;
     const overBy = monthly - Number(budgetTarget);
     if (overBy > 50) onObjection && onObjection("payment too high");
