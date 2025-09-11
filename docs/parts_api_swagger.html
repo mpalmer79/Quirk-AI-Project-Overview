@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,8 +14,17 @@
       url: './openapi.parts.graph.mock.json',
       dom_id: '#swagger-ui',
       presets: [SwaggerUIBundle.presets.apis],
-      layout: "BaseLayout"
+      layout: "BaseLayout",
+      // Add servers list here
+      configUrl: null,
+      requestInterceptor: (req) => req
     });
+
+    // Override servers list (so dropdown appears at top)
+    window.ui.getConfigs().spec.servers = [
+      { url: "https://api.quirk.ai/parts", description: "Production (placeholder)" },
+      { url: "https://quirk-ai-parts-demos-m99uzwbajpxrdt5rgo8rzi.streamlit.app/", description: "Advisor Copilot Demo (Streamlit)" }
+    ];
   </script>
 </body>
 </html>
