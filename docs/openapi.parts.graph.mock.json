@@ -1,8 +1,8 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "Quirk Parts Graph API (Mock)",
-    "description": "Mock OpenAPI for demo. Covers VIN-first lookup, fitment, supersessions, pricing, inventory, and search.",
+    "title": "Quirk Parts Graph API",
+    "description": "OpenAPI for demo. Covers VIN-first lookup, fitment, supersessions, pricing, inventory, and search.",
     "version": "0.1.0",
     "contact": {
       "name": "Quirk AI",
