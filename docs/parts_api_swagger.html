@@ -5,8 +5,37 @@
   <title>Quirk Parts Graph API — Swagger</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist/swagger-ui.css">
+
+  <style>
+    /* Custom button styling */
+    .launch-btn {
+      display: inline-block;
+      margin: 16px 0;
+      padding: 10px 18px;
+      border-radius: 8px;
+      background: #0b6e37;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background .2s;
+    }
+    .launch-btn:hover {
+      background: #09582c;
+    }
+    .topbar-wrapper .link-out {
+      margin-left: 12px;
+    }
+  </style>
 </head>
 <body>
+  <!-- Custom Launch Button -->
+  <div style="padding: 16px; text-align: center; background: #f9fafb; border-bottom: 1px solid #e5e7eb;">
+    <a href="https://quirk-ai-parts-demos-m99uzwbajpxrdt5rgo8rzi.streamlit.app/"
+       target="_blank" rel="noopener noreferrer"
+       class="launch-btn">🚀 Launch Advisor Copilot Demo</a>
+  </div>
+
+  <!-- Swagger UI -->
   <div id="swagger-ui"></div>
   <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
   <script>
@@ -14,13 +43,10 @@
       url: './openapi.parts.graph.mock.json',
       dom_id: '#swagger-ui',
       presets: [SwaggerUIBundle.presets.apis],
-      layout: "BaseLayout",
-      // Add servers list here
-      configUrl: null,
-      requestInterceptor: (req) => req
+      layout: "BaseLayout"
     });
 
-    // Override servers list (so dropdown appears at top)
+    // Override servers list
     window.ui.getConfigs().spec.servers = [
       { url: "https://api.quirk.ai/parts", description: "Production (placeholder)" },
       { url: "https://quirk-ai-parts-demos-m99uzwbajpxrdt5rgo8rzi.streamlit.app/", description: "Advisor Copilot Demo (Streamlit)" }
