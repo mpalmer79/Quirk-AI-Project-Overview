@@ -898,63 +898,6 @@ footer.footer { flex-shrink: 0; }
   }
 }
 
-/* ===== UNIVERSAL HOME BUTTON ===== */
-/* Style for the universal HOME button */
-.universal-home-btn {
-  position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 9999;
-  
-  /* Button styling */
-  display: inline-block;
-  padding: 12px 24px;
-  background: #000;
-  color: #fff !important;
-  font-family: Inter, system-ui, sans-serif;
-  font-weight: 700;
-  font-size: 16px;
-  text-decoration: none;
-  border-radius: 8px;
-  border: 2px solid #000;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  transition: all 0.3s ease;
-  letter-spacing: 0.5px;
-}
-
-/* Hover effect for the HOME button */
-.universal-home-btn:hover {
-  background: #333;
-  border-color: #333;
-  transform: translateX(-50%) translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
-  text-decoration: none;
-  color: #fff !important;
-}
-
-/* Add top padding to body to account for fixed button */
-body:not(.homepage) {
-  padding-top: 80px;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .universal-home-btn {
-    top: 16px;
-    padding: 10px 20px;
-    font-size: 14px;
-  }
-  
-  body:not(.homepage) {
-    padding-top: 70px;
-  }
-}
-
-/* Make sure it appears above any existing headers/navbars */
-.universal-home-btn {
-  position: fixed !important;
-  z-index: 9999 !important;
 }
 
 /* --- Global HOME button + wrapper (zoom-proof) --- */
