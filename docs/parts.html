@@ -1,4 +1,4 @@
-<!doctype html>
+<!doctype html> 
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -321,14 +321,24 @@
         <div class="panel">
           <h3>Phase 0 — Foundations (30–60 days)</h3>
           <ul class="tight">
-            <li>Stand up a <strong>unified parts index</strong> (catalog + supersessions + price + on-hand + lead-time).</li>
-            <li>Expose a secure <strong>Parts Graph API</strong> (fitment, substitutes, availability) to web/app/advisors.</li>
-            <li>Instrument <strong>events</strong>: search → add-to-cart → pick → ship; build live dashboards.</li>
+            <li>
+              Stand up a <strong>unified parts index</strong> (catalog + supersessions + price + on-hand + lead-time).
+            </li>
+            <li>
+              Expose a secure <strong>Parts Graph API</strong> (fitment, substitutes, availability) to web/app/advisors.
+              👉 <a href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/parts_api_swagger.html" target="_blank" rel="noopener noreferrer">View Swagger Demo</a>
+            </li>
+            <li>
+              Instrument <strong>events</strong>: search → add-to-cart → pick → ship; build live dashboards.
+            </li>
           </ul>
 
           <h3>Phase 1 — Advisor & Customer Intelligence (60–120 days)</h3>
           <ul class="tight">
-            <li>Deploy <strong>LLM Advisor Copilot</strong> (VIN decode, multi-catalog lookup, price/ETA, upsell kits).</li>
+            <li>
+              Deploy <strong>LLM Advisor Copilot</strong> (VIN decode, multi-catalog lookup, price/ETA, upsell kits).
+              👉 <a href="https://quirk-ai-parts-demos-m99uzwbajpxrdt5rgo8rzi.streamlit.app/" target="_blank" rel="noopener noreferrer">Try Copilot Demo</a>
+            </li>
             <li>Add <strong>image-to-part</strong> beta on site + internal tool for counter team.</li>
             <li>Launch <strong>conversational chat/IVR</strong> for stock, quotes, order status, and B2B reorders.</li>
           </ul>
@@ -367,7 +377,7 @@
         <div class="panel">
           <p>This demo will expose Quirk’s unified <strong>Parts Graph API</strong> — powering VIN-first lookup, supersessions, pricing, and availability across all brands.</p>
           <p style="margin-top:12px;">
-            <a href="./parts_api_swagger.html" target="_blank" class="btn-demo">🔗 Launch API Explorer</a>
+            <a href="./parts_api_swagger.html" target="_blank" rel="noopener noreferrer" class="btn-demo">🔗 Launch API Explorer</a>
           </p>
           <p style="font-size:.9rem;color:#555;">(Prototype Swagger UI; points to mock schema for now.)</p>
         </div>
