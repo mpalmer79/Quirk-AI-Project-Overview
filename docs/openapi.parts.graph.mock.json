@@ -1,0 +1,554 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Quirk Parts Graph API (Mock)",
+    "description": "Mock OpenAPI for demo. Covers VIN-first lookup, fitment, supersessions, pricing, inventory, and search.",
+    "version": "0.1.0",
+    "contact": {
+      "name": "Quirk AI",
+      "url": "https://mpalmer79.github.io/Quirk-AI-Project-Overview/"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.quirk.ai/parts",
+      "description": "Production (placeholder)"
+    },
+    {
+      "url": "https://sandbox.quirk.ai/parts",
+      "description": "Sandbox (placeholder)"
+    },
+    {
+      "url": "http://localhost:8000",
+      "description": "Local Dev"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Search"
+    },
+    {
+      "name": "Fitment"
+    },
+    {
+      "name": "Catalog"
+    },
+    {
+      "name": "Inventory"
+    },
+    {
+      "name": "Pricing"
+    }
+  ],
+  "paths": {
+    "/v1/parts/search": {
+      "get": {
+        "summary": "Search parts by natural language, keyword, or structured filters",
+        "tags": [
+          "Search"
+        ],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Natural language or keyword, e.g. 'clip for trunk latch'"
+          },
+          {
+            "name": "vin",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "minLength": 11,
+              "maxLength": 17
+            },
+            "description": "VIN (partial or full) to constrain results"
+          },
+          {
+            "name": "make",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "model",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "year",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "maximum": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paged search results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "page": {
+                      "type": "integer"
+                    },
+                    "pageSize": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer"
+                    },
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/PartSummary"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/parts/{partId}": {
+      "get": {
+        "summary": "Get a single part with rich details",
+        "tags": [
+          "Catalog"
+        ],
+        "parameters": [
+          {
+            "name": "partId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Part details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Part"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/fitment": {
+      "get": {
+        "summary": "Fitment by VIN or Make/Model/Year",
+        "tags": [
+          "Fitment"
+        ],
+        "parameters": [
+          {
+            "name": "vin",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "make",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "model",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "year",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "partNumber",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of compatible parts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PartSummary"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/supersessions": {
+      "get": {
+        "summary": "Get supersession chain for a part",
+        "tags": [
+          "Catalog"
+        ],
+        "parameters": [
+          {
+            "name": "partNumber",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Supersession chain",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Supersession"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/crossrefs": {
+      "get": {
+        "summary": "Cross-reference to alternates",
+        "tags": [
+          "Catalog"
+        ],
+        "parameters": [
+          {
+            "name": "partNumber",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cross references",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Alternate"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/inventory": {
+      "get": {
+        "summary": "On-hand and ETA across locations",
+        "tags": [
+          "Inventory"
+        ],
+        "parameters": [
+          {
+            "name": "partNumber",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "site",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "description": "Optional site code to filter"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Inventory by location",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InventoryRecord"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/pricing": {
+      "get": {
+        "summary": "Channel-aware price quote",
+        "tags": [
+          "Pricing"
+        ],
+        "parameters": [
+          {
+            "name": "partNumber",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "channel",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "retail",
+                "wholesale",
+                "marketplace",
+                "internal"
+              ],
+              "default": "retail"
+            }
+          },
+          {
+            "name": "customerId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "qty",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Price quotation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PriceQuote"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "PartSummary": {
+        "type": "object",
+        "properties": {
+          "partNumber": {
+            "type": "string"
+          },
+          "oem": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "imageUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "fits": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Part": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PartSummary"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "supersession": {
+                "$ref": "#/components/schemas/Supersession"
+              },
+              "alternates": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Alternate"
+                }
+              },
+              "hazmat": {
+                "type": "boolean",
+                "default": false
+              },
+              "dimensions": {
+                "type": "object",
+                "properties": {
+                  "weight": {
+                    "type": "number"
+                  },
+                  "length": {
+                    "type": "number"
+                  },
+                  "width": {
+                    "type": "number"
+                  },
+                  "height": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "Supersession": {
+        "type": "object",
+        "properties": {
+          "root": {
+            "type": "string"
+          },
+          "chain": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "current": {
+            "type": "string"
+          }
+        }
+      },
+      "Alternate": {
+        "type": "object",
+        "properties": {
+          "partNumber": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "oem-accessory",
+              "oem-equivalent",
+              "aftermarket"
+            ]
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      },
+      "InventoryRecord": {
+        "type": "object",
+        "properties": {
+          "site": {
+            "type": "string"
+          },
+          "onHand": {
+            "type": "integer"
+          },
+          "alloc": {
+            "type": "integer",
+            "description": "Allocated / reserved"
+          },
+          "available": {
+            "type": "integer"
+          },
+          "etaDays": {
+            "type": "integer"
+          }
+        }
+      },
+      "PriceQuote": {
+        "type": "object",
+        "properties": {
+          "partNumber": {
+            "type": "string"
+          },
+          "channel": {
+            "type": "string"
+          },
+          "qty": {
+            "type": "integer"
+          },
+          "unitPrice": {
+            "type": "number"
+          },
+          "extended": {
+            "type": "number"
+          },
+          "currency": {
+            "type": "string",
+            "default": "USD"
+          },
+          "discounts": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}
