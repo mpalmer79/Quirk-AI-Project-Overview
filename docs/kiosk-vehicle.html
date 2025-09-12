@@ -4,15 +4,14 @@
 <link rel="stylesheet" href="assets/kiosk-shared.css">
 <script src="assets/kiosk-shared.js"></script>
 <style>
-  .filters { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:10px; }
   .grid { display:grid; gap:14px; grid-template-columns: 1fr; }
   @media (min-width: 768px) { .grid { grid-template-columns: repeat(3, 1fr); } }
 
-  .card { background:#fff; border:1px solid #e2e8f0; border-radius:16px; padding:10px; box-shadow: 0 2px 14px rgba(0,0,0,.05); text-align:left; }
+  .card { background:#fff; border:1px solid #e2e8f0; border-radius:16px; padding:12px; box-shadow: 0 2px 14px rgba(0,0,0,.05); text-align:center; }
   .card:hover { box-shadow: 0 6px 22px rgba(0,0,0,.08); transform: translateY(-1px); }
 
   .thumbWrap { position:relative; }
-  .thumb { width:100%; height:160px; border-radius:12px; object-fit:cover; display:block; }
+  .thumb { width:100%; height:160px; border-radius:12px; object-fit:cover; display:block; margin:0 auto; }
   .ph {
     width:100%; height:160px; border-radius:12px;
     background: linear-gradient(135deg,#e5e7eb,#cbd5e1);
@@ -23,43 +22,43 @@
   .ph .model { font-size:.9rem; opacity:.9; }
 
   .stock { position:absolute; left:8px; bottom:8px; font-size:.7rem; color:#fff; background:rgba(0,0,0,.55); padding:.2rem .5rem; border-radius:9999px; }
-  .price { color:#047857; font-weight:800; font-size:1.05rem; margin-top:6px; }
-  .muted { color:#64748b; font-size:.85rem; }
 
+  .title { margin-top:10px; font-weight:800; color:#0f172a; }
+  .price { color:#047857; font-weight:900; font-size:1.1rem; margin-top:6px; }
+  .muted { display:none; } /* removed old trim/color row */
+
+  .meta { display:flex; justify-content:center; gap:8px; margin-bottom:10px; }
   .pill { display:inline-flex; align-items:center; gap:6px; padding:.25rem .6rem; border-radius:9999px; background:#f1f5f9; color:#334155; font-size:.75rem; font-weight:600; }
 </style>
 </head><body>
 <div class="kx">
-  <h2>Vehicle Match</h2>
-  <p class="sub">Pick one to continue.</p>
+  <!-- Removed inner SectionTitle and subtext per request -->
 
-  <div class="filters">
-    <span id="criteria" class="pill">Loading buying power…</span>
+  <div class="meta">
+    <!-- Keep just the found count. Removed the buying-power chip -->
     <span id="found" class="pill">0 vehicles found</span>
   </div>
 
   <div id="list" class="grid"></div>
 
   <p class="note" style="margin-top:10px">
-    Reads <code>guided_profile.budget</code> and <code>guided_desk.apr/term</code> from Discovery.
     Inventory loads from <code>inventory.json</code> (root), then <code>assets/inventory.json</code>, then <code>sandbox/inventory.json</code>.
-    Thumbnails mirror <em>saleskiosk-welcome.html</em>: photo if present, otherwise a clean placeholder with Make/Model.
   </p>
 </div>
 
 <script>
 const { save, load, post } = window.kiosk;
 
-/* ---------- finance helpers ---------- */
+/* ---------- finance helpers (same filter logic; UI chip removed) ---------- */
 function amountFromPayment(pmt, aprPct, termMonths){
   const r = aprPct/100/12;
   if (!r) return pmt * termMonths;
   return pmt * (1 - Math.pow(1 + r, -termMonths)) / r;
 }
-const OVER_FLEX    = 5000;  // allow up to +$5,000 over buying power
+const OVER_FLEX    = 5000;   // allow up to +$5,000 over buying power
 const DOWN_DEFAULT = 0;
 
-/* ---------- image sources (match welcome page behavior) ---------- */
+/* ---------- image sources (with placeholder) ---------- */
 const VEHICLE_IMAGES = {
   '2025_Chevrolet_Silverado 1500': 'assets/2025-silverado-1500.jpg',
   '2025_Chevrolet_Equinox':       'assets/2025-equinox.jpg',
@@ -104,9 +103,8 @@ async function loadInventory(){
   return [];
 }
 
-/* ---------- card renderer (with true image + blank placeholder fallback) ---------- */
+/* ---------- card renderer (centered title & price; trim inline) ---------- */
 function card(row){
-  // normalize fields
   const v = {
     vin:   row.vin ?? row.VIN ?? row.vin_number ?? '',
     year:  row.year ?? row.Year ?? '',
@@ -132,9 +130,10 @@ function card(row){
       </div>
       <span class="stock">${v.stockType || ''}</span>
     </div>
-    <div style="margin-top:8px; font-weight:700">${v.year} ${v.make} ${v.model}</div>
+    <div class="title">
+      ${[v.year, v.make, v.model, v.trim].filter(Boolean).join(' ')}
+    </div>
     <div class="price">$${(v.price||0).toLocaleString()}</div>
-    <div class="muted">${(v.color || '').trim()}${v.trim ? (v.color?' • ':'') + v.trim : ''}</div>
   `;
 
   const img = el.querySelector('img.thumb');
@@ -159,7 +158,7 @@ function card(row){
   return el;
 }
 
-/* ---------- init: compute cap from Discovery, filter, render ---------- */
+/* ---------- init: filter by buying power (same as before), render, show count ---------- */
 (async function init(){
   const inv = await loadInventory();
 
@@ -187,8 +186,6 @@ function card(row){
   listEl.innerHTML = '';
   keep.forEach(v => listEl.appendChild(card(v)));
 
-  document.getElementById('criteria').textContent =
-    `Target $${monthlyTarget.toFixed(0)}/mo → Buying power $${principal.toLocaleString()} (+$${OVER_FLEX.toLocaleString()} flex → cap $${cap.toLocaleString()})`;
   document.getElementById('found').textContent =
     `${keep.length} vehicle${keep.length===1?'':'s'} found`;
 })();
