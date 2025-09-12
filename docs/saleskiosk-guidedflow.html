@@ -198,7 +198,27 @@ function App() {
             />
           )}
           {step===3 && <Payments vehicle={vehicle} desk={desk} setDesk={setDesk} monthly={monthly} amountFinanced={amountFinanced} onBack={back} onNext={next} budgetTarget={profile.budget} />}
-          {step===4 && <Trade trade={trade} setTrade={setTrade} onBack={back} onNext={next} />}
+          {step===4 && (
+  <div>
+    <SectionTitle title="Trade-in (separate module)" subtitle="This step is now its own page for easier editing." />
+    <div className="rounded-2xl border border-slate-200 overflow-hidden shadow-xl">
+      <iframe
+        title="Trade-In Module"
+        src="kiosk-trade.html?utm_source=kiosk&utm_medium=guided_flow&utm_campaign=trade_module"
+        className="w-full"
+        style={{ height: '520px', background: 'white' }}
+        loading="lazy"
+      />
+    </div>
+
+    {/* Keep wizard nav here if you want; or leave only the iframe. */}
+    <div className="mt-4 flex justify-between">
+      <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={back}>← Back</button>
+      <PrimaryButton onClick={next}>Continue →</PrimaryButton>
+    </div>
+  </div>
+)}
+
           {step===5 && <CreditStart onBack={back} onNext={next} />}
           {step===6 && <FandI desk={desk} setDesk={setDesk} monthly={monthly} onBack={back} onNext={next} />}
           {step===7 && <Review profile={profile} vehicle={vehicle} desk={desk} trade={trade} monthly={monthly} onBack={back} />}
@@ -387,31 +407,6 @@ function Payments({ vehicle, desk, setDesk, monthly, amountFinanced, onBack, onN
       <div className="mt-4 flex justify-between">
         <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={onBack}>← Back</button>
         <PrimaryButton onClick={onNext}>Add trade →</PrimaryButton>
-      </div>
-    </div>
-  );
-}
-
-function Trade({ trade, setTrade, onBack, onNext }) {
-  return (
-    <div>
-      <SectionTitle title="Trade-in pre-valuation" subtitle="Get a market-based range. Final number after in-person inspection." />
-      <div className="grid md:grid-cols-3 gap-4">
-        <Field label="VIN">
-          <input className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={trade.vin} onChange={e=>setTrade({...trade, vin:e.target.value})} placeholder="Scan or type VIN" />
-        </Field>
-        <Field label="Mileage">
-          <input className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={trade.miles} onChange={e=>setTrade({...trade, miles:e.target.value})} placeholder="e.g., 45,500" />
-        </Field>
-        <Field label="Condition">
-          <select className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={trade.condition} onChange={e=>setTrade({...trade, condition:e.target.value})}>
-            {['Great','Average','Rough'].map(x => <option key={x}>{x}</option>)}
-          </select>
-        </Field>
-      </div>
-      <div className="mt-4 flex justify-between">
-        <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={onBack}>← Back</button>
-        <PrimaryButton onClick={onNext}>Start credit →</PrimaryButton>
       </div>
     </div>
   );
