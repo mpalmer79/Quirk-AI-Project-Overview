@@ -55,9 +55,10 @@
   </footer>
 
 <script type="text/babel">
-const { useMemo, useState } = React;
+const { useMemo, useState, useEffect } = React;
 
-// Inventory generation (simplified for guided flow)
+/* ---------------- Inventory generation (simplified for guided flow) ---------------- */
+
 const MODEL_MAP = {
   Chevrolet:['Silverado 1500','Equinox','Traverse','Trax','Trailblazer','Malibu','Colorado','Blazer','Tahoe'],
   GMC:['Sierra 1500','Terrain','Acadia','Canyon','Yukon'],
@@ -65,7 +66,7 @@ const MODEL_MAP = {
 };
 const COLORS = ['Black','White','Silver','Gray','Blue','Red','Green','Brown'];
 
-// NEW: model -> body style mapping
+// model -> body style mapping
 const BODY_BY_MODEL = {
   // Chevrolet
   'Malibu':'Sedan','Trax':'SUV','Trailblazer':'SUV','Equinox':'SUV',
@@ -73,8 +74,7 @@ const BODY_BY_MODEL = {
   // GMC
   'Terrain':'SUV','Acadia':'SUV','Canyon':'Truck','Sierra 1500':'Truck','Yukon':'SUV',
   // Buick
-  'Envista':'Sedan',
-  'Encore GX':'SUV','Envision':'SUV'
+  'Envista':'Sedan','Encore GX':'SUV','Envision':'SUV'
 };
 
 function basePrice(make, model) {
@@ -123,13 +123,19 @@ function generateNewVehicles() {
 
 const INVENTORY = generateNewVehicles();
 
+/* ---------------- Utilities ---------------- */
+
 function calcPayment(amount, aprPct, termMonths) {
   const r = aprPct / 100 / 12;
   if (r === 0) return amount / termMonths;
   return (r * amount) / (1 - Math.pow(1 + r, -termMonths));
 }
 
-const STEPS = ['Welcome','Discovery','Vehicle Match','Trade-In','Payments','Information for Lender','F&I Options','Review & Handoff'];
+/* ---------------- Steps (Trade-In before Payments) ---------------- */
+
+const STEPS = ['Welcome','Discovery','Vehicle Match','Trade-In','Payments','Credit Start','F&I Options','Review & Handoff'];
+
+/* ----------------------------------- App ----------------------------------- */
 
 function App() {
   const [step, setStep] = useState(1); // Start at Discovery step
@@ -139,6 +145,23 @@ function App() {
   const [selectedVin, setSelectedVin] = useState(null);
   const [desk, setDesk] = useState({ price:0, down:2000, apr:6.9, term:72, taxesFees:995, products:{vsc:false,gap:false,maint:false} });
   const [trade, setTrade] = useState({ vin:'', miles:'', condition:'Average', rangeLow:0, rangeHigh:0 });
+
+  // Receive messages from kiosk-trade.html (embedded iframe)
+  useEffect(() => {
+    function onMessage(e) {
+      if (e.origin !== window.location.origin) return; // guard
+      const { type, payload } = e.data || {};
+      if (type === 'trade:update') {
+        setTrade(payload);
+      }
+      if (type === 'trade:done') {
+        setTrade(payload);
+        setStep(4); // advance to Payments (index 4) after Trade-In completes
+      }
+    }
+    window.addEventListener('message', onMessage);
+    return () => window.removeEventListener('message', onMessage);
+  }, []);
 
   const vehicle = useMemo(() => INVENTORY.find(v => v.vin === selectedVin) || null, [selectedVin]);
   const productTotal = useMemo(() => (desk.products.vsc?1895:0) + (desk.products.gap?795:0) + (desk.products.maint?495:0), [desk.products]);
@@ -153,32 +176,12 @@ function App() {
   function next(){ setStep(s => Math.min(s+1, STEPS.length-1)); }
   function back(){ setStep(s => Math.max(s-1, 0)); }
 
-  /* ===== postMessage bridge from kiosk-trade.html (iframe) ===== */
-  React.useEffect(() => {
-    function onMessage(e) {
-      // Guard: only accept messages from our own origin
-      if (e.origin !== window.location.origin) return;
-
-      const { type, payload } = e.data || {};
-      if (type === 'trade:update') {
-        // live updates from the iframe (VIN/miles/condition/range)
-        setTrade(payload);
-      }
-      if (type === 'trade:done') {
-        setTrade(payload);
-        next(); // advance the wizard to Credit Start
-      }
-    }
-
-    window.addEventListener('message', onMessage);
-    return () => window.removeEventListener('message', onMessage);
-  }, []);
-
   function selectVehicle(vin) {
     const v = INVENTORY.find(x => x.vin === vin);
     if (v) {
       setSelectedVin(v.vin);
       setDesk(d => ({...d, price: v.price}));
+      // After picking a vehicle, go to the next step (which is Trade-In)
       setStep(3);
     }
   }
@@ -197,14 +200,35 @@ function App() {
           </h1>
         </header>
 
+        <!-- Clickable progress nav (can jump back to current/earlier steps) -->
         <nav aria-label="Progress" className="mb-5 sm:mb-7">
           <ol className="grid grid-cols-4 sm:grid-cols-8 gap-2">
-            {STEPS.map((label, i) => (
-              <li key={i} className={`flex items-center gap-2 p-1 rounded-full ${i<=step?'bg-emerald-600 text-white':'bg-white/70 text-slate-600 border'} border-slate-200`}>
-                <span className={`inline-flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold ${i<=step?'bg-white/20':'bg-slate-200 text-slate-700'}`}>{i+1}</span>
-                <span className="hidden sm:block text-xs font-semibold truncate pr-1">{label}</span>
-              </li>
-            ))}
+            {STEPS.map((label, i) => {
+              const reached = i <= step;
+              const canClick = i <= step;
+              return (
+                <li key={i}>
+                  <button
+                    type="button"
+                    onClick={() => canClick && setStep(i)}
+                    disabled={!canClick}
+                    aria-disabled={!canClick}
+                    title={canClick ? `Go to ${label}` : `Locked until previous steps complete`}
+                    className={[
+                      "w-full flex items-center gap-2 p-1 rounded-full border border-slate-200 transition",
+                      reached ? "bg-emerald-600 text-white" : "bg-white/70 text-slate-600",
+                      canClick ? "cursor-pointer hover:brightness-105" : "cursor-not-allowed opacity-60"
+                    ].join(" ")}
+                  >
+                    <span className={["inline-flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold",
+                      reached ? "bg-white/20" : "bg-slate-200 text-slate-700"].join(" ")}>
+                      {i+1}
+                    </span>
+                    <span className="hidden sm:block text-xs font-semibold truncate pr-1">{label}</span>
+                  </button>
+                </li>
+              );
+            })}
           </ol>
         </nav>
 
@@ -212,32 +236,36 @@ function App() {
           {step===1 && <Discovery profile={profile} setProfile={setProfile} onNext={next} onBack={back} />}
           {step===2 && (
             <VehicleMatch
-              profile={profile}
+              profile={profile}                               /* pass profile for filtering */
               selectedVin={selectedVin}
               onSelect={(vin)=>{ setSelectedVin(vin); next(); }}
               onBack={back}
             />
           )}
-          {step===3 && <Payments vehicle={vehicle} desk={desk} setDesk={setDesk} monthly={monthly} amountFinanced={amountFinanced} onBack={back} onNext={next} budgetTarget={profile.budget} />}
-          {step===4 && (
-  <div>
-    <SectionTitle title="" subtitle="" />
-    <div className="rounded-2xl border border-slate-200 overflow-hidden shadow-xl">
-      <iframe
-        title="Trade-In Module"
-        src="kiosk-trade.html?utm_source=kiosk&utm_medium=guided_flow&utm_campaign=trade_module"
-        className="w-full"
-        style={{ height: '520px', background: 'white' }}
-        loading="lazy"
-      />
-    </div>
 
-    <div className="mt-4 flex justify-between">
-      <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={back}>← Back</button>
-      <PrimaryButton onClick={next}>Continue →</PrimaryButton>
-    </div>
-  </div>
-)}
+          {/* Step 3: Trade-In (embedded module) */}
+          {step===3 && (
+            <div>
+              <SectionTitle title="Trade-in" subtitle="Tell us about the vehicle you’re replacing." />
+              <div className="rounded-2xl border border-slate-200 overflow-hidden shadow-xl">
+                <iframe
+                  title="Trade-In Module"
+                  src="kiosk-trade.html?utm_source=kiosk&utm_medium=guided_flow&utm_campaign=trade_module"
+                  className="w-full"
+                  style={{ height: '560px', background: 'white' }}
+                  loading="lazy"
+                />
+              </div>
+              <div className="mt-4 flex justify-between">
+                <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={back}>← Back</button>
+                <PrimaryButton onClick={next}>Continue →</PrimaryButton>
+              </div>
+            </div>
+          )}
+
+          {/* Step 4: Payments (after Trade-In) */}
+          {step===4 && <Payments vehicle={vehicle} desk={desk} setDesk={setDesk} monthly={monthly} amountFinanced={amountFinanced} onBack={back} onNext={next} budgetTarget={profile.budget} />}
+
           {step===5 && <CreditStart onBack={back} onNext={next} />}
           {step===6 && <FandI desk={desk} setDesk={setDesk} monthly={monthly} onBack={back} onNext={next} />}
           {step===7 && <Review profile={profile} vehicle={vehicle} desk={desk} trade={trade} monthly={monthly} onBack={back} />}
@@ -247,7 +275,8 @@ function App() {
   );
 }
 
-// UI Components
+/* ---------------- UI Components ---------------- */
+
 function SectionTitle({ title, subtitle }) {
   return (
     <div className="mb-4">
@@ -271,7 +300,8 @@ function PrimaryButton(props){
   return <button {...props} className={cls} />;
 }
 
-// Step Components
+/* ---------------- Step Components ---------------- */
+
 function Discovery({ profile, setProfile, onNext, onBack }) {
   return (
     <div>
@@ -337,6 +367,7 @@ function Discovery({ profile, setProfile, onNext, onBack }) {
 }
 
 function VehicleMatch({ profile, selectedVin, onSelect, onBack }) {
+  // Filter by selected body style (fallback to all if none)
   const picks = useMemo(() => {
     const want = profile?.bodyStyle;
     const filtered = want ? INVENTORY.filter(v => v.bodyStyle === want) : INVENTORY;
@@ -424,7 +455,7 @@ function Payments({ vehicle, desk, setDesk, monthly, amountFinanced, onBack, onN
       </div>
       <div className="mt-4 flex justify-between">
         <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={onBack}>← Back</button>
-        <PrimaryButton onClick={onNext}>Add trade →</PrimaryButton>
+        <PrimaryButton onClick={onNext}>Start credit →</PrimaryButton>
       </div>
     </div>
   );
