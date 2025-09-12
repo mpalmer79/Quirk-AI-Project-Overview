@@ -297,12 +297,23 @@ function App() {
   const back = () => setStep(s => Math.max(s-1, 0));
   const go   = (i) => { if (i <= maxVisited) setStep(i); };
 
-  /* ---------------- iframe bridge: Discovery + Trade ---------------- */
+  /* ---------------- iframe bridge: Welcome + Discovery + Trade ---------------- */
   useEffect(() => {
     const onMsg = (e) => {
       const data = e?.data || {};
       if (!data || typeof data !== 'object') return;
       const { type, payload } = data;
+
+      // ----- Welcome (Step 1) -----
+      if (type === 'welcome:done') {
+        const { name, contact } = payload || {};
+        if (name != null || contact != null) {
+          setProfile(p => ({ ...p, name: name ?? p.name, contact: contact ?? p.contact }));
+        }
+        track('guided_welcome_next');
+        setStep(1);                       // advance to Step 2: Discovery
+        setMaxVisited(m => Math.max(m, 1));
+      }
 
       // ----- Discovery (Step 2) -----
       if (type === 'discovery:update') {
@@ -375,23 +386,24 @@ function App() {
         </nav>
 
         <div className="bg-white/90 backdrop-blur rounded-2xl shadow-2xl border border-slate-200 p-4 sm:p-6">
-          {/* Step 1: Welcome */}
+          {/* Step 1: Welcome (iframe) */}
           {step===0 && (
             <div>
               <SectionTitle title="Welcome" subtitle="We’ll guide you through a few quick steps."/>
-              <div className="grid sm:grid-cols-2 gap-4">
-                <Field label="Your name / company">
-                  <input className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300"
-                         value={profile.name} onChange={e=>setProfile({...profile, name:e.target.value})}/>
-                </Field>
-                <Field label="Text or email to send your quote">
-                  <input className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300"
-                         placeholder="(555) 555-5555 or you@example.com"
-                         value={profile.contact} onChange={e=>setProfile({...profile, contact:e.target.value})}/>
-                </Field>
-              </div>
-              <div className="mt-4 flex justify-end">
-                <PrimaryButton onClick={()=>{ track('guided_welcome_next'); next(); }}>Continue →</PrimaryButton>
+              <div className="rounded-xl border bg-white overflow-hidden">
+                <iframe
+                  title="Welcome Module"
+                  src="kiosk-welcome.html"
+                  className="w-full"
+                  style={{height:'220px', border:0}}
+                  onLoad={(e)=>{
+                    // seed current profile into the child (prefill)
+                    e.currentTarget.contentWindow?.postMessage(
+                      { type:'welcome:init', payload:{ profile } },
+                      '*'
+                    );
+                  }}
+                />
               </div>
             </div>
           )}
