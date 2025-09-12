@@ -37,6 +37,7 @@
 <body class="bg-gradient-to-b from-emerald-50 to-slate-50 min-h-screen">
   <div id="root"></div>
 
+  <!-- Site-wide footer (outside the card) -->
   <footer class="footer">
     <small>© 2025 Quirk AI — Trade-In</small>
   </footer>
@@ -48,9 +49,7 @@ const { useEffect, useMemo, useState } = React;
 const PARENT_ORIGIN = window.location.origin;
 const isEmbedded = () => (window.parent && window.parent !== window);
 function sendToParent(type, payload = {}) {
-  if (isEmbedded()) {
-    window.parent.postMessage({ type, payload }, PARENT_ORIGIN);
-  }
+  if (isEmbedded()) window.parent.postMessage({ type, payload }, PARENT_ORIGIN);
 }
 
 /* ================= helpers & small libs ================= */
@@ -69,17 +68,17 @@ const ALL_MAKES = [
 
 // First year a brand appears as its own make
 const MAKE_START_YEAR = {
-  Ram: 2009,        // split from Dodge
-  Genesis: 2017,    // standalone brand from Hyundai
+  Ram: 2009,
+  Genesis: 2017,
   Tesla: 2008,
   'Alfa Romeo': 2008
 };
 
-// Fallback model lists (used only if VPIC is offline / returns empty)
+// Fallback model lists (only used if VPIC is empty/unavailable)
 const MODELS_BY_MAKE = {
   Nissan: ['Altima','Rogue','Sentra','Murano','Pathfinder','Frontier','Versa'],
   Toyota: ['Camry','Corolla','RAV4','Highlander','Tacoma','Tundra','Prius'],
-  Ford: ['F-150','Escape','Explorer','Mustang','Edge','Bronco Sport'],
+  Ford: ['F-150','Escape','Explorer','Mustang','Edge','Bronco Sport','Focus','Fusion'],
   Chevrolet: ['Silverado 1500','Equinox','Traverse','Malibu','Trailblazer','Trax'],
   Honda: ['Civic','Accord','CR-V','Pilot','HR-V','Ridgeline'],
   Hyundai: ['Elantra','Sonata','Tucson','Santa Fe','Palisade','Kona'],
@@ -94,7 +93,6 @@ const MODELS_BY_MAKE = {
   Genesis: ['G70','G80','G90','GV70','GV80']
 };
 
-// Normalize VPIC make casing to our list
 function normalizeMake(s) {
   if (!s) return '';
   const u = s.toUpperCase();
@@ -106,16 +104,12 @@ function normalizeMake(s) {
     'RAM': 'Ram',
   };
   if (map[u]) return map[u];
-  // Title Case generic
   return s.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase()+w.slice(1)).join(' ');
 }
 
 function availableMakesForYear(year) {
   const y = Number(year) || THIS_YEAR;
-  return ALL_MAKES.filter(m => {
-    const start = MAKE_START_YEAR[m] ?? 1900;
-    return y >= start;
-  });
+  return ALL_MAKES.filter(m => (MAKE_START_YEAR[m] ?? 1900) <= y);
 }
 
 // VPIC: models for make+year
@@ -124,8 +118,7 @@ async function fetchModelsForMakeYear(make, year) {
   const res = await fetch(url);
   const data = await res.json();
   const rows = (data && data.Results) || [];
-  const names = [...new Set(rows.map(r => r.Model_Name).filter(Boolean))];
-  return names;
+  return [...new Set(rows.map(r => r.Model_Name).filter(Boolean))];
 }
 
 // VPIC: decode VIN -> year/make/model
@@ -140,6 +133,15 @@ async function decodeVin(vin) {
   return { year, make, model };
 }
 
+// currency formatter from digits -> $#,###.##
+function formatCurrencyFromDigits(digits) {
+  if (!digits) return '';
+  const cents = parseInt(digits, 10);
+  const amt = cents / 100;
+  const fmt = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return '$' + fmt.format(amt);
+}
+
 /* ================= Trade-In app ================= */
 function App() {
   const [trade, setTrade] = useState({
@@ -148,7 +150,10 @@ function App() {
     condition: 'Average',
     year: '',
     make: '',
-    model: ''
+    model: '',
+    financeInstitution: '',
+    payoff: '',           // formatted like $12,345.67
+    accountNumber: ''
   });
 
   // live update to parent on any change
@@ -180,7 +185,6 @@ function App() {
     const fromApi = (modelsForMakeYear && modelsForMakeYear.length)
       ? modelsForMakeYear
       : (MODELS_BY_MAKE[trade.make] || []);
-    // ensure decoded VIN model stays selectable if VPIC list misses it
     return Array.from(new Set([...(fromApi || []), trade.model || ''])).filter(Boolean).sort();
   }, [modelsForMakeYear, trade.make, trade.model]);
 
@@ -191,22 +195,15 @@ function App() {
     try {
       const { year, make, model } = await decodeVin(vin);
       if (year || make || model) {
-        // If decoded make is not valid for its year (brand start-year), keep year but adjust make list
         const safeYear = year || trade.year;
-        const safeMake = make && availableMakesForYear(safeYear).includes(make)
-          ? make
-          : make; // still set (user can change), UI will show only valid makes
-
         setTrade(t => ({
           ...t,
           year: safeYear || t.year,
-          make: safeMake || t.make,
+          make: make || t.make,
           model: model || t.model
         }));
       }
-    } catch (e) {
-      // silent fail; keep manual entries
-    }
+    } catch {}
   }
 
   // ----- actions -----
@@ -221,6 +218,9 @@ function App() {
         year: String(trade.year || ''),
         make: trade.make || '',
         model: trade.model || '',
+        fin: trade.financeInstitution || '',
+        payoff: trade.payoff || '',
+        acct: trade.accountNumber || '',
         step: '5'
       });
       window.location.href = `saleskiosk-guidedflow.html?${params.toString()}`;
@@ -230,7 +230,7 @@ function App() {
   return (
     <div className="relative w-full min-h-screen">
       <div className="max-w-4xl mx-auto px-4 sm:px-8 py-6 sm:py-10 relative">
-        {/* Removed inner "Quirk AI Sales Kiosk" header to avoid duplication */}
+        {/* No duplicate site header here */}
 
         <div className="bg-white/90 backdrop-blur rounded-2xl shadow-2xl border border-slate-200 p-4 sm:p-6">
           <div className="mb-6">
@@ -239,6 +239,7 @@ function App() {
             </h2>
           </div>
 
+          {/* Row 1 */}
           <div className="grid md:grid-cols-3 gap-4 items-end">
             {/* VIN */}
             <label className="block text-center">
@@ -281,6 +282,7 @@ function App() {
               </select>
             </label>
 
+            {/* Row 2 */}
             {/* Year */}
             <label className="block text-center md:col-start-1">
               <span className="block text-sm font-semibold text-slate-700 mb-1">
@@ -291,7 +293,6 @@ function App() {
                 value={trade.year}
                 onChange={e=>{
                   const year = Number(e.target.value);
-                  // If current make isn't valid for new year, clear it
                   const makesForYear = availableMakesForYear(year);
                   const make = makesForYear.includes(trade.make) ? trade.make : '';
                   setTrade({...trade, year, make, model: ''});
@@ -332,6 +333,49 @@ function App() {
                 <option value=""></option>
                 {modelsBase.map(m => <option key={m} value={m}>{m}</option>)}
               </select>
+            </label>
+
+            {/* Row 3 (new fields) */}
+            {/* Finance Institution */}
+            <label className="block text-center md:col-start-1">
+              <span className="block text-sm font-semibold text-slate-700 mb-1">
+                Finance Institution (type "n/a" if vehicle is paid off)
+              </span>
+              <input
+                className="w-72 max-w-full mx-auto rounded-xl border p-3 text-center focus:ring-2 focus:ring-emerald-300"
+                value={trade.financeInstitution}
+                onChange={e=>setTrade({...trade, financeInstitution: e.target.value})}
+                placeholder='e.g., Ally Financial'
+              />
+            </label>
+
+            {/* 10-day payoff amount (currency) */}
+            <label className="block text-center">
+              <span className="block text-sm font-semibold text-slate-700 mb-1">
+                10 day payoff amount
+              </span>
+              <input
+                className="w-72 max-w-full mx-auto rounded-xl border p-3 text-center focus:ring-2 focus:ring-emerald-300"
+                value={trade.payoff}
+                onChange={e=>{
+                  const digits = e.target.value.replace(/\D/g,''); // keep only 0-9
+                  setTrade({...trade, payoff: digits ? formatCurrencyFromDigits(digits) : ''});
+                }}
+                placeholder="e.g., $15,280.55"
+              />
+            </label>
+
+            {/* Account Number (not required) */}
+            <label className="block text-center">
+              <span className="block text-sm font-semibold text-slate-700 mb-1">
+                Account Number (optional)
+              </span>
+              <input
+                className="w-72 max-w-full mx-auto rounded-xl border p-3 text-center focus:ring-2 focus:ring-emerald-300"
+                value={trade.accountNumber}
+                onChange={e=>setTrade({...trade, accountNumber: e.target.value})}
+                placeholder='e.g., 498163780269'
+              />
             </label>
           </div>
 
