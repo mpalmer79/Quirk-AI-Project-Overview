@@ -1,1 +1,31 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<base href="/Quirk-AI-Project-Overview/"><title>Kiosk • Credit Start</title>
+<link rel="stylesheet" href="assets/kiosk-shared.css">
+<script src="assets/kiosk-shared.js"></script>
+</head><body>
+<div class="kx">
+  <h2>Start your credit application</h2><p class="sub">Soft pull first. No impact to score until you consent to submit.</p>
+  <div class="row row--2">
+    <label class="field"><span class="label">Full name</span><input id="full"></label>
+    <label class="field"><span class="label">Email</span><input id="email" type="email"></label>
+    <label class="field"><span class="label">Mobile</span><input id="mobile"></label>
+    <label class="field"><span class="label">ZIP</span><input id="zip"></label>
+    <label class="field"><span class="label">Income (monthly)</span><input id="income" type="number"></label>
+  </div>
+  <label class="field" style="display:flex;align-items:center;gap:8px"><input id="consent" type="checkbox"> I agree to a soft inquiry</label>
+  <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">
+    <button id="next" class="btn">Preview protection →</button>
+  </div>
+</div>
+<script>
+const {save, post} = window.kiosk;
+document.getElementById('next').addEventListener('click', ()=>{
+  save('guided_credit',{
+    full:full.value, email:email.value, mobile:mobile.value, zip:zip.value, income:income.value, consent:consent.checked
+  });
+  post('credit:done');
+});
+</script>
+</body></html>
 
