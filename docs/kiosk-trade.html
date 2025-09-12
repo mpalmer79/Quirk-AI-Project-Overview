@@ -42,7 +42,7 @@
   </footer>
 
 <script type="text/babel">
-const { useState } = React;
+const { useMemo, useState } = React;
 
 /* ================= parent communication (iframe) ================= */
 const PARENT_ORIGIN = window.location.origin;
@@ -53,7 +53,74 @@ function sendToParent(type, payload = {}) {
   }
 }
 
-/* ——— Small shared UI helpers (local copy so this page stands alone) ——— */
+/* ---------- Data: years, makes, models (simple library) ---------- */
+// Years: 1985 .. (current year + 1)
+const THIS_YEAR = new Date().getFullYear();
+const YEARS = Array.from({length: (THIS_YEAR + 1) - 1985 + 1}, (_,i)=> (THIS_YEAR + 1) - i); // desc
+
+// Basic make list (common brands)
+const ALL_MAKES = [
+  'Acura','Alfa Romeo','Audi','BMW','Buick','Cadillac','Chevrolet','Chrysler','Dodge','Fiat','Ford','GMC',
+  'Genesis','Honda','Hyundai','Infiniti','Jeep','Kia','Lexus','Lincoln','Mazda','Mercedes-Benz','Mini','Mitsubishi',
+  'Nissan','Porsche','Ram','Subaru','Tesla','Toyota','Volkswagen','Volvo'
+];
+
+// Dynamic filter rules by year (example requirement: RAM didn’t exist before 2009)
+function availableMakesForYear(year) {
+  const list = ALL_MAKES.filter(m => {
+    if (m === 'Ram' && Number(year) < 2009) return false;
+    return true;
+  });
+  return list;
+}
+
+// Model library per make (representative set; extend anytime)
+const MODELS_BY_MAKE = {
+  Acura: ['ILX','TLX','RDX','MDX'],
+  Audi: ['A3','A4','Q5','Q7'],
+  BMW: ['3 Series','5 Series','X3','X5'],
+  Buick: ['Encore','Encore GX','Envision','Enclave'],
+  Cadillac: ['CT5','XT4','XT5','Escalade'],
+  Chevrolet: ['Malibu','Trax','Trailblazer','Equinox','Blazer','Traverse','Colorado','Silverado 1500','Tahoe'],
+  Chrysler: ['300','Pacifica','Voyager'],
+  Dodge: ['Charger','Challenger','Durango','Grand Caravan'],
+  Ford: ['Fusion','Escape','Edge','Explorer','F-150'],
+  GMC: ['Terrain','Acadia','Canyon','Sierra 1500','Yukon'],
+  Genesis: ['G70','G80','GV70','GV80'],
+  Honda: ['Civic','Accord','CR-V','Pilot','Ridgeline'],
+  Hyundai: ['Elantra','Sonata','Tucson','Santa Fe','Palisade'],
+  Infiniti: ['Q50','QX50','QX60'],
+  Jeep: ['Renegade','Compass','Cherokee','Grand Cherokee','Wrangler','Gladiator'],
+  Kia: ['Forte','K5','Sportage','Sorento','Telluride'],
+  Lexus: ['IS','ES','RX','GX'],
+  Lincoln: ['Corsair','Nautilus','Aviator','Navigator'],
+  Mazda: ['Mazda3','Mazda6','CX-5','CX-9'],
+  'Mercedes-Benz': ['C-Class','E-Class','GLC','GLE'],
+  Mini: ['Cooper','Countryman'],
+  Mitsubishi: ['Mirage','Outlander','Eclipse Cross'],
+  Nissan: ['Sentra','Altima','Rogue','Pathfinder','Frontier'],
+  Porsche: ['Macan','Cayenne','Panamera'],
+  Ram: ['1500','2500','3500','ProMaster'],
+  Subaru: ['Impreza','Legacy','Forester','Outback','Ascent'],
+  Tesla: ['Model 3','Model Y','Model S','Model X'],
+  Toyota: ['Corolla','Camry','RAV4','Highlander','Tacoma'],
+  Volkswagen: ['Jetta','Passat','Tiguan','Atlas'],
+  Volvo: ['S60','XC40','XC60','XC90']
+};
+
+/* ——— Small shared UI helpers (centerable label) ——— */
+function Field({ label, children, center=false, widthClass="w-full" }) {
+  return (
+    <label className={`block mb-3 ${center ? 'text-center' : ''}`}>
+      <span className="block text-sm font-semibold text-slate-700 mb-1">{label}</span>
+      <div className={`${widthClass} mx-auto`}>{children}</div>
+    </label>
+  );
+}
+function PrimaryButton(props){
+  const cls = (props.className || "") + " px-5 py-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-700 text-white font-semibold shadow hover:brightness-110 active:brightness-95";
+  return <button {...props} className={cls} />;
+}
 function SectionTitle({ title, subtitle }) {
   return (
     <div className="mb-4">
@@ -62,49 +129,32 @@ function SectionTitle({ title, subtitle }) {
     </div>
   );
 }
-function Field({ label, children }) {
-  return (
-    <label className="block mb-3">
-      <span className="block text-sm font-semibold text-slate-700 mb-1">{label}</span>
-      {children}
-    </label>
-  );
-}
-function PrimaryButton(props){
-  const cls = (props.className || "") + " px-5 py-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-700 text-white font-semibold shadow hover:brightness-110 active:brightness-95";
-  return <button {...props} className={cls} />;
-}
 
 /* ——— Trade-In app ——— */
 function App() {
-  const [trade, setTrade] = useState({ vin:'', miles:'', condition:'Average', rangeLow:0, rangeHigh:0 });
+  const [trade, setTrade] = useState({
+    vin:'', miles:'', condition:'Average',
+    year:'', make:'', model:''
+  });
 
-  function estimateRange() {
-    // same simple logic as before — placeholder for your real logic
-    const base=12000;
-    const miles=parseInt(trade.miles||'0',10);
-    const adjMiles=Math.max(0,(60000-miles)*0.05);
-    const cond=trade.condition==='Great'?1500:(trade.condition==='Rough'?-1500:0);
-    const low=Math.max(500, base+adjMiles+cond-1500);
-    const high=Math.max(low+500, base+adjMiles+cond+1500);
-    const next = { ...trade, rangeLow:Math.round(low), rangeHigh:Math.round(high) };
-    setTrade(next);
-    // send live update to parent
-    sendToParent('trade:update', next);
-  }
+  // When year changes, re-filter makes; when make changes, clear model.
+  const makes = useMemo(() => availableMakesForYear(trade.year || THIS_YEAR), [trade.year]);
+  const models = useMemo(() => MODELS_BY_MAKE[trade.make] || [], [trade.make]);
 
   function startCredit() {
-    if (isEmbedded()) {
-      // tell parent to persist trade + advance to the next step
-      sendToParent('trade:done', trade);
-    } else {
-      // fallback if opened standalone: bounce back to main flow with step hint
+    // push live update + completion notice to parent (if embedded)
+    sendToParent('trade:update', trade);
+    sendToParent('trade:done', trade);
+
+    // fallback if opened standalone: go back to main flow with query params
+    if (!isEmbedded()) {
       const params = new URLSearchParams({
         vin: trade.vin || '',
         miles: trade.miles || '',
         condition: trade.condition || 'Average',
-        low: String(trade.rangeLow || 0),
-        high: String(trade.rangeHigh || 0),
+        year: trade.year || '',
+        make: trade.make || '',
+        model: trade.model || '',
         step: '5'
       });
       window.location.href = `saleskiosk-guidedflow.html?${params.toString()}`;
@@ -114,47 +164,88 @@ function App() {
   return (
     <div className="relative w-full min-h-screen">
       <div className="max-w-4xl mx-auto px-4 sm:px-8 py-6 sm:py-10 relative">
-        <header className="mb-4 sm:mb-6 text-center">
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-emerald-900">Quirk AI Sales Kiosk</h1>
-        </header>
+        {/* Removed the duplicate “Quirk AI Sales Kiosk” header by request */}
 
         <div className="bg-white/90 backdrop-blur rounded-2xl shadow-2xl border border-slate-200 p-4 sm:p-6">
-          <SectionTitle title="Trade-in pre-valuation" subtitle="Get a market-based range. Final number after in-person inspection." />
+          <SectionTitle
+            title="Tell us about the vehicle that you're replacing"
+            subtitle=""
+          />
+
+          {/* Row 1: VIN / Mileage / Condition */}
           <div className="grid md:grid-cols-3 gap-4">
-            <Field label="VIN">
-              <input className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300"
-                     value={trade.vin}
-                     onChange={e=>setTrade({...trade, vin:e.target.value})}
-                     placeholder="Scan or type VIN" />
+            <Field label="VIN (optional, but helpful)" center widthClass="max-w-sm">
+              <input
+                className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300"
+                value={trade.vin}
+                onChange={e=>setTrade({...trade, vin:e.target.value})}
+                placeholder="Scan or type VIN"
+                inputMode="text"
+                autoComplete="off"
+              />
             </Field>
-            <Field label="Mileage">
-              <input className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300"
-                     value={trade.miles}
-                     onChange={e=>setTrade({...trade, miles:e.target.value})}
-                     placeholder="e.g., 45,500" />
+
+            <Field label="Mileage" center widthClass="w-40">
+              <input
+                className="w-full rounded-xl border p-3 text-center focus:ring-2 focus:ring-emerald-300"
+                value={trade.miles}
+                onChange={e=>setTrade({...trade, miles:e.target.value})}
+                placeholder="e.g., 45,500"
+                inputMode="numeric"
+                size="15"
+              />
             </Field>
-            <Field label="Condition">
-              <select className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300"
-                      value={trade.condition}
-                      onChange={e=>setTrade({...trade, condition:e.target.value})}>
+
+            <Field label="Condition" center widthClass="w-48">
+              <select
+                className="w-full rounded-xl border p-3 text-center focus:ring-2 focus:ring-emerald-300"
+                value={trade.condition}
+                onChange={e=>setTrade({...trade, condition:e.target.value})}
+              >
                 {['Great','Average','Rough'].map(x => <option key={x}>{x}</option>)}
               </select>
             </Field>
           </div>
 
-          <div className="mt-2 flex gap-2">
-            <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={estimateRange}>Estimate range</button>
-            {trade.rangeLow>0 && (
-              <div className="px-4 py-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800">
-                Estimated range: ${trade.rangeLow.toLocaleString()} – ${trade.rangeHigh.toLocaleString()}
-              </div>
-            )}
+          {/* Row 2: Year / Make / Model */}
+          <div className="grid md:grid-cols-3 gap-4 mt-2">
+            <Field label="Year" center widthClass="w-40">
+              <select
+                className="w-full rounded-xl border p-3 text-center focus:ring-2 focus:ring-emerald-300"
+                value={trade.year}
+                onChange={e=>setTrade({ ...trade, year:e.target.value, make:'', model:'' })}
+              >
+                <option value="" disabled hidden>Select year</option>
+                {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+              </select>
+            </Field>
+
+            <Field label="Make" center widthClass="max-w-xs">
+              <select
+                className="w-full rounded-xl border p-3 text-center focus:ring-2 focus:ring-emerald-300"
+                value={trade.make}
+                onChange={e=>setTrade({ ...trade, make:e.target.value, model:'' })}
+                disabled={!trade.year}
+              >
+                <option value="" disabled hidden>{trade.year ? 'Select make' : 'Choose year first'}</option>
+                {makes.map(m => <option key={m} value={m}>{m}</option>)}
+              </select>
+            </Field>
+
+            <Field label="Model" center widthClass="max-w-xs">
+              <select
+                className="w-full rounded-xl border p-3 text-center focus:ring-2 focus:ring-emerald-300"
+                value={trade.model}
+                onChange={e=>setTrade({ ...trade, model:e.target.value })}
+                disabled={!trade.make}
+              >
+                <option value="" disabled hidden>{trade.make ? 'Select model' : 'Choose make first'}</option>
+                {models.map(m => <option key={m} value={m}>{m}</option>)}
+              </select>
+            </Field>
           </div>
 
-          {/* 
-            Keep local Back / Start credit so this page also works standalone.
-            When embedded in an iframe, the parent page listens for messages and advances the wizard.
-          */}
+          {/* Footer actions */}
           <div className="mt-4 flex justify-between">
             <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={()=>history.back()}>← Back</button>
             <PrimaryButton onClick={startCredit}>Start credit →</PrimaryButton>
