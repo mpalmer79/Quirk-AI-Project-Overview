@@ -1,1 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Quirk AI — Sales Kiosk (Welcome)</title>
+
+  <!-- Force light UI -->
+  <meta name="color-scheme" content="light"/>
+  <meta name="theme-color" content="#ffffff"/>
+
+  <!-- Site base (same as the repo pages base) -->
+  <base href="/Quirk-AI-Project-Overview/"/>
+
+  <!-- Global site styles (footer, etc.) -->
+  <link rel="stylesheet" href="assets/style.css"/>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    :focus-visible { outline: 2px solid #34d399; outline-offset: 2px; }
+    body {
+      background:
+        linear-gradient(rgba(255,255,255,.88), rgba(255,255,255,.88)),
+        url("assets/kiosk.png") center / cover fixed no-repeat !important;
+      min-height: 100vh;
+    }
+    input, select, textarea, button {
+      background: #ffffff !important;
+      color: #0f172a !important;
+      border-color: #e5e7eb !important;
+    }
+    input::placeholder { color:#94a3b8; }
+    @supports (-webkit-touch-callout:none){
+      :root { color-scheme: light; }
+      select, input, textarea { -webkit-appearance: none; }
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-b from-emerald-50 to-slate-50 min-h-screen">
+  <div class="relative w-full min-h-screen">
+    <!-- Decorative glows (match guided flow) -->
+    <div aria-hidden class="pointer-events-none absolute inset-0 overflow-hidden">
+      <div class="absolute -top-24 -left-24 h-72 w-72 rounded-full bg-emerald-300/30 blur-3xl"></div>
+      <div class="absolute -bottom-24 -right-24 h-72 w-72 rounded-full bg-sky-300/20 blur-3xl"></div>
+    </div>
+
+    <div class="max-w-6xl mx-auto px-4 sm:px-8 py-6 sm:py-10 relative">
+      <header class="mb-4 sm:mb-6 text-center">
+        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-emerald-900">Quirk AI Sales Kiosk</h1>
+      </header>
+
+      <!-- Static progress row (Step 1 active) -->
+      <nav aria-label="Progress" class="mb-5 sm:mb-7">
+        <ol class="grid grid-cols-4 sm:grid-cols-8 gap-2">
+          <!-- 1 active -->
+          <li>
+            <span class="w-full flex items-center gap-2 p-1 rounded-full border border-slate-200 bg-emerald-600 text-white">
+              <span class="inline-flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold bg-white/20">1</span>
+              <span class="hidden sm:block text-xs font-semibold truncate pr-1
 
