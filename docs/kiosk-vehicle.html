@@ -7,49 +7,83 @@
 <div class="kx">
   <h2>Vehicle Match</h2><p class="sub">Pick one to continue.</p>
   <div id="list" class="row row--2"></div>
-  <div class="note">Tip: you can also prebuild <code>sandbox/inventory.json</code>; this page will use it if present.</div>
+  <div class="note">This page will auto-load <code>inventory.json</code> from the site root (docs/). It will fall back to <code>assets/inventory.json</code> or <code>sandbox/inventory.json</code> if present.</div>
 </div>
 <script>
-const {save, load, post} = window.kiosk;
+const { save, load, post } = window.kiosk;
 
+/* --- Load inventory, preferring site root (docs/inventory.json), with fallbacks --- */
 async function getInventory(){
+  // 1) assets/inventory.json (optional)
   try {
-    const res = await fetch('sandbox/inventory.json', {cache:'no-store'});
+    const res = await fetch('assets/inventory.json', { cache: 'no-store' });
     if (res.ok) return await res.json();
   } catch {}
-  // fallback minimal inventory
+
+  // 2) ROOT: docs/inventory.json (your current location) ✅
+  try {
+    const res = await fetch('inventory.json', { cache: 'no-store' });
+    if (res.ok) return await res.json();
+  } catch {}
+
+  // 3) sandbox/inventory.json (optional)
+  try {
+    const res = await fetch('sandbox/inventory.json', { cache: 'no-store' });
+    if (res.ok) return await res.json();
+  } catch {}
+
+  // 4) last resort: tiny demo list
   return [
     { vin:'1GCDEMO0000000001', year:2025, make:'Chevrolet', model:'Equinox', price:28990, color:'White', trim:'LT' },
-    { vin:'1GTDemo0000000002', year:2025, make:'GMC', model:'Terrain',   price:30990, color:'Black', trim:'SLE' },
-    { vin:'1G4Demo0000000003', year:2025, make:'Buick', model:'Envista', price:23990, color:'Blue',  trim:'Preferred' }
+    { vin:'1GTDemo0000000002', year:2025, make:'GMC',       model:'Terrain', price:30990, color:'Black', trim:'SLE' },
+    { vin:'1G4Demo0000000003', year:2025, make:'Buick',     model:'Envista', price:23990, color:'Blue',  trim:'Preferred' }
   ];
 }
 
+/* --- Render a simple selectable card for each vehicle --- */
 function card(v){
+  // Defensive: accept alternative key names if your JSON uses snake_case, etc.
+  const data = {
+    vin:   v.vin   ?? v.VIN   ?? v.vin_number ?? '',
+    year:  v.year  ?? v.Year  ?? '',
+    make:  v.make  ?? v.Make  ?? '',
+    model: v.model ?? v.Model ?? '',
+    trim:  v.trim  ?? v.Trim  ?? '',
+    color: v.color ?? v.Color ?? '',
+    price: Number(v.price ?? v.msrp ?? v.salePrice ?? v.Price ?? 0)
+  };
+
   const div = document.createElement('div');
-  div.className = 'field'; // reuse spacing
+  div.className = 'field'; // reuse spacing from shared CSS
   div.innerHTML = `
     <button class="btn btn--ghost" style="width:100%; text-align:left; display:block">
       <div style="display:flex;justify-content:space-between;align-items:center">
-        <div><strong>${v.year} ${v.make} ${v.model}</strong><br>
-          <span class="pill" style="margin-top:4px; display:inline-block;">${v.trim||''} ${v.color||''}</span>
+        <div>
+          <strong>${data.year} ${data.make} ${data.model}</strong><br>
+          <span class="pill" style="margin-top:4px; display:inline-block;">${data.trim || ''} ${data.color || ''}</span>
         </div>
-        <div style="font-weight:800;color:#047857">$${(v.price||0).toLocaleString()}</div>
+        <div style="font-weight:800;color:#047857">$${(data.price || 0).toLocaleString()}</div>
       </div>
-    </button>`;
+    </button>
+  `;
   div.querySelector('button').addEventListener('click', ()=>{
-    const desk = load('guided_desk', { price:0, down:2000, apr:6.9, term:72, taxesFees:995, products:{vsc:false,gap:false,maint:false}});
-    save('guided_selectedVin', v.vin);
-    save('guided_desk', {...desk, price: v.price||desk.price});
-    post('vehicle:done', { vin: v.vin });
+    const desk = load('guided_desk', {
+      price:0, down:2000, apr:6.9, term:72, taxesFees:995,
+      products:{ vsc:false, gap:false, maint:false }
+    });
+    save('guided_selectedVin', data.vin);
+    save('guided_desk', { ...desk, price: data.price || desk.price });
+    post('vehicle:done', { vin: data.vin });
   });
   return div;
 }
 
+/* --- Init: load inventory and render ALL vehicles --- */
 (async function init(){
   const inv = await getInventory();
   const list = document.getElementById('list');
-  inv.slice(0,9).forEach(v => list.appendChild(card(v)));
+  list.innerHTML = '';
+  inv.forEach(v => list.appendChild(card(v))); // no slice → show everything
 })();
 </script>
 </body></html>
