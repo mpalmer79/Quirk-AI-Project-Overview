@@ -73,7 +73,7 @@ const BODY_BY_MODEL = {
   // GMC
   'Terrain':'SUV','Acadia':'SUV','Canyon':'Truck','Sierra 1500':'Truck','Yukon':'SUV',
   // Buick
-  'Envista':'Sedan', // categorize as you prefer
+  'Envista':'Sedan',
   'Encore GX':'SUV','Envision':'SUV'
 };
 
@@ -106,7 +106,7 @@ function generateNewVehicles() {
         stockType:'New',
         year:2025,
         make, model,
-        bodyStyle: BODY_BY_MODEL[model] || 'Other', // NEW: stamp body style
+        bodyStyle: BODY_BY_MODEL[model] || 'Other',
         trim:(['LS','LT','LTZ','RS','Denali','Preferred','Avenir'])[i%7],
         price,
         miles: 12 + (i % 9),
@@ -153,6 +153,27 @@ function App() {
   function next(){ setStep(s => Math.min(s+1, STEPS.length-1)); }
   function back(){ setStep(s => Math.max(s-1, 0)); }
 
+  /* ===== postMessage bridge from kiosk-trade.html (iframe) ===== */
+  React.useEffect(() => {
+    function onMessage(e) {
+      // Guard: only accept messages from our own origin
+      if (e.origin !== window.location.origin) return;
+
+      const { type, payload } = e.data || {};
+      if (type === 'trade:update') {
+        // live updates from the iframe (VIN/miles/condition/range)
+        setTrade(payload);
+      }
+      if (type === 'trade:done') {
+        setTrade(payload);
+        next(); // advance the wizard to Credit Start
+      }
+    }
+
+    window.addEventListener('message', onMessage);
+    return () => window.removeEventListener('message', onMessage);
+  }, []);
+
   function selectVehicle(vin) {
     const v = INVENTORY.find(x => x.vin === vin);
     if (v) {
@@ -191,7 +212,7 @@ function App() {
           {step===1 && <Discovery profile={profile} setProfile={setProfile} onNext={next} onBack={back} />}
           {step===2 && (
             <VehicleMatch
-              profile={profile}                               {/* pass profile for filtering */}
+              profile={profile}
               selectedVin={selectedVin}
               onSelect={(vin)=>{ setSelectedVin(vin); next(); }}
               onBack={back}
@@ -211,14 +232,12 @@ function App() {
       />
     </div>
 
-    {/* Keep wizard nav here if you want; or leave only the iframe. */}
     <div className="mt-4 flex justify-between">
       <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={back}>← Back</button>
       <PrimaryButton onClick={next}>Continue →</PrimaryButton>
     </div>
   </div>
 )}
-
           {step===5 && <CreditStart onBack={back} onNext={next} />}
           {step===6 && <FandI desk={desk} setDesk={setDesk} monthly={monthly} onBack={back} onNext={next} />}
           {step===7 && <Review profile={profile} vehicle={vehicle} desk={desk} trade={trade} monthly={monthly} onBack={back} />}
@@ -318,7 +337,6 @@ function Discovery({ profile, setProfile, onNext, onBack }) {
 }
 
 function VehicleMatch({ profile, selectedVin, onSelect, onBack }) {
-  // Filter by selected body style (fallback to all if none or "EV" with no matches)
   const picks = useMemo(() => {
     const want = profile?.bodyStyle;
     const filtered = want ? INVENTORY.filter(v => v.bodyStyle === want) : INVENTORY;
