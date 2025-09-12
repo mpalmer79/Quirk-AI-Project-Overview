@@ -1,0 +1,37 @@
+/* Light, neutral styles shared by all kiosk modules rendered in iframes */
+:root { color-scheme: light; }
+html, body {
+  background: transparent;          /* parent provides the card background */
+  margin: 0; padding: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  color: #0f172a;
+}
+:focus-visible { outline: 2px solid #34d399; outline-offset: 2px; }
+
+.kx { padding: 12px; }
+.kx h2 { margin: 0 0 6px; font-weight: 700; color: #065f46; font-size: 1.125rem; text-align: center; }
+.kx p.sub { margin: 2px 0 12px; color: #64748b; text-align: center; }
+
+.kx .field { margin-bottom: 10px; }
+.kx .label { display:block; font-weight:600; font-size:.9rem; color:#334155; margin-bottom:6px; }
+
+.kx input, .kx select, .kx textarea, .kx button {
+  background:#fff; color:#0f172a; border:1px solid #e5e7eb; border-radius:12px; padding:.75rem;
+}
+.kx input::placeholder, .kx textarea::placeholder { color:#94a3b8; }
+.kx .row { display:grid; grid-template-columns: 1fr; gap:12px; }
+@media (min-width: 640px) { .kx .row--2 { grid-template-columns: 1fr 1fr; } }
+
+.kx .btn {
+  border: none;
+  font-weight: 600;
+  border-radius: 16px;
+  padding: .75rem 1.25rem;
+  background: linear-gradient(90deg, #059669, #047857);
+  color:#fff; box-shadow: 0 2px 10px rgba(16,185,129,.2);
+  cursor: pointer;
+}
+.kx .btn--ghost { background:#fff; color:#0f172a; border:1px solid #e5e7eb; }
+
+.kx .pill { display:inline-block; padding:.25rem .5rem; border-radius:9999px; background:#fff; border:1px solid #e2e8f0; font-size:.75rem; color:#334155; }
+.kx .note { font-size:.75rem; color:#64748b; margin-top:6px; }
