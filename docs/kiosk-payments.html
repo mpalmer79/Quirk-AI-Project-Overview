@@ -1,1 +1,58 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<base href="/Quirk-AI-Project-Overview/"><title>Kiosk • Payments</title>
+<link rel="stylesheet" href="assets/kiosk-shared.css">
+<script src="assets/kiosk-shared.js"></script>
+</head><body>
+<div class="kx">
+  <h2>Build your payment</h2><p class="sub">Taxes/fees estimated; lender approval required.</p>
+  <div class="row row--2">
+    <label class="field"><span class="label">Vehicle price ($)</span><input id="price" type="number"></label>
+    <label class="field"><span class="label">Down payment ($)</span><input id="down" type="number"></label>
+    <label class="field"><span class="label">Taxes & fees ($)</span><input id="fees" type="number"></label>
+    <label class="field"><span class="label">APR (%)</span><input id="apr" type="number" step="0.1"></label>
+    <label class="field"><span class="label">Term (months)</span>
+      <select id="term"><option>36</option><option>48</option><option>60</option><option selected>72</option><option>84</option></select>
+    </label>
+  </div>
+  <details class="note"><summary>Products</summary>
+    <label style="display:flex;align-items:center;gap:8px;margin-top:6px"><input type="checkbox" id="vsc"> VSC ($1,895)</label>
+    <label style="display:flex;align-items:center;gap:8px;margin-top:6px"><input type="checkbox" id="gap"> GAP ($795)</label>
+    <label style="display:flex;align-items:center;gap:8px;margin-top:6px"><input type="checkbox" id="maint"> Maintenance ($495)</label>
+  </details>
+  <div class="note" id="summary" style="margin-top:8px"></div>
+  <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">
+    <button id="next" class="btn">Start credit →</button>
+  </div>
+</div>
+<script>
+const {save, load, post} = window.kiosk;
+const els = {
+  price:document.getElementById('price'), down:document.getElementById('down'),
+  fees:document.getElementById('fees'), apr:document.getElementById('apr'), term:document.getElementById('term'),
+  vsc:document.getElementById('vsc'), gap:document.getElementById('gap'), maint:document.getElementById('maint'),
+  summary:document.getElementById('summary')
+};
+function calcPayment(amount, aprPct, termMonths){ const r=aprPct/100/12; return r===0? amount/termMonths : (r*amount)/(1-Math.pow(1+r,-termMonths)); }
+function render(){
+  const d = load('guided_desk',{price:0,down:2000,apr:6.9,term:72,taxesFees:995,products:{vsc:false,gap:false,maint:false}});
+  d.price = Number(els.price.value||d.price); d.down = Number(els.down.value||d.down);
+  d.taxesFees = Number(els.fees.value||d.taxesFees); d.apr = Number(els.apr.value||d.apr); d.term = Number(els.term.value||d.term);
+  d.products = { vsc: els.vsc.checked, gap: els.gap.checked, maint: els.maint.checked };
+  const productTotal = (d.products.vsc?1895:0)+(d.products.gap?795:0)+(d.products.maint?495:0);
+  const amount = Math.max(d.price + d.taxesFees + productTotal - d.down - ((load('guided_trade',{}).rangeLow||0 + load('guided_trade',{}).rangeHigh||0)/2 || 0), 0);
+  const monthly = calcPayment(amount, d.apr, d.term);
+  els.summary.innerHTML = `Amount financed: <strong>$${amount.toLocaleString()}</strong> &nbsp; • &nbsp; Est. monthly: <strong>$${monthly.toFixed(0)}</strong>`;
+  save('guided_desk', d);
+}
+function hydrate(){
+  const d = load('guided_desk',{price:0,down:2000,apr:6.9,term:72,taxesFees:995,products:{vsc:false,gap:false,maint:false}});
+  ['price','down','fees','apr','term'].forEach(k=> els[k].value = d[k]);
+  els.vsc.checked=d.products.vsc; els.gap.checked=d.products.gap; els.maint.checked=d.products.maint; render();
+}
+['price','down','fees','apr','term','vsc','gap','maint'].forEach(k=> els[k].addEventListener('input', render));
+document.getElementById('next').addEventListener('click', ()=>{ render(); post('payments:done'); });
+hydrate();
+</script>
+</body></html>
 
