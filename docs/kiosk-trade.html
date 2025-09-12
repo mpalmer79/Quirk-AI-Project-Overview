@@ -37,11 +37,6 @@
 <body class="bg-gradient-to-b from-emerald-50 to-slate-50 min-h-screen">
   <div id="root"></div>
 
-  <!-- Site-wide footer (outside the card) -->
-  <footer class="footer">
-    <small>© 2025 Quirk AI — Trade-In</small>
-  </footer>
-
 <script type="text/babel">
 const { useEffect, useMemo, useState } = React;
 
@@ -74,7 +69,7 @@ const MAKE_START_YEAR = {
   'Alfa Romeo': 2008
 };
 
-// Fallback model lists (only used if VPIC is empty/unavailable)
+// Fallback model lists
 const MODELS_BY_MAKE = {
   Nissan: ['Altima','Rogue','Sentra','Murano','Pathfinder','Frontier','Versa'],
   Toyota: ['Camry','Corolla','RAV4','Highlander','Tacoma','Tundra','Prius'],
@@ -152,8 +147,9 @@ function App() {
     make: '',
     model: '',
     financeInstitution: '',
-    payoff: '',           // formatted like $12,345.67
-    accountNumber: ''
+    payoff: '',
+    accountNumber: '',
+    regFileName: ''
   });
 
   // live update to parent on any change
@@ -206,6 +202,16 @@ function App() {
     } catch {}
   }
 
+  // ----- file upload (scan registration) -----
+  function handleRegPick(e) {
+    const f = e.target.files && e.target.files[0];
+    if (f) {
+      setTrade(t => ({ ...t, regFileName: f.name }));
+      // send light metadata to parent (no file content)
+      sendToParent('trade:reg', { name: f.name, size: f.size, type: f.type });
+    }
+  }
+
   // ----- actions -----
   function startCredit() {
     if (isEmbedded()) {
@@ -230,8 +236,6 @@ function App() {
   return (
     <div className="relative w-full min-h-screen">
       <div className="max-w-4xl mx-auto px-4 sm:px-8 py-6 sm:py-10 relative">
-        {/* No duplicate site header here */}
-
         <div className="bg-white/90 backdrop-blur rounded-2xl shadow-2xl border border-slate-200 p-4 sm:p-6">
           <div className="mb-6">
             <h2 className="text-xl sm:text-2xl font-bold text-emerald-800 text-center">
@@ -251,7 +255,7 @@ function App() {
                 value={trade.vin}
                 onChange={e=>setTrade({...trade, vin:e.target.value})}
                 onBlur={handleVinBlur}
-                placeholder="3N1AB8CV6PY222842"
+                placeholder="Enter 17 digit VIN here"
               />
             </label>
 
@@ -388,6 +392,28 @@ function App() {
               Start credit →
             </button>
           </div>
+        </div>
+
+        {/* NEW: bottom-of-page button (replaces duplicate footer) */}
+        <div className="mt-4 flex flex-col items-center">
+          <input
+            id="regUpload"
+            type="file"
+            className="hidden"
+            accept=".pdf,image/*"
+            onChange={handleRegPick}
+          />
+          <button
+            className="px-5 py-3 rounded-2xl bg-emerald-700 text-white font-semibold shadow hover:brightness-110 active:brightness-95"
+            onClick={()=>document.getElementById('regUpload').click()}
+          >
+            Scan copy of registration HERE (required)
+          </button>
+          {trade.regFileName && (
+            <div className="mt-2 text-xs text-slate-600">
+              Selected: {trade.regFileName}
+            </div>
+          )}
         </div>
       </div>
     </div>
