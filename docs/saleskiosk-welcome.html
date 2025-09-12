@@ -447,15 +447,22 @@ function PrimaryButton(props){
 /* ------------------------ Welcome + Browse (with validation) ------------------------ */
 function Welcome({ consent, setConsent, profile, setProfile, onValidatedNext, onSelect }) {
   // default filters to "Any" for Stock Type → 200 vehicles
-  const [filters, setFilters] = useState(load("kiosk_filters", {
-    stockType: '', make: '', model: '', color: '', minPrice: '', maxPrice: ''
-  }));
+  const initialFilters = React.useMemo(() => {
+    const stored = load("kiosk_filters", {
+      stockType: '', make: '', model: '', color: '', minPrice: '', maxPrice: ''
+    }) || {};
+    // Force Stock Type back to default "Any" on each fresh page load
+    return { ...stored, stockType: '' };
+  }, []);
+
+  const [filters, setFilters] = useState(initialFilters);
   const [page, setPage] = useState(1);
   const perPage = 12;
 
-  useEffect(()=>save("kiosk_filters", filters), [filters]);
+  useEffect(() => save("kiosk_filters", filters), [filters]);
 
   const modelOptions = useMemo(() => filters.make ? MODEL_MAP[filters.make] : [], [filters.make]);
+  useEffect(() => { save("kiosk_filters", initialFilters); }, []);
 
   const results = useMemo(() => {
     const min = Number(filters.minPrice || 0);
