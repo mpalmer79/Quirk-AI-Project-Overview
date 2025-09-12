@@ -42,7 +42,7 @@
   </footer>
 
 <script type="text/babel">
-const { useMemo, useState } = React;
+const { useMemo, useState, useEffect } = React;
 
 /* ================= parent communication (iframe) ================= */
 const PARENT_ORIGIN = window.location.origin;
@@ -54,27 +54,20 @@ function sendToParent(type, payload = {}) {
 }
 
 /* ---------- Data: years, makes, models (simple library) ---------- */
-// Years: 1985 .. (current year + 1)
 const THIS_YEAR = new Date().getFullYear();
 const YEARS = Array.from({length: (THIS_YEAR + 1) - 1985 + 1}, (_,i)=> (THIS_YEAR + 1) - i); // desc
 
-// Basic make list (common brands)
 const ALL_MAKES = [
   'Acura','Alfa Romeo','Audi','BMW','Buick','Cadillac','Chevrolet','Chrysler','Dodge','Fiat','Ford','GMC',
   'Genesis','Honda','Hyundai','Infiniti','Jeep','Kia','Lexus','Lincoln','Mazda','Mercedes-Benz','Mini','Mitsubishi',
   'Nissan','Porsche','Ram','Subaru','Tesla','Toyota','Volkswagen','Volvo'
 ];
 
-// Dynamic filter rules by year (example requirement: RAM didn’t exist before 2009)
 function availableMakesForYear(year) {
-  const list = ALL_MAKES.filter(m => {
-    if (m === 'Ram' && Number(year) < 2009) return false;
-    return true;
-  });
-  return list;
+  const y = Number(year);
+  return ALL_MAKES.filter(m => !(m === 'Ram' && y && y < 2009));
 }
 
-// Model library per make (representative set; extend anytime)
 const MODELS_BY_MAKE = {
   Acura: ['ILX','TLX','RDX','MDX'],
   Audi: ['A3','A4','Q5','Q7'],
@@ -108,7 +101,7 @@ const MODELS_BY_MAKE = {
   Volvo: ['S60','XC40','XC60','XC90']
 };
 
-/* ——— Small shared UI helpers (centerable label) ——— */
+/* ——— UI helpers ——— */
 function Field({ label, children, center=false, widthClass="w-full" }) {
   return (
     <label className={`block mb-3 ${center ? 'text-center' : ''}`}>
@@ -130,23 +123,88 @@ function SectionTitle({ title, subtitle }) {
   );
 }
 
+/* ——— VIN helpers ——— */
+const VIN_RE = /^[A-HJ-NPR-Z0-9]{17}$/i;
+const MAKE_NORMALIZE = s => {
+  if (!s) return s;
+  const map = {
+    'RAM':'Ram','MERCEDES-BENZ':'Mercedes-Benz','VOLKSWAGEN':'Volkswagen',
+    'ALFA ROMEO':'Alfa Romeo'
+  };
+  const upper = s.toUpperCase();
+  if (map[upper]) return map[upper];
+  // Title-case words, preserve hyphens
+  return s.split(/([\s-])/).map(part =>
+    /^[A-Za-z]+$/.test(part) ? part[0].toUpperCase()+part.slice(1).toLowerCase() : part
+  ).join('');
+};
+
+async function decodeVin(vin) {
+  const url = `https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinValuesExtended/${encodeURIComponent(vin)}?format=json`;
+  const res = await fetch(url);
+  const data = await res.json();
+  const row = (data && data.Results && data.Results[0]) || {};
+  return {
+    year: row.ModelYear || '',
+    make: row.Make || '',
+    model: row.Model || ''
+  };
+}
+
 /* ——— Trade-In app ——— */
 function App() {
   const [trade, setTrade] = useState({
     vin:'', miles:'', condition:'Average',
     year:'', make:'', model:''
   });
+  const [vinStatus, setVinStatus] = useState(''); // status text below VIN
 
-  // When year changes, re-filter makes; when make changes, clear model.
-  const makes = useMemo(() => availableMakesForYear(trade.year || THIS_YEAR), [trade.year]);
-  const models = useMemo(() => MODELS_BY_MAKE[trade.make] || [], [trade.make]);
+  // Dropdown lists
+  const makesBase = useMemo(() => availableMakesForYear(trade.year || THIS_YEAR), [trade.year]);
+  const makes = useMemo(() => {
+    // Ensure decoded make is present even if not in the base list
+    return trade.make && !makesBase.includes(trade.make) ? [trade.make, ...makesBase] : makesBase;
+  }, [makesBase, trade.make]);
+
+  const modelsBase = useMemo(() => MODELS_BY_MAKE[trade.make] || [], [trade.make]);
+  const models = useMemo(() => {
+    return trade.model && !modelsBase.includes(trade.model) ? [trade.model, ...modelsBase] : modelsBase;
+  }, [modelsBase, trade.model]);
+
+  // Auto-decode when VIN hits 17 chars
+  useEffect(() => {
+    let timer;
+    if (VIN_RE.test(trade.vin)) {
+      setVinStatus('Decoding VIN…');
+      timer = setTimeout(async () => {
+        try {
+          const decoded = await decodeVin(trade.vin.trim().toUpperCase());
+          const year = decoded.year ? String(decoded.year) : '';
+          const make = MAKE_NORMALIZE(decoded.make);
+          const model = decoded.model || '';
+
+          const next = { ...trade, year, make, model };
+          setTrade(next);
+          setVinStatus(year || make || model ? `Decoded: ${year || '—'} ${make || ''} ${model || ''}` : 'VIN decoded, but missing data');
+          sendToParent('trade:update', next);
+        } catch (e) {
+          setVinStatus('VIN decode failed. You can still select year/make/model manually.');
+        }
+      }, 300); // small debounce
+    } else {
+      if (trade.vin && trade.vin.length >= 10) {
+        setVinStatus('VINs are 17 characters. Keep typing…');
+      } else {
+        setVinStatus('');
+      }
+    }
+    return () => clearTimeout(timer);
+  }, [trade.vin]);
 
   function startCredit() {
-    // push live update + completion notice to parent (if embedded)
     sendToParent('trade:update', trade);
     sendToParent('trade:done', trade);
 
-    // fallback if opened standalone: go back to main flow with query params
     if (!isEmbedded()) {
       const params = new URLSearchParams({
         vin: trade.vin || '',
@@ -164,8 +222,6 @@ function App() {
   return (
     <div className="relative w-full min-h-screen">
       <div className="max-w-4xl mx-auto px-4 sm:px-8 py-6 sm:py-10 relative">
-        {/* Removed the duplicate “Quirk AI Sales Kiosk” header by request */}
-
         <div className="bg-white/90 backdrop-blur rounded-2xl shadow-2xl border border-slate-200 p-4 sm:p-6">
           <SectionTitle
             title="Tell us about the vehicle that you're replacing"
@@ -182,7 +238,9 @@ function App() {
                 placeholder="Scan or type VIN"
                 inputMode="text"
                 autoComplete="off"
+                maxLength={17}
               />
+              {vinStatus && <div className="text-xs text-slate-500 mt-1">{vinStatus}</div>}
             </Field>
 
             <Field label="Mileage" center widthClass="w-40">
