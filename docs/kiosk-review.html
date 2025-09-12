@@ -1,1 +1,33 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<base href="/Quirk-AI-Project-Overview/"><title>Kiosk • Review</title>
+<link rel="stylesheet" href="assets/kiosk-shared.css">
+<script src="assets/kiosk-shared.js"></script>
+</head><body>
+<div class="kx">
+  <h2>Review & handoff</h2><p class="sub">We’ll prep your buyer’s order and connect you to a manager or F&I.</p>
+  <div id="summary" class="note"></div>
+  <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;margin-top:8px">
+    <button class="btn btn--ghost" onclick="alert('Manager notified (demo).')">Raise hand for manager</button>
+    <button class="btn btn--ghost" onclick="alert('Summary texted (demo).')">Text me this summary</button>
+    <button class="btn">I'm ready now</button>
+  </div>
+</div>
+<script>
+const {load} = window.kiosk;
+function fmt(v){ return (v==null || v==='') ? '—' : v; }
+(function render(){
+  const p = load('guided_profile',{});
+  const t = load('guided_trade',{});
+  const d = load('guided_desk',{price:0,down:0,apr:0,term:0,taxesFees:0,products:{}});
+  const tradeText = t.rangeLow ? `$${t.rangeLow.toLocaleString()}–$${t.rangeHigh.toLocaleString()}` : '—';
+  const products = ['vsc','gap','maint'].filter(k=>d.products?.[k]).map(k=>({vsc:'VSC',gap:'GAP',maint:'Maint'})[k]).join(', ') || '—';
+  document.getElementById('summary').innerHTML = `
+    <div><strong>Name:</strong> ${fmt(p.name)} &nbsp; • &nbsp; <strong>Contact:</strong> ${fmt(p.contact)}</div>
+    <div style="margin-top:4px"><strong>Vehicle price:</strong> $${(d.price||0).toLocaleString()} &nbsp; • &nbsp; <strong>Down:</strong> $${(d.down||0).toLocaleString()}</div>
+    <div style="margin-top:4px"><strong>APR/Term:</strong> ${fmt(d.apr)}% • ${fmt(d.term)} mos &nbsp; • &nbsp; <strong>Taxes & fees:</strong> $${(d.taxesFees||0).toLocaleString()}</div>
+    <div style="margin-top:4px"><strong>Trade range:</strong> ${tradeText} &nbsp; • &nbsp; <strong>Products:</strong> ${products}</div>`;
+})();
+</script>
+</body></html>
 
