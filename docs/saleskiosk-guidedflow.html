@@ -368,6 +368,29 @@ function App() {
             </div>
           )}
 
+          {/* Step 2: Discovery (iframe) */}
+          {step===1 && (
+            <div>
+              <SectionTitle title="Discovery" subtitle="Tell us your monthly target."/>
+              <div className="rounded-xl border bg-white overflow-hidden">
+                <iframe
+                  title="Discovery Module"
+                  src="kiosk-discovery.html"
+                  className="w-full"
+                  style={{height:'280px', border:0}}
+                  onLoad={(e)=>{
+                    // send current budget to child
+                    e.currentTarget.contentWindow?.postMessage(
+                      { type:'discovery:init', payload:{ budget: profile.budget }},
+                      '*'
+                    );
+                  }}
+                />
+              </div>
+            </div>
+          )}
+
+          
           {/* Step 3: Vehicle Match */}
           {step===2 && (
             <div>
