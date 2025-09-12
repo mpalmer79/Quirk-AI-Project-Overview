@@ -290,21 +290,42 @@ function App() {
   const back = () => setStep(s => Math.max(s-1, 0));
   const go   = (i) => { if (i <= maxVisited) setStep(i); };
 
-  /* ---------------- iframe bridge for Trade-In module ---------------- */
+  /* ---------------- iframe bridge: Discovery + Trade ---------------- */
   useEffect(() => {
     const onMsg = (e) => {
       const data = e?.data || {};
       if (!data || typeof data !== 'object') return;
       const { type, payload } = data;
+
+      // ----- Discovery (Step 2) -----
+      if (type === 'discovery:update') {
+        if (payload?.budget != null) {
+          setProfile(p => ({ ...p, budget: Number(payload.budget) }));
+        }
+      }
+      if (type === 'discovery:done') {
+        if (payload?.budget != null) {
+          setProfile(p => ({ ...p, budget: Number(payload.budget) }));
+        }
+        track('guided_discovery_next');
+        setStep(2);                       // go to Step 3: Vehicle Match
+        setMaxVisited(m => Math.max(m, 2));
+      }
+      if (type === 'discovery:back') {
+        setStep(0);                       // back to Welcome
+      }
+
+      // ----- Trade (Step 4) -----
       if (type === 'trade:update') {
         setTrade(t => ({...t, ...payload}));
       }
       if (type === 'trade:done') {
         setTrade(t => ({...t, ...payload}));
-        setStep(4);                 // advance to Payments
+        setStep(4);                       // advance to Payments
         setMaxVisited(m => Math.max(m, 4));
       }
     };
+
     window.addEventListener('message', onMsg);
     return () => window.removeEventListener('message', onMsg);
   }, []);
@@ -390,7 +411,6 @@ function App() {
             </div>
           )}
 
-          
           {/* Step 3: Vehicle Match */}
           {step===2 && (
             <div>
