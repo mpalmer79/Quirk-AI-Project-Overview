@@ -6,34 +6,119 @@
 </head><body>
 <div class="kx">
   <h2>Discovery</h2><p class="sub">Tell us your monthly target.</p>
+
   <div class="row">
-    <label class="field"><span class="label">Target monthly payment ($)</span>
-      <input id="budget" type="number" min="100" step="25"></label>
+    <label class="field">
+      <span class="label">Target monthly payment ($)</span>
+      <input id="budget" type="number" min="100" step="25">
+    </label>
   </div>
+
+  <div class="row row--2">
+    <label class="field">
+      <span class="label">Term (months)</span>
+      <select id="term">
+        <option value="36">36</option>
+        <option value="48">48</option>
+        <option value="60">60</option>
+        <option value="63">63</option>
+        <option value="72">72</option>
+        <option value="84">84</option>
+      </select>
+    </label>
+    <label class="field">
+      <span class="label">APR (auto-set by term)</span>
+      <input id="apr" type="number" step="0.01" disabled>
+    </label>
+  </div>
+
   <div style="display:flex;justify-content:space-between;gap:8px;margin-top:8px">
     <button id="back" class="btn btn--ghost">← Back</button>
     <button id="next" class="btn">Pick a vehicle →</button>
   </div>
+
+  <div class="note" style="margin-top:8px">
+    APR rules: ≤63 mos → <strong>5.99%</strong>; 64–84 mos → <strong>6.99%</strong>.
+    Values are saved to <code>guided_profile</code> (budget) and <code>guided_desk</code> (apr, term).
+  </div>
 </div>
+
 <script>
-const {save, load, post, track} = window.kiosk;
+const { save, load, post, track } = window.kiosk;
+
+/* --- APR logic --- */
+function aprForTerm(t){
+  t = Number(t)||0;
+  return (t <= 63) ? 5.99 : 6.99;
+}
+
+/* --- Elements --- */
 const budgetEl = document.getElementById('budget');
-const prof = load('guided_profile',{name:'',contact:'',budget:400});
-budgetEl.value = prof.budget ?? 400;
+const termEl   = document.getElementById('term');
+const aprEl    = document.getElementById('apr');
+
+/* --- Hydrate from storage --- */
+(function hydrate(){
+  const prof = load('guided_profile', { name:'', contact:'', budget:400 });
+  const desk = load('guided_desk',   { apr:6.99, term:72, down:0, taxesFees:995, products:{vsc:false,gap:false,maint:false} });
+
+  budgetEl.value = Number(prof.budget ?? 400);
+  // prefer stored term; fall back to 72
+  const t = Number(desk.term || 72);
+  termEl.value = String([36,48,60,63,72,84].includes(t) ? t : 72);
+  aprEl.value  = aprForTerm(termEl.value).toFixed(2);
+})();
+
+/* --- Persist + notify parent --- */
+function persistAndNotify(){
+  // clamp budget to a sensible minimum
+  const budget = Math.max(0, Number(budgetEl.value || 0));
+  const term   = Number(termEl.value || 72);
+  const apr    = aprForTerm(term);
+
+  // profile: budget
+  const p0 = load('guided_profile', { name:'', contact:'', budget:400 });
+  save('guided_profile', { ...p0, budget });
+
+  // desk: apr & term (don’t stomp other fields)
+  const d0 = load('guided_desk', { price:0, down:0, apr:apr, term:term, taxesFees:995, products:{vsc:false,gap:false,maint:false} });
+  save('guided_desk', { ...d0, apr, term });
+
+  // reflect APR in the disabled box
+  aprEl.value = apr.toFixed(2);
+
+  // live update to parent (safe to send extra fields)
+  post('discovery:update', { budget, term, apr });
+}
+
+/* --- Events --- */
+budgetEl.addEventListener('input', persistAndNotify);
+termEl.addEventListener('change', persistAndNotify);
+
+document.getElementById('back').addEventListener('click', ()=>{
+  post('discovery:back');
+});
+
+document.getElementById('next').addEventListener('click', ()=>{
+  persistAndNotify();
+  track('guided_discovery_next');
+  const budget = Math.max(0, Number(budgetEl.value || 0));
+  const term   = Number(termEl.value || 72);
+  const apr    = aprForTerm(term);
+  post('discovery:done', { budget, term, apr });
+});
+
+/* --- Accept init message (e.g., parent pre-fills budget) --- */
 window.addEventListener('message', e=>{
-  if(e.data?.type==='discovery:init' && typeof e.data.payload?.budget!=='undefined'){
-    budgetEl.value = e.data.payload.budget;
+  if(e.data?.type === 'discovery:init'){
+    const b = Number(e.data.payload?.budget);
+    if (!Number.isNaN(b)) { budgetEl.value = b; }
+    // keep current term selection; APR will refresh on persist
+    persistAndNotify();
   }
 });
-function persist(){
-  const p = load('guided_profile',{name:'',contact:'',budget:400});
-  save('guided_profile',{...p, budget:Number(budgetEl.value||p.budget)});
-  post('discovery:update',{budget:Number(budgetEl.value||p.budget)});
-}
-budgetEl.addEventListener('input', persist);
-document.getElementById('back').addEventListener('click', ()=> post('discovery:back'));
-document.getElementById('next').addEventListener('click', ()=>{
-  persist(); track('guided_discovery_next'); post('discovery:done',{budget:Number(budgetEl.value)});
-});
+
+/* initial persist so others (Vehicle Match) can read term/APR immediately */
+persistAndNotify();
 </script>
 </body></html>
