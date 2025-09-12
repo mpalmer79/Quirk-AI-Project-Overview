@@ -205,7 +205,13 @@ function basePrice(make, model) {
   };
   return (map[make] && map[make][model]) || 29990;
 }
-function vinFor(prefix, idx) { return prefix + String(100000000000000 + idx).slice(0,14); }
+
+/* ***** FIXED: unique VIN generator ***** */
+function vinFor(prefix, idx) {
+  // Always produce a unique 17-char VIN: 3-char prefix + 14 zero-padded digits
+  return prefix + String(idx).padStart(14, '0');
+}
+
 function generateNewVehicles() {
   const inv = [];
   const add = (make, count, pfx) => {
