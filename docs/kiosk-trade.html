@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quirk AI – Trade-In</title>
+
+  <!-- Force light UI + site base -->
+  <meta name="color-scheme" content="light" />
+  <meta name="theme-color" content="#ffffff" />
+  <base href="/Quirk-AI-Project-Overview/">
+
+  <!-- Quirk global styles -->
+  <link rel="stylesheet" href="assets/style.css" />
+
+  <!-- Tailwind + React + Babel (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    :focus-visible { outline: 2px solid #34d399; outline-offset: 2px; }
+    body {
+      background: linear-gradient(rgba(255,255,255,.88), rgba(255,255,255,.88)),
+                  url("assets/kiosk.png") center / cover fixed no-repeat !important;
+      min-height: 100vh;
+    }
+    input, select, textarea, button {
+      background: #ffffff !important;
+      color: #0f172a !important;
+      border-color: #e5e7eb !important;
+    }
+    select option { background:#ffffff; color:#0f172a; }
+  </style>
+</head>
+<body class="bg-gradient-to-b from-emerald-50 to-slate-50 min-h-screen">
+  <div id="root"></div>
+
+  <footer class="footer">
+    <small>© 2025 Quirk AI — Trade-In</small>
+  </footer>
+
+<script type="text/babel">
+const { useState } = React;
+
+/* ——— Small shared UI helpers (local copy so this page stands alone) ——— */
+function SectionTitle({ title, subtitle }) {
+  return (
+    <div className="mb-4">
+      <h2 className="text-xl sm:text-2xl font-bold text-emerald-800 text-center">{title}</h2>
+      {subtitle && <p className="text-center text-slate-600 mt-1">{subtitle}</p>}
+    </div>
+  );
+}
+function Field({ label, children }) {
+  return (
+    <label className="block mb-3">
+      <span className="block text-sm font-semibold text-slate-700 mb-1">{label}</span>
+      {children}
+    </label>
+  );
+}
+function PrimaryButton(props){
+  const cls = (props.className || "") + " px-5 py-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-700 text-white font-semibold shadow hover:brightness-110 active:brightness-95";
+  return <button {...props} className={cls} />;
+}
+
+/* ——— Trade-In app ——— */
+function App() {
+  const [trade, setTrade] = useState({ vin:'', miles:'', condition:'Average', rangeLow:0, rangeHigh:0 });
+
+  function estimateRange() {
+    // same simple logic as before — placeholder for your real logic
+    const base=12000;
+    const miles=parseInt(trade.miles||'0',10);
+    const adjMiles=Math.max(0,(60000-miles)*0.05);
+    const cond=trade.condition==='Great'?1500:(trade.condition==='Rough'?-1500:0);
+    const low=Math.max(500, base+adjMiles+cond-1500);
+    const high=Math.max(low+500, base+adjMiles+cond+1500);
+    setTrade(t => ({...t, rangeLow:Math.round(low), rangeHigh:Math.round(high)}));
+  }
+
+  return (
+    <div className="relative w-full min-h-screen">
+      <div className="max-w-4xl mx-auto px-4 sm:px-8 py-6 sm:py-10 relative">
+        <header className="mb-4 sm:mb-6 text-center">
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-emerald-900">Quirk AI Sales Kiosk</h1>
+        </header>
+
+        <div className="bg-white/90 backdrop-blur rounded-2xl shadow-2xl border border-slate-200 p-4 sm:p-6">
+          <SectionTitle title="Trade-in pre-valuation" subtitle="Get a market-based range. Final number after in-person inspection." />
+          <div className="grid md:grid-cols-3 gap-4">
+            <Field label="VIN">
+              <input className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300"
+                     value={trade.vin}
+                     onChange={e=>setTrade({...trade, vin:e.target.value})}
+                     placeholder="Scan or type VIN" />
+            </Field>
+            <Field label="Mileage">
+              <input className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300"
+                     value={trade.miles}
+                     onChange={e=>setTrade({...trade, miles:e.target.value})}
+                     placeholder="e.g., 45,500" />
+            </Field>
+            <Field label="Condition">
+              <select className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300"
+                      value={trade.condition}
+                      onChange={e=>setTrade({...trade, condition:e.target.value})}>
+                {['Great','Average','Rough'].map(x => <option key={x}>{x}</option>)}
+              </select>
+            </Field>
+          </div>
+
+          <div className="mt-2 flex gap-2">
+            <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={estimateRange}>Estimate range</button>
+            {trade.rangeLow>0 && (
+              <div className="px-4 py-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800">
+                Estimated range: ${trade.rangeLow.toLocaleString()} – ${trade.rangeHigh.toLocaleString()}
+              </div>
+            )}
+          </div>
+
+          <!--
+            Keep the local Back / Start credit buttons so this page also works standalone.
+            When embedded in an iframe, the parent page can hide its own buttons if desired.
+          -->
+          <div className="mt-4 flex justify-between">
+            <button className="px-4 py-2 rounded-xl border bg-white/80" onclick="history.back()">← Back</button>
+            <a class="px-5 py-3 rounded-2xl bg-emerald-700 text-white font-semibold shadow hover:brightness-110 active:brightness-95"
+               href="saleskiosk-guidedflow.html"
+               target="_parent">Start credit →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
