@@ -1,1 +1,56 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<base href="/Quirk-AI-Project-Overview/"><title>Kiosk • Vehicle Match</title>
+<link rel="stylesheet" href="assets/kiosk-shared.css">
+<script src="assets/kiosk-shared.js"></script>
+</head><body>
+<div class="kx">
+  <h2>Vehicle Match</h2><p class="sub">Pick one to continue.</p>
+  <div id="list" class="row row--2"></div>
+  <div class="note">Tip: you can also prebuild <code>sandbox/inventory.json</code>; this page will use it if present.</div>
+</div>
+<script>
+const {save, load, post} = window.kiosk;
+
+async function getInventory(){
+  try {
+    const res = await fetch('sandbox/inventory.json', {cache:'no-store'});
+    if (res.ok) return await res.json();
+  } catch {}
+  // fallback minimal inventory
+  return [
+    { vin:'1GCDEMO0000000001', year:2025, make:'Chevrolet', model:'Equinox', price:28990, color:'White', trim:'LT' },
+    { vin:'1GTDemo0000000002', year:2025, make:'GMC', model:'Terrain',   price:30990, color:'Black', trim:'SLE' },
+    { vin:'1G4Demo0000000003', year:2025, make:'Buick', model:'Envista', price:23990, color:'Blue',  trim:'Preferred' }
+  ];
+}
+
+function card(v){
+  const div = document.createElement('div');
+  div.className = 'field'; // reuse spacing
+  div.innerHTML = `
+    <button class="btn btn--ghost" style="width:100%; text-align:left; display:block">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div><strong>${v.year} ${v.make} ${v.model}</strong><br>
+          <span class="pill" style="margin-top:4px; display:inline-block;">${v.trim||''} ${v.color||''}</span>
+        </div>
+        <div style="font-weight:800;color:#047857">$${(v.price||0).toLocaleString()}</div>
+      </div>
+    </button>`;
+  div.querySelector('button').addEventListener('click', ()=>{
+    const desk = load('guided_desk', { price:0, down:2000, apr:6.9, term:72, taxesFees:995, products:{vsc:false,gap:false,maint:false}});
+    save('guided_selectedVin', v.vin);
+    save('guided_desk', {...desk, price: v.price||desk.price});
+    post('vehicle:done', { vin: v.vin });
+  });
+  return div;
+}
+
+(async function init(){
+  const inv = await getInventory();
+  const list = document.getElementById('list');
+  inv.slice(0,9).forEach(v => list.appendChild(card(v)));
+})();
+</script>
+</body></html>
 
