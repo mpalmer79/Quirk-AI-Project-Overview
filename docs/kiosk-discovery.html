@@ -1,16 +1,41 @@
-<!doctype html><html lang="en"><head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<base href="/Quirk-AI-Project-Overview/"><title>Kiosk • Discovery</title>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<base href="/Quirk-AI-Project-Overview/">
+<title>Kiosk • Discovery</title>
 <link rel="stylesheet" href="assets/kiosk-shared.css">
 <script src="assets/kiosk-shared.js"></script>
-</head><body>
+
+<style>
+  /* helper tweaks specific to this page */
+  .label.center { text-align:center; display:block; }
+  .field input[type="text"]::placeholder { color:#9AA2AF; } /* light gray */
+  /* APR input: monospace + centered + auto width in ch units */
+  #apr {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    text-align:center;
+    width:auto;                 /* JS sets width in “ch” */
+    display:inline-block;
+    padding-left:0.5ch;         /* visual one “space” left */
+    padding-right:0.5ch;        /* visual one “space” right */
+  }
+  /* make sure APR field’s container doesn’t force full width */
+  .field.field--apr input { width:auto; }
+</style>
+</head>
+<body>
 <div class="kx">
-  <h2>Discovery</h2><p class="sub">Tell us your monthly target.</p>
+  <h2>Discovery</h2>
+  <p class="sub">Tell us your monthly target.</p>
 
   <div class="row">
     <label class="field">
       <span class="label">Target monthly payment ($)</span>
-      <input id="budget" type="number" min="100" step="25">
+      <!-- text + inputmode for numeric keypad; placeholder per requirement -->
+      <input id="budget" type="text" inputmode="numeric" autocomplete="off"
+             placeholder="Estimate 10 - 15% of your gross monthly income">
     </label>
   </div>
 
@@ -26,9 +51,20 @@
         <option value="84">84</option>
       </select>
     </label>
+
+    <label class="field field--apr">
+      <span class="label center">APR</span>
+      <!-- APR is disabled, centered, and sized dynamically -->
+      <input id="apr" type="text" disabled>
+    </label>
+  </div>
+
+  <!-- New Initial Investment field, same footprint as “Target monthly payment” -->
+  <div class="row">
     <label class="field">
-      <span class="label">APR (auto-set by term)</span>
-      <input id="apr" type="number" step="0.01" disabled>
+      <span class="label center">Initial Investment</span>
+      <input id="down" type="text" inputmode="numeric" autocomplete="off"
+             placeholder="Most lenders prefer at least 20% down payment">
     </label>
   </div>
 
@@ -39,7 +75,7 @@
 
   <div class="note" style="margin-top:8px">
     APR rules: ≤63 mos → <strong>5.99%</strong>; 64–84 mos → <strong>6.99%</strong>.
-    Values are saved to <code>guided_profile</code> (budget) and <code>guided_desk</code> (apr, term).
+    Values are saved to <code>guided_profile</code> (budget) and <code>guided_desk</code> (apr, term, down).
   </div>
 </div>
 
@@ -56,63 +92,113 @@ function aprForTerm(t){
 const budgetEl = document.getElementById('budget');
 const termEl   = document.getElementById('term');
 const aprEl    = document.getElementById('apr');
+const downEl   = document.getElementById('down');
+
+/* --- Currency helpers (no thousands comma; exactly $XXXX.XX) --- */
+function digitsOnly(str){ return (String(str||'')).replace(/[^\d.]/g,''); }
+function toDollarsString(numLike){
+  const n = Number(numLike);
+  if (!isFinite(n)) return '';
+  return '$' + n.toFixed(2); // e.g., 600 -> $600.00
+}
+function parseDollars(inputValue){
+  const raw = digitsOnly(inputValue);
+  const n = Number(raw);
+  return isFinite(n) ? n : 0;
+}
+function attachCurrencyBehavior(inputEl){
+  inputEl.addEventListener('focus', ()=>{
+    // strip formatting for easier typing
+    inputEl.value = digitsOnly(inputEl.value);
+  });
+  inputEl.addEventListener('input', ()=>{
+    // allow only digits and a single dot while typing
+    const cur = inputEl.value;
+    const cleaned = cur.replace(/[^\d.]/g,'').replace(/(\..*)\./g,'$1');
+    inputEl.value = cleaned;
+  });
+  inputEl.addEventListener('blur', ()=>{
+    const n = parseDollars(inputEl.value);
+    inputEl.value = n ? toDollarsString(n) : '';
+    persistAndNotify();
+  });
+}
 
 /* --- Hydrate from storage --- */
 (function hydrate(){
-  const prof = load('guided_profile', { name:'', contact:'', budget:400 });
+  const prof = load('guided_profile', { name:'', contact:'', budget:0 });
   const desk = load('guided_desk',   { apr:6.99, term:72, down:0, taxesFees:995, products:{vsc:false,gap:false,maint:false} });
 
-  budgetEl.value = Number(prof.budget ?? 400);
-  // prefer stored term; fall back to 72
+  // Budget: show stored value formatted, or leave empty for placeholder
+  const b = Number(prof.budget||0);
+  budgetEl.value = b > 0 ? toDollarsString(b) : '';
+
+  // Down payment: same behavior
+  const d = Number(desk.down||0);
+  if (downEl) downEl.value = d > 0 ? toDollarsString(d) : '';
+
+  // Term & APR
   const t = Number(desk.term || 72);
   termEl.value = String([36,48,60,63,72,84].includes(t) ? t : 72);
-  aprEl.value  = aprForTerm(termEl.value).toFixed(2);
+
+  const apr = aprForTerm(termEl.value).toFixed(2) + '%';
+  aprEl.value = apr;
+  sizeAPRBox();
 })();
 
 /* --- Persist + notify parent --- */
 function persistAndNotify(){
-  // clamp budget to a sensible minimum
-  const budget = Math.max(0, Number(budgetEl.value || 0));
+  // parse currency fields to numbers
+  const budget = parseDollars(budgetEl.value);
   const term   = Number(termEl.value || 72);
-  const apr    = aprForTerm(term);
+  const aprNum = aprForTerm(term);
+  const down   = downEl ? parseDollars(downEl.value) : 0;
 
   // profile: budget
-  const p0 = load('guided_profile', { name:'', contact:'', budget:400 });
+  const p0 = load('guided_profile', { name:'', contact:'', budget:0 });
   save('guided_profile', { ...p0, budget });
 
-  // desk: apr & term (don’t stomp other fields)
-  const d0 = load('guided_desk', { price:0, down:0, apr:apr, term:term, taxesFees:995, products:{vsc:false,gap:false,maint:false} });
-  save('guided_desk', { ...d0, apr, term });
+  // desk: apr, term, down (don’t stomp other fields)
+  const d0 = load('guided_desk', { price:0, down:down, apr:aprNum, term:term, taxesFees:995, products:{vsc:false,gap:false,maint:false} });
+  save('guided_desk', { ...d0, apr: aprNum, term, down });
 
   // reflect APR in the disabled box
-  aprEl.value = apr.toFixed(2);
+  aprEl.value = aprNum.toFixed(2) + '%';
+  sizeAPRBox();
 
   // live update to parent (safe to send extra fields)
-  post('discovery:update', { budget, term, apr });
+  post('discovery:update', { budget, term, apr: aprNum, down });
+}
+
+/* --- APR auto-size (width = characters + 2 “spaces”) --- */
+function sizeAPRBox(){
+  const v = String(aprEl.value || '');
+  const base = Math.max(v.length + 2, 7); // 6.99% -> 7ch minimum
+  aprEl.style.width = base + 'ch';
 }
 
 /* --- Events --- */
-budgetEl.addEventListener('input', persistAndNotify);
-termEl.addEventListener('change', persistAndNotify);
+attachCurrencyBehavior(budgetEl);
+if (downEl) attachCurrencyBehavior(downEl);
 
-document.getElementById('back').addEventListener('click', ()=>{
-  post('discovery:back');
-});
+termEl.addEventListener('change', persistAndNotify);
+document.getElementById('back').addEventListener('click', ()=>{ post('discovery:back'); });
 
 document.getElementById('next').addEventListener('click', ()=>{
   persistAndNotify();
   track('guided_discovery_next');
-  const budget = Math.max(0, Number(budgetEl.value || 0));
+  const budget = parseDollars(budgetEl.value);
   const term   = Number(termEl.value || 72);
   const apr    = aprForTerm(term);
-  post('discovery:done', { budget, term, apr });
+  const down   = downEl ? parseDollars(downEl.value) : 0;
+  post('discovery:done', { budget, term, apr, down });
 });
 
 /* --- Accept init message (e.g., parent pre-fills budget) --- */
 window.addEventListener('message', e=>{
   if(e.data?.type === 'discovery:init'){
     const b = Number(e.data.payload?.budget);
-    if (!Number.isNaN(b)) { budgetEl.value = b; }
+    if (!Number.isNaN(b)) { budgetEl.value = toDollarsString(b); }
     // keep current term selection; APR will refresh on persist
     persistAndNotify();
   }
@@ -121,4 +207,5 @@ window.addEventListener('message', e=>{
 /* initial persist so others (Vehicle Match) can read term/APR immediately */
 persistAndNotify();
 </script>
-</body></html>
+</body>
+</html>
