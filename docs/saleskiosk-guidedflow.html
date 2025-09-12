@@ -368,23 +368,6 @@ function App() {
             </div>
           )}
 
-          {/* Step 2: Discovery */}
-          {step===1 && (
-            <div>
-              <SectionTitle title="Discovery" subtitle="Tell us your monthly target."/>
-              <div className="grid sm:grid-cols-2 gap-4">
-                <Field label="Budget target ($/mo)">
-                  <input type="number" className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300"
-                         value={profile.budget} onChange={e=>setProfile({...profile, budget:Number(e.target.value)})}/>
-                </Field>
-              </div>
-              <div className="mt-4 flex justify-between">
-                <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={back}>← Back</button>
-                <PrimaryButton onClick={()=>{ track('guided_discovery_next'); next(); }}>See matches →</PrimaryButton>
-              </div>
-            </div>
-          )}
-
           {/* Step 3: Vehicle Match */}
           {step===2 && (
             <div>
