@@ -129,7 +129,7 @@ function calcPayment(amount, aprPct, termMonths) {
   return (r * amount) / (1 - Math.pow(1 + r, -termMonths));
 }
 
-const STEPS = ['Welcome','Discovery','Vehicle Match','Payments','Trade-In','Credit Start','F&I Options','Review & Handoff'];
+const STEPS = ['Welcome','Discovery','Vehicle Match','Trade-In','Payments','Information for Lender','F&I Options','Review & Handoff'];
 
 function App() {
   const [step, setStep] = useState(1); // Start at Discovery step
