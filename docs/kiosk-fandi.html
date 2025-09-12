@@ -1,1 +1,26 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<base href="/Quirk-AI-Project-Overview/"><title>Kiosk • F&I Options</title>
+<link rel="stylesheet" href="assets/kiosk-shared.css">
+<script src="assets/kiosk-shared.js"></script>
+</head><body>
+<div class="kx">
+  <h2>Protect your purchase</h2><p class="sub">Add options and see the impact instantly.</p>
+  <label style="display:flex;align-items:center;gap:8px" class="field"><input id="vsc" type="checkbox"> Vehicle Service Contract (+$1,895)</label>
+  <label style="display:flex;align-items:center;gap:8px" class="field"><input id="gap" type="checkbox"> GAP (+$795)</label>
+  <label style="display:flex;align-items:center;gap:8px" class="field"><input id="maint" type="checkbox"> Maintenance (+$495)</label>
+  <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">
+    <button id="next" class="btn">Review & handoff →</button>
+  </div>
+</div>
+<script>
+const {save, load, post} = window.kiosk;
+const d = load('guided_desk',{price:0,down:2000,apr:6.9,term:72,taxesFees:995,products:{vsc:false,gap:false,maint:false}});
+['vsc','gap','maint'].forEach(id => document.getElementById(id).checked = d.products[id]);
+['vsc','gap','maint'].forEach(id => document.getElementById(id).addEventListener('input',()=>{
+  const dd = load('guided_desk',{products:{}}); dd.products = { vsc:vsc.checked, gap:gap.checked, maint:maint.checked }; save('guided_desk', dd);
+}));
+document.getElementById('next').addEventListener('click', ()=> post('fandi:done'));
+</script>
+</body></html>
 
