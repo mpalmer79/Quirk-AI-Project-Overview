@@ -12,15 +12,11 @@
   <!-- Site base -->
   <base href="/Quirk-AI-Project-Overview/"/>
 
-  <!-- Global site styles (for unified footer etc.) -->
+  <!-- Global site styles (footer etc.) -->
   <link rel="stylesheet" href="assets/style.css"/>
 
   <!-- Tailwind (CDN) -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- React 18 + Babel (CDN) -->
-  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
   <style>
     :focus-visible { outline: 2px solid #34d399; outline-offset: 2px; }
@@ -30,34 +26,50 @@
         url("assets/kiosk.png") center / cover fixed no-repeat !important;
       min-height: 100vh;
     }
-    input, select, textarea, button {
-      background: #ffffff !important;
-      color: #0f172a !important;
-      border-color: #e5e7eb !important;
-    }
-    select option { background:#ffffff; color:#0f172a; }
-    input::placeholder, textarea::placeholder { color:#94a3b8; }
-    input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill {
-      -webkit-text-fill-color: #0f172a !important;
-      transition: background-color 5000s ease-in-out 0s;
-    }
     @supports (-webkit-touch-callout:none){
       :root { color-scheme: light; }
       select, input, textarea { -webkit-appearance: none; }
     }
+    iframe { display:block; width:100%; border:0; }
   </style>
 </head>
 <body class="bg-gradient-to-b from-emerald-50 to-slate-50 min-h-screen">
-  <div id="root"></div>
+  <div class="relative w-full min-h-screen">
+    <!-- decorative glows -->
+    <div aria-hidden class="pointer-events-none absolute inset-0 overflow-hidden">
+      <div class="absolute -top-24 -left-24 h-72 w-72 rounded-full bg-emerald-300/30 blur-3xl"></div>
+      <div class="absolute -bottom-24 -right-24 h-72 w-72 rounded-full bg-sky-300/20 blur-3xl"></div>
+    </div>
+
+    <div class="max-w-6xl mx-auto px-4 sm:px-8 py-6 sm:py-10 relative">
+      <header class="mb-4 sm:mb-6 text-center">
+        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-emerald-900">Quirk AI Sales Kiosk</h1>
+      </header>
+
+      <!-- Progress chips -->
+      <nav aria-label="Progress" class="mb-5 sm:mb-7">
+        <ol id="progress" class="grid grid-cols-4 sm:grid-cols-8 gap-2"></ol>
+      </nav>
+
+      <!-- Step container -->
+      <div class="bg-white/90 backdrop-blur rounded-2xl shadow-2xl border border-slate-200 p-4 sm:p-6">
+        <div id="stepHeader" class="mb-4">
+          <h2 id="stepTitle" class="text-xl sm:text-2xl font-bold text-emerald-800 text-center"></h2>
+          <p id="stepSubtitle" class="text-center text-slate-600 mt-1"></p>
+        </div>
+        <div class="rounded-xl border bg-white overflow-hidden">
+          <iframe id="stage" title="Kiosk Module"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <footer class="footer">
     <small>© 2025 Quirk AI — Sales Kiosk</small>
   </footer>
 
-<script type="text/babel">
-const { useMemo, useState, useEffect } = React;
-
-/* ========================= Small analytics helper ========================= */
+<script>
+/* ========= tiny storage + analytics (kept minimal) ========= */
 function track(event, data = {}) {
   try {
     const now = new Date().toISOString();
@@ -71,586 +83,141 @@ function track(event, data = {}) {
 const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
 const load = (k, def) => { try { const v = JSON.parse(localStorage.getItem(k)); return (v ?? def); } catch { return def; } };
 
-/* =============================== VEHICLE IMAGES (optional map) =============================== */
-const VEHICLE_IMAGES = {
-  '2025_Chevrolet_Silverado 1500': 'assets/2025-silverado-1500.jpg',
-  '2025_Chevrolet_Equinox':       'assets/2025-equinox.jpg',
-  '2025_Chevrolet_Traverse':      'assets/2025-traverse.jpg',
-  '2025_Chevrolet_Trax':          'assets/2025-trax.jpg',
-  '2025_Chevrolet_Trailblazer':   'assets/2025-trailblazer.jpg',
-  '2025_Chevrolet_Malibu':        'assets/2025-malibu.jpg',
-  '2025_Chevrolet_Colorado':      'assets/2025-colorado.jpg',
-  '2025_Chevrolet_Blazer':        'assets/2025-blazer.jpg',
-  '2025_Chevrolet_Tahoe':         'assets/2025-tahoe.jpg',
-  '2019_Toyota_Camry':            'assets/camry.jpg',
-  '2020_Honda_CR-V':              'assets/CRV.jpg',
-  '2021_Ford_F-150':              'assets/F150.webp',
-  '2022_Nissan_Altima':           'assets/altima.jpg',
-};
-function getVehicleImage(year, make, model) {
-  const key = `${year}_${make}_${model}`;
-  return VEHICLE_IMAGES[key] || null;
-}
+/* ========= steps config: ALL steps are external HTMLs ========= */
+const STEPS = [
+  { label:'Welcome',         url:'kiosk-welcome.html',  height:220, subtitle:"We’ll guide you through a few quick steps." },
+  { label:'Discovery',       url:'kiosk-discovery.html',height:280, subtitle:"Tell us your monthly target." },
+  { label:'Vehicle Match',   url:'kiosk-vehicle.html',  height:720, subtitle:"Pick one to continue." },
+  { label:'Trade-In',        url:'kiosk-trade.html',    height:620, subtitle:"Enter your VIN/miles; we’ll pre-value it." },
+  { label:'Payments',        url:'kiosk-payments.html', height:720, subtitle:"Taxes/fees estimated; lender approval required." },
+  { label:'Credit Start',    url:'kiosk-credit.html',   height:520, subtitle:"Soft pull first. No impact to score until you consent to submit." },
+  { label:"F&I Options",     url:'kiosk-fandi.html',    height:420, subtitle:"Add options and see the impact instantly." },
+  { label:'Review & Handoff',url:'kiosk-review.html',   height:520, subtitle:"We’ll prep your buyer’s order and hand you off." }
+];
 
-/* =============================== STOCK/PHOTOS (optional) =============================== */
-const PHOTO_ROOT = 'assets/kiosk-photos/';
-const MODEL_PHOTOS = {
-  Chevrolet: {
-    'Silverado 1500':'chevrolet-silverado-1500.jpg',
-    'Equinox':'chevrolet-equinox.jpg',
-    'Traverse':'chevrolet-traverse.jpg',
-    'Trax':'chevrolet-trax.jpg',
-    'Trailblazer':'chevrolet-trailblazer.jpg',
-    'Malibu':'chevrolet-malibu.jpg',
-    'Colorado':'chevrolet-colorado.jpg',
-    'Blazer':'chevrolet-blazer.jpg',
-    'Tahoe':'chevrolet-tahoe.jpg'
-  },
-  GMC: {
-    'Sierra 1500':'gmc-sierra-1500.jpg',
-    'Terrain':'gmc-terrain.jpg',
-    'Acadia':'gmc-acadia.jpg',
-    'Canyon':'gmc-canyon.jpg',
-    'Yukon':'gmc-yukon.jpg'
-  },
-  Buick: {
-    'Encore GX':'buick-encore-gx.jpg',
-    'Envision':'buick-envision.jpg',
-    'Envista':'buick-envista.jpg'
-  }
-};
-const MAKE_DEFAULT = { Chevrolet:'chevrolet-default.jpg', GMC:'gmc-default.jpg', Buick:'buick-default.jpg', Used:'used-default.jpg' };
-function photoFor(make, model) {
-  const file = (MODEL_PHOTOS[make] && MODEL_PHOTOS[make][model]) || MAKE_DEFAULT[make] || 'placeholder.jpg';
-  return `${PHOTO_ROOT}${file}`;
-}
+const stage = document.getElementById('stage');
+const progress = document.getElementById('progress');
+const stepTitle = document.getElementById('stepTitle');
+const stepSubtitle = document.getElementById('stepSubtitle');
 
-/* =========================== INVENTORY GENERATION (shared) =========================== */
-const MODEL_MAP = {
-  Chevrolet:['Silverado 1500','Equinox','Traverse','Trax','Trailblazer','Malibu','Colorado','Blazer','Tahoe'],
-  GMC:['Sierra 1500','Terrain','Acadia','Canyon','Yukon'],
-  Buick:['Encore GX','Envision','Envista']
-};
-const COLORS = ['Black','White','Silver','Gray','Blue','Red','Green','Brown'];
-function basePrice(make, model) {
-  const map = {
-    Chevrolet: {
-      'Trax':21990,'Trailblazer':24990,'Malibu':24990,'Equinox':28990,
-      'Blazer':34990,'Traverse':36990,'Colorado':33990,'Silverado 1500':38990,'Tahoe':58990
-    },
-    GMC: { 'Terrain':30990,'Acadia':36990,'Canyon':35990,'Sierra 1500':41990,'Yukon':64990 },
-    Buick:{ 'Envista':23990,'Encore GX':27990,'Envision':33990 }
-  };
-  return (map[make] && map[make][model]) || 29990;
-}
+let step = load("guided_step", 0);
+let maxVisited = load("guided_maxVisited", step);
 
-/* VIN generator — FIXED (unique per vehicle) */
-function vinFor(prefix, idx) {
-  // Old bug: String(100000000000000 + idx).slice(0,14) → many identical VINs.
-  // New: pad the index to 14 digits so every VIN is unique.
-  return prefix + String(idx).padStart(14, '0');
-}
-
-function generateNewVehicles() {
-  const inv = [];
-  const add = (make, count, pfx) => {
-    const models = MODEL_MAP[make];
-    for (let i=0;i<count;i++){
-      const model = models[i % models.length];
-      const color = COLORS[i % COLORS.length];
-      const price = basePrice(make, model) + (i % 7) * 750;
-      inv.push({
-        vin: vinFor(pfx, i+1000),
-        stockType:'New',
-        year:2025,
-        make, model,
-        trim:(['LS','LT','LTZ','RS','Denali','Preferred','Avenir'])[i%7],
-        price,
-        miles: 12 + (i % 9),
-        color,
-        photo: photoFor(make, model),
-        features:['CarPlay/Android Auto','Backup Camera','Alloy Wheels','Keyless Entry']
-      });
-    }
-  };
-  add('Chevrolet', 30, '1GC');
-  add('GMC', 18, '1GT');
-  add('Buick', 12, '1G4');
-  return inv; // 60
-}
-function generateUsedVehicles(count=20){
-  const usedMakes = {
-    Toyota:['Camry','RAV4','Tacoma'],
-    Honda:['Civic','CR-V','Accord'],
-    Ford:['Escape','Edge','F-150'],
-    Nissan:['Altima','Rogue','Sentra'],
-    Tesla:['Model 3','Model Y'],
-    Subaru:['Outback','Forester'],
-    Hyundai:['Tucson','Santa Fe'],
-    Kia:['Sportage','Sorento'],
-    Volkswagen:['Tiguan','Jetta'],
-    Mazda:['CX-5','Mazda3']
-  };
-  const makes = Object.keys(usedMakes);
-  const inv = [];
-  for (let i=0;i<count;i++){
-    const make = makes[i % makes.length];
-    const models = usedMakes[make];
-    const model = models[i % models.length];
-    const year = 2019 + (i % 6);
-    const price = 17000 + (i % 14) * 1200;
-    const miles = 18000 + (i % 25) * 3100;
-    inv.push({
-      vin: vinFor('2UX', i+5000),
-      stockType:'Used',
-      year, make, model,
-      trim:(['Base','S','SE','SEL','Premium'])[i%5],
-      price, miles,
-      color: COLORS[(i+2) % COLORS.length],
-      photo: photoFor('Used','default'),
-      features:['CarPlay','Bluetooth','Alloys']
-    });
-  }
-  return inv; // 20
-}
-const INVENTORY = [...generateNewVehicles(), ...generateUsedVehicles(20)];
-
-/* ================================ PAYMENT UTILS ================================ */
-function calcPayment(amount, aprPct, termMonths) {
-  const r = aprPct / 100 / 12;
-  if (r === 0) return amount / termMonths;
-  return (r * amount) / (1 - Math.pow(1 + r, -termMonths));
-}
-
-/* =========================== STEP ORDER (SWAPPED) =========================== */
-const STEPS = ['Welcome','Discovery','Vehicle Match','Trade-In','Payments','Credit Start','F&I Options','Review & Handoff'];
-
-/* =============================== SMALL UI HELPERS =============================== */
-function SectionTitle({ title, subtitle }) {
-  return (
-    <div className="mb-4">
-      <h2 className="text-xl sm:text-2xl font-bold text-emerald-800 text-center">{title}</h2>
-      {subtitle && <p className="text-center text-slate-600 mt-1">{subtitle}</p>}
-    </div>
-  );
-}
-function Field({ label, children }) {
-  return (
-    <label className="block mb-3">
-      <span className="block text-sm font-semibold text-slate-700 mb-1">{label}</span>
-      {children}
-    </label>
-  );
-}
-function PrimaryButton(props){
-  const cls = (props.className || "") + " px-5 py-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-700 text-white font-semibold shadow hover:brightness-110 active:brightness-95";
-  return <button {...props} className={cls} />;
-}
-
-/* ==================================== APP ==================================== */
-function App() {
-  /* fresh start only on first tab/window open; refresh won't wipe */
-  useEffect(() => {
-    if (!sessionStorage.getItem('guided_session_started')) {
-      sessionStorage.setItem('guided_session_started', '1');
-      [
-        "guided_step","guided_consent","guided_profile","guided_selectedVin",
-        "guided_desk","guided_trade","guided_maxVisited"
-      ].forEach(k => { try { localStorage.removeItem(k); } catch {} });
-      setStep(0);
-      setMaxVisited(0);
-    }
-  }, []);
-
-  const [step, setStep] = useState(load("guided_step", 0));
-  const [maxVisited, setMaxVisited] = useState(load("guided_maxVisited", step));
-
-  const [profile, setProfile] = useState(load("guided_profile", {
-    name:'', contact:'', budget:400
-  }));
-  const [selectedVin, setSelectedVin] = useState(load("guided_selectedVin", null));
-  const [desk, setDesk] = useState(load("guided_desk", { price:0, down:2000, apr:6.9, term:72, taxesFees:995, products:{vsc:false,gap:false,maint:false} }));
-  const [trade, setTrade] = useState(load("guided_trade", { vin:'', miles:'', condition:'Average', rangeLow:0, rangeHigh:0 }));
-
-  useEffect(()=>save("guided_step", step), [step]);
-  useEffect(()=>save("guided_maxVisited", maxVisited), [maxVisited]);
-  useEffect(()=>save("guided_profile", profile), [profile]);
-  useEffect(()=>save("guided_selectedVin", selectedVin), [selectedVin]);
-  useEffect(()=>save("guided_desk", desk), [desk]);
-  useEffect(()=>save("guided_trade", trade), [trade]);
-
-  const vehicle = useMemo(() => INVENTORY.find(v => v.vin === selectedVin) || INVENTORY[0], [selectedVin]);
-  const productTotal = useMemo(() => (desk.products.vsc?1895:0) + (desk.products.gap?795:0) + (desk.products.maint?495:0), [desk.products]);
-  const amountFinanced = useMemo(() => {
-    const price = vehicle ? vehicle.price : desk.price;
-    const tradeMid = (trade.rangeLow + trade.rangeHigh) / 2 || 0;
-    const gross = price + desk.taxesFees + productTotal - Number(desk.down || 0) - tradeMid;
-    return Math.max(gross, 0);
-  }, [vehicle, desk.down, desk.taxesFees, productTotal, trade.rangeLow, trade.rangeHigh]);
-  const monthly = useMemo(() => calcPayment(amountFinanced, desk.apr, desk.term), [amountFinanced, desk.apr, desk.term]);
-
-  const next = () => setStep(s => {
-    const n = Math.min(s+1, STEPS.length-1);
-    setMaxVisited(m => Math.max(m, n));
-    return n;
+/* ========= render progress row ========= */
+function renderProgress(){
+  progress.innerHTML = '';
+  STEPS.forEach((s, i) => {
+    const reachable = i <= maxVisited;
+    const active = i <= step;
+    const li = document.createElement('li');
+    li.innerHTML = `
+      <button class="w-full flex items-center gap-2 p-1 rounded-full border border-slate-200
+                     ${active ? 'bg-emerald-600 text-white' : 'bg-white/70 text-slate-600'}
+                     ${!reachable ? 'opacity-60 cursor-not-allowed' : ''}"
+              ${!reachable ? 'disabled' : ''}>
+        <span class="inline-flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold
+                     ${active ? 'bg-white/20' : 'bg-slate-200 text-slate-700'}">${i+1}</span>
+        <span class="hidden sm:block text-xs font-semibold truncate pr-1">${s.label}</span>
+      </button>`;
+    const btn = li.querySelector('button');
+    btn.addEventListener('click', () => { if (i <= maxVisited) go(i); });
+    progress.appendChild(li);
   });
-  const back = () => setStep(s => Math.max(s-1, 0));
-  const go   = (i) => { if (i <= maxVisited) setStep(i); };
-
-  /* ---------------- iframe bridge: Welcome + Discovery + Trade ---------------- */
-  useEffect(() => {
-    const onMsg = (e) => {
-      const data = e?.data || {};
-      if (!data || typeof data !== 'object') return;
-      const { type, payload } = data;
-
-      // ----- Welcome (Step 1) -----
-      if (type === 'welcome:done') {
-        const { name, contact } = payload || {};
-        if (name != null || contact != null) {
-          setProfile(p => ({ ...p, name: name ?? p.name, contact: contact ?? p.contact }));
-        }
-        track('guided_welcome_next');
-        setStep(1);                       // advance to Step 2: Discovery
-        setMaxVisited(m => Math.max(m, 1));
-      }
-
-      // ----- Discovery (Step 2) -----
-      if (type === 'discovery:update') {
-        if (payload?.budget != null) {
-          setProfile(p => ({ ...p, budget: Number(payload.budget) }));
-        }
-      }
-      if (type === 'discovery:done') {
-        if (payload?.budget != null) {
-          setProfile(p => ({ ...p, budget: Number(payload.budget) }));
-        }
-        track('guided_discovery_next');
-        setStep(2);                       // go to Step 3: Vehicle Match
-        setMaxVisited(m => Math.max(m, 2));
-      }
-      if (type === 'discovery:back') {
-        setStep(0);                       // back to Welcome
-      }
-
-      // ----- Trade (Step 4) -----
-      if (type === 'trade:update') {
-        setTrade(t => ({...t, ...payload}));
-      }
-      if (type === 'trade:done') {
-        setTrade(t => ({...t, ...payload}));
-        setStep(4);                       // advance to Payments
-        setMaxVisited(m => Math.max(m, 4));
-      }
-    };
-
-    window.addEventListener('message', onMsg);
-    return () => window.removeEventListener('message', onMsg);
-  }, []);
-
-  return (
-    <div className="relative w-full min-h-screen">
-      {/* decorative glows */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -top-24 -left-24 h-72 w-72 rounded-full bg-emerald-300/30 blur-3xl"></div>
-        <div className="absolute -bottom-24 -right-24 h-72 w-72 rounded-full bg-sky-300/20 blur-3xl"></div>
-      </div>
-
-      <div className="max-w-6xl mx-auto px-4 sm:px-8 py-6 sm:py-10 relative">
-        <header className="mb-4 sm:mb-6 text-center">
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-emerald-900">Quirk AI Sales Kiosk</h1>
-        </header>
-
-        {/* CLICKABLE progress chips (back only) */}
-        <nav aria-label="Progress" className="mb-5 sm:mb-7">
-          <ol className="grid grid-cols-4 sm:grid-cols-8 gap-2">
-            {STEPS.map((label, i) => {
-              const reachable = i <= maxVisited;
-              const active = i <= step;
-              const cls = active ? 'bg-emerald-600 text-white' : 'bg-white/70 text-slate-600 border';
-              const numberCls = active ? 'bg-white/20' : 'bg-slate-200 text-slate-700';
-              return (
-                <li key={i}>
-                  <button
-                    className={`w-full flex items-center gap-2 p-1 rounded-full border border-slate-200 ${cls} ${!reachable ? 'opacity-60 cursor-not-allowed' : ''}`}
-                    onClick={()=> reachable && go(i)}
-                    aria-disabled={!reachable}
-                  >
-                    <span className={`inline-flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold ${numberCls}`}>{i+1}</span>
-                    <span className="hidden sm:block text-xs font-semibold truncate pr-1">{label}</span>
-                  </button>
-                </li>
-              );
-            })}
-          </ol>
-        </nav>
-
-        <div className="bg-white/90 backdrop-blur rounded-2xl shadow-2xl border border-slate-200 p-4 sm:p-6">
-          {/* Step 1: Welcome (iframe) */}
-          {step===0 && (
-            <div>
-              <SectionTitle title="Welcome" subtitle="We’ll guide you through a few quick steps."/>
-              <div className="rounded-xl border bg-white overflow-hidden">
-                <iframe
-                  title="Welcome Module"
-                  src="kiosk-welcome.html"
-                  className="w-full"
-                  style={{height:'220px', border:0}}
-                  onLoad={(e)=>{
-                    // seed current profile into the child (prefill)
-                    e.currentTarget.contentWindow?.postMessage(
-                      { type:'welcome:init', payload:{ profile } },
-                      '*'
-                    );
-                  }}
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Step 2: Discovery (iframe) */}
-          {step===1 && (
-            <div>
-              <SectionTitle title="Discovery" subtitle="Tell us your monthly target."/>
-              <div className="rounded-xl border bg-white overflow-hidden">
-                <iframe
-                  title="Discovery Module"
-                  src="kiosk-discovery.html"
-                  className="w-full"
-                  style={{height:'280px', border:0}}
-                  onLoad={(e)=>{
-                    // send current budget to child
-                    e.currentTarget.contentWindow?.postMessage(
-                      { type:'discovery:init', payload:{ budget: profile.budget }},
-                      '*'
-                    );
-                  }}
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Step 3: Vehicle Match */}
-          {step===2 && (
-            <div>
-              <SectionTitle title="Vehicle Match" subtitle="Pick one to continue."/>
-              <div className="grid md:grid-cols-3 gap-4">
-                {INVENTORY.slice(0,9).map((v, index) => {
-                  const img = getVehicleImage(v.year, v.make, v.model);
-                  return (
-                    <button key={`match-${index}-${v.vin.slice(-6)}`}
-                            onClick={()=>{
-                              setSelectedVin(v.vin);
-                              setDesk(d => ({...d, price: v.price}));
-                            }}
-                            className={`group text-left rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition p-3 bg-white/90 ${selectedVin===v.vin?'ring-4 ring-emerald-300':''}`}>
-                      <div className="relative">
-                        {img ? (
-                          <img src={img} alt={`${v.year} ${v.make} ${v.model}`} className="w-full h-44 object-cover rounded-xl"
-                               loading="lazy"
-                               onError={(e)=>{ e.currentTarget.style.display='none'; e.currentTarget.nextElementSibling.style.display='flex'; }}/>
-                        ) : null}
-                        <div className={`w-full h-44 bg-gradient-to-br from-slate-200 to-slate-300 rounded-xl flex items-center justify-center ${img ? 'hidden' : ''}`}>
-                          <div className="text-center text-slate-600">
-                            <div className="text-sm font-semibold">{v.make}</div>
-                            <div className="text-xs">{v.model}</div>
-                          </div>
-                        </div>
-                        <span className="absolute bottom-2 left-2 text-xs px-2 py-1 rounded-full bg-black/60 text-white">{v.stockType}</span>
-                      </div>
-                      <div className="mt-2 font-semibold">{v.year} {v.make} {v.model}</div>
-                      <div className="text-emerald-700 font-extrabold text-lg">${v.price.toLocaleString()}</div>
-                      <div className="text-xs text-slate-600">{v.color} • {v.trim}</div>
-                    </button>
-                  );
-                })}
-              </div>
-              <div className="mt-4 flex justify-between">
-                <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={back}>← Back</button>
-                <PrimaryButton onClick={()=>{ track('guided_vehicle_next', {vin:selectedVin}); next(); }}>Add trade →</PrimaryButton>
-              </div>
-            </div>
-          )}
-
-          {/* Step 4: Trade-In (iframe) */}
-          {step===3 && (
-            <div>
-              <SectionTitle title="Trade-in" subtitle="Enter your VIN/miles; we’ll pre-value it."/>
-              <div className="rounded-xl border bg-white overflow-hidden">
-                <iframe
-                  title="Trade Module"
-                  src="kiosk-trade.html"
-                  className="w-full"
-                  style={{height:'620px', border:0}}
-                />
-              </div>
-              <div className="mt-3 text-xs text-slate-600">
-                {trade.rangeLow
-                  ? <>Est. range from module: <span className="px-2 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800">${trade.rangeLow.toLocaleString()} – ${trade.rangeHigh.toLocaleString()}</span></>
-                  : <>Complete the trade card above, then tap <em>Start credit →</em> there to continue.</>}
-              </div>
-              <div className="mt-4 flex justify-between">
-                <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={back}>← Back</button>
-                <span className="text-sm text-slate-500">Use the trade card’s button to continue</span>
-              </div>
-            </div>
-          )}
-
-          {/* Step 5: Payments */}
-          {step===4 && (
-            <div>
-              <SectionTitle title="Build your payment" subtitle="Taxes/fees estimated; lender approval required."/>
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <div className="rounded-xl border p-4 bg-white/90">
-                    <div className="text-sm text-slate-600 mb-2">Vehicle price</div>
-                    <div className="text-2xl font-bold">${(vehicle ? vehicle.price : desk.price).toLocaleString()}</div>
-                    <div className="grid grid-cols-2 gap-3 mt-4">
-                      <Field label="Down payment">
-                        <input type="number" className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={desk.down} onChange={e=>setDesk({...desk, down:Number(e.target.value)})}/>
-                      </Field>
-                      <Field label="Taxes & fees (est.)">
-                        <input type="number" className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={desk.taxesFees} onChange={e=>setDesk({...desk, taxesFees:Number(e.target.value)})}/>
-                      </Field>
-                      <Field label="APR %">
-                        <input type="number" step="0.1" className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={desk.apr} onChange={e=>setDesk({...desk, apr:Number(e.target.value)})}/>
-                      </Field>
-                      <Field label="Term (months)">
-                        <select className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={desk.term} onChange={e=>setDesk({...desk, term:Number(e.target.value)})}>
-                          {[36,48,60,72,84].map(n => <option key={n} value={n}>{n}</option>)}
-                        </select>
-                      </Field>
-                    </div>
-                    <details className="mt-2">
-                      <summary className="text-slate-600 cursor-pointer">Products</summary>
-                      <div className="grid sm:grid-cols-3 gap-3 mt-2 text-slate-700">
-                        <label className="flex items-center gap-2"><input type="checkbox" checked={desk.products.vsc} onChange={e=>setDesk({...desk, products:{...desk.products, vsc:e.target.checked}})} /> VSC ($1,895)</label>
-                        <label className="flex items-center gap-2"><input type="checkbox" checked={desk.products.gap} onChange={e=>setDesk({...desk, products:{...desk.products, gap:e.target.checked}})} /> GAP ($795)</label>
-                        <label className="flex items-center gap-2"><input type="checkbox" checked={desk.products.maint} onChange={e=>setDesk({...desk, products:{...desk.products, maint:e.target.checked}})} /> Maintenance ($495)</label>
-                      </div>
-                    </details>
-                  </div>
-                </div>
-                <div className="rounded-2xl border p-4 bg-emerald-50/80">
-                  <div className="text-sm text-emerald-700">Estimated monthly</div>
-                  <div className="text-4xl font-extrabold text-emerald-800">${monthly.toFixed(0)}</div>
-                  <div className="text-sm text-slate-600 mt-2">Amount financed: ${amountFinanced.toLocaleString()}</div>
-                  <div className="mt-3 flex flex-wrap gap-2 text-xs text-slate-700">
-                    <span className="px-2 py-1 rounded-full bg-white border">APR {desk.apr}%</span>
-                    <span className="px-2 py-1 rounded-full bg-white border">{desk.term} mos</span>
-                    <span className="px-2 py-1 rounded-full bg-white border">Down ${Number(desk.down).toLocaleString()}</span>
-                  </div>
-                  <p className="text-xs text-slate-500 mt-2">Estimates only; subject to lender approval, credit tier, LTV, and program rules. Final payment may vary.</p>
-                </div>
-              </div>
-              <div className="mt-4 flex justify-between">
-                <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={back}>← Back</button>
-                <PrimaryButton onClick={()=>{ track('guided_payments_next'); next(); }}>Start credit →</PrimaryButton>
-              </div>
-            </div>
-          )}
-
-          {/* Step 6: Credit Start */}
-          {step===5 && (
-            <div>
-              <SectionTitle title="Start your credit application" subtitle="Soft pull first. No impact to score until you consent to submit."/>
-              <div className="grid md:grid-cols-3 gap-4">
-                <Field label="Full name"><input className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300"/></Field>
-                <Field label="Email"><input className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300"/></Field>
-                <Field label="Mobile"><input className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300"/></Field>
-                <Field label="ZIP"><input className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300"/></Field>
-                <Field label="Income (monthly)"><input className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300"/></Field>
-                <Field label="Consent to soft pull">
-                  <label className="flex items-center gap-2"><input type="checkbox"/> I agree to a soft inquiry</label>
-                </Field>
-              </div>
-              <div className="mt-4 flex justify-between">
-                <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={back}>← Back</button>
-                <PrimaryButton onClick={()=>{ track('guided_credit_next'); next(); }}>Preview protection →</PrimaryButton>
-              </div>
-            </div>
-          )}
-
-          {/* Step 7: F&I Options */}
-          {step===6 && (
-            <div>
-              <SectionTitle title="Protect your purchase" subtitle="Add options and see the impact instantly."/>
-              <div className="grid sm:grid-cols-3 gap-4">
-                <label className="rounded-2xl border p-4 flex items-start gap-3 bg-white/90">
-                  <input type="checkbox" checked={desk.products.vsc} onChange={e=>setDesk({...desk, products:{...desk.products, vsc:e.target.checked}})}/>
-                  <div>
-                    <div className="font-semibold">Vehicle Service Contract</div>
-                    <div className="text-sm text-slate-600">Covers major repairs beyond factory warranty. +$1,895</div>
-                  </div>
-                </label>
-                <label className="rounded-2xl border p-4 flex items-start gap-3 bg-white/90">
-                  <input type="checkbox" checked={desk.products.gap} onChange={e=>setDesk({...desk, products:{...desk.products, gap:e.target.checked}})}/>
-                  <div>
-                    <div className="font-semibold">GAP</div>
-                    <div className="text-sm text-slate-600">Protects against total loss payoff gap. +$795</div>
-                  </div>
-                </label>
-                <label className="rounded-2xl border p-4 flex items-start gap-3 bg-white/90">
-                  <input type="checkbox" checked={desk.products.maint} onChange={e=>setDesk({...desk, products:{...desk.products, maint:e.target.checked}})}/>
-                  <div>
-                    <div className="font-semibold">Maintenance</div>
-                    <div className="text-sm text-slate-600">Prepaid maintenance services. +$495</div>
-                  </div>
-                </label>
-              </div>
-              <div className="mt-3 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800">
-                Current estimated payment: <strong>${monthly.toFixed(0)}</strong>
-              </div>
-              <div className="mt-4 flex justify-between">
-                <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={back}>← Back</button>
-                <PrimaryButton onClick={()=>{ track('guided_fandi_next'); next(); }}>Review & handoff →</PrimaryButton>
-              </div>
-            </div>
-          )}
-
-          {/* Step 8: Review */}
-          {step===7 && (
-            <div>
-              <SectionTitle title="Review & handoff" subtitle="We’ll prep your buyer’s order and connect you to a manager or F&I."/>
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="rounded-2xl border p-4 bg-white/90">
-                  <div className="font-semibold mb-2">Your picks</div>
-                  <ul className="text-sm text-slate-700 space-y-1">
-                    <li><strong>Name:</strong> {profile.name || '—'}</li>
-                    <li><strong>Contact:</strong> {profile.contact || '—'}</li>
-                    <li><strong>Vehicle:</strong> {vehicle ? `${vehicle.year} ${vehicle.make} ${vehicle.model}` : '—'}</li>
-                    <li><strong>Trade range:</strong> {trade.rangeLow ? `${trade.rangeLow.toLocaleString()}–${trade.rangeHigh.toLocaleString()}` : '—'}</li>
-                  </ul>
-                </div>
-                <div className="rounded-2xl border p-4 bg-white/90">
-                  <div className="font-semibold mb-2">Deal preview</div>
-                  <ul className="text-sm text-slate-700 space-y-1">
-                    <li><strong>Est. monthly:</strong> ${monthly.toFixed(0)}</li>
-                    <li><strong>Down:</strong> ${Number(desk.down).toLocaleString()}</li>
-                    <li><strong>APR/Term:</strong> {desk.apr}% • {desk.term} mos</li>
-                    <li><strong>Taxes & fees:</strong> ${desk.taxesFees.toLocaleString()}</li>
-                    <li><strong>Products:</strong> {(desk.products.vsc?'VSC ':'') + (desk.products.gap?'GAP ':'') + (desk.products.maint?'Maint':'') || '—'}</li>
-                  </ul>
-                  <p className="text-xs text-slate-500 mt-2">This is a draft for review, not a binding offer. Final numbers subject to inspection and lender approval.</p>
-                </div>
-              </div>
-              <div className="mt-4 flex flex-wrap gap-3 justify-between">
-                <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={back}>← Back</button>
-                <div className="flex gap-2">
-                  <button className="px-4 py-2 rounded-xl border bg-white/90">Raise hand for manager</button>
-                  <PrimaryButton>Text me this summary</PrimaryButton>
-                  <button className="px-4 py-2 rounded-2xl bg-emerald-700 text-white font-semibold">I'm ready now</button>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
 }
 
-ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+/* ========= load a step (sets title, iframe) ========= */
+function loadStep(i){
+  step = Math.max(0, Math.min(i, STEPS.length-1));
+  maxVisited = Math.max(maxVisited, step);
+  save("guided_step", step);
+  save("guided_maxVisited", maxVisited);
+
+  const cfg = STEPS[step];
+  stepTitle.textContent = cfg.label;
+  stepSubtitle.textContent = cfg.subtitle || '';
+  stage.src = cfg.url;
+  stage.style.height = (cfg.height || 480) + 'px';
+
+  // Seed common data if present
+  stage.addEventListener('load', function onload(){
+    stage.removeEventListener('load', onload);
+    try {
+      const profile = load("guided_profile", { name:'', contact:'', budget:400 });
+      if (cfg.url.includes('kiosk-welcome.html')) {
+        stage.contentWindow?.postMessage({ type:'welcome:init', payload:{ profile } }, '*');
+      }
+      if (cfg.url.includes('kiosk-discovery.html')) {
+        stage.contentWindow?.postMessage({ type:'discovery:init', payload:{ budget: profile.budget } }, '*');
+      }
+    } catch {}
+  });
+
+  renderProgress();
+}
+function go(i){ loadStep(i); }
+
+/* ========= message bridge from children ========= */
+window.addEventListener('message', (e) => {
+  const data = e?.data || {};
+  if (!data || typeof data !== 'object') return;
+  const { type, payload } = data;
+
+  // Welcome
+  if (type === 'welcome:done') {
+    const p = load("guided_profile", { name:'', contact:'', budget:400 });
+    const merged = { ...p, ...(payload || {}) };
+    save("guided_profile", merged);
+    track('guided_welcome_next');
+    go(1);
+    return;
+  }
+
+  // Discovery
+  if (type === 'discovery:update') {
+    const p = load("guided_profile", { name:'', contact:'', budget:400 });
+    save("guided_profile", { ...p, budget: Number(payload?.budget ?? p.budget) });
+    return;
+  }
+  if (type === 'discovery:done') {
+    track('guided_discovery_next');
+    go(2);
+    return;
+  }
+  if (type === 'discovery:back') { go(0); return; }
+
+  // Vehicle Match (child should persist selection locally)
+  if (type === 'vehicle:done') { go(3); return; }
+
+  // Trade
+  if (type === 'trade:update') {
+    // child may persist trade to localStorage; we just allow updates if needed
+    return;
+  }
+  if (type === 'trade:done') { go(4); return; }
+
+  // Payments
+  if (type === 'payments:done') { go(5); return; }
+
+  // Credit
+  if (type === 'credit:done') { go(6); return; }
+
+  // F&I
+  if (type === 'fandi:done') { go(7); return; }
+});
+
+/* ========= init (first tab only resets) ========= */
+(function init(){
+  if (!sessionStorage.getItem('guided_session_started')) {
+    sessionStorage.setItem('guided_session_started', '1');
+    [
+      "guided_step","guided_consent","guided_profile","guided_selectedVin",
+      "guided_desk","guided_trade","guided_maxVisited"
+    ].forEach(k => { try { localStorage.removeItem(k); } catch {} });
+    step = 0;
+    maxVisited = 0;
+  }
+  loadStep(load("guided_step", 0));
+})();
 </script>
 </body>
 </html>
