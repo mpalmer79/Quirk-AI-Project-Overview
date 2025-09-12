@@ -3,87 +3,175 @@
 <base href="/Quirk-AI-Project-Overview/"><title>Kiosk • Vehicle Match</title>
 <link rel="stylesheet" href="assets/kiosk-shared.css">
 <script src="assets/kiosk-shared.js"></script>
+<style>
+  .filters { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:10px; }
+  .grid { display:grid; gap:12px; grid-template-columns: 1fr; }
+  @media (min-width: 768px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+  .card { background:#fff; border:1px solid #e2e8f0; border-radius:16px; padding:10px; box-shadow: 0 2px 14px rgba(0,0,0,.05); text-align:left; }
+  .card:hover { box-shadow: 0 6px 22px rgba(0,0,0,.08); transform: translateY(-1px); }
+  .thumb { width:100%; height:160px; border-radius:12px; object-fit:cover; background:linear-gradient(135deg,#e5e7eb,#cbd5e1); display:block; }
+  .stock { position:absolute; left:8px; bottom:8px; font-size:.7rem; color:#fff; background:rgba(0,0,0,.55); padding:.2rem .5rem; border-radius:9999px; }
+  .price { color:#047857; font-weight:800; font-size:1.05rem; }
+  .muted { color:#64748b; font-size:.85rem; }
+  .cap { text-transform:capitalize; }
+</style>
 </head><body>
 <div class="kx">
-  <h2>Vehicle Match</h2><p class="sub">Pick one to continue.</p>
-  <div id="list" class="row row--2"></div>
-  <div class="note">This page will auto-load <code>inventory.json</code> from the site root (docs/). It will fall back to <code>assets/inventory.json</code> or <code>sandbox/inventory.json</code> if present.</div>
+  <h2>Vehicle Match</h2>
+  <p class="sub">Pick one to continue.</p>
+
+  <div class="filters">
+    <span id="criteria" class="pill">Loading buying power…</span>
+    <span id="found" class="pill">0 vehicles found</span>
+  </div>
+
+  <div id="list" class="grid"></div>
+
+  <p class="note" style="margin-top:10px">
+    This page reads <code>guided_profile.budget</code> (Discovery). Inventory is loaded from
+    <code>inventory.json</code> (root), falling back to <code>assets/inventory.json</code> then <code>sandbox/inventory.json</code>.
+  </p>
 </div>
+
 <script>
 const { save, load, post } = window.kiosk;
 
-/* --- Load inventory, preferring site root (docs/inventory.json), with fallbacks --- */
-async function getInventory(){
-  // 1) assets/inventory.json (optional)
-  try {
-    const res = await fetch('assets/inventory.json', { cache: 'no-store' });
-    if (res.ok) return await res.json();
-  } catch {}
+/* ---------- pricing/finance helpers ---------- */
+function amountFromPayment(pmt, aprPct, termMonths){
+  const r = aprPct/100/12;
+  if (!r) return pmt * termMonths;
+  return pmt * (1 - Math.pow(1 + r, -termMonths)) / r;
+}
+const APR_DEFAULT  = 6.99;
+const TERM_DEFAULT = 72;
+const OVER_FLEX    = 5000;   // allow up to +$5,000 over buying power
+const DOWN_DEFAULT = 0;      // future: wire to Discovery when you add it
 
-  // 2) ROOT: docs/inventory.json (your current location) ✅
-  try {
-    const res = await fetch('inventory.json', { cache: 'no-store' });
-    if (res.ok) return await res.json();
-  } catch {}
+/* ---------- image maps (same fallbacks you used before) ---------- */
+const VEHICLE_IMAGES = {
+  '2025_Chevrolet_Silverado 1500': 'assets/2025-silverado-1500.jpg',
+  '2025_Chevrolet_Equinox':       'assets/2025-equinox.jpg',
+  '2025_Chevrolet_Traverse':      'assets/2025-traverse.jpg',
+  '2025_Chevrolet_Trax':          'assets/2025-trax.jpg',
+  '2025_Chevrolet_Trailblazer':   'assets/2025-trailblazer.jpg',
+  '2025_Chevrolet_Malibu':        'assets/2025-malibu.jpg',
+  '2025_Chevrolet_Colorado':      'assets/2025-colorado.jpg',
+  '2025_Chevrolet_Blazer':        'assets/2025-blazer.jpg',
+  '2025_Chevrolet_Tahoe':         'assets/2025-tahoe.jpg',
+  '2019_Toyota_Camry':            'assets/camry.jpg',
+  '2020_Honda_CR-V':              'assets/CRV.jpg',
+  '2021_Ford_F-150':              'assets/F150.webp',
+  '2022_Nissan_Altima':           'assets/altima.jpg'
+};
+function specificImage(year, make, model){
+  return VEHICLE_IMAGES[`${year}_${make}_${model}`] || null;
+}
+const PHOTO_ROOT = 'assets/kiosk-photos/';
+const MODEL_PHOTOS = {
+  Chevrolet: { 'Silverado 1500':'chevrolet-silverado-1500.jpg','Equinox':'chevrolet-equinox.jpg','Traverse':'chevrolet-traverse.jpg','Trax':'chevrolet-trax.jpg','Trailblazer':'chevrolet-trailblazer.jpg','Malibu':'chevrolet-malibu.jpg','Colorado':'chevrolet-colorado.jpg','Blazer':'chevrolet-blazer.jpg','Tahoe':'chevrolet-tahoe.jpg' },
+  GMC: { 'Sierra 1500':'gmc-sierra-1500.jpg','Terrain':'gmc-terrain.jpg','Acadia':'gmc-acadia.jpg','Canyon':'gmc-canyon.jpg','Yukon':'gmc-yukon.jpg' },
+  Buick: { 'Encore GX':'buick-encore-gx.jpg','Envision':'buick-envision.jpg','Envista':'buick-envista.jpg' }
+};
+const MAKE_DEFAULT = { Chevrolet:'chevrolet-default.jpg', GMC:'gmc-default.jpg', Buick:'buick-default.jpg', Used:'used-default.jpg' };
+function photoFor(make, model){
+  const file = (MODEL_PHOTOS[make] && MODEL_PHOTOS[make][model]) || MAKE_DEFAULT[make] || 'placeholder.jpg';
+  return `${PHOTO_ROOT}${file}`;
+}
+function thumbFor(v){
+  if (v.photo) return v.photo;                         // explicit photo on record
+  const spec = specificImage(v.year, v.make, v.model);  // year+model image
+  if (spec) return spec;
+  return photoFor(v.make, v.model);                     // model-family fallback
+}
 
-  // 3) sandbox/inventory.json (optional)
-  try {
-    const res = await fetch('sandbox/inventory.json', { cache: 'no-store' });
-    if (res.ok) return await res.json();
-  } catch {}
-
-  // 4) last resort: tiny demo list
+/* ---------- inventory loader (root → assets → sandbox → demo) ---------- */
+async function loadInventory(){
+  try { const r = await fetch('inventory.json', {cache:'no-store'}); if (r.ok) return await r.json(); } catch {}
+  try { const r = await fetch('assets/inventory.json', {cache:'no-store'}); if (r.ok) return await r.json(); } catch {}
+  try { const r = await fetch('sandbox/inventory.json', {cache:'no-store'}); if (r.ok) return await r.json(); } catch {}
   return [
-    { vin:'1GCDEMO0000000001', year:2025, make:'Chevrolet', model:'Equinox', price:28990, color:'White', trim:'LT' },
-    { vin:'1GTDemo0000000002', year:2025, make:'GMC',       model:'Terrain', price:30990, color:'Black', trim:'SLE' },
-    { vin:'1G4Demo0000000003', year:2025, make:'Buick',     model:'Envista', price:23990, color:'Blue',  trim:'Preferred' }
+    { vin:'1GCDEMO0000000001', year:2025, make:'Chevrolet', model:'Equinox', price:28990, color:'White', trim:'LT', stockType:'New' },
+    { vin:'1GTDemo0000000002', year:2025, make:'GMC', model:'Terrain', price:30990, color:'Black', trim:'SLE', stockType:'New' },
+    { vin:'1G4Demo0000000003', year:2025, make:'Buick', model:'Envista', price:23990, color:'Blue', trim:'Preferred', stockType:'New' }
   ];
 }
 
-/* --- Render a simple selectable card for each vehicle --- */
-function card(v){
-  // Defensive: accept alternative key names if your JSON uses snake_case, etc.
-  const data = {
-    vin:   v.vin   ?? v.VIN   ?? v.vin_number ?? '',
-    year:  v.year  ?? v.Year  ?? '',
-    make:  v.make  ?? v.Make  ?? '',
-    model: v.model ?? v.Model ?? '',
-    trim:  v.trim  ?? v.Trim  ?? '',
-    color: v.color ?? v.Color ?? '',
-    price: Number(v.price ?? v.msrp ?? v.salePrice ?? v.Price ?? 0)
+/* ---------- card renderer ---------- */
+function card(row){
+  // normalize common field names (snake/camel/mixed)
+  const v = {
+    vin:   row.vin ?? row.VIN ?? row.vin_number ?? '',
+    year:  row.year ?? row.Year ?? '',
+    make:  row.make ?? row.Make ?? '',
+    model: row.model ?? row.Model ?? '',
+    trim:  row.trim ?? row.Trim ?? '',
+    color: row.color ?? row.Color ?? '',
+    price: Number(row.price ?? row.salePrice ?? row.msrp ?? row.Price ?? 0),
+    stockType: row.stockType ?? row.stock_type ?? row.StockType ?? ''
   };
 
-  const div = document.createElement('div');
-  div.className = 'field'; // reuse spacing from shared CSS
-  div.innerHTML = `
-    <button class="btn btn--ghost" style="width:100%; text-align:left; display:block">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div>
-          <strong>${data.year} ${data.make} ${data.model}</strong><br>
-          <span class="pill" style="margin-top:4px; display:inline-block;">${data.trim || ''} ${data.color || ''}</span>
-        </div>
-        <div style="font-weight:800;color:#047857">$${(data.price || 0).toLocaleString()}</div>
-      </div>
-    </button>
+  const el = document.createElement('button');
+  el.className = 'card';
+  el.innerHTML = `
+    <div style="position:relative">
+      <img class="thumb" loading="lazy" alt="${v.year} ${v.make} ${v.model}">
+      <span class="stock">${v.stockType || ''}</span>
+    </div>
+    <div style="margin-top:8px; font-weight:700">${v.year} ${v.make} ${v.model}</div>
+    <div class="price">$${(v.price||0).toLocaleString()}</div>
+    <div class="muted cap">${v.color || ''} ${v.trim ? '• ' + v.trim : ''}</div>
   `;
-  div.querySelector('button').addEventListener('click', ()=>{
-    const desk = load('guided_desk', {
-      price:0, down:2000, apr:6.9, term:72, taxesFees:995,
-      products:{ vsc:false, gap:false, maint:false }
-    });
-    save('guided_selectedVin', data.vin);
-    save('guided_desk', { ...desk, price: data.price || desk.price });
-    post('vehicle:done', { vin: data.vin });
+  const img = el.querySelector('img.thumb');
+  img.src = thumbFor(v);
+  img.onerror = ()=>{ img.style.display='none'; };
+
+  el.addEventListener('click', ()=>{
+    const desk = load('guided_desk', { price:0, down:2000, apr:6.9, term:72, taxesFees:995, products:{vsc:false,gap:false,maint:false}});
+    save('guided_selectedVin', v.vin);
+    save('guided_desk', { ...desk, price: v.price || desk.price });
+    post('vehicle:done', { vin: v.vin });
   });
-  return div;
+
+  return el;
 }
 
-/* --- Init: load inventory and render ALL vehicles --- */
+/* ---------- init: compute buying power, filter, render ---------- */
 (async function init(){
-  const inv = await getInventory();
-  const list = document.getElementById('list');
-  list.innerHTML = '';
-  inv.forEach(v => list.appendChild(card(v))); // no slice → show everything
+  const inv = await loadInventory();
+
+  // pull target monthly from Discovery -> localStorage
+  const profile = load('guided_profile', { budget: 400 });
+  const monthlyTarget = Number(profile.budget || 400);
+
+  // try to respect previously chosen APR/term if user ever touched Payments
+  const desk = load('guided_desk', { apr: APR_DEFAULT, term: TERM_DEFAULT });
+  const apr = Number(desk.apr || APR_DEFAULT);
+  const term = Number(desk.term || TERM_DEFAULT);
+  const down = Number(desk.down || DOWN_DEFAULT);
+
+  // convert monthly target to buying power (principal). (Down payment simply shifts the cap upward)
+  const principal = amountFromPayment(monthlyTarget, apr, term) + down;
+  const cap = principal + OVER_FLEX;
+
+  // filter and sort (lowest price first for easier scanning)
+  const normalized = inv.map(r => ({
+    raw: r,
+    price: Number(r.price ?? r.salePrice ?? r.msrp ?? r.Price ?? 0)
+  }));
+  const keep = normalized.filter(x => x.price > 0 && x.price <= cap)
+                         .sort((a,b)=>a.price-b.price)
+                         .map(x => x.raw);
+
+  // render
+  const listEl = document.getElementById('list');
+  listEl.innerHTML = '';
+  keep.forEach(v => listEl.appendChild(card(v)));
+
+  // header chips
+  const critEl = document.getElementById('criteria');
+  const foundEl = document.getElementById('found');
+  critEl.textContent = `Target $${monthlyTarget.toFixed(0)}/mo → Buying power $${principal.toLocaleString()} (+$${OVER_FLEX.toLocaleString()} flex → cap $${cap.toLocaleString()})`;
+  foundEl.textContent = `${keep.length} vehicle${keep.length===1?'':'s'} found`;
 })();
 </script>
 </body></html>
