@@ -42,7 +42,7 @@
   </footer>
 
 <script type="text/babel">
-const { useMemo, useState, useEffect } = React;
+const { useEffect, useMemo, useState } = React;
 
 /* ================= parent communication (iframe) ================= */
 const PARENT_ORIGIN = window.location.origin;
@@ -53,164 +53,172 @@ function sendToParent(type, payload = {}) {
   }
 }
 
-/* ---------- Data: years, makes, models (simple library) ---------- */
-const THIS_YEAR = new Date().getFullYear();
-const YEARS = Array.from({length: (THIS_YEAR + 1) - 1985 + 1}, (_,i)=> (THIS_YEAR + 1) - i); // desc
+/* ================= helpers & small libs ================= */
 
+// Years: 1981..(current year + 1)
+const THIS_YEAR = new Date().getFullYear();
+const YEARS = Array.from({length: (THIS_YEAR + 1) - 1981 + 1}, (_,i) => 1981 + i);
+
+// Make list (common US brands; add more anytime)
 const ALL_MAKES = [
-  'Acura','Alfa Romeo','Audi','BMW','Buick','Cadillac','Chevrolet','Chrysler','Dodge','Fiat','Ford','GMC',
-  'Genesis','Honda','Hyundai','Infiniti','Jeep','Kia','Lexus','Lincoln','Mazda','Mercedes-Benz','Mini','Mitsubishi',
-  'Nissan','Porsche','Ram','Subaru','Tesla','Toyota','Volkswagen','Volvo'
+  'Acura','Alfa Romeo','Audi','BMW','Buick','Cadillac','Chevrolet','Chrysler','Dodge',
+  'Fiat','Ford','Genesis','GMC','Honda','Hyundai','Infiniti','Jaguar','Jeep','Kia',
+  'Land Rover','Lexus','Lincoln','Mazda','Mercedes-Benz','Mini','Mitsubishi','Nissan',
+  'Porsche','Ram','Subaru','Tesla','Toyota','Volkswagen','Volvo'
 ];
 
-function availableMakesForYear(year) {
-  const y = Number(year);
-  return ALL_MAKES.filter(m => !(m === 'Ram' && y && y < 2009));
-}
+// First year a brand appears as its own make
+const MAKE_START_YEAR = {
+  Ram: 2009,        // split from Dodge
+  Genesis: 2017,    // standalone brand from Hyundai
+  Tesla: 2008,
+  'Alfa Romeo': 2008
+};
 
+// Fallback model lists (used only if VPIC is offline / returns empty)
 const MODELS_BY_MAKE = {
-  Acura: ['ILX','TLX','RDX','MDX'],
-  Audi: ['A3','A4','Q5','Q7'],
-  BMW: ['3 Series','5 Series','X3','X5'],
-  Buick: ['Encore','Encore GX','Envision','Enclave'],
-  Cadillac: ['CT5','XT4','XT5','Escalade'],
-  Chevrolet: ['Malibu','Trax','Trailblazer','Equinox','Blazer','Traverse','Colorado','Silverado 1500','Tahoe'],
-  Chrysler: ['300','Pacifica','Voyager'],
-  Dodge: ['Charger','Challenger','Durango','Grand Caravan'],
-  Ford: ['Fusion','Escape','Edge','Explorer','F-150'],
-  GMC: ['Terrain','Acadia','Canyon','Sierra 1500','Yukon'],
-  Genesis: ['G70','G80','GV70','GV80'],
-  Honda: ['Civic','Accord','CR-V','Pilot','Ridgeline'],
-  Hyundai: ['Elantra','Sonata','Tucson','Santa Fe','Palisade'],
-  Infiniti: ['Q50','QX50','QX60'],
-  Jeep: ['Renegade','Compass','Cherokee','Grand Cherokee','Wrangler','Gladiator'],
-  Kia: ['Forte','K5','Sportage','Sorento','Telluride'],
-  Lexus: ['IS','ES','RX','GX'],
-  Lincoln: ['Corsair','Nautilus','Aviator','Navigator'],
-  Mazda: ['Mazda3','Mazda6','CX-5','CX-9'],
-  'Mercedes-Benz': ['C-Class','E-Class','GLC','GLE'],
-  Mini: ['Cooper','Countryman'],
-  Mitsubishi: ['Mirage','Outlander','Eclipse Cross'],
-  Nissan: ['Sentra','Altima','Rogue','Pathfinder','Frontier'],
-  Porsche: ['Macan','Cayenne','Panamera'],
-  Ram: ['1500','2500','3500','ProMaster'],
-  Subaru: ['Impreza','Legacy','Forester','Outback','Ascent'],
-  Tesla: ['Model 3','Model Y','Model S','Model X'],
-  Toyota: ['Corolla','Camry','RAV4','Highlander','Tacoma'],
-  Volkswagen: ['Jetta','Passat','Tiguan','Atlas'],
-  Volvo: ['S60','XC40','XC60','XC90']
+  Nissan: ['Altima','Rogue','Sentra','Murano','Pathfinder','Frontier','Versa'],
+  Toyota: ['Camry','Corolla','RAV4','Highlander','Tacoma','Tundra','Prius'],
+  Ford: ['F-150','Escape','Explorer','Mustang','Edge','Bronco Sport'],
+  Chevrolet: ['Silverado 1500','Equinox','Traverse','Malibu','Trailblazer','Trax'],
+  Honda: ['Civic','Accord','CR-V','Pilot','HR-V','Ridgeline'],
+  Hyundai: ['Elantra','Sonata','Tucson','Santa Fe','Palisade','Kona'],
+  Kia: ['Forte','K5','Sportage','Sorento','Telluride','Seltos'],
+  Jeep: ['Wrangler','Grand Cherokee','Cherokee','Compass','Renegade','Gladiator'],
+  Ram: ['1500','2500','3500'],
+  'Mercedes-Benz': ['C-Class','E-Class','GLC','GLE','GLA'],
+  BMW: ['3 Series','5 Series','X3','X5','X1'],
+  Lexus: ['RX','NX','ES','IS','GX'],
+  Volkswagen: ['Jetta','Passat','Tiguan','Atlas','Golf'],
+  Subaru: ['Outback','Forester','Crosstrek','Impreza','Ascent'],
+  Genesis: ['G70','G80','G90','GV70','GV80']
 };
 
-/* ——— UI helpers ——— */
-function Field({ label, children, center=false, widthClass="w-full" }) {
-  return (
-    <label className={`block mb-3 ${center ? 'text-center' : ''}`}>
-      <span className="block text-sm font-semibold text-slate-700 mb-1">{label}</span>
-      <div className={`${widthClass} mx-auto`}>{children}</div>
-    </label>
-  );
-}
-function PrimaryButton(props){
-  const cls = (props.className || "") + " px-5 py-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-700 text-white font-semibold shadow hover:brightness-110 active:brightness-95";
-  return <button {...props} className={cls} />;
-}
-function SectionTitle({ title, subtitle }) {
-  return (
-    <div className="mb-4">
-      <h2 className="text-xl sm:text-2xl font-bold text-emerald-800 text-center">{title}</h2>
-      {subtitle && <p className="text-center text-slate-600 mt-1">{subtitle}</p>}
-    </div>
-  );
-}
-
-/* ——— VIN helpers ——— */
-const VIN_RE = /^[A-HJ-NPR-Z0-9]{17}$/i;
-const MAKE_NORMALIZE = s => {
-  if (!s) return s;
+// Normalize VPIC make casing to our list
+function normalizeMake(s) {
+  if (!s) return '';
+  const u = s.toUpperCase();
   const map = {
-    'RAM':'Ram','MERCEDES-BENZ':'Mercedes-Benz','VOLKSWAGEN':'Volkswagen',
-    'ALFA ROMEO':'Alfa Romeo'
+    'MERCEDES-BENZ': 'Mercedes-Benz',
+    'ALFA ROMEO': 'Alfa Romeo',
+    'VW': 'Volkswagen',
+    'VOLKSWAGEN': 'Volkswagen',
+    'RAM': 'Ram',
   };
-  const upper = s.toUpperCase();
-  if (map[upper]) return map[upper];
-  // Title-case words, preserve hyphens
-  return s.split(/([\s-])/).map(part =>
-    /^[A-Za-z]+$/.test(part) ? part[0].toUpperCase()+part.slice(1).toLowerCase() : part
-  ).join('');
-};
+  if (map[u]) return map[u];
+  // Title Case generic
+  return s.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase()+w.slice(1)).join(' ');
+}
 
+function availableMakesForYear(year) {
+  const y = Number(year) || THIS_YEAR;
+  return ALL_MAKES.filter(m => {
+    const start = MAKE_START_YEAR[m] ?? 1900;
+    return y >= start;
+  });
+}
+
+// VPIC: models for make+year
+async function fetchModelsForMakeYear(make, year) {
+  const url = `https://vpic.nhtsa.dot.gov/api/vehicles/GetModelsForMakeYear/make/${encodeURIComponent(make)}/modelyear/${encodeURIComponent(year)}?format=json`;
+  const res = await fetch(url);
+  const data = await res.json();
+  const rows = (data && data.Results) || [];
+  const names = [...new Set(rows.map(r => r.Model_Name).filter(Boolean))];
+  return names;
+}
+
+// VPIC: decode VIN -> year/make/model
 async function decodeVin(vin) {
   const url = `https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinValuesExtended/${encodeURIComponent(vin)}?format=json`;
   const res = await fetch(url);
   const data = await res.json();
   const row = (data && data.Results && data.Results[0]) || {};
-  return {
-    year: row.ModelYear || '',
-    make: row.Make || '',
-    model: row.Model || ''
-  };
+  const year = row.ModelYear ? Number(row.ModelYear) : undefined;
+  const make = normalizeMake(row.Make);
+  const model = row.Model ? row.Model.trim() : '';
+  return { year, make, model };
 }
 
-/* ——— Trade-In app ——— */
+/* ================= Trade-In app ================= */
 function App() {
   const [trade, setTrade] = useState({
-    vin:'', miles:'', condition:'Average',
-    year:'', make:'', model:''
+    vin: '',
+    miles: '',
+    condition: 'Average',
+    year: '',
+    make: '',
+    model: ''
   });
-  const [vinStatus, setVinStatus] = useState(''); // status text below VIN
 
-  // Dropdown lists
-  const makesBase = useMemo(() => availableMakesForYear(trade.year || THIS_YEAR), [trade.year]);
-  const makes = useMemo(() => {
-    // Ensure decoded make is present even if not in the base list
-    return trade.make && !makesBase.includes(trade.make) ? [trade.make, ...makesBase] : makesBase;
-  }, [makesBase, trade.make]);
+  // live update to parent on any change
+  useEffect(() => { sendToParent('trade:update', trade); }, [trade]);
 
-  const modelsBase = useMemo(() => MODELS_BY_MAKE[trade.make] || [], [trade.make]);
-  const models = useMemo(() => {
-    return trade.model && !modelsBase.includes(trade.model) ? [trade.model, ...modelsBase] : modelsBase;
-  }, [modelsBase, trade.model]);
+  // Models fetched from VPIC for selected Year+Make
+  const [modelsForMakeYear, setModelsForMakeYear] = useState([]);
 
-  // Auto-decode when VIN hits 17 chars
   useEffect(() => {
-    let timer;
-    if (VIN_RE.test(trade.vin)) {
-      setVinStatus('Decoding VIN…');
-      timer = setTimeout(async () => {
+    let ignore = false;
+    async function run() {
+      if (trade.year && trade.make) {
         try {
-          const decoded = await decodeVin(trade.vin.trim().toUpperCase());
-          const year = decoded.year ? String(decoded.year) : '';
-          const make = MAKE_NORMALIZE(decoded.make);
-          const model = decoded.model || '';
-
-          const next = { ...trade, year, make, model };
-          setTrade(next);
-          setVinStatus(year || make || model ? `Decoded: ${year || '—'} ${make || ''} ${model || ''}` : 'VIN decoded, but missing data');
-          sendToParent('trade:update', next);
-        } catch (e) {
-          setVinStatus('VIN decode failed. You can still select year/make/model manually.');
+          const list = await fetchModelsForMakeYear(trade.make, trade.year);
+          if (!ignore) setModelsForMakeYear(list);
+        } catch {
+          if (!ignore) setModelsForMakeYear([]);
         }
-      }, 300); // small debounce
-    } else {
-      if (trade.vin && trade.vin.length >= 10) {
-        setVinStatus('VINs are 17 characters. Keep typing…');
       } else {
-        setVinStatus('');
+        setModelsForMakeYear([]);
       }
     }
-    return () => clearTimeout(timer);
-  }, [trade.vin]);
+    run();
+    return () => { ignore = true; };
+  }, [trade.year, trade.make]);
 
+  const makes = useMemo(() => availableMakesForYear(trade.year || THIS_YEAR), [trade.year]);
+  const modelsBase = useMemo(() => {
+    const fromApi = (modelsForMakeYear && modelsForMakeYear.length)
+      ? modelsForMakeYear
+      : (MODELS_BY_MAKE[trade.make] || []);
+    // ensure decoded VIN model stays selectable if VPIC list misses it
+    return Array.from(new Set([...(fromApi || []), trade.model || ''])).filter(Boolean).sort();
+  }, [modelsForMakeYear, trade.make, trade.model]);
+
+  // ----- VIN handling -----
+  async function handleVinBlur() {
+    const vin = (trade.vin || '').trim();
+    if (vin.length !== 17) return; // skip short VINs
+    try {
+      const { year, make, model } = await decodeVin(vin);
+      if (year || make || model) {
+        // If decoded make is not valid for its year (brand start-year), keep year but adjust make list
+        const safeYear = year || trade.year;
+        const safeMake = make && availableMakesForYear(safeYear).includes(make)
+          ? make
+          : make; // still set (user can change), UI will show only valid makes
+
+        setTrade(t => ({
+          ...t,
+          year: safeYear || t.year,
+          make: safeMake || t.make,
+          model: model || t.model
+        }));
+      }
+    } catch (e) {
+      // silent fail; keep manual entries
+    }
+  }
+
+  // ----- actions -----
   function startCredit() {
-    sendToParent('trade:update', trade);
-    sendToParent('trade:done', trade);
-
-    if (!isEmbedded()) {
+    if (isEmbedded()) {
+      sendToParent('trade:done', trade);
+    } else {
       const params = new URLSearchParams({
         vin: trade.vin || '',
         miles: trade.miles || '',
         condition: trade.condition || 'Average',
-        year: trade.year || '',
+        year: String(trade.year || ''),
         make: trade.make || '',
         model: trade.model || '',
         step: '5'
@@ -222,91 +230,119 @@ function App() {
   return (
     <div className="relative w-full min-h-screen">
       <div className="max-w-4xl mx-auto px-4 sm:px-8 py-6 sm:py-10 relative">
-        <div className="bg-white/90 backdrop-blur rounded-2xl shadow-2xl border border-slate-200 p-4 sm:p-6">
-          <SectionTitle
-            title="Tell us about the vehicle that you're replacing"
-            subtitle=""
-          />
+        {/* Removed inner "Quirk AI Sales Kiosk" header to avoid duplication */}
 
-          {/* Row 1: VIN / Mileage / Condition */}
-          <div className="grid md:grid-cols-3 gap-4">
-            <Field label="VIN (optional, but helpful)" center widthClass="max-w-sm">
+        <div className="bg-white/90 backdrop-blur rounded-2xl shadow-2xl border border-slate-200 p-4 sm:p-6">
+          <div className="mb-6">
+            <h2 className="text-xl sm:text-2xl font-bold text-emerald-800 text-center">
+              Tell us about the vehicle that you're replacing
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-4 items-end">
+            {/* VIN */}
+            <label className="block text-center">
+              <span className="block text-sm font-semibold text-slate-700 mb-1">
+                VIN (optional, but helpful)
+              </span>
               <input
-                className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300"
+                className="w-72 max-w-full mx-auto rounded-xl border p-3 text-center focus:ring-2 focus:ring-emerald-300"
                 value={trade.vin}
                 onChange={e=>setTrade({...trade, vin:e.target.value})}
-                placeholder="Scan or type VIN"
-                inputMode="text"
-                autoComplete="off"
-                maxLength={17}
+                onBlur={handleVinBlur}
+                placeholder="3N1AB8CV6PY222842"
               />
-              {vinStatus && <div className="text-xs text-slate-500 mt-1">{vinStatus}</div>}
-            </Field>
+            </label>
 
-            <Field label="Mileage" center widthClass="w-40">
+            {/* Mileage */}
+            <label className="block text-center">
+              <span className="block text-sm font-semibold text-slate-700 mb-1">
+                Mileage
+              </span>
               <input
-                className="w-full rounded-xl border p-3 text-center focus:ring-2 focus:ring-emerald-300"
+                className="w-40 mx-auto rounded-xl border p-3 text-center focus:ring-2 focus:ring-emerald-300"
                 value={trade.miles}
                 onChange={e=>setTrade({...trade, miles:e.target.value})}
                 placeholder="e.g., 45,500"
-                inputMode="numeric"
-                size="15"
               />
-            </Field>
+            </label>
 
-            <Field label="Condition" center widthClass="w-48">
+            {/* Condition */}
+            <label className="block text-center">
+              <span className="block text-sm font-semibold text-slate-700 mb-1">
+                Condition
+              </span>
               <select
-                className="w-full rounded-xl border p-3 text-center focus:ring-2 focus:ring-emerald-300"
+                className="w-72 max-w-full mx-auto rounded-xl border p-3 text-center focus:ring-2 focus:ring-emerald-300"
                 value={trade.condition}
                 onChange={e=>setTrade({...trade, condition:e.target.value})}
               >
                 {['Great','Average','Rough'].map(x => <option key={x}>{x}</option>)}
               </select>
-            </Field>
-          </div>
+            </label>
 
-          {/* Row 2: Year / Make / Model */}
-          <div className="grid md:grid-cols-3 gap-4 mt-2">
-            <Field label="Year" center widthClass="w-40">
+            {/* Year */}
+            <label className="block text-center md:col-start-1">
+              <span className="block text-sm font-semibold text-slate-700 mb-1">
+                Year
+              </span>
               <select
-                className="w-full rounded-xl border p-3 text-center focus:ring-2 focus:ring-emerald-300"
+                className="w-40 mx-auto rounded-xl border p-3 text-center focus:ring-2 focus:ring-emerald-300"
                 value={trade.year}
-                onChange={e=>setTrade({ ...trade, year:e.target.value, make:'', model:'' })}
+                onChange={e=>{
+                  const year = Number(e.target.value);
+                  // If current make isn't valid for new year, clear it
+                  const makesForYear = availableMakesForYear(year);
+                  const make = makesForYear.includes(trade.make) ? trade.make : '';
+                  setTrade({...trade, year, make, model: ''});
+                }}
               >
-                <option value="" disabled hidden>Select year</option>
-                {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+                <option value=""></option>
+                {YEARS.slice().reverse().map(y => <option key={y} value={y}>{y}</option>)}
               </select>
-            </Field>
+            </label>
 
-            <Field label="Make" center widthClass="max-w-xs">
+            {/* Make */}
+            <label className="block text-center">
+              <span className="block text-sm font-semibold text-slate-700 mb-1">
+                Make
+              </span>
               <select
-                className="w-full rounded-xl border p-3 text-center focus:ring-2 focus:ring-emerald-300"
+                className="w-72 max-w-full mx-auto rounded-xl border p-3 text-center focus:ring-2 focus:ring-emerald-300"
                 value={trade.make}
-                onChange={e=>setTrade({ ...trade, make:e.target.value, model:'' })}
+                onChange={e=>setTrade({...trade, make:e.target.value, model: ''})}
                 disabled={!trade.year}
               >
-                <option value="" disabled hidden>{trade.year ? 'Select make' : 'Choose year first'}</option>
+                <option value=""></option>
                 {makes.map(m => <option key={m} value={m}>{m}</option>)}
               </select>
-            </Field>
+            </label>
 
-            <Field label="Model" center widthClass="max-w-xs">
+            {/* Model */}
+            <label className="block text-center">
+              <span className="block text-sm font-semibold text-slate-700 mb-1">
+                Model
+              </span>
               <select
-                className="w-full rounded-xl border p-3 text-center focus:ring-2 focus:ring-emerald-300"
+                className="w-72 max-w-full mx-auto rounded-xl border p-3 text-center focus:ring-2 focus:ring-emerald-300"
                 value={trade.model}
-                onChange={e=>setTrade({ ...trade, model:e.target.value })}
-                disabled={!trade.make}
+                onChange={e=>setTrade({...trade, model:e.target.value})}
+                disabled={!trade.year || !trade.make}
               >
-                <option value="" disabled hidden>{trade.make ? 'Select model' : 'Choose make first'}</option>
-                {models.map(m => <option key={m} value={m}>{m}</option>)}
+                <option value=""></option>
+                {modelsBase.map(m => <option key={m} value={m}>{m}</option>)}
               </select>
-            </Field>
+            </label>
           </div>
 
-          {/* Footer actions */}
-          <div className="mt-4 flex justify-between">
+          <div className="mt-6 flex justify-between">
             <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={()=>history.back()}>← Back</button>
-            <PrimaryButton onClick={startCredit}>Start credit →</PrimaryButton>
+            <button
+              className="px-5 py-3 rounded-2xl bg-emerald-700 text-white font-semibold shadow hover:brightness-110 active:brightness-95"
+              onClick={startCredit}
+            >
+              Start credit →
+            </button>
           </div>
         </div>
       </div>
