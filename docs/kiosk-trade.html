@@ -1,426 +1,49 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Quirk AI – Trade-In</title>
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<base href="/Quirk-AI-Project-Overview/"><title>Kiosk • Trade-In</title>
+<link rel="stylesheet" href="assets/kiosk-shared.css">
+<script src="assets/kiosk-shared.js"></script>
+</head><body>
+<div class="kx">
+  <h2>Trade-In</h2><p class="sub">Enter your VIN/miles; we’ll pre-value it.</p>
+  <div class="row row--2">
+    <label class="field"><span class="label">VIN</span><input id="vin" placeholder="17 characters"></label>
+    <label class="field"><span class="label">Miles</span><input id="miles" type="number" min="0" step="100"></label>
+  </div>
+  <label class="field"><span class="label">Condition</span>
+    <select id="cond">
+      <option>Average</option><option>Good</option><option>Excellent</option><option>Rough</option>
+    </select>
+  </label>
+  <div style="display:flex;justify-content:space-between;gap:8px;margin-top:8px">
+    <span class="note" id="rangeNote">Complete fields to estimate range…</span>
+    <button id="next" class="btn">Start credit →</button>
+  </div>
+</div>
+<script>
+const {save, load, post, track} = window.kiosk;
+const vinEl = document.getElementById('vin');
+const milesEl = document.getElementById('miles');
+const condEl = document.getElementById('cond');
+const noteEl = document.getElementById('rangeNote');
 
-  <!-- Force light UI + site base -->
-  <meta name="color-scheme" content="light" />
-  <meta name="theme-color" content="#ffffff" />
-  <base href="/Quirk-AI-Project-Overview/">
-
-  <!-- Quirk global styles -->
-  <link rel="stylesheet" href="assets/style.css" />
-
-  <!-- Tailwind + React + Babel (CDN) -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
-  <style>
-    :focus-visible { outline: 2px solid #34d399; outline-offset: 2px; }
-    body {
-      background: linear-gradient(rgba(255,255,255,.88), rgba(255,255,255,.88)),
-                  url("assets/kiosk.png") center / cover fixed no-repeat !important;
-      min-height: 100vh;
-    }
-    input, select, textarea, button {
-      background: #ffffff !important;
-      color: #0f172a !important;
-      border-color: #e5e7eb !important;
-    }
-    select option { background:#ffffff; color:#0f172a; }
-  </style>
-</head>
-<body class="bg-gradient-to-b from-emerald-50 to-slate-50 min-h-screen">
-  <div id="root"></div>
-
-<script type="text/babel">
-const { useEffect, useMemo, useState } = React;
-
-/* ================= parent communication (iframe) ================= */
-const PARENT_ORIGIN = window.location.origin;
-const isEmbedded = () => (window.parent && window.parent !== window);
-function sendToParent(type, payload = {}) {
-  if (isEmbedded()) window.parent.postMessage({ type, payload }, PARENT_ORIGIN);
+function estimate(lowBase=3000, highBase=7000){
+  const miles = Number(milesEl.value||0);
+  const adj = Math.max(0, (100000 - miles)/100000);
+  const low = Math.round(lowBase * (0.7 + adj*0.6));
+  const high = Math.round(highBase * (0.7 + adj*0.6));
+  return [low, high];
 }
-
-/* ================= helpers & small libs ================= */
-
-// Years: 1981..(current year + 1)
-const THIS_YEAR = new Date().getFullYear();
-const YEARS = Array.from({length: (THIS_YEAR + 1) - 1981 + 1}, (_,i) => 1981 + i);
-
-// Make list (common US brands; add more anytime)
-const ALL_MAKES = [
-  'Acura','Alfa Romeo','Audi','BMW','Buick','Cadillac','Chevrolet','Chrysler','Dodge',
-  'Fiat','Ford','Genesis','GMC','Honda','Hyundai','Infiniti','Jaguar','Jeep','Kia',
-  'Land Rover','Lexus','Lincoln','Mazda','Mercedes-Benz','Mini','Mitsubishi','Nissan',
-  'Porsche','Ram','Subaru','Tesla','Toyota','Volkswagen','Volvo'
-];
-
-// First year a brand appears as its own make
-const MAKE_START_YEAR = {
-  Ram: 2009,
-  Genesis: 2017,
-  Tesla: 2008,
-  'Alfa Romeo': 2008
-};
-
-// Fallback model lists
-const MODELS_BY_MAKE = {
-  Nissan: ['Altima','Rogue','Sentra','Murano','Pathfinder','Frontier','Versa'],
-  Toyota: ['Camry','Corolla','RAV4','Highlander','Tacoma','Tundra','Prius'],
-  Ford: ['F-150','Escape','Explorer','Mustang','Edge','Bronco Sport','Focus','Fusion'],
-  Chevrolet: ['Silverado 1500','Equinox','Traverse','Malibu','Trailblazer','Trax'],
-  Honda: ['Civic','Accord','CR-V','Pilot','HR-V','Ridgeline'],
-  Hyundai: ['Elantra','Sonata','Tucson','Santa Fe','Palisade','Kona'],
-  Kia: ['Forte','K5','Sportage','Sorento','Telluride','Seltos'],
-  Jeep: ['Wrangler','Grand Cherokee','Cherokee','Compass','Renegade','Gladiator'],
-  Ram: ['1500','2500','3500'],
-  'Mercedes-Benz': ['C-Class','E-Class','GLC','GLE','GLA'],
-  BMW: ['3 Series','5 Series','X3','X5','X1'],
-  Lexus: ['RX','NX','ES','IS','GX'],
-  Volkswagen: ['Jetta','Passat','Tiguan','Atlas','Golf'],
-  Subaru: ['Outback','Forester','Crosstrek','Impreza','Ascent'],
-  Genesis: ['G70','G80','G90','GV70','GV80']
-};
-
-function normalizeMake(s) {
-  if (!s) return '';
-  const u = s.toUpperCase();
-  const map = {
-    'MERCEDES-BENZ': 'Mercedes-Benz',
-    'ALFA ROMEO': 'Alfa Romeo',
-    'VW': 'Volkswagen',
-    'VOLKSWAGEN': 'Volkswagen',
-    'RAM': 'Ram',
-  };
-  if (map[u]) return map[u];
-  return s.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase()+w.slice(1)).join(' ');
+function persist(){
+  const [low, high] = estimate();
+  const payload = { vin: vinEl.value||'', miles: milesEl.value||'', condition: condEl.value, rangeLow: low, rangeHigh: high };
+  save('guided_trade', payload);
+  post('trade:update', payload);
+  noteEl.textContent = `Est. range: $${low.toLocaleString()} – $${high.toLocaleString()}`;
 }
-
-function availableMakesForYear(year) {
-  const y = Number(year) || THIS_YEAR;
-  return ALL_MAKES.filter(m => (MAKE_START_YEAR[m] ?? 1900) <= y);
-}
-
-// VPIC: models for make+year
-async function fetchModelsForMakeYear(make, year) {
-  const url = `https://vpic.nhtsa.dot.gov/api/vehicles/GetModelsForMakeYear/make/${encodeURIComponent(make)}/modelyear/${encodeURIComponent(year)}?format=json`;
-  const res = await fetch(url);
-  const data = await res.json();
-  const rows = (data && data.Results) || [];
-  return [...new Set(rows.map(r => r.Model_Name).filter(Boolean))];
-}
-
-// VPIC: decode VIN -> year/make/model
-async function decodeVin(vin) {
-  const url = `https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinValuesExtended/${encodeURIComponent(vin)}?format=json`;
-  const res = await fetch(url);
-  const data = await res.json();
-  const row = (data && data.Results && data.Results[0]) || {};
-  const year = row.ModelYear ? Number(row.ModelYear) : undefined;
-  const make = normalizeMake(row.Make);
-  const model = row.Model ? row.Model.trim() : '';
-  return { year, make, model };
-}
-
-// currency formatter from digits -> $#,###.##
-function formatCurrencyFromDigits(digits) {
-  if (!digits) return '';
-  const cents = parseInt(digits, 10);
-  const amt = cents / 100;
-  const fmt = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  return '$' + fmt.format(amt);
-}
-
-/* ================= Trade-In app ================= */
-function App() {
-  const [trade, setTrade] = useState({
-    vin: '',
-    miles: '',
-    condition: 'Average',
-    year: '',
-    make: '',
-    model: '',
-    financeInstitution: '',
-    payoff: '',
-    accountNumber: '',
-    regFileName: ''
-  });
-
-  // live update to parent on any change
-  useEffect(() => { sendToParent('trade:update', trade); }, [trade]);
-
-  // Models fetched from VPIC for selected Year+Make
-  const [modelsForMakeYear, setModelsForMakeYear] = useState([]);
-
-  useEffect(() => {
-    let ignore = false;
-    async function run() {
-      if (trade.year && trade.make) {
-        try {
-          const list = await fetchModelsForMakeYear(trade.make, trade.year);
-          if (!ignore) setModelsForMakeYear(list);
-        } catch {
-          if (!ignore) setModelsForMakeYear([]);
-        }
-      } else {
-        setModelsForMakeYear([]);
-      }
-    }
-    run();
-    return () => { ignore = true; };
-  }, [trade.year, trade.make]);
-
-  const makes = useMemo(() => availableMakesForYear(trade.year || THIS_YEAR), [trade.year]);
-  const modelsBase = useMemo(() => {
-    const fromApi = (modelsForMakeYear && modelsForMakeYear.length)
-      ? modelsForMakeYear
-      : (MODELS_BY_MAKE[trade.make] || []);
-    return Array.from(new Set([...(fromApi || []), trade.model || ''])).filter(Boolean).sort();
-  }, [modelsForMakeYear, trade.make, trade.model]);
-
-  // ----- VIN handling -----
-  async function handleVinBlur() {
-    const vin = (trade.vin || '').trim();
-    if (vin.length !== 17) return; // skip short VINs
-    try {
-      const { year, make, model } = await decodeVin(vin);
-      if (year || make || model) {
-        const safeYear = year || trade.year;
-        setTrade(t => ({
-          ...t,
-          year: safeYear || t.year,
-          make: make || t.make,
-          model: model || t.model
-        }));
-      }
-    } catch {}
-  }
-
-  // ----- file upload (scan registration) -----
-  function handleRegPick(e) {
-    const f = e.target.files && e.target.files[0];
-    if (f) {
-      setTrade(t => ({ ...t, regFileName: f.name }));
-      // send light metadata to parent (no file content)
-      sendToParent('trade:reg', { name: f.name, size: f.size, type: f.type });
-    }
-  }
-
-  // ----- actions -----
-  function startCredit() {
-    if (isEmbedded()) {
-      sendToParent('trade:done', trade);
-    } else {
-      const params = new URLSearchParams({
-        vin: trade.vin || '',
-        miles: trade.miles || '',
-        condition: trade.condition || 'Average',
-        year: String(trade.year || ''),
-        make: trade.make || '',
-        model: trade.model || '',
-        fin: trade.financeInstitution || '',
-        payoff: trade.payoff || '',
-        acct: trade.accountNumber || '',
-        step: '5'
-      });
-      window.location.href = `saleskiosk-guidedflow.html?${params.toString()}`;
-    }
-  }
-
-  return (
-    <div className="relative w-full min-h-screen">
-      <div className="max-w-4xl mx-auto px-4 sm:px-8 py-6 sm:py-10 relative">
-        <div className="bg-white/90 backdrop-blur rounded-2xl shadow-2xl border border-slate-200 p-4 sm:p-6">
-          <div className="mb-6">
-            <h2 className="text-xl sm:text-2xl font-bold text-emerald-800 text-center">
-              Tell us about the vehicle that you're replacing
-            </h2>
-          </div>
-
-          {/* Row 1 */}
-          <div className="grid md:grid-cols-3 gap-4 items-end">
-            {/* VIN */}
-            <label className="block text-center">
-              <span className="block text-sm font-semibold text-slate-700 mb-1">
-                VIN (optional, but helpful)
-              </span>
-              <input
-                className="w-72 max-w-full mx-auto rounded-xl border p-3 text-center focus:ring-2 focus:ring-emerald-300"
-                value={trade.vin}
-                onChange={e=>setTrade({...trade, vin:e.target.value})}
-                onBlur={handleVinBlur}
-                placeholder="Enter 17 digit VIN here"
-              />
-            </label>
-
-            {/* Mileage */}
-            <label className="block text-center">
-              <span className="block text-sm font-semibold text-slate-700 mb-1">
-                Mileage
-              </span>
-              <input
-                className="w-40 mx-auto rounded-xl border p-3 text-center focus:ring-2 focus:ring-emerald-300"
-                value={trade.miles}
-                onChange={e=>setTrade({...trade, miles:e.target.value})}
-                placeholder="e.g., 45,500"
-              />
-            </label>
-
-            {/* Condition */}
-            <label className="block text-center">
-              <span className="block text-sm font-semibold text-slate-700 mb-1">
-                Condition
-              </span>
-              <select
-                className="w-72 max-w-full mx-auto rounded-xl border p-3 text-center focus:ring-2 focus:ring-emerald-300"
-                value={trade.condition}
-                onChange={e=>setTrade({...trade, condition:e.target.value})}
-              >
-                {['Great','Average','Rough'].map(x => <option key={x}>{x}</option>)}
-              </select>
-            </label>
-
-            {/* Row 2 */}
-            {/* Year */}
-            <label className="block text-center md:col-start-1">
-              <span className="block text-sm font-semibold text-slate-700 mb-1">
-                Year
-              </span>
-              <select
-                className="w-40 mx-auto rounded-xl border p-3 text-center focus:ring-2 focus:ring-emerald-300"
-                value={trade.year}
-                onChange={e=>{
-                  const year = Number(e.target.value);
-                  const makesForYear = availableMakesForYear(year);
-                  const make = makesForYear.includes(trade.make) ? trade.make : '';
-                  setTrade({...trade, year, make, model: ''});
-                }}
-              >
-                <option value=""></option>
-                {YEARS.slice().reverse().map(y => <option key={y} value={y}>{y}</option>)}
-              </select>
-            </label>
-
-            {/* Make */}
-            <label className="block text-center">
-              <span className="block text-sm font-semibold text-slate-700 mb-1">
-                Make
-              </span>
-              <select
-                className="w-72 max-w-full mx-auto rounded-xl border p-3 text-center focus:ring-2 focus:ring-emerald-300"
-                value={trade.make}
-                onChange={e=>setTrade({...trade, make:e.target.value, model: ''})}
-                disabled={!trade.year}
-              >
-                <option value=""></option>
-                {makes.map(m => <option key={m} value={m}>{m}</option>)}
-              </select>
-            </label>
-
-            {/* Model */}
-            <label className="block text-center">
-              <span className="block text-sm font-semibold text-slate-700 mb-1">
-                Model
-              </span>
-              <select
-                className="w-72 max-w-full mx-auto rounded-xl border p-3 text-center focus:ring-2 focus:ring-emerald-300"
-                value={trade.model}
-                onChange={e=>setTrade({...trade, model:e.target.value})}
-                disabled={!trade.year || !trade.make}
-              >
-                <option value=""></option>
-                {modelsBase.map(m => <option key={m} value={m}>{m}</option>)}
-              </select>
-            </label>
-
-            {/* Row 3 (new fields) */}
-            {/* Finance Institution */}
-            <label className="block text-center md:col-start-1">
-              <span className="block text-sm font-semibold text-slate-700 mb-1">
-                Finance Institution (type "n/a" if vehicle is paid off)
-              </span>
-              <input
-                className="w-72 max-w-full mx-auto rounded-xl border p-3 text-center focus:ring-2 focus:ring-emerald-300"
-                value={trade.financeInstitution}
-                onChange={e=>setTrade({...trade, financeInstitution: e.target.value})}
-                placeholder='e.g., Ally Financial'
-              />
-            </label>
-
-            {/* 10-day payoff amount (currency) */}
-            <label className="block text-center">
-              <span className="block text-sm font-semibold text-slate-700 mb-1">
-                10 day payoff amount
-              </span>
-              <input
-                className="w-72 max-w-full mx-auto rounded-xl border p-3 text-center focus:ring-2 focus:ring-emerald-300"
-                value={trade.payoff}
-                onChange={e=>{
-                  const digits = e.target.value.replace(/\D/g,''); // keep only 0-9
-                  setTrade({...trade, payoff: digits ? formatCurrencyFromDigits(digits) : ''});
-                }}
-                placeholder="e.g., $15,280.55"
-              />
-            </label>
-
-            {/* Account Number (not required) */}
-            <label className="block text-center">
-              <span className="block text-sm font-semibold text-slate-700 mb-1">
-                Account Number (optional)
-              </span>
-              <input
-                className="w-72 max-w-full mx-auto rounded-xl border p-3 text-center focus:ring-2 focus:ring-emerald-300"
-                value={trade.accountNumber}
-                onChange={e=>setTrade({...trade, accountNumber: e.target.value})}
-                placeholder='e.g., 498163780269'
-              />
-            </label>
-          </div>
-
-          <div className="mt-6 flex justify-between">
-            <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={()=>history.back()}>← Back</button>
-            <button
-              className="px-5 py-3 rounded-2xl bg-emerald-700 text-white font-semibold shadow hover:brightness-110 active:brightness-95"
-              onClick={startCredit}
-            >
-              Start credit →
-            </button>
-          </div>
-        </div>
-
-        {/* NEW: bottom-of-page button (replaces duplicate footer) */}
-        <div className="mt-4 flex flex-col items-center">
-          <input
-            id="regUpload"
-            type="file"
-            className="hidden"
-            accept=".pdf,image/*"
-            onChange={handleRegPick}
-          />
-          <button
-            className="px-5 py-3 rounded-2xl bg-emerald-700 text-white font-semibold shadow hover:brightness-110 active:brightness-95"
-            onClick={()=>document.getElementById('regUpload').click()}
-          >
-            Scan copy of registration HERE (required)
-          </button>
-          {trade.regFileName && (
-            <div className="mt-2 text-xs text-slate-600">
-              Selected: {trade.regFileName}
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+[vinEl, milesEl, condEl].forEach(el=> el.addEventListener('input', persist));
+document.getElementById('next').addEventListener('click', ()=>{
+  persist(); track('guided_trade_next'); post('trade:done', load('guided_trade',{}));
+});
 </script>
-</body>
-</html>
+</body></html>
