@@ -58,5 +58,135 @@
           <li>
             <span class="w-full flex items-center gap-2 p-1 rounded-full border border-slate-200 bg-emerald-600 text-white">
               <span class="inline-flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold bg-white/20">1</span>
-              <span class="hidden sm:block text-xs font-semibold truncate pr-1
+              <span class="hidden sm:block text-xs font-semibold truncate pr-1">Welcome</span>
+            </span>
+          </li>
+          <!-- 2..8 inactive -->
+          <li><span class="w-full flex items-center gap-2 p-1 rounded-full border bg-white/70 text-slate-600">
+            <span class="inline-flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold bg-slate-200 text-slate-700">2</span>
+            <span class="hidden sm:block text-xs font-semibold truncate pr-1">Discovery</span>
+          </span></li>
+          <li><span class="w-full flex items-center gap-2 p-1 rounded-full border bg-white/70 text-slate-600">
+            <span class="inline-flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold bg-slate-200 text-slate-700">3</span>
+            <span class="hidden sm:block text-xs font-semibold truncate pr-1">Vehicle Match</span>
+          </span></li>
+          <li><span class="w-full flex items-center gap-2 p-1 rounded-full border bg-white/70 text-slate-600">
+            <span class="inline-flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold bg-slate-200 text-slate-700">4</span>
+            <span class="hidden sm:block text-xs font-semibold truncate pr-1">Trade-In</span>
+          </span></li>
+          <li class="hidden sm:block"><span class="w-full flex items-center gap-2 p-1 rounded-full border bg-white/70 text-slate-600">
+            <span class="inline-flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold bg-slate-200 text-slate-700">5</span>
+            <span class="hidden sm:block text-xs font-semibold truncate pr-1">Payments</span>
+          </span></li>
+          <li class="hidden sm:block"><span class="w-full flex items-center gap-2 p-1 rounded-full border bg-white/70 text-slate-600">
+            <span class="inline-flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold bg-slate-200 text-slate-700">6</span>
+            <span class="hidden sm:block text-xs font-semibold truncate pr-1">Credit Start</span>
+          </span></li>
+          <li class="hidden sm:block"><span class="w-full flex items-center gap-2 p-1 rounded-full border bg-white/70 text-slate-600">
+            <span class="inline-flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold bg-slate-200 text-slate-700">7</span>
+            <span class="hidden sm:block text-xs font-semibold truncate pr-1">F&amp;I Options</span>
+          </span></li>
+          <li class="hidden sm:block"><span class="w-full flex items-center gap-2 p-1 rounded-full border bg-white/70 text-slate-600">
+            <span class="inline-flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold bg-slate-200 text-slate-700">8</span>
+            <span class="hidden sm:block text-xs font-semibold truncate pr-1">Review &amp; Handoff</span>
+          </span></li>
+        </ol>
+      </nav>
 
+      <!-- The Welcome card (lifted from guided flow) -->
+      <div class="bg-white/90 backdrop-blur rounded-2xl shadow-2xl border border-slate-200 p-4 sm:p-6">
+        <div class="mb-4">
+          <h2 class="text-xl sm:text-2xl font-bold text-emerald-800 text-center">Welcome</h2>
+          <p class="text-center text-slate-600 mt-1">We’ll guide you through a few quick steps.</p>
+        </div>
+
+        <form id="welcomeForm" class="grid sm:grid-cols-2 gap-4" onsubmit="return false;">
+          <label class="block mb-3">
+            <span class="block text-sm font-semibold text-slate-700 mb-1">Your name / company</span>
+            <input id="nameInput" class="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300"/>
+          </label>
+          <label class="block mb-3">
+            <span class="block text-sm font-semibold text-slate-700 mb-1">Text or email to send your quote</span>
+            <input id="contactInput" class="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300"
+                   placeholder="(555) 555-5555 or you@example.com"/>
+          </label>
+          <div class="sm:col-span-2 mt-2 flex justify-end">
+            <button id="continueBtn"
+                    class="px-5 py-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-700 text-white font-semibold shadow hover:brightness-110 active:brightness-95">
+              Continue →
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <small>© 2025 Quirk AI — Sales Kiosk</small>
+  </footer>
+
+  <script>
+    /* ---------- tiny storage + analytics helpers (match guided flow keys) ---------- */
+    function track(event, data = {}) {
+      try {
+        const now = new Date().toISOString();
+        const row = { event, at: now, ...data };
+        const key = "guidedflow_analytics";
+        const arr = JSON.parse(localStorage.getItem(key) || "[]");
+        arr.push(row);
+        localStorage.setItem(key, JSON.stringify(arr));
+      } catch {}
+    }
+    const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
+    const load = (k, def) => { try { const v = JSON.parse(localStorage.getItem(k)); return (v ?? def); } catch { return def; } };
+
+    /* ---------- state ---------- */
+    const formEl = document.getElementById('welcomeForm');
+    const nameEl = document.getElementById('nameInput');
+    const contactEl = document.getElementById('contactInput');
+    const btnEl = document.getElementById('continueBtn');
+
+    // prefill from localStorage
+    const profile = load("guided_profile", { name:'', contact:'', budget:400 });
+    nameEl.value = profile.name || '';
+    contactEl.value = profile.contact || '';
+
+    // parent can pre-seed via postMessage
+    window.addEventListener('message', (e) => {
+      const d = e && e.data;
+      if (!d || typeof d !== 'object') return;
+      if (d.type === 'welcome:init' && d.payload && d.payload.profile) {
+        const p = d.payload.profile;
+        nameEl.value = p.name || '';
+        contactEl.value = p.contact || '';
+      }
+    });
+
+    // keep localStorage fresh
+    function persist() {
+      save("guided_profile", {
+        name: nameEl.value || '',
+        contact: contactEl.value || '',
+        budget: profile.budget ?? 400
+      });
+    }
+    nameEl.addEventListener('input', persist);
+    contactEl.addEventListener('input', persist);
+
+    // continue -> notify parent or fall back to redirect
+    btnEl.addEventListener('click', () => {
+      persist();
+      track('guided_welcome_next');
+      const payload = { name: nameEl.value || '', contact: contactEl.value || '' };
+
+      if (window.parent && window.parent !== window) {
+        // running in an iframe inside guided flow
+        window.parent.postMessage({ type: 'welcome:done', payload }, '*');
+      } else {
+        // standalone fallback: go to the full guided flow
+        window.location.href = 'saleskiosk-guidedflow.html?from=welcome';
+      }
+    });
+  </script>
+</body>
+</html>
