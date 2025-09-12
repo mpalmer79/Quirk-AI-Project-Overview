@@ -34,7 +34,6 @@
 
     /* --- Mobile/light-mode form control defaults --- */
     input, select, textarea, button {
-      /* We'll override with inline styles where needed */
       background: #ffffff !important;
       color: #0f172a !important;
       border-color: #e5e7eb !important;
@@ -277,11 +276,32 @@ function calcPayment(amount, aprPct, termMonths) {
   if (r === 0) return amount / termMonths;
   return (r * amount) / (1 - Math.pow(1 + r, -termMonths));
 }
-const STEPS = ['Welcome','Discovery','Vehicle Match','Payments','Trade-In','Credit Start','F&I Options','Review & Handoff'];
+
+/* *** SWAPPED ORDER HERE: Trade-In before Payments *** */
+const STEPS = ['Welcome','Discovery','Vehicle Match','Trade-In','Payments','Credit Start','F&I Options','Review & Handoff'];
 
 /* ==================================== APP ==================================== */
 function App() {
+  /* fresh start only on first tab/window open; refresh won't wipe */
+  useEffect(() => {
+    if (!sessionStorage.getItem('kiosk_session_started')) {
+      sessionStorage.setItem('kiosk_session_started', '1');
+      [
+        "kiosk_step","kiosk_consent","kiosk_profile","kiosk_selectedVin",
+        "kiosk_desk","kiosk_trade","kiosk_filters","kiosk_maxVisited"
+      ].forEach(k => { try { localStorage.removeItem(k); } catch {} });
+      // force welcome
+      setStep(0);
+      setMaxVisited(0);
+    }
+  }, []);
+
   const [step, setStep] = useState(load("kiosk_step", 0));
+
+  /* allow clicking back to any visited step */
+  const [maxVisited, setMaxVisited] = useState(load("kiosk_maxVisited", step));
+  useEffect(()=>save("kiosk_maxVisited", maxVisited), [maxVisited]);
+
   const [consent, setConsent] = useState(load("kiosk_consent", { sms:false, email:false, privacy:false }));
   const [profile, setProfile] = useState(load("kiosk_profile", {
     name:'', contact:'', useCase:'Commute', bodyStyle:'Sedan', budget:400, timeline:'This week'
@@ -330,8 +350,15 @@ function App() {
 
   const { card, dismiss } = useObjection(objectionTrigger, objectionContext);
 
-  function next(){ setStep(s => Math.min(s+1, STEPS.length-1)); }
+  function next(){
+    setStep(s => {
+      const n = Math.min(s+1, STEPS.length-1);
+      setMaxVisited(m => Math.max(m, n));
+      return n;
+    });
+  }
   function back(){ setStep(s => Math.max(s-1, 0)); }
+  function go(i){ if (i <= maxVisited) setStep(i); } // allow jump-back only
 
   function estimateTradeRange() {
     const base=12000;
@@ -348,7 +375,8 @@ function App() {
     if (v) {
       setSelectedVin(v.vin);
       setDesk(d => ({...d, price: v.price}));
-      setStep(3);
+      setStep(2); // stay in Vehicle Match (user must tap next)
+      setMaxVisited(m => Math.max(m, 2));
     }
   }
 
@@ -367,14 +395,27 @@ function App() {
           </h1>
         </header>
 
+        {/* CLICKABLE progress chips (back only) */}
         <nav aria-label="Progress" className="mb-5 sm:mb-7">
           <ol className="grid grid-cols-4 sm:grid-cols-8 gap-2">
-            {STEPS.map((label, i) => (
-              <li key={i} className={`flex items-center gap-2 p-1 rounded-full ${i<=step?'bg-emerald-600 text-white':'bg-white/70 text-slate-600 border'} border-slate-200`}>
-                <span className={`inline-flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold ${i<=step?'bg-white/20':'bg-slate-200 text-slate-700'}`}>{i+1}</span>
-                <span className="hidden sm:block text-xs font-semibold truncate pr-1">{label}</span>
-              </li>
-            ))}
+            {STEPS.map((label, i) => {
+              const reachable = i <= maxVisited;
+              const active = i <= step;
+              const cls = active ? 'bg-emerald-600 text-white' : 'bg-white/70 text-slate-600 border';
+              const numberCls = active ? 'bg-white/20' : 'bg-slate-200 text-slate-700';
+              return (
+                <li key={i}>
+                  <button
+                    className={`w-full flex items-center gap-2 p-1 rounded-full border border-slate-200 ${cls} ${!reachable ? 'opacity-60 cursor-not-allowed' : ''}`}
+                    onClick={()=> reachable && go(i)}
+                    aria-disabled={!reachable}
+                  >
+                    <span className={`inline-flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold ${numberCls}`}>{i+1}</span>
+                    <span className="hidden sm:block text-xs font-semibold truncate pr-1">{label}</span>
+                  </button>
+                </li>
+              );
+            })}
           </ol>
         </nav>
 
@@ -383,17 +424,28 @@ function App() {
             <Welcome
               consent={consent} setConsent={setConsent}
               profile={profile} setProfile={setProfile}
-              onValidatedNext={()=>{ track('welcome_next', {source:'next_button'}); next(); }}
+              onValidatedNext={()=>{ track('welcome_next', {source:'next_button'}); setMaxVisited(m=>Math.max(m,1)); next(); }}
               onSelect={selectVehicle}
             />
           )}
           {step===1 && (
-            <Discovery profile={profile} setProfile={setProfile} onNext={()=>{ track('discovery_next'); next(); }} onBack={back} />
+            <Discovery profile={profile} setProfile={setProfile} onNext={()=>{ track('discovery_next'); setMaxVisited(m=>Math.max(m,2)); next(); }} onBack={back} />
           )}
           {step===2 && (
-            <VehicleMatch selectedVin={selectedVin} onSelect={(vin)=>{ setSelectedVin(vin); track('vehicle_selected', {vin}); next(); }} onBack={back} />
+            <VehicleMatch selectedVin={selectedVin} onSelect={(vin)=>{ setSelectedVin(vin); track('vehicle_selected', {vin}); }} onBack={back} />
           )}
+
+          {/* *** SWAPPED: Step 3 = Trade, Step 4 = Payments *** */}
           {step===3 && (
+            <Trade
+              trade={trade}
+              setTrade={setTrade}
+              estimate={estimateTradeRange}
+              onBack={back}
+              onNext={()=>{ track('trade_next'); setMaxVisited(m=>Math.max(m,4)); next(); }}
+            />
+          )}
+          {step===4 && (
             <Payments
               vehicle={vehicle}
               desk={desk}
@@ -401,17 +453,15 @@ function App() {
               monthly={monthly}
               amountFinanced={amountFinanced}
               onBack={back}
-              onNext={()=>{ track('payments_next'); next(); }}
+              onNext={()=>{ track('payments_next'); setMaxVisited(m=>Math.max(m,5)); next(); }}
               onObjection={setObjectionTrigger}
               budgetTarget={profile.budget}
             />
           )}
-          {step===4 && (
-            <Trade trade={trade} setTrade={setTrade} estimate={estimateTradeRange} onBack={back} onNext={()=>{ track('trade_next'); next(); }} />
-          )}
-          {step===5 && <CreditStart onBack={back} onNext={()=>{ track('credit_next'); next(); }} />}
+
+          {step===5 && <CreditStart onBack={back} onNext={()=>{ track('credit_next'); setMaxVisited(m=>Math.max(m,6)); next(); }} />}
           {step===6 && (
-            <FandI desk={desk} setDesk={setDesk} monthly={monthly} onBack={back} onNext={()=>{ track('fandi_next'); next(); }} />
+            <FandI desk={desk} setDesk={setDesk} monthly={monthly} onBack={back} onNext={()=>{ track('fandi_next'); setMaxVisited(m=>Math.max(m,7)); next(); }} />
           )}
           {step===7 && (
             <Review profile={profile} vehicle={vehicle} desk={desk} trade={trade} monthly={monthly} onBack={back} />
@@ -764,7 +814,7 @@ function Payments({ vehicle, desk, setDesk, monthly, amountFinanced, onBack, onN
         <div>
           <div className="rounded-xl border p-4 bg-white/90">
             <div className="text-sm text-slate-600 mb-2">Vehicle price</div>
-            <div className="text-2xl font-bold">${price.toLocaleString()}</div>
+            <div className="text-2xl font-bold">${price?.toLocaleString?.() ?? '—'}</div>
             <div className="grid grid-cols-2 gap-3 mt-4">
               <Field label="Down payment">
                 <input type="number" className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={desk.down} onChange={e=>setDesk({...desk, down:Number(e.target.value)})} />
@@ -805,7 +855,8 @@ function Payments({ vehicle, desk, setDesk, monthly, amountFinanced, onBack, onN
       </div>
       <div className="mt-4 flex justify-between">
         <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={onBack}>← Back</button>
-        <PrimaryButton onClick={onNext}>Add trade →</PrimaryButton>
+        {/* UPDATED label since Payments now precedes Credit */}
+        <PrimaryButton onClick={onNext}>Credit start →</PrimaryButton>
       </div>
     </div>
   );
@@ -838,7 +889,8 @@ function Trade({ trade, setTrade, estimate, onBack, onNext }) {
       </div>
       <div className="mt-4 flex justify-between">
         <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={onBack}>← Back</button>
-        <PrimaryButton onClick={onNext}>Start credit →</PrimaryButton>
+        {/* UPDATED label since Trade now precedes Payments */}
+        <PrimaryButton onClick={onNext}>Build payment →</PrimaryButton>
       </div>
     </div>
   );
