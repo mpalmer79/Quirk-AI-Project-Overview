@@ -44,6 +44,15 @@
 <script type="text/babel">
 const { useState } = React;
 
+/* ================= parent communication (iframe) ================= */
+const PARENT_ORIGIN = window.location.origin;
+const isEmbedded = () => (window.parent && window.parent !== window);
+function sendToParent(type, payload = {}) {
+  if (isEmbedded()) {
+    window.parent.postMessage({ type, payload }, PARENT_ORIGIN);
+  }
+}
+
 /* ——— Small shared UI helpers (local copy so this page stands alone) ——— */
 function SectionTitle({ title, subtitle }) {
   return (
@@ -78,7 +87,28 @@ function App() {
     const cond=trade.condition==='Great'?1500:(trade.condition==='Rough'?-1500:0);
     const low=Math.max(500, base+adjMiles+cond-1500);
     const high=Math.max(low+500, base+adjMiles+cond+1500);
-    setTrade(t => ({...t, rangeLow:Math.round(low), rangeHigh:Math.round(high)}));
+    const next = { ...trade, rangeLow:Math.round(low), rangeHigh:Math.round(high) };
+    setTrade(next);
+    // send live update to parent
+    sendToParent('trade:update', next);
+  }
+
+  function startCredit() {
+    if (isEmbedded()) {
+      // tell parent to persist trade + advance to the next step
+      sendToParent('trade:done', trade);
+    } else {
+      // fallback if opened standalone: bounce back to main flow with step hint
+      const params = new URLSearchParams({
+        vin: trade.vin || '',
+        miles: trade.miles || '',
+        condition: trade.condition || 'Average',
+        low: String(trade.rangeLow || 0),
+        high: String(trade.rangeHigh || 0),
+        step: '5'
+      });
+      window.location.href = `saleskiosk-guidedflow.html?${params.toString()}`;
+    }
   }
 
   return (
@@ -121,15 +151,13 @@ function App() {
             )}
           </div>
 
-          <!--
-            Keep the local Back / Start credit buttons so this page also works standalone.
-            When embedded in an iframe, the parent page can hide its own buttons if desired.
-          -->
+          {/* 
+            Keep local Back / Start credit so this page also works standalone.
+            When embedded in an iframe, the parent page listens for messages and advances the wizard.
+          */}
           <div className="mt-4 flex justify-between">
-            <button className="px-4 py-2 rounded-xl border bg-white/80" onclick="history.back()">← Back</button>
-            <a class="px-5 py-3 rounded-2xl bg-emerald-700 text-white font-semibold shadow hover:brightness-110 active:brightness-95"
-               href="saleskiosk-guidedflow.html"
-               target="_parent">Start credit →</a>
+            <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={()=>history.back()}>← Back</button>
+            <PrimaryButton onClick={startCredit}>Start credit →</PrimaryButton>
           </div>
         </div>
       </div>
