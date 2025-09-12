@@ -65,6 +65,18 @@ const MODEL_MAP = {
 };
 const COLORS = ['Black','White','Silver','Gray','Blue','Red','Green','Brown'];
 
+// NEW: model -> body style mapping
+const BODY_BY_MODEL = {
+  // Chevrolet
+  'Malibu':'Sedan','Trax':'SUV','Trailblazer':'SUV','Equinox':'SUV',
+  'Blazer':'SUV','Traverse':'SUV','Colorado':'Truck','Silverado 1500':'Truck','Tahoe':'SUV',
+  // GMC
+  'Terrain':'SUV','Acadia':'SUV','Canyon':'Truck','Sierra 1500':'Truck','Yukon':'SUV',
+  // Buick
+  'Envista':'Sedan', // categorize as you prefer
+  'Encore GX':'SUV','Envision':'SUV'
+};
+
 function basePrice(make, model) {
   const map = {
     Chevrolet: {
@@ -94,6 +106,7 @@ function generateNewVehicles() {
         stockType:'New',
         year:2025,
         make, model,
+        bodyStyle: BODY_BY_MODEL[model] || 'Other', // NEW: stamp body style
         trim:(['LS','LT','LTZ','RS','Denali','Preferred','Avenir'])[i%7],
         price,
         miles: 12 + (i % 9),
@@ -176,7 +189,14 @@ function App() {
 
         <div className="bg-white/90 backdrop-blur rounded-2xl shadow-2xl border border-slate-200 p-4 sm:p-6">
           {step===1 && <Discovery profile={profile} setProfile={setProfile} onNext={next} onBack={back} />}
-          {step===2 && <VehicleMatch selectedVin={selectedVin} onSelect={(vin)=>{ setSelectedVin(vin); next(); }} onBack={back} />}
+          {step===2 && (
+            <VehicleMatch
+              profile={profile}                               {/* pass profile for filtering */}
+              selectedVin={selectedVin}
+              onSelect={(vin)=>{ setSelectedVin(vin); next(); }}
+              onBack={back}
+            />
+          )}
           {step===3 && <Payments vehicle={vehicle} desk={desk} setDesk={setDesk} monthly={monthly} amountFinanced={amountFinanced} onBack={back} onNext={next} budgetTarget={profile.budget} />}
           {step===4 && <Trade trade={trade} setTrade={setTrade} onBack={back} onNext={next} />}
           {step===5 && <CreditStart onBack={back} onNext={next} />}
@@ -277,29 +297,45 @@ function Discovery({ profile, setProfile, onNext, onBack }) {
   );
 }
 
-function VehicleMatch({ selectedVin, onSelect, onBack }) {
-  const picks = INVENTORY.slice(0, 9);
+function VehicleMatch({ profile, selectedVin, onSelect, onBack }) {
+  // Filter by selected body style (fallback to all if none or "EV" with no matches)
+  const picks = useMemo(() => {
+    const want = profile?.bodyStyle;
+    const filtered = want ? INVENTORY.filter(v => v.bodyStyle === want) : INVENTORY;
+    return filtered.slice(0, 9);
+  }, [profile?.bodyStyle]);
+
   return (
     <div>
       <SectionTitle title="Best matches" subtitle="Tap a vehicle to continue." />
-      <div className="grid md:grid-cols-3 gap-4">
-        {picks.map((v, index) => (
-          <button key={`match-${index}-${v.vin.slice(-6)}`} className={`group text-left rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition p-3 bg-white/90 ${selectedVin===v.vin?'ring-4 ring-emerald-300':''}`} onClick={()=>onSelect(v.vin)}>
-            <div className="relative">
-              <div className="w-full h-44 bg-gradient-to-br from-slate-200 to-slate-300 rounded-xl flex items-center justify-center">
-                <div className="text-center text-slate-600">
-                  <div className="text-sm font-semibold">{v.make}</div>
-                  <div className="text-xs">{v.model}</div>
+      {picks.length === 0 ? (
+        <div className="p-4 rounded-xl border bg-white/90 text-slate-700">
+          No vehicles match <strong>{profile?.bodyStyle}</strong> right now. Try another body style.
+        </div>
+      ) : (
+        <div className="grid md:grid-cols-3 gap-4">
+          {picks.map((v, index) => (
+            <button
+              key={`match-${index}-${v.vin.slice(-6)}`}
+              className={`group text-left rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition p-3 bg-white/90 ${selectedVin===v.vin?'ring-4 ring-emerald-300':''}`}
+              onClick={()=>onSelect(v.vin)}
+            >
+              <div className="relative">
+                <div className="w-full h-44 bg-gradient-to-br from-slate-200 to-slate-300 rounded-xl flex items-center justify-center">
+                  <div className="text-center text-slate-600">
+                    <div className="text-sm font-semibold">{v.make}</div>
+                    <div className="text-xs">{v.model}</div>
+                  </div>
                 </div>
+                <span className="absolute bottom-2 left-2 text-xs px-2 py-1 rounded-full bg-black/60 text-white">{v.miles.toLocaleString()} mi</span>
               </div>
-              <span className="absolute bottom-2 left-2 text-xs px-2 py-1 rounded-full bg-black/60 text-white">{v.miles.toLocaleString()} mi</span>
-            </div>
-            <div className="mt-2 font-semibold">{v.year} {v.make} {v.model}</div>
-            <div className="text-emerald-700 font-extrabold text-lg">${v.price.toLocaleString()}</div>
-            <div className="text-xs text-slate-600">{v.color} • {v.trim}</div>
-          </button>
-        ))}
-      </div>
+              <div className="mt-2 font-semibold">{v.year} {v.make} {v.model}</div>
+              <div className="text-emerald-700 font-extrabold text-lg">${v.price.toLocaleString()}</div>
+              <div className="text-xs text-slate-600">{v.color} • {v.trim}</div>
+            </button>
+          ))}
+        </div>
+      )}
       <div className="mt-4 flex justify-between">
         <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={onBack}>← Back</button>
         <span className="text-sm text-slate-500">Choose a vehicle to continue</span>
