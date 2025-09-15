@@ -1,6 +1,4 @@
- <!-- Step 1B: Batch Composer (queue -> compose -> export) -->
-  <script>
-  (function(){
+(function(){
     const $ = (id) => document.getElementById(id);
     const state = { items: [] }; // {id, raw, name, channelPref, channel, make, model, zip, offersZip, draft}
 
@@ -146,5 +144,3 @@
       }
     });
   })();
-  </script>
-
