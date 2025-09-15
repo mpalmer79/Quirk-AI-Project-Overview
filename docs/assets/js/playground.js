@@ -14,12 +14,13 @@
       disclaimer: (ch)=> ch==="email" ? "\n\nPricing/availability subject to prior sale. Incentives subject to eligibility; see dealer for details." : ""
     },
     best_price: {
-      opener: "Hi",
-      closer: "— Quirk Pricing Team",
-      cta: (a,b)=>`I can show all programs side-by-side on a vehicle you can drive. Would ${a} or ${b} work for a quick visit?`,
-      forceScenario: "best_price",
-      disclaimer: (ch)=> ch==="email" ? "\n\nAll pricing subject to incentives/eligibility; see dealer for details." : ""
-    },
+  opener: "Hi",
+  closer: "— Quirk Pricing Team",
+  cta: (a,b)=>`Would ${a} or ${b} work for a quick visit?`,   
+  forceScenario: "best_price",
+  disclaimer: (ch)=> ch==="email" ? "\n\nAll pricing subject to incentives/eligibility; see dealer for details." : ""
+},
+
     credit: {
       opener: "Hi",
       closer: "— Quirk BDC",
@@ -39,7 +40,7 @@
     const t = String(lead || "").toLowerCase();
     if (/(rebate|incentive|offer|program|apr|lease)/.test(t)) return "offers_question";
     if (/(trade|trade-in|appraisal|value|kbb|carvana|carmax)/.test(t)) return "trade_in";
-    if (/(best price|price quote|out the door|otd|lowest|payment)/i.test(t)) return "best_price";
+    if (/(best price|price quote|out the door|otd|lowest|payment)/i.test(t)) return "";
     if (/(just looking|just shopping|browsing|compare|research)/i.test(t)) return "just_shopping";
     if (/(available|in stock|inventory|color|trim|option)/i.test(t)) return "new_inventory";
     return "new_inventory";
@@ -69,7 +70,7 @@
     const copyMap = {
       offers_question: `${offersAck} ${tone.cta(twoSlots[0], twoSlots[1])}`,
       new_inventory:   tone.cta(twoSlots[0], twoSlots[1]),
-      best_price:      `I can show current programs side-by-side on a vehicle you can drive. ${tone.cta(twoSlots[0], twoSlots[1])}`,
+      :      `I can show current programs side-by-side on a vehicle you can drive. ${tone.cta(twoSlots[0], twoSlots[1])}`,
       just_shopping:   `No pressure—15 minutes is enough to compare trims in person. ${tone.cta(twoSlots[0], twoSlots[1])}`,
       trade_in:        `Bring your keys and we’ll give you a firm number in about 20 minutes. ${tone.cta(twoSlots[0], twoSlots[1])}`,
     };
@@ -132,7 +133,7 @@
       __agentProfile = btn.getAttribute('data-profile');
       document.getElementById('profileHelp').textContent = ({
         new_lead: 'Balanced tone. Book a quick drive with two options.',
-        best_price: 'Price-forward tone. Nudges pricing scenario and side-by-side programs.',
+        : 'Price-forward tone. Nudges pricing scenario and side-by-side programs.',
         credit: 'Reassuring tone. Mentions many lenders; low-commitment visit.',
         manager: 'Authoritative tone. Manager signature and strong CTA.'
       })[__agentProfile] || 'Preset shapes tone + CTA.';
