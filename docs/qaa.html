@@ -108,9 +108,19 @@
     .back-top a:hover { text-decoration:underline; }
 
     /* Footer */
-    .footer { text-align:center; padding:22px 0 28px; }
-    .footer .copyright { color:#555; margin:0; }
-  </style>
+.footer{
+  width:100%;
+  padding:22px 0 28px;
+  display:grid;           /* robust centering even with Android zoom/text autoscale */
+  place-items:center;     /* centers both horizontally and vertically */
+  text-align:center;
+}
+.footer .copyright{
+  margin:0;
+  line-height:1.4;
+  white-space:nowrap;     /* keeps © 2025 on one line */
+}
+
 </head>
 <body class="watermarked">
   <!-- Page Content -->
