@@ -673,7 +673,7 @@
     const channel = document.getElementById('channel').value;
 
     const { text, tokens } = await composeDraftFrontEnd({ lead, make, model, zip, offersZip, channel });
-    document.getElementById('draftPane')..textContent = text;
+    document.getElementById('draftPane').textContent = text;
 
     const payload = JSON.stringify({ lead, make, model, zip, offersZip, channel, tokens }, null, 2);
     const curl = API_BASE
