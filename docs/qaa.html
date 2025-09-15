@@ -19,7 +19,7 @@
   <link rel="stylesheet" href="assets/style.css" />
 
   <style>
-    /* ---------- Centered HOME button (now inside hero) ---------- */
+    /* ---------- Centered HOME button (inside hero) ---------- */
     .home-wrap { display:flex; justify-content:center; }
     .home-btn {
       display:inline-block; padding:8px 16px; border-radius:10px; font-weight:800;
@@ -29,8 +29,7 @@
     /* ---------- Page chrome ---------- */
     .page-wrap { position:relative; z-index:1; }
     .hero { text-align:center; padding:24px 16px 8px; }
-    /* Move the HOME pill down to the former topbar title position */
-    .hero .home-wrap { margin-top:22px; margin-bottom:10px; }
+    .hero .home-wrap { margin-top:22px; margin-bottom:10px; } /* HOME pill moved down */
     .hero .title { font-size:clamp(1.8rem, 3.6vw, 2.6rem); margin:8px 0; }
     .hero .subtitle { margin:0 auto; max-width:1100px; color:#556; }
 
@@ -58,7 +57,9 @@
     .section .section-head h2 { margin:0 0 6px; }
     .muted { color:#667085; }
 
+    /* Sticky on-page TOC */
     .toc {
+      position: sticky; top: 8px; z-index: 5;
       max-width:1100px; margin:10px auto 20px; padding:10px 16px;
       display:flex; flex-wrap:wrap; gap:8px; justify-content:center;
     }
@@ -99,7 +100,12 @@
     .bar { height:10px; border-radius:999px; background:#eef2ff; overflow:hidden; }
     .bar > span { display:block; height:100%; background:#0b6e37; width:0; }
     .bar.w20  span{ width:20%; } .bar.w30 span{ width:30%; } .bar.w40 span{ width:40%; }
-    .bar.w50  span{ width:50%; } .bar.w60 span{ width:60%; } .bar.w80 span{ width:80%; }
+    .bar.w50  span{ width:50%; } .bar.w60 span{ width:60%; } .bar.w80  span{ width:80%; }
+
+    /* Back-to-top link */
+    .back-top { text-align:center; margin:12px 0 0; }
+    .back-top a { text-decoration:none; font-weight:700; color:#0b6e37; }
+    .back-top a:hover { text-decoration:underline; }
 
     /* Footer */
     .footer { text-align:center; padding:22px 0 28px; }
@@ -123,7 +129,7 @@
       </p>
     </section>
 
-    <!-- On-page TOC -->
+    <!-- Sticky On-page TOC -->
     <nav class="toc" aria-label="Quick links">
       <a class="chip" href="#exec">Executive Summary</a>
       <a class="chip" href="#workflow">Workflow Opportunities</a>
@@ -168,6 +174,7 @@
           </div>
         </article>
       </div>
+      <p class="back-top"><a href="#page-title">Back to top ↑</a></p>
     </section>
 
     <!-- Workflow Opportunities -->
@@ -219,6 +226,7 @@
           <div class="bar w30" title="Transport cost/time reduction"><span></span></div>
         </article>
       </div>
+      <p class="back-top"><a href="#page-title">Back to top ↑</a></p>
     </section>
 
     <!-- Bidder Experience -->
@@ -242,6 +250,7 @@
           <p>Live captions/translation and multi-language lot info for international buyers.</p>
         </article>
       </div>
+      <p class="back-top"><a href="#page-title">Back to top ↑</a></p>
     </section>
 
     <!-- Competitive Benchmark -->
@@ -289,6 +298,7 @@
           </tbody>
         </table>
       </div>
+      <p class="back-top"><a href="#page-title">Back to top ↑</a></p>
     </section>
 
     <!-- Implementation Roadmap -->
@@ -329,6 +339,7 @@
           </ul>
         </article>
       </div>
+      <p class="back-top"><a href="#page-title">Back to top ↑</a></p>
     </section>
 
     <!-- Projected Impact -->
@@ -352,6 +363,7 @@
           <p style="margin-top:10px;">Buyer retention/engagement</p><div class="bar w60"><span></span></div>
         </article>
       </div>
+      <p class="back-top"><a href="#page-title">Back to top ↑</a></p>
     </section>
 
     <!-- Deep Dives -->
@@ -369,6 +381,7 @@
         <article class="card"><h3><a href="qaa-logistics.html">Post-Sale & Transport</a></h3><p class="muted">Carrier marketplace, routing, ETAs, notifications.</p></article>
         <article class="card"><h3><a href="qaa-security.html">Security & Compliance</a></h3><p class="muted">Access controls, PII, vendor due diligence.</p></article>
       </div>
+      <p class="back-top"><a href="#page-title">Back to top ↑</a></p>
     </section>
 
     <!-- Appendix & Sources -->
@@ -382,9 +395,10 @@
         <h3>About this draft</h3>
         <p>
           Use the “Deep Dives” links to stand up separate pages as you implement.
-          Each child page below includes a matching HOME pill + footer and a link back to this overview.
+          Each child page includes a matching HOME pill + footer and a link back to this overview.
         </p>
       </article>
+      <p class="back-top"><a href="#page-title">Back to top ↑</a></p>
     </section>
   </main>
 
