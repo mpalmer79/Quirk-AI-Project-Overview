@@ -1,6 +1,4 @@
-<!-- Step 3: Run Log Viewer (localStorage today, API tomorrow) -->
-  <script>
-  (async function(){
+(async function(){
     const API_BASE = ""; // later: "https://your-platform.example.com"
     async function loadRuns() {
       if (API_BASE) {
@@ -63,4 +61,3 @@
     window.addEventListener('agent_feedback_updated', () => { /* placeholder: could refresh a dashboard */ });
     render();
   })();
-  </script>
