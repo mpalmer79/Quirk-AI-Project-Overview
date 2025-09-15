@@ -108,3 +108,32 @@ input:focus, textarea:focus, select:focus{
   border-color: #0b6e37;
   box-shadow: 0 0 0 3px rgba(11,110,55,.15);
 }
+/* ===== Force legible input text on mobile ===== */
+input, textarea, select {
+  color: #0f172a !important;   /* solid, dark text */
+  caret-color: #0f172a;        /* matching caret */
+  opacity: 1 !important;       /* guard against theme opacity */
+  mix-blend-mode: normal;      /* avoid blending over photo bg */
+  background-clip: padding-box;
+}
+
+/* Make placeholders readable but clearly lighter */
+input::placeholder,
+textarea::placeholder {
+  color: #94a3b8 !important;   /* slate-400 */
+  opacity: 1;                  /* iOS/Safari sometimes lowers this */
+}
+
+/* iOS Safari: ensure filled/typed text doesn’t get “greyed” */
+@supports (-webkit-touch-callout: none) {
+  input, textarea, select {
+    -webkit-text-fill-color: #0f172a !important;
+  }
+  /* If you use autofill, keep it readable and white bg */
+  input:-webkit-autofill,
+  textarea:-webkit-autofill {
+    -webkit-text-fill-color: #0f172a !important;
+    -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+    box-shadow: 0 0 0 1000px #ffffff inset !important;
+  }
+}
