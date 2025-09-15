@@ -1,6 +1,4 @@
- <!-- Step 1: Agent Playground script + Agent Profiles + Feedback -->
-  <script>
-  /* -------- Agent Playground: front-end generator with backend-ready cURL -------- */
+/* -------- Agent Playground: front-end generator with backend-ready cURL -------- */
   const API_BASE = ""; // later: "https://your-platform.example.com" (FastAPI)
   const OEM_TTL_MS = 15 * 60 * 1000; // 15 minutes
 
@@ -214,4 +212,3 @@
     localStorage.setItem('agent_runs', JSON.stringify(runs));
     window.dispatchEvent(new Event('agent_runs_updated'));
   });
-  </script>
