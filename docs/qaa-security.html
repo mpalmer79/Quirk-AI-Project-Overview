@@ -1,1 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>QAA — Security & Compliance</title>
+  <meta name="color-scheme" content="light">
+  <base href="/Quirk-AI-Project-Overview/">
+  <link rel="stylesheet" href="assets/style.css" />
+  <style>
+    .home-wrap{display:flex;justify-content:center;margin-top:22px}
+    .home-btn{display:inline-block;padding:8px 16px;border-radius:10px;font-weight:800;text-decoration:none;background:#111;color:#fff;box-shadow:0 2px 0 rgba(0,0,0,.25)}
+    .page-wrap{position:relative;z-index:1}
+    .hero{text-align:center;padding:24px 16px 8px}
+    .hero .title{font-size:clamp(1.6rem,3.2vw,2.2rem);margin:8px 0}
+    .hero .subtitle{max-width:1000px;margin:0 auto;color:#556}
+    body.watermarked::before{content:"";position:fixed;inset:auto 0 10% 0;margin:auto;width:clamp(280px,40vw,620px);height:clamp(280px,40vw,620px);background:url("assets/3.webp") center/contain no-repeat;opacity:.06;filter:grayscale(100%);pointer-events:none;z-index:0;animation:spin 120s linear infinite}
+    @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+    .section{max-width:1100px;margin:22px auto;padding:0 16px}
+    .section .section-head{text-align:center}
+    .section .section-head h2{margin:0 0 6px}
+    .muted{color:#667085}
+    .grid{display:grid;gap:16px}
+    @media(min-width:980px){.grid.cols-2{grid-template-columns:1fr 1fr}}
+    .card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:18px;box-shadow:0 6px 16px rgba(2,6,23,.06)}
+    .list-tight{margin:8px 0;padding-left:18px}
+    .list-tight li{margin:6px 0}
+    .footer{text-align:center;padding:22px 0 28px}
+    .copyright{color:#555;margin:0}
+    .back{display:block;text-align:center;margin-top:4px}
+  </style>
+</head>
+<body class="watermarked">
+  <main class="page-wrap">
+    <div class="home-wrap"><a class="home-btn" href="./">HOME</a></div>
+    <section class="hero">
+      <h1 class="title">Security & Compliance</h1>
+      <p class="subtitle">Access controls, PII handling, vendor risk, and audit readiness for AI-enabled auctions.</p>
+      <a class="back" href="qaa.html">← Back to Overview</a>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Controls & Policy</h2><p class="muted">Guardrails before growth.</p></div>
+      <div class="grid cols-2">
+        <article class="card"><h3>Identity & Access</h3><ul class="list-tight"><li>SSO, least privilege, admin MFA required.</li><li>Service account rotation and vaulting.</li></ul></article>
+        <article class="card"><h3>Data Handling</h3><ul class="list-tight"><li>Encrypt at rest/in flight; PII minimization.</li><li>Retention policies; deletion SLAs.</li></ul></article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Vendors & Audits</h2><p class="muted">Trust but verify.</p></div>
+      <div class="grid cols-2">
+        <article class="card"><h3>Vendor Diligence</h3><p>SOC 2 / ISO evidence; subprocessor maps; security questionnaires.</p></article>
+        <article class="card"><h3>Monitoring</h3><p>Logs, anomaly alerts, and quarterly access reviews.</p></article>
+      </div>
+    </section>
+  </main>
+  <footer class="container footer"><p class="copyright">© 2025 Quirk AI – Quincy Auto Auction</p></footer>
+</body>
+</html>
 
