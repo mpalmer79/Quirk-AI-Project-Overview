@@ -46,30 +46,54 @@ summary::marker { color: #0b6e37; }
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
 .footer { text-align:center; padding:24px 12px; color:#64748b; }
 
-/* ===== Kiosk photo background (desktop) =====
-   assets/css/vin-alt.css -> image lives at assets/kiosk.png (.. up one level) */
+/* =========================================================
+   FORCE kiosk.png AS THE ONLY BACKGROUND (all breakpoints)
+   ========================================================= */
+
+/* Kill any watermark pseudo-elements from the site theme */
+html::before, html::after,
+body::before, body::after,
+.page::before, .page::after {
+  content: none !important;
+  background: none !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Also neutralize any background set on html by the theme */
+html {
+  background: transparent !important;
+  background-image: none !important;
+}
+
+/* Our photo background (desktop/tablet/phone) */
 body.page{
+  /* use !important to beat theme rules */
   background:
     linear-gradient(0deg, rgba(255,255,255,0.90), rgba(255,255,255,0.90)),
-    url('../kiosk.png') center / cover no-repeat fixed;
+    url('../kiosk.png') center / cover no-repeat fixed !important;
   min-height: 100dvh;
+  background-color: #ffffff; /* fallback */
 }
 
 /* Subtle glass look so text stays crisp over photo */
 .card { background: rgba(255,255,255,0.92); }
 
-/* ===== Mobile overrides ===== */
+/* ===== Mobile-specific tweaks ===== */
 @media (max-width: 960px){
-  /* Some themes add a logo watermark with ::before/::after.
-     Nuke it so kiosk.png shows instead. */
-  body.page::before,
-  body.page::after{
-    content: none !important;
-    background: none !important;
-  }
-
   /* Mobile browsers often ignore fixed backgrounds; avoid jank */
-  body.page{ background-attachment: scroll; }
+  body.page{
+    background-attachment: scroll !important;
+    /* reassert the full background stack on mobile too */
+    background-image:
+      linear-gradient(0deg, rgba(255,255,255,0.90), rgba(255,255,255,0.90)),
+      url('../kiosk.png') !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+  }
 }
 
 /* ===== Form polish ===== */
