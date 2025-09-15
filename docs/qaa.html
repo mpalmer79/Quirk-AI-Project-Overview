@@ -48,18 +48,58 @@
       animation:spin 120s linear infinite;
       transform-origin:50% 50%;
     }
-    @keyframes spin {
-      from { transform:rotate(0deg); }
-      to   { transform:rotate(360deg); }
-    }
+    @keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
 
-    /* ---------- Section shell (optional placeholders) ---------- */
+    /* ---------- Local layout & components ---------- */
     .section { max-width:1100px; margin:22px auto; padding:0 16px; }
     .section .section-head { text-align:center; }
     .section .section-head h2 { margin:0 0 6px; }
     .muted { color:#667085; }
 
-    /* ---------- Footer ---------- */
+    .toc {
+      max-width:1100px; margin:10px auto 20px; padding:10px 16px;
+      display:flex; flex-wrap:wrap; gap:8px; justify-content:center;
+    }
+    .chip {
+      display:inline-block; padding:8px 12px; border-radius:999px;
+      border:1px solid #e5e7eb; background:#fff; color:#0f172a; font-weight:700; text-decoration:none;
+    }
+    .chip:hover { text-decoration:none; transform:translateY(-1px); }
+
+    .grid { display:grid; gap:16px; }
+    @media (min-width: 980px){ .grid.cols-2 { grid-template-columns:1fr 1fr; } }
+    @media (min-width: 980px){ .grid.cols-3 { grid-template-columns:1fr 1fr 1fr; } }
+
+    .card {
+      background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:18px;
+      box-shadow:0 6px 16px rgba(2,6,23,.06);
+    }
+    .card h3 { margin:0 0 8px; text-align:center; }
+    .card .muted { text-align:center; margin-bottom:10px; }
+
+    .kpi-row { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin:10px 0 0; }
+    .kpi {
+      min-width:180px; padding:10px 12px; text-align:center; border:1px solid #e5e7eb; border-radius:12px; background:#fff;
+    }
+    .kpi .kpi-value { display:block; font-weight:800; font-size:1.2rem; }
+    .kpi .kpi-label { color:#667085; }
+
+    .list-tight { margin:8px 0; padding-left:18px; }
+    .list-tight li { margin:6px 0; }
+
+    /* Tables */
+    .table-wrap { overflow:auto; border:1px solid #e5e7eb; border-radius:12px; background:#fff; }
+    table { width:100%; border-collapse:collapse; }
+    th, td { padding:10px 12px; border-bottom:1px solid #f0f2f5; vertical-align:top; }
+    thead th { background:#f8fafc; text-align:left; white-space:nowrap; }
+
+    /* Impact bars */
+    .bar { height:10px; border-radius:999px; background:#eef2ff; overflow:hidden; }
+    .bar > span { display:block; height:100%; background:#0b6e37; width:0; }
+    .bar.w20  span{ width:20%; } .bar.w30 span{ width:30%; } .bar.w40 span{ width:40%; }
+    .bar.w50  span{ width:50%; } .bar.w60 span{ width:60%; } .bar.w80 span{ width:80%; }
+
+    /* Footer */
     .footer { text-align:center; padding:22px 0 28px; }
     .footer .copyright { color:#555; margin:0; }
   </style>
@@ -70,7 +110,7 @@
     <a class="home-btn" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
   </div>
 
-  <!-- Top Navigation Bar (kept consistent with other pages) -->
+  <!-- Top Navigation Bar -->
   <header class="topbar" role="banner">
     <div class="topbar-inner">
       <a class="home-link" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
@@ -81,9 +121,8 @@
     </div>
   </header>
 
-  <!-- Page Content -->
+  <!-- ===== Hero ===== -->
   <main class="page-wrap">
-    <!-- Hero -->
     <section class="hero" aria-labelledby="page-title">
       <h1 id="page-title" class="title">Quincy Auto Auction</h1>
       <p class="subtitle">
@@ -92,21 +131,287 @@
       </p>
     </section>
 
-    <!-- Placeholder sections you can flesh out later -->
-    <section class="section" aria-labelledby="ops-title">
+    <!-- ===== On-page TOC ===== -->
+    <nav class="toc" aria-label="Quick links">
+      <a class="chip" href="#exec">Executive Summary</a>
+      <a class="chip" href="#workflow">Workflow Opportunities</a>
+      <a class="chip" href="#cx">Bidder Experience</a>
+      <a class="chip" href="#benchmark">Competitive Benchmark</a>
+      <a class="chip" href="#roadmap">Implementation Roadmap</a>
+      <a class="chip" href="#impact">Projected Impact</a>
+      <a class="chip" href="#deep-dives">Deep Dives</a>
+      <a class="chip" href="#sources">Appendix & Sources</a>
+    </nav>
+
+    <!-- ===== Executive Summary (Non-Technical) ===== -->
+    <section id="exec" class="section" aria-labelledby="exec-title">
       <div class="section-head">
-        <h2 id="ops-title">Operational Efficiency</h2>
-        <p class="muted">Titles • Inspections • Pricing • Bidding • Transport • Post-Sale</p>
+        <h2 id="exec-title">Executive Summary</h2>
+        <p class="muted">What AI delivers for the auction—fast wins and durable advantage.</p>
       </div>
-      <!-- Add your content here -->
+
+      <div class="grid cols-2">
+        <article class="card">
+          <h3>What changes</h3>
+          <ul class="list-tight">
+            <li><strong>Paperwork, digitized:</strong> OCR + RPA extract/verify title details and auto-generate docs.</li>
+            <li><strong>Inspections, standardized:</strong> Drive-through AI scans produce consistent condition reports.</li>
+            <li><strong>Pricing, data-driven:</strong> ML suggests reserves/opening bids and forecasts high-bid ranges.</li>
+            <li><strong>Auctions, continuous:</strong> AI-assisted online events with proxy/auto-bid and dynamic increments.</li>
+            <li><strong>Post-sale, predictable:</strong> AI routing/ETAs for transport, proactive status notifications.</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h3>Why it matters</h3>
+          <ul class="list-tight">
+            <li><strong>Throughput ↑:</strong> More units processed per week with the same headcount.</li>
+            <li><strong>Sell-through ↑:</strong> Better reserves + more confident buyers = fewer no-sales.</li>
+            <li><strong>Arbitration ↓:</strong> Consistent, photo-rich reports reduce disputes.</li>
+            <li><strong>Dealer loyalty ↑:</strong> Personalized alerts/recommendations bring the right buyers to the right lots.</li>
+          </ul>
+          <div class="kpi-row" role="group" aria-label="At-a-glance KPIs">
+            <div class="kpi"><span class="kpi-value">20–30%</span><span class="kpi-label">Sales lift seen by early adopters</span></div>
+            <div class="kpi"><span class="kpi-value">86–91%</span><span class="kpi-label">AI call/chat completion in service</span></div>
+          </div>
+        </article>
+      </div>
     </section>
 
-    <section class="section" aria-labelledby="cx-title">
+    <!-- ===== Workflow Opportunities ===== -->
+    <section id="workflow" class="section" aria-labelledby="workflow-title">
+      <div class="section-head">
+        <h2 id="workflow-title">AI Opportunities Across the Workflow</h2>
+        <p class="muted">From intake to transport—where automation pays back quickly.</p>
+      </div>
+
+      <div class="grid cols-2">
+        <article class="card" id="titles">
+          <h3>1) Titles & Admin</h3>
+          <p><strong>Tools:</strong> OCR/NLP for data extraction, validation rules, RPA for DMV updates and documents.</p>
+          <ul class="list-tight">
+            <li>Digital Title Vault with status checks and mismatch flags.</li>
+            <li>Auto-generated bills of sale/title transfers at the moment of sale.</li>
+            <li>Nightly bots: invoices, gate passes, receipts.</li>
+          </ul>
+          <div class="bar w40" title="Cycle time reduction estimate"><span></span></div>
+        </article>
+
+        <article class="card" id="inspections">
+          <h3>2) AI Vehicle Inspections</h3>
+          <p>Drive-through computer vision detects damage/tire wear and populates condition reports in seconds.</p>
+          <ul class="list-tight">
+            <li>Consistent grading; photo heatmaps and repair-cost estimates.</li>
+            <li>Parallel run with humans first; system learns from New England conditions (e.g., rust).</li>
+          </ul>
+          <div class="bar w60" title="Inspector productivity gain"><span></span></div>
+        </article>
+
+        <article class="card" id="pricing">
+          <h3>3) Dynamic Pricing & Bid Assist</h3>
+          <p>ML suggests reserves/openers; auto-bid agents and adaptive increments keep momentum.</p>
+          <ul class="list-tight">
+            <li>Reserve guidance with confidence bands and market comps.</li>
+            <li>Bidder analytics to identify preferences and trigger outreach.</li>
+          </ul>
+          <div class="bar w50" title="Sell-through/ASP impact"><span></span></div>
+        </article>
+
+        <article class="card" id="logistics">
+          <h3>4) Post-Sale Logistics</h3>
+          <p>AI optimizes truck loads/routes; buyers get proactive ETA updates; fraud checks guard payments.</p>
+          <ul class="list-tight">
+            <li>Carrier selection & multi-stop routing to cut miles.</li>
+            <li>Automated notifications (“scheduled / in-transit / delivered”).</li>
+          </ul>
+          <div class="bar w30" title="Transport cost/time reduction"><span></span></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ===== Bidder Experience ===== -->
+    <section id="cx" class="section" aria-labelledby="cx-title">
       <div class="section-head">
         <h2 id="cx-title">Bidder Experience</h2>
-        <p class="muted">Virtual auctions, personalization, alerts, and 24/7 assistance</p>
+        <p class="muted">Frictionless participation grows the buyer base and the bid stack.</p>
       </div>
-      <!-- Add your content here -->
+
+      <div class="grid cols-3">
+        <article class="card">
+          <h3>Virtual Assistant</h3>
+          <p>24/7 chat for registration, rules, financing, and FAQs; smart handoff to staff when needed.</p>
+        </article>
+        <article class="card">
+          <h3>Personalized Alerts</h3>
+          <p>“Recommended for you” lots and timed SMS/email reminders aligned to each buyer’s history.</p>
+        </article>
+        <article class="card">
+          <h3>Global Access</h3>
+          <p>Live captions/translation and multi-language lot info for international buyers.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ===== Competitive Benchmark ===== -->
+    <section id="benchmark" class="section" aria-labelledby="bench-title">
+      <div class="section-head">
+        <h2 id="bench-title">Benchmark: What Leaders Are Doing</h2>
+        <p class="muted">A quick scan of Penske, Lithia, Group 1, and Sonic.</p>
+      </div>
+
+      <div class="table-wrap" role="region" aria-label="Competitive table">
+        <table>
+          <thead>
+            <tr>
+              <th>Company</th>
+              <th>Auctions / Wholesale</th>
+              <th>Retail & CX</th>
+              <th>Internal Efficiency</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Penske</strong></td>
+              <td>Nationwide online used-truck auctions; auto-bid tools; transparent fees.</td>
+              <td>Esntial Commerce enables 100% online purchase with AI-driven financing.</td>
+              <td>Catalyst AI™ runs predictive models for fleet uptime and cost control.</td>
+            </tr>
+            <tr>
+              <td><strong>Lithia</strong></td>
+              <td>Uses digital marketplaces; no proprietary auction yet.</td>
+              <td>Driveway buy/sell from home with instant AI valuations + concierge pickup.</td>
+              <td>Rolling out Pinewood.AI DMS to unify data and automation enterprise-wide.</td>
+            </tr>
+            <tr>
+              <td><strong>Group 1</strong></td>
+              <td>Leverages Manheim/3rd-party auctions; data-led channel decisions.</td>
+              <td>AcceleRide omnichannel retail; AI phone assistants handle most service calls.</td>
+              <td>Enterprise analytics + automation with strong human handoff practices.</td>
+            </tr>
+            <tr>
+              <td><strong>Sonic</strong></td>
+              <td>EchoPark uses data to decide retail vs wholesale; monitors AI auction tech.</td>
+              <td>NETSOL “Transcend Retail” platform for a unified omnichannel journey.</td>
+              <td>Advanced pricing/sourcing analytics; pilots AI assistants for chat/voice.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ===== Implementation Roadmap ===== -->
+    <section id="roadmap" class="section" aria-labelledby="roadmap-title">
+      <div class="section-head">
+        <h2 id="roadmap-title">Implementation Roadmap</h2>
+        <p class="muted">Phase the work to capture quick wins and de-risk scale-up.</p>
+      </div>
+
+      <div class="grid cols-3">
+        <article class="card">
+          <h3>Phase 1 — 0–6 months</h3>
+          <ul class="list-tight">
+            <li>Unify data (auction mgmt + CRM) and enable exports/APIs.</li>
+            <li>Launch AI chatbot for FAQs/registration.</li>
+            <li>Pilot OCR for titles + automated invoicing/emails.</li>
+            <li>“Recommended for You” beta on portal.</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h3>Phase 2 — 6–18 months</h3>
+          <ul class="list-tight">
+            <li>Install AI inspection lane; run in parallel with humans.</li>
+            <li>Deploy reserve/opening-bid guidance tool.</li>
+            <li>Bidder engagement scoring + churn prevention plays.</li>
+            <li>Integrate AI-optimized transport quoting/scheduling.</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h3>Phase 3 — 18+ months</h3>
+          <ul class="list-tight">
+            <li>Virtual, AI-assisted specialty auctions (timed + live).</li>
+            <li>AI champion, training, and KPI dashboards.</li>
+            <li>Security, privacy, and compliance hardening.</li>
+            <li>Iterate models; measure ROI and re-tune quarterly.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <!-- ===== Projected Impact (visual bars) ===== -->
+    <section id="impact" class="section" aria-labelledby="impact-title">
+      <div class="section-head">
+        <h2 id="impact-title">Projected Impact</h2>
+        <p class="muted">Illustrative gains with conservative adoption assumptions.</p>
+      </div>
+
+      <div class="grid cols-2">
+        <article class="card">
+          <h3>Operational KPIs</h3>
+          <p>Cycle time (titles)</p><div class="bar w40"><span></span></div>
+          <p style="margin-top:10px;">Inspector throughput</p><div class="bar w60"><span></span></div>
+          <p style="margin-top:10px;">Arbitration rate</p><div class="bar w30"><span></span></div>
+        </article>
+        <article class="card">
+          <h3>Commercial KPIs</h3>
+          <p>Sell-through rate</p><div class="bar w50"><span></span></div>
+          <p style="margin-top:10px;">Avg. sale price (ASP)</p><div class="bar w30"><span></span></div>
+          <p style="margin-top:10px;">Buyer retention/engagement</p><div class="bar w60"><span></span></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ===== Deep Dives (branch these later) ===== -->
+    <section id="deep-dives" class="section" aria-labelledby="deep-title">
+      <div class="section-head">
+        <h2 id="deep-title">Deep Dives</h2>
+        <p class="muted">Standalone pages you can create next; these links are ready.</p>
+      </div>
+
+      <div class="grid cols-3">
+        <article class="card">
+          <h3><a href="qaa-titles.html">Titles & Admin</a></h3>
+          <p class="muted">OCR schema, validation rules, RPA swimlanes, KPIs.</p>
+        </article>
+        <article class="card">
+          <h3><a href="qaa-inspections.html">AI Inspections</a></h3>
+          <p class="muted">Lane layout, camera rig, sample report, exception handling.</p>
+        </article>
+        <article class="card">
+          <h3><a href="qaa-pricing.html">Pricing & Bidding</a></h3>
+          <p class="muted">Model inputs, reserve guidance UI, auto-bid logic, governance.</p>
+        </article>
+        <article class="card">
+          <h3><a href="qaa-bidder.html">Bidder Experience</a></h3>
+          <p class="muted">Chat flows, personalization, multilingual support.</p>
+        </article>
+        <article class="card">
+          <h3><a href="qaa-logistics.html">Post-Sale & Transport</a></h3>
+          <p class="muted">Carrier marketplace integration, routing, ETAs, notifications.</p>
+        </article>
+        <article class="card">
+          <h3><a href="qaa-security.html">Security & Compliance</a></h3>
+          <p class="muted">Access controls, PII handling, auditing & vendor due diligence.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ===== Appendix & Sources ===== -->
+    <section id="sources" class="section" aria-labelledby="src-title">
+      <div class="section-head">
+        <h2 id="src-title">Appendix & Notes</h2>
+        <p class="muted">This page summarizes and formats the internal research report for web presentation.</p>
+      </div>
+
+      <article class="card">
+        <h3>About this draft</h3>
+        <p>
+          This HTML is a structured, executive-ready condensation of the full research report you provided
+          covering AI opportunities in auction operations, competitive benchmarking, and a phased plan to adopt
+          AI at Quincy Auto Auction. Use the “Deep Dives” links above to stand up separate pages as you implement.
+        </p>
+      </article>
     </section>
   </main>
 
@@ -116,4 +421,3 @@
   </footer>
 </body>
 </html>
-
