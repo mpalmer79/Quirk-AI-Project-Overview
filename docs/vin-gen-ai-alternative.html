@@ -21,8 +21,6 @@
     .hero h1 { margin: 0 0 8px; font-size: clamp(1.6rem, 3vw, 2.2rem); }
     .hero p { margin: 0; color: #475569; }
 
-    /* Removed the TOC and the Quick Docs button grid per request */
-
     .btn { display:inline-block; border:1px solid #0b6e37; padding:10px 14px; border-radius:999px; text-decoration:none; color:#0b6e37; font-weight:600; text-align:center; background:#fff; }
     .btn:hover { background:#0b6e37; color:#fff; }
     .btn.small { padding:6px 10px; font-weight:600; }
@@ -49,10 +47,17 @@
 
     .callout { border-left: 4px solid #0b6e37; background: #f6fff9; padding: 10px 12px; border-radius: 8px; }
 
-    /* Pill styling to match the green TOC pills */
+    /* Pill styling + badges */
     .pillbar { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px; }
     .pill { display:inline-block; border:1px solid #0b6e37; color:#0b6e37; background:#ffffff; padding:6px 12px; border-radius:999px; font-weight:700; }
     .pill.sub { border-color:#cbd5e1; color:#334155; }
+    .badge { display:inline-block; padding:2px 8px; border-radius:999px; font-size:.78rem; font-weight:700; border:1px solid #cbd5e1; color:#334155; }
+    .badge.ok { border-color:#0b6e37; color:#0b6e37; }
+    .badge.stale { border-color:#b45309; color:#b45309; }
+    .badge.missing { border-color:#64748b; color:#64748b; }
+
+    /* a11y helper in case sitewide CSS doesn't include it */
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
 
     /* Footer */
     .footer { text-align:center; padding:24px 12px; color:#64748b; }
@@ -81,11 +86,12 @@
       <p class="muted">Designed for BDC teams to respond faster, book more shows, and keep every touch logged in VIN Solutions.</p>
     </section>
 
-    <!-- >>>>>> Agent Playground replaces the old circled TOC area <<<<<< -->
+    <!-- >>>>>> Agent Playground <<<<<< -->
     <section id="playground" class="section">
       <div class="pillbar" aria-hidden="true">
         <span class="pill">Agent Playground</span>
         <span class="pill sub">Draft → Approve → Send</span>
+        <span id="oemHealthBadge" class="badge missing" title="OEM offers feed health">OEM: Missing</span>
       </div>
       <h2 class="sr-only">Agent Playground (Draft → Approve → Send)</h2>
       <p class="muted">Paste a lead, pick a model/trim, and generate a ready-to-send draft that always drives to two appointment options.</p>
@@ -94,8 +100,8 @@
         <summary>Open for more (what this does)</summary>
         <div class="small" style="margin-top:8px">
           <ul>
-            <li>Builds an email/SMS with [[stock_count]], [[model_trim]], [[cash_rebate]], [[apr_rate]], and [[two_appt_options]].</li>
-            <li>Today: uses front-end logic to prove the flow. Later: switch <code>API_BASE</code> to your AutoGPT Platform URL.</li>
+            <li>Builds an email/SMS with [[stock_count]], [[model_trim]], [[cash_rebate]], [[apr_rate]], [[two_appt_options]], and lease tokens when available.</li>
+            <li>Today: uses front-end logic + a tiny Worker to normalize GM Financial offers. Later: switch <code>API_BASE</code> to your AutoGPT Platform URL.</li>
           </ul>
         </div>
       </details>
@@ -116,8 +122,12 @@
               <input id="model" class="small" style="width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:8px" value="Traverse" />
             </div>
             <div>
-              <label class="small" for="zip">ZIP</label>
+              <label class="small" for="zip">ZIP (inventory)</label>
               <input id="zip" class="small" style="width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:8px" value="03103" />
+            </div>
+            <div>
+              <label class="small" for="offersZip">ZIP (offers override)</label>
+              <input id="offersZip" class="small" style="width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:8px" value="03103" />
             </div>
             <div>
               <label class="small" for="channel">Channel</label>
@@ -339,7 +349,7 @@
       </details>
     </section>
 
-    <!-- >>>>>> Live Tokens goes UNDER Inventory & Incentives Integration <<<<<< -->
+    <!-- >>>>>> Live Tokens <<<<<< -->
     <section id="live-tokens" class="section">
       <h2>Live Tokens (Inventory & Incentives)</h2>
       <p class="muted">Pulls live feeds (or cache) to populate tokens the drafts will use.</p>
@@ -426,7 +436,7 @@
       </div>
     </section>
 
-    <!-- >>>>>> Recent Agent Runs goes BEFORE Downloads <<<<<< -->
+    <!-- >>>>>> Recent Agent Runs <<<<<< -->
     <section id="runs" class="section">
       <h2>Recent Agent Runs</h2>
       <p class="muted">Drafts saved from the Playground appear here. Later, point this at the Platform backend.</p>
@@ -555,31 +565,63 @@
 
   <!-- ====================== SCRIPTS ====================== -->
 
-  <!-- Step 1: Agent Playground script (place BEFORE </body>) -->
+  <!-- Step 1: Agent Playground script -->
   <script>
   /* -------- Agent Playground: front-end generator with backend-ready cURL -------- */
   const API_BASE = ""; // later: "https://your-platform.example.com" (FastAPI)
+  const OEM_TTL_MS = 15 * 60 * 1000; // 15 minutes
 
-  async function composeDraftFrontEnd({ lead, make, model, zip, channel }) {
-    // Pull tokens from step #2 widget if available:
-    const tokens = await window.__inventoryTokens?.get({ make, model, zip }).catch(() => ({})) || {};
-    const twoSlots = generateTwoApptOptions(); // step #3 utility
+  /* Intent classifier expanded to catch "rebates/offers/APR/lease" */
+  function classifyLeadText(lead) {
+    const t = String(lead || "").toLowerCase();
+    if (/(rebate|incentive|offer|program|apr|lease)/.test(t)) return "offers_question";
+    if (/(trade|trade-in|appraisal|value|kbb|carvana|carmax)/.test(t)) return "trade_in";
+    if (/(best price|price quote|out the door|otd|lowest|payment)/i.test(t)) return "best_price";
+    if (/(just looking|just shopping|browsing|compare|research)/i.test(t)) return "just_shopping";
+    if (/(available|in stock|inventory|color|trim|option)/i.test(t)) return "new_inventory";
+    return "new_inventory";
+  }
 
-    const greeting = `Hi ${extractName(lead) || "there"},`;
-    const body = [
-      `We currently have ${tokens.stock_count ?? "several"} ${model} in stock including ${tokens.model_trim ?? "popular trims"}.`,
-      tokens.cash_rebate ? `This week: ${tokens.cash_rebate}` : null,
-      tokens.apr_rate ? `${tokens.apr_rate}` : null,
-    ].filter(Boolean).join(" ");
+  function tonePreset() { return { opener: "Hi", closer: "— Quirk BDC" }; }
 
-    const cta = `Would ${twoSlots[0]} or ${twoSlots[1]} work for a quick drive? I can have one ready.`;
-    const signature = `— Quirk BDC`;
+  function buildMessage({ scenario, tokens, model, name, twoSlots, channel, meta }) {
+    const { opener, closer } = tonePreset();
+    const greeting = `${opener} ${name || "there"},`;
 
-    const text = channel === "sms"
-      ? `${greeting} ${body} ${cta}`
-      : `${greeting}\n\n${body}\n\n${cta}\n\n${signature}`;
+    const inventoryLine =
+      `We currently have ${tokens.stock_count ?? "several"} ${model} in stock including ${tokens.model_trim ?? "popular trims"}.`;
 
-    return { text, tokens: { ...tokens, two_appt_options: twoSlots } };
+    const incentivesBits = [];
+    if (tokens.cash_rebate) incentivesBits.push(tokens.cash_rebate);
+    if (tokens.apr_rate)    incentivesBits.push(tokens.apr_rate);
+    const incentivesLine = incentivesBits.length ? `This week: ${incentivesBits.join(" + ")}.` : "";
+
+    const offersAck = incentivesBits.length
+      ? `Great question on current offers — ${incentivesBits.join(" + ")} for well-qualified customers.`
+      : `Great question on current offers — I’ll pull the exact programs for your ZIP and eligibility.`;
+
+    const copyMap = {
+      offers_question: `${offersAck} Would ${twoSlots[0]} or ${twoSlots[1]} work to go over details and take a quick drive?`,
+      new_inventory:   `Would ${twoSlots[0]} or ${twoSlots[1]} work for a quick drive? I can have one ready.`,
+      best_price:      `I can show current programs side-by-side on a vehicle you can drive. Would ${twoSlots[0]} or ${twoSlots[1]} work for a quick visit?`,
+      just_shopping:   `No pressure—15 minutes is enough to compare trims in person. Would ${twoSlots[0]} or ${twoSlots[1]} work?`,
+      trade_in:        `Bring your keys and we’ll give you a firm number in about 20 minutes. Does ${twoSlots[0]} or ${twoSlots[1]} work?`,
+    };
+    const copy = copyMap[scenario] || copyMap.new_inventory;
+
+    const disclaimer = channel === "email"
+      ? `\n\nPricing/availability subject to prior sale. Incentives subject to eligibility; see dealer for details.`
+      : "";
+
+    // Optional source link (email only)
+    const srcLink = (channel === "email" && meta?.oem_source)
+      ? `\nSource: GM Financial current offers — ${meta.oem_source}`
+      : "";
+
+    if (channel === "sms") {
+      return `${greeting} ${inventoryLine} ${incentivesLine} ${copy}`;
+    }
+    return `${greeting}\n\n${inventoryLine}${incentivesLine ? "\n" + incentivesLine : ""}\n\n${copy}\n\n${closer}${disclaimer}${srcLink}`;
   }
 
   function extractName(lead) {
@@ -587,23 +629,39 @@
     return m ? m[1] : null;
   }
 
-  // simple, local-business-hours picker (uses step #3’s generator if present)
+  // simple two-slot generator (you can swap for the smarter business-hours version later)
   function generateTwoApptOptions() {
     if (window.__apptOptions?.suggest) return window.__apptOptions.suggest();
     const now = new Date();
-    const thurs = nextDowAt(now, 4, 18, 15); // Thu 6:15 PM
-    const sat   = nextDowAt(now, 6, 10, 30); // Sat 10:30 AM
+    const thurs = nextDowAt(now, 4, 18, 15);
+    const sat   = nextDowAt(now, 6, 10, 30);
     return [fmt(thurs), fmt(sat)];
   }
-  function nextDowAt(base, dow, hh, mm) { // 0=Sun
-    const d = new Date(base);
-    const diff = (dow - d.getDay() + 7) % 7 || 7;
-    d.setDate(d.getDate() + diff);
-    d.setHours(hh, mm, 0, 0);
-    return d;
+  function nextDowAt(base, dow, hh, mm) { const d = new Date(base); const diff = (dow - d.getDay() + 7) % 7 || 7; d.setDate(d.getDate() + diff); d.setHours(hh, mm, 0, 0); return d; }
+  function fmt(d) { return d.toLocaleString(undefined, { weekday:"long", hour:"numeric", minute:"2-digit" }); }
+
+  async function composeDraftFrontEnd({ lead, make, model, zip, offersZip, channel }) {
+    // Pull full payload (tokens + meta) from Step 2
+    const full = await window.__inventoryTokens?.getFull({ make, model, zip, offersZip }).catch(() => null);
+    const tokens = full?.tokens || {};
+    const meta   = full?.meta   || {};
+
+    const twoSlots = generateTwoApptOptions();
+    const scenario = classifyLeadText(lead);
+    const name     = extractName(lead);
+
+    const text = buildMessage({ scenario, tokens, model, name, twoSlots, channel, meta });
+
+    return { text, tokens: { ...tokens, two_appt_options: twoSlots, scenario } };
   }
-  function fmt(d) {
-    return d.toLocaleString(undefined, { weekday:"long", hour:"numeric", minute:"2-digit" });
+
+  function setOemHealthBadge(state) {
+    const el = document.getElementById('oemHealthBadge');
+    if (!el) return;
+    el.classList.remove('ok','stale','missing');
+    if (state === 'ok') { el.classList.add('ok'); el.textContent = 'OEM: OK'; }
+    else if (state === 'stale') { el.classList.add('stale'); el.textContent = 'OEM: Stale'; }
+    else { el.classList.add('missing'); el.textContent = 'OEM: Missing'; }
   }
 
   document.getElementById('composeBtn')?.addEventListener('click', async () => {
@@ -611,12 +669,13 @@
     const make = document.getElementById('make').value.trim();
     const model = document.getElementById('model').value.trim();
     const zip = document.getElementById('zip').value.trim();
+    const offersZip = document.getElementById('offersZip').value.trim() || zip;
     const channel = document.getElementById('channel').value;
 
-    const { text, tokens } = await composeDraftFrontEnd({ lead, make, model, zip, channel });
-    document.getElementById('draftPane').textContent = text;
+    const { text, tokens } = await composeDraftFrontEnd({ lead, make, model, zip, offersZip, channel });
+    document.getElementById('draftPane')..textContent = text;
 
-    const payload = JSON.stringify({ lead, make, model, zip, channel, tokens }, null, 2);
+    const payload = JSON.stringify({ lead, make, model, zip, offersZip, channel, tokens }, null, 2);
     const curl = API_BASE
       ? `curl -X POST '${API_BASE}/api/compose' -H 'Content-Type: application/json' -d '${payload.replace(/\n/g,"")}'`
       : `# When your AutoGPT Platform is up, set API_BASE and use:\n# curl -X POST '$API_BASE/api/compose' -H 'Content-Type: application/json' -d '${payload.replace(/\n/g,"")}'`;
@@ -637,16 +696,18 @@
     const run = { id: 'run_' + Date.now(), status: 'drafted', created_at: new Date().toISOString(), channel: document.getElementById('channel').value, preview: draft.slice(0,180) + (draft.length>180?'…':'' ) };
     runs.unshift(run);
     localStorage.setItem('agent_runs', JSON.stringify(runs));
-    window.dispatchEvent(new Event('agent_runs_updated')); // step #3 viewer listens
+    window.dispatchEvent(new Event('agent_runs_updated'));
   });
   </script>
 
-  <!-- Step 2: Inventory & Incentives token service (place BELOW Step 1 script) -->
+  <!-- Step 2: Inventory & Incentives token service (with OEM offers & preview upgrades) -->
   <script>
-  /* -------- Inventory & Incentives token service w/ 15-min cache -------- */
   (function(){
-    const CACHE_KEY = 'inv_tokens_cache_v1';
+    const CACHE_KEY = 'inv_tokens_cache_v2';
     const TTL_MS = 15 * 60 * 1000;
+
+    // If you used workers.dev, set this to your Worker URL. If you routed /api/oem-offers to the Worker, leave relative.
+    const OEM_ENDPOINT = '/api/oem-offers';
 
     async function fetchJson(url, opts) {
       const res = await fetch(url, opts);
@@ -654,21 +715,25 @@
       return res.json();
     }
 
-    async function computeTokens({ make, model, zip }) {
-      let inventory=[], incentives=null, sourceNotes=[];
+    async function computeTokens({ make, model, zip, offersZip }) {
+      let inventory=[], incentives=null, oemOffers=null, sourceNotes=[];
       try {
-        // Swap these endpoints for your real ones
-        inventory = await fetchJson('inventory.json'); // e.g., [{vin, make, model, trim, status, price, photo, updated_at}, ...]
+        inventory = await fetchJson('inventory.json');
         sourceNotes.push('inventory:live');
-      } catch {
-        sourceNotes.push('inventory:missing');
-      }
+      } catch { sourceNotes.push('inventory:missing'); }
+
+      // OEM offers (GM Financial) via Cloudflare Worker
+      try {
+        const q = new URLSearchParams({ make, model, zip: offersZip || zip }).toString();
+        oemOffers = await fetchJson(`${OEM_ENDPOINT}?${q}`);
+        sourceNotes.push('oem:gmfinancial');
+      } catch { sourceNotes.push('oem:gmfinancial:missing'); }
+
+      // Optional local incentives fallback
       try {
         incentives = await fetchJson(`incentives.json?make=${encodeURIComponent(make)}&model=${encodeURIComponent(model)}&zip=${encodeURIComponent(zip)}`);
-        sourceNotes.push('incentives:live');
-      } catch {
-        sourceNotes.push('incentives:missing');
-      }
+        sourceNotes.push('incentives:local');
+      } catch { sourceNotes.push('incentives:local:missing'); }
 
       const list = (inventory || []).filter(v =>
         (!make || ciEq(v.make, make)) && (!model || ciEq(v.model, model)) && (!v.status || v.status.toLowerCase() !== 'sold')
@@ -677,8 +742,14 @@
       const first = list[0] || {};
       const trim = first.trim || 'popular trims';
 
-      const cash = incentives?.cash_rebate ? `$${Number(incentives.cash_rebate).toLocaleString()} customer cash` : null;
-      const apr = incentives?.apr ? `${incentives.apr}% APR` : null;
+      // prefer OEM, then local
+      const cash = oemOffers?.cash_rebate
+        ?? (incentives?.cash_rebate ? `$${Number(incentives.cash_rebate).toLocaleString()} customer cash` : null);
+      const apr = (oemOffers?.apr != null)
+        ? `${oemOffers.apr}% APR`
+        : (incentives?.apr ? `${incentives.apr}% APR` : null);
+
+      const lease = oemOffers?.lease || null;
 
       return {
         tokens: {
@@ -686,22 +757,29 @@
           model_trim: trim,
           cash_rebate: cash || undefined,
           apr_rate: apr || undefined,
+          lease_monthly: lease?.monthly || undefined,
+          lease_due: lease?.due_at_signing || undefined,
+          lease_months: lease?.months || undefined,
           primary_photo: first.photo || undefined
         },
-        meta: { sourceNotes, updated_at: first.updated_at || null }
+        meta: {
+          sourceNotes,
+          updated_at: first.updated_at || null,
+          oem_source: oemOffers?.source || null,
+          fetched_at: oemOffers?.fetched_at || null
+        }
       };
     }
 
     function ciEq(a,b){ return String(a||'').toLowerCase() === String(b||'').toLowerCase(); }
 
-    async function get({ make, model, zip }) {
+    async function get({ make, model, zip, offersZip }) {
       const now = Date.now();
+      const key = `${make}|${model}|${zip}|${offersZip||''}`;
       const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
-      if (cached && (now - cached.ts) < TTL_MS && cached.key === `${make}|${model}|${zip}`) {
-        return cached.payload;
-      }
-      const payload = await computeTokens({ make, model, zip });
-      localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: now, key: `${make}|${model}|${zip}`, payload }));
+      if (cached && (now - cached.ts) < TTL_MS && cached.key === key) return cached.payload;
+      const payload = await computeTokens({ make, model, zip, offersZip });
+      localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: now, key, payload }));
       return payload;
     }
 
@@ -714,42 +792,73 @@
         <code>[[stock_count]]</code>: ${tokens.stock_count ?? '—'} &nbsp;|&nbsp;
         <code>[[model_trim]]</code>: ${tokens.model_trim ?? '—'} &nbsp;|&nbsp;
         <code>[[cash_rebate]]</code>: ${tokens.cash_rebate ?? '—'} &nbsp;|&nbsp;
-        <code>[[apr_rate]]</code>: ${tokens.apr_rate ?? '—'}
+        <code>[[apr_rate]]</code>: ${tokens.apr_rate ?? '—'}<br>
+        <code>lease</code>: ${tokens.lease_monthly ? ('$' + tokens.lease_monthly + '/mo, $' + (tokens.lease_due||0).toLocaleString() + ' DAS, ' + (tokens.lease_months||'—') + ' mo') : '—'}
       `;
       const stale = isStale();
-      metaEl.textContent = `${(meta?.sourceNotes||[]).join(', ')}${stale ? ' • cache ≤15m' : ''}${meta?.updated_at ? ' • inv updated ' + meta.updated_at : ''}`;
+      metaEl.innerHTML = `${(meta?.sourceNotes||[]).join(', ')}${stale ? ' • cache ≤15m' : ''}${meta?.updated_at ? ' • inv updated ' + meta.updated_at : ''}${
+        meta?.oem_source ? ' • <a href="'+meta.oem_source+'" target="_blank" rel="noopener">GM Financial source</a>' : ''
+      }`;
       metaEl.style.color = stale ? '#b45309' : '#475569';
+
+      // update the small OEM health badge
+      const state = getOemHealthState(meta);
+      if (state) window.__setOemHealth && window.__setOemHealth(state);
     }
 
     function isStale() {
-      const cached = JSON.parse(localStorage.getItem('inv_tokens_cache_v1') || 'null');
+      const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
       if (!cached) return true;
       return (Date.now() - cached.ts) >= TTL_MS;
     }
 
-    // public API for Step #1 composer
-    window.__inventoryTokens = { get: async ({ make, model, zip }) => get({ make, model, zip }).then(p => p.tokens) };
+    function getOemHealthState(meta) {
+      if (!meta?.oem_source || !meta?.fetched_at) return 'missing';
+      const age = Date.now() - new Date(meta.fetched_at).getTime();
+      if (age <= TTL_MS) return 'ok';
+      return 'stale';
+    }
+
+    // public APIs
+    window.__inventoryTokens = {
+      // tokens only
+      get: async ({ make, model, zip, offersZip }) => get({ make, model, zip, offersZip }).then(p => p.tokens),
+      // full payload (tokens + meta)
+      getFull: async ({ make, model, zip, offersZip }) => get({ make, model, zip, offersZip })
+    };
+
+    // expose badge setter for Step 1
+    window.__setOemHealth = (state) => {
+      const el = document.getElementById('oemHealthBadge');
+      if (!el) return;
+      el.classList.remove('ok','stale','missing');
+      if      (state === 'ok')     { el.classList.add('ok'); el.textContent = 'OEM: OK'; }
+      else if (state === 'stale')  { el.classList.add('stale'); el.textContent = 'OEM: Stale'; }
+      else                         { el.classList.add('missing'); el.textContent = 'OEM: Missing'; }
+    };
 
     async function refreshFromInputs() {
       const make = document.getElementById('make')?.value || '';
       const model = document.getElementById('model')?.value || '';
       const zip = document.getElementById('zip')?.value || '';
-      const payload = await get({ make, model, zip });
+      const offersZip = document.getElementById('offersZip')?.value || zip;
+      const payload = await get({ make, model, zip, offersZip });
       renderPreview(payload);
     }
 
     document.getElementById('refreshTokensBtn')?.addEventListener('click', refreshFromInputs);
-    // Auto-refresh when user changes fields in the Playground
-    ['make','model','zip'].forEach(id => {
+    ['make','model','zip','offersZip'].forEach(id => {
       const el = document.getElementById(id);
       el && el.addEventListener('change', refreshFromInputs);
     });
+
+    // initial health badge
+    window.__setOemHealth && window.__setOemHealth('missing');
   })();
   </script>
 
-  <!-- Step 3: Run Log Viewer (place LAST) -->
+  <!-- Step 3: Run Log Viewer (localStorage today, API tomorrow) -->
   <script>
-  /* -------- Run Log Viewer (localStorage today, API tomorrow) -------- */
   (async function(){
     const API_BASE = ""; // later: "https://your-platform.example.com"
     async function loadRuns() {
