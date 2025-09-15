@@ -19,8 +19,8 @@
   <link rel="stylesheet" href="assets/style.css" />
 
   <style>
-    /* ---------- Centered HOME button (matches other pages) ---------- */
-    .home-wrap { display:flex; justify-content:center; margin:10px 0 0; }
+    /* ---------- Centered HOME button (now inside hero) ---------- */
+    .home-wrap { display:flex; justify-content:center; }
     .home-btn {
       display:inline-block; padding:8px 16px; border-radius:10px; font-weight:800;
       text-decoration:none; background:#111; color:#fff; box-shadow:0 2px 0 rgba(0,0,0,.25);
@@ -28,8 +28,10 @@
 
     /* ---------- Page chrome ---------- */
     .page-wrap { position:relative; z-index:1; }
-    .hero { text-align:center; padding:28px 16px 8px; }
-    .hero .title { font-size:clamp(1.8rem, 3.6vw, 2.6rem); margin:0 0 8px; }
+    .hero { text-align:center; padding:24px 16px 8px; }
+    /* Move the HOME pill down to the former topbar title position */
+    .hero .home-wrap { margin-top:22px; margin-bottom:10px; }
+    .hero .title { font-size:clamp(1.8rem, 3.6vw, 2.6rem); margin:8px 0; }
     .hero .subtitle { margin:0 auto; max-width:1100px; color:#556; }
 
     /* ---------- Rolling watermark (assets/3.webp) ---------- */
@@ -105,25 +107,15 @@
   </style>
 </head>
 <body class="watermarked">
-  <!-- Centered HOME pill -->
-  <div class="home-wrap">
-    <a class="home-btn" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
-  </div>
-
-  <!-- Top Navigation Bar -->
-  <header class="topbar" role="banner">
-    <div class="topbar-inner">
-      <a class="home-link" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
-      <div class="topbar-title">Quincy Auto Auction</div>
-      <nav class="topbar-menu" aria-label="Secondary Navigation">
-        <a class="topbar-title-link" href="./project-library.html">Project Library</a>
-      </nav>
-    </div>
-  </header>
-
-  <!-- ===== Hero ===== -->
+  <!-- Page Content -->
   <main class="page-wrap">
+    <!-- Hero -->
     <section class="hero" aria-labelledby="page-title">
+      <!-- HOME pill moved down and centered -->
+      <div class="home-wrap">
+        <a class="home-btn" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
+      </div>
+
       <h1 id="page-title" class="title">Quincy Auto Auction</h1>
       <p class="subtitle">
         AI and automation to accelerate title processing, standardize inspections, optimize pricing & bidding,
@@ -131,7 +123,7 @@
       </p>
     </section>
 
-    <!-- ===== On-page TOC ===== -->
+    <!-- On-page TOC -->
     <nav class="toc" aria-label="Quick links">
       <a class="chip" href="#exec">Executive Summary</a>
       <a class="chip" href="#workflow">Workflow Opportunities</a>
@@ -143,7 +135,7 @@
       <a class="chip" href="#sources">Appendix & Sources</a>
     </nav>
 
-    <!-- ===== Executive Summary (Non-Technical) ===== -->
+    <!-- Executive Summary -->
     <section id="exec" class="section" aria-labelledby="exec-title">
       <div class="section-head">
         <h2 id="exec-title">Executive Summary</h2>
@@ -171,14 +163,14 @@
             <li><strong>Dealer loyalty ↑:</strong> Personalized alerts/recommendations bring the right buyers to the right lots.</li>
           </ul>
           <div class="kpi-row" role="group" aria-label="At-a-glance KPIs">
-            <div class="kpi"><span class="kpi-value">20–30%</span><span class="kpi-label">Sales lift seen by early adopters</span></div>
-            <div class="kpi"><span class="kpi-value">86–91%</span><span class="kpi-label">AI call/chat completion in service</span></div>
+            <div class="kpi"><span class="kpi-value">20–30%</span><span class="kpi-label">Sales lift (early adopters)</span></div>
+            <div class="kpi"><span class="kpi-value">86–91%</span><span class="kpi-label">AI call/chat completion</span></div>
           </div>
         </article>
       </div>
     </section>
 
-    <!-- ===== Workflow Opportunities ===== -->
+    <!-- Workflow Opportunities -->
     <section id="workflow" class="section" aria-labelledby="workflow-title">
       <div class="section-head">
         <h2 id="workflow-title">AI Opportunities Across the Workflow</h2>
@@ -188,7 +180,7 @@
       <div class="grid cols-2">
         <article class="card" id="titles">
           <h3>1) Titles & Admin</h3>
-          <p><strong>Tools:</strong> OCR/NLP for data extraction, validation rules, RPA for DMV updates and documents.</p>
+          <p><strong>Tools:</strong> OCR/NLP for extraction, validation rules, RPA for DMV updates and docs.</p>
           <ul class="list-tight">
             <li>Digital Title Vault with status checks and mismatch flags.</li>
             <li>Auto-generated bills of sale/title transfers at the moment of sale.</li>
@@ -202,7 +194,7 @@
           <p>Drive-through computer vision detects damage/tire wear and populates condition reports in seconds.</p>
           <ul class="list-tight">
             <li>Consistent grading; photo heatmaps and repair-cost estimates.</li>
-            <li>Parallel run with humans first; system learns from New England conditions (e.g., rust).</li>
+            <li>Parallel run with humans first; model learns New England conditions (e.g., rust).</li>
           </ul>
           <div class="bar w60" title="Inspector productivity gain"><span></span></div>
         </article>
@@ -212,14 +204,14 @@
           <p>ML suggests reserves/openers; auto-bid agents and adaptive increments keep momentum.</p>
           <ul class="list-tight">
             <li>Reserve guidance with confidence bands and market comps.</li>
-            <li>Bidder analytics to identify preferences and trigger outreach.</li>
+            <li>Bidder analytics to profile preferences and trigger outreach.</li>
           </ul>
           <div class="bar w50" title="Sell-through/ASP impact"><span></span></div>
         </article>
 
         <article class="card" id="logistics">
           <h3>4) Post-Sale Logistics</h3>
-          <p>AI optimizes truck loads/routes; buyers get proactive ETA updates; fraud checks guard payments.</p>
+          <p>AI optimizes loads/routes; buyers get proactive ETAs; fraud checks guard payments.</p>
           <ul class="list-tight">
             <li>Carrier selection & multi-stop routing to cut miles.</li>
             <li>Automated notifications (“scheduled / in-transit / delivered”).</li>
@@ -229,7 +221,7 @@
       </div>
     </section>
 
-    <!-- ===== Bidder Experience ===== -->
+    <!-- Bidder Experience -->
     <section id="cx" class="section" aria-labelledby="cx-title">
       <div class="section-head">
         <h2 id="cx-title">Bidder Experience</h2>
@@ -243,7 +235,7 @@
         </article>
         <article class="card">
           <h3>Personalized Alerts</h3>
-          <p>“Recommended for you” lots and timed SMS/email reminders aligned to each buyer’s history.</p>
+          <p>“Recommended for you” lots and timed SMS/email reminders aligned to buyer history.</p>
         </article>
         <article class="card">
           <h3>Global Access</h3>
@@ -252,11 +244,11 @@
       </div>
     </section>
 
-    <!-- ===== Competitive Benchmark ===== -->
+    <!-- Competitive Benchmark -->
     <section id="benchmark" class="section" aria-labelledby="bench-title">
       <div class="section-head">
         <h2 id="bench-title">Benchmark: What Leaders Are Doing</h2>
-        <p class="muted">A quick scan of Penske, Lithia, Group 1, and Sonic.</p>
+        <p class="muted">Penske, Lithia, Group 1, Sonic.</p>
       </div>
 
       <div class="table-wrap" role="region" aria-label="Competitive table">
@@ -272,34 +264,34 @@
           <tbody>
             <tr>
               <td><strong>Penske</strong></td>
-              <td>Nationwide online used-truck auctions; auto-bid tools; transparent fees.</td>
-              <td>Esntial Commerce enables 100% online purchase with AI-driven financing.</td>
-              <td>Catalyst AI™ runs predictive models for fleet uptime and cost control.</td>
+              <td>Nationwide online used-truck auctions; proxy/auto-bid; transparent fees.</td>
+              <td>“Esntial Commerce” enables 100% online purchase with AI-driven financing.</td>
+              <td>Catalyst AI™ predictive models for fleet uptime and cost control.</td>
             </tr>
             <tr>
               <td><strong>Lithia</strong></td>
-              <td>Uses digital marketplaces; no proprietary auction yet.</td>
-              <td>Driveway buy/sell from home with instant AI valuations + concierge pickup.</td>
-              <td>Rolling out Pinewood.AI DMS to unify data and automation enterprise-wide.</td>
+              <td>Digital marketplaces; no proprietary auction yet.</td>
+              <td>Driveway instant AI valuations + concierge pickup.</td>
+              <td>Pinewood.AI DMS to unify data and automation enterprise-wide.</td>
             </tr>
             <tr>
               <td><strong>Group 1</strong></td>
-              <td>Leverages Manheim/3rd-party auctions; data-led channel decisions.</td>
-              <td>AcceleRide omnichannel retail; AI phone assistants handle most service calls.</td>
-              <td>Enterprise analytics + automation with strong human handoff practices.</td>
+              <td>Manheim/3rd-party auctions; data-led channel decisions.</td>
+              <td>AcceleRide omnichannel; AI voice handles most service calls.</td>
+              <td>Enterprise analytics + automation; strong human handoffs.</td>
             </tr>
             <tr>
               <td><strong>Sonic</strong></td>
-              <td>EchoPark uses data to decide retail vs wholesale; monitors AI auction tech.</td>
-              <td>NETSOL “Transcend Retail” platform for a unified omnichannel journey.</td>
-              <td>Advanced pricing/sourcing analytics; pilots AI assistants for chat/voice.</td>
+              <td>EchoPark data to choose retail vs wholesale.</td>
+              <td>NETSOL “Transcend Retail” for unified omnichannel journey.</td>
+              <td>Advanced pricing/sourcing analytics; AI assistants pilots.</td>
             </tr>
           </tbody>
         </table>
       </div>
     </section>
 
-    <!-- ===== Implementation Roadmap ===== -->
+    <!-- Implementation Roadmap -->
     <section id="roadmap" class="section" aria-labelledby="roadmap-title">
       <div class="section-head">
         <h2 id="roadmap-title">Implementation Roadmap</h2>
@@ -339,7 +331,7 @@
       </div>
     </section>
 
-    <!-- ===== Projected Impact (visual bars) ===== -->
+    <!-- Projected Impact -->
     <section id="impact" class="section" aria-labelledby="impact-title">
       <div class="section-head">
         <h2 id="impact-title">Projected Impact</h2>
@@ -362,54 +354,35 @@
       </div>
     </section>
 
-    <!-- ===== Deep Dives (branch these later) ===== -->
+    <!-- Deep Dives -->
     <section id="deep-dives" class="section" aria-labelledby="deep-title">
       <div class="section-head">
         <h2 id="deep-title">Deep Dives</h2>
-        <p class="muted">Standalone pages you can create next; these links are ready.</p>
+        <p class="muted">Standalone pages ready to expand.</p>
       </div>
 
       <div class="grid cols-3">
-        <article class="card">
-          <h3><a href="qaa-titles.html">Titles & Admin</a></h3>
-          <p class="muted">OCR schema, validation rules, RPA swimlanes, KPIs.</p>
-        </article>
-        <article class="card">
-          <h3><a href="qaa-inspections.html">AI Inspections</a></h3>
-          <p class="muted">Lane layout, camera rig, sample report, exception handling.</p>
-        </article>
-        <article class="card">
-          <h3><a href="qaa-pricing.html">Pricing & Bidding</a></h3>
-          <p class="muted">Model inputs, reserve guidance UI, auto-bid logic, governance.</p>
-        </article>
-        <article class="card">
-          <h3><a href="qaa-bidder.html">Bidder Experience</a></h3>
-          <p class="muted">Chat flows, personalization, multilingual support.</p>
-        </article>
-        <article class="card">
-          <h3><a href="qaa-logistics.html">Post-Sale & Transport</a></h3>
-          <p class="muted">Carrier marketplace integration, routing, ETAs, notifications.</p>
-        </article>
-        <article class="card">
-          <h3><a href="qaa-security.html">Security & Compliance</a></h3>
-          <p class="muted">Access controls, PII handling, auditing & vendor due diligence.</p>
-        </article>
+        <article class="card"><h3><a href="qaa-titles.html">Titles & Admin</a></h3><p class="muted">OCR schema, validation rules, RPA swimlanes, KPIs.</p></article>
+        <article class="card"><h3><a href="qaa-inspections.html">AI Inspections</a></h3><p class="muted">Lane layout, camera rig, sample report, exceptions.</p></article>
+        <article class="card"><h3><a href="qaa-pricing.html">Pricing & Bidding</a></h3><p class="muted">Model inputs, guidance UI, auto-bid logic.</p></article>
+        <article class="card"><h3><a href="qaa-bidder.html">Bidder Experience</a></h3><p class="muted">Chat flows, personalization, multilingual.</p></article>
+        <article class="card"><h3><a href="qaa-logistics.html">Post-Sale & Transport</a></h3><p class="muted">Carrier marketplace, routing, ETAs, notifications.</p></article>
+        <article class="card"><h3><a href="qaa-security.html">Security & Compliance</a></h3><p class="muted">Access controls, PII, vendor due diligence.</p></article>
       </div>
     </section>
 
-    <!-- ===== Appendix & Sources ===== -->
+    <!-- Appendix & Sources -->
     <section id="sources" class="section" aria-labelledby="src-title">
       <div class="section-head">
         <h2 id="src-title">Appendix & Notes</h2>
-        <p class="muted">This page summarizes and formats the internal research report for web presentation.</p>
+        <p class="muted">This page formats the internal research into a web presentation.</p>
       </div>
 
       <article class="card">
         <h3>About this draft</h3>
         <p>
-          This HTML is a structured, executive-ready condensation of the full research report you provided
-          covering AI opportunities in auction operations, competitive benchmarking, and a phased plan to adopt
-          AI at Quincy Auto Auction. Use the “Deep Dives” links above to stand up separate pages as you implement.
+          Use the “Deep Dives” links to stand up separate pages as you implement.
+          Each child page below includes a matching HOME pill + footer and a link back to this overview.
         </p>
       </article>
     </section>
