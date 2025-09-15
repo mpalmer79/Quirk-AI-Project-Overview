@@ -1,1 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quincy Auto Auction</title>
+
+  <!-- Force light mode -->
+  <meta name="color-scheme" content="light">
+
+  <!-- Keep URLs resolving under the project site -->
+  <base href="/Quirk-AI-Project-Overview/">
+
+  <!-- SEO basics -->
+  <meta name="description" content="Quincy Auto Auction — AI-powered efficiency for title processing, inspections, pricing, bidding, logistics, and bidder experience." />
+  <meta property="og:title" content="Quincy Auto Auction" />
+  <meta property="og:description" content="AI and automation to increase auction efficiency and bidder satisfaction." />
+
+  <link rel="stylesheet" href="assets/style.css" />
+
+  <style>
+    /* ---------- Centered HOME button (matches other pages) ---------- */
+    .home-wrap { display:flex; justify-content:center; margin:10px 0 0; }
+    .home-btn {
+      display:inline-block; padding:8px 16px; border-radius:10px; font-weight:800;
+      text-decoration:none; background:#111; color:#fff; box-shadow:0 2px 0 rgba(0,0,0,.25);
+    }
+
+    /* ---------- Page chrome ---------- */
+    .page-wrap { position:relative; z-index:1; }
+    .hero { text-align:center; padding:28px 16px 8px; }
+    .hero .title { font-size:clamp(1.8rem, 3.6vw, 2.6rem); margin:0 0 8px; }
+    .hero .subtitle { margin:0 auto; max-width:1100px; color:#556; }
+
+    /* ---------- Rolling watermark (assets/3.webp) ---------- */
+    body.watermarked::before{
+      content:"";
+      position:fixed;
+      inset:auto 0 10% 0;
+      margin:auto;
+      width:clamp(280px, 40vw, 620px);
+      height:clamp(280px, 40vw, 620px);
+      background:url("assets/3.webp") center/contain no-repeat;
+      opacity:.06;
+      filter:grayscale(100%);
+      pointer-events:none;
+      z-index:0;
+      animation:spin 120s linear infinite;
+      transform-origin:50% 50%;
+    }
+    @keyframes spin {
+      from { transform:rotate(0deg); }
+      to   { transform:rotate(360deg); }
+    }
+
+    /* ---------- Section shell (optional placeholders) ---------- */
+    .section { max-width:1100px; margin:22px auto; padding:0 16px; }
+    .section .section-head { text-align:center; }
+    .section .section-head h2 { margin:0 0 6px; }
+    .muted { color:#667085; }
+
+    /* ---------- Footer ---------- */
+    .footer { text-align:center; padding:22px 0 28px; }
+    .footer .copyright { color:#555; margin:0; }
+  </style>
+</head>
+<body class="watermarked">
+  <!-- Centered HOME pill -->
+  <div class="home-wrap">
+    <a class="home-btn" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
+  </div>
+
+  <!-- Top Navigation Bar (kept consistent with other pages) -->
+  <header class="topbar" role="banner">
+    <div class="topbar-inner">
+      <a class="home-link" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
+      <div class="topbar-title">Quincy Auto Auction</div>
+      <nav class="topbar-menu" aria-label="Secondary Navigation">
+        <a class="topbar-title-link" href="./project-library.html">Project Library</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Page Content -->
+  <main class="page-wrap">
+    <!-- Hero -->
+    <section class="hero" aria-labelledby="page-title">
+      <h1 id="page-title" class="title">Quincy Auto Auction</h1>
+      <p class="subtitle">
+        AI and automation to accelerate title processing, standardize inspections, optimize pricing & bidding,
+        streamline post-sale logistics, and elevate the bidder experience.
+      </p>
+    </section>
+
+    <!-- Placeholder sections you can flesh out later -->
+    <section class="section" aria-labelledby="ops-title">
+      <div class="section-head">
+        <h2 id="ops-title">Operational Efficiency</h2>
+        <p class="muted">Titles • Inspections • Pricing • Bidding • Transport • Post-Sale</p>
+      </div>
+      <!-- Add your content here -->
+    </section>
+
+    <section class="section" aria-labelledby="cx-title">
+      <div class="section-head">
+        <h2 id="cx-title">Bidder Experience</h2>
+        <p class="muted">Virtual auctions, personalization, alerts, and 24/7 assistance</p>
+      </div>
+      <!-- Add your content here -->
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="container footer">
+    <p class="copyright">© 2025 Quirk AI – Quincy Auto Auction</p>
+  </footer>
+</body>
+</html>
 
