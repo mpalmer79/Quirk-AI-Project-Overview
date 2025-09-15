@@ -21,9 +21,7 @@
     .hero h1 { margin: 0 0 8px; font-size: clamp(1.6rem, 3vw, 2.2rem); }
     .hero p { margin: 0; color: #475569; }
 
-    .toc { display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin: 20px 0 24px; }
-    .toc a { display: block; text-decoration: none; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 14px; }
-    .toc a:hover { background: #f8fafc; }
+    /* Removed the TOC block per request */
 
     /* Quick Docs button row (opens PDFs in new tab) */
     .button-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin:8px 0 24px;}
@@ -62,8 +60,8 @@
 </head>
 <body class="page">
   <div class="home-wrap">
-  <a class="home-btn" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
-</div>
+    <a class="home-btn" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
+  </div>
 
   <!-- ======= Top Navigation Bar ======= -->
   <header class="topbar" role="banner">
@@ -83,19 +81,67 @@
       <p class="muted">Designed for BDC teams to respond faster, book more shows, and keep every touch logged in VIN Solutions.</p>
     </section>
 
-    <!-- On this page -->
-    <nav class="toc" aria-label="On this page">
-      <a href="#executive-summary">Executive Summary</a>
-      <a href="#kpis">Target KPIs</a>
-      <a href="#workflow">Workflow Comparison</a>
-      <a href="#library">Smart Response Library</a>
-      <a href="#training">Training & Roleplay</a>
-      <a href="#inventory">Inventory & Incentives Integration</a>
-      <a href="#insights">Desk Log Insights</a>
-      <a href="#timeline">Implementation Timeline</a>
-      <a href="#downloads">Downloads</a>
-      <a href="#faq">FAQ</a>
-    </nav>
+    <!-- >>>>>> REPLACED the circled TOC with the Agent Playground <<<<<< -->
+    <section id="playground" class="section">
+      <h2>Agent Playground (Draft -> Approve -> Send)</h2>
+      <p class="muted">Paste a lead, pick a model/trim, and generate a ready-to-send draft that always drives to two appointment options.</p>
+
+      <details>
+        <summary>Open for more (what this does)</summary>
+        <div class="small" style="margin-top:8px">
+          <ul>
+            <li>Builds an email/SMS with [[stock_count]], [[model_trim]], [[cash_rebate]], [[apr_rate]], and [[two_appt_options]].</li>
+            <li>Today: uses front-end logic to prove the flow. Later: switch <code>API_BASE</code> to your AutoGPT Platform URL.</li>
+          </ul>
+        </div>
+      </details>
+
+      <div class="cards" style="margin-top:12px">
+        <div class="card">
+          <h3>Lead Context</h3>
+          <label class="small" for="leadText">Paste lead snippet (name, interest, zip, notes)</label>
+          <textarea id="leadText" rows="6" style="width:100%;border:1px solid #e2e8f0;border-radius:10px;padding:10px"></textarea>
+
+          <div style="display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin-top:10px">
+            <div>
+              <label class="small" for="make">Make</label>
+              <input id="make" class="small" style="width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:8px" value="Chevrolet" />
+            </div>
+            <div>
+              <label class="small" for="model">Model</label>
+              <input id="model" class="small" style="width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:8px" value="Traverse" />
+            </div>
+            <div>
+              <label class="small" for="zip">ZIP</label>
+              <input id="zip" class="small" style="width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:8px" value="03103" />
+            </div>
+            <div>
+              <label class="small" for="channel">Channel</label>
+              <select id="channel" class="small" style="width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:8px">
+                <option value="email">Email</option>
+                <option value="sms">SMS</option>
+              </select>
+            </div>
+          </div>
+
+          <button id="composeBtn" class="btn" style="margin-top:12px">Generate Draft</button>
+        </div>
+
+        <div class="card">
+          <h3>Output</h3>
+          <div id="draftPane" class="small" style="white-space:pre-wrap;min-height:140px;border:1px dashed #e2e8f0;border-radius:10px;padding:10px"></div>
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <button id="copyDraftBtn" class="btn">Copy</button>
+            <button id="saveRunBtn" class="btn" title="Simulates logging a run like AutoGPT Platform">Save as Run</button>
+          </div>
+          <details style="margin-top:10px">
+            <summary>Open for more (cURL for backend wiring)</summary>
+<pre class="small" id="curlBlock" style="overflow:auto"></pre>
+          </details>
+        </div>
+      </div>
+    </section>
+    <!-- >>>>>> END Agent Playground <<<<<< -->
 
     <!-- Quick Docs buttons (opens PDFs in new tab; paths use /assets/) -->
     <div class="button-grid">
@@ -305,6 +351,22 @@
       </details>
     </section>
 
+    <!-- >>>>>> Step 2: Live Tokens section goes right UNDER Inventory & Incentives Integration <<<<<< -->
+    <section id="live-tokens" class="section">
+      <h2>Live Tokens (Inventory & Incentives)</h2>
+      <p class="muted">Pulls live feeds (or cache) to populate tokens the drafts will use.</p>
+
+      <div class="cards">
+        <div class="card">
+          <h3>Token Preview</h3>
+          <div class="small" id="tokenPreview">Awaiting selection…</div>
+          <div class="small muted" id="tokenMeta" style="margin-top:6px"></div>
+          <button id="refreshTokensBtn" class="btn" style="margin-top:10px">Refresh Tokens</button>
+        </div>
+      </div>
+    </section>
+    <!-- >>>>>> END Live Tokens <<<<<< -->
+
     <!-- Desk Log Insights -->
     <section id="insights" class="section">
       <h2>Desk Log Insights (Snapshot)</h2>
@@ -375,6 +437,20 @@
         </div>
       </div>
     </section>
+
+    <!-- >>>>>> Step 3: Recent Agent Runs goes BEFORE Downloads <<<<<< -->
+    <section id="runs" class="section">
+      <h2>Recent Agent Runs</h2>
+      <p class="muted">Drafts saved from the Playground appear here. Later, point this at the Platform backend.</p>
+      <div class="cards">
+        <div class="card">
+          <h3>Last 10</h3>
+          <div id="runsTable" class="small">No runs yet.</div>
+          <button id="reloadRunsBtn" class="btn" style="margin-top:10px">Reload</button>
+        </div>
+      </div>
+    </section>
+    <!-- >>>>>> END Recent Agent Runs <<<<<< -->
 
     <!-- Downloads -->
     <section id="downloads" class="section">
@@ -488,6 +564,267 @@
   <footer class="footer">
     <small>© 2025 Quirk AI — VIN Gen AI Alternative</small>
   </footer>
+
+  <!-- ====================== SCRIPTS ====================== -->
+
+  <!-- Step 1: Agent Playground script (place BEFORE </body>) -->
+  <script>
+  /* -------- Agent Playground: front-end generator with backend-ready cURL -------- */
+  const API_BASE = ""; // later: "https://your-platform.example.com" (FastAPI)
+
+  async function composeDraftFrontEnd({ lead, make, model, zip, channel }) {
+    // Pull tokens from step #2 widget if available:
+    const tokens = await window.__inventoryTokens?.get({ make, model, zip }).catch(() => ({})) || {};
+    const twoSlots = generateTwoApptOptions(); // step #3 utility
+
+    const greeting = `Hi ${extractName(lead) || "there"},`;
+    const body = [
+      `We currently have ${tokens.stock_count ?? "several"} ${model} in stock including ${tokens.model_trim ?? "popular trims"}.`,
+      tokens.cash_rebate ? `This week: ${tokens.cash_rebate}` : null,
+      tokens.apr_rate ? `${tokens.apr_rate}` : null,
+    ].filter(Boolean).join(" ");
+
+    const cta = `Would ${twoSlots[0]} or ${twoSlots[1]} work for a quick drive? I can have one ready.`;
+    const signature = `— Quirk BDC`;
+
+    const text = channel === "sms"
+      ? `${greeting} ${body} ${cta}`
+      : `${greeting}\n\n${body}\n\n${cta}\n\n${signature}`;
+
+    return { text, tokens: { ...tokens, two_appt_options: twoSlots } };
+  }
+
+  function extractName(lead) {
+    const m = (lead || "").match(/name[:\-]?\s*([A-Z][a-z]+)\b/mi);
+    return m ? m[1] : null;
+  }
+
+  // simple, local-business-hours picker (uses step #3’s generator if present)
+  function generateTwoApptOptions() {
+    if (window.__apptOptions?.suggest) return window.__apptOptions.suggest();
+    const now = new Date();
+    const thurs = nextDowAt(now, 4, 18, 15); // Thu 6:15 PM
+    const sat   = nextDowAt(now, 6, 10, 30); // Sat 10:30 AM
+    return [fmt(thurs), fmt(sat)];
+  }
+  function nextDowAt(base, dow, hh, mm) { // 0=Sun
+    const d = new Date(base);
+    const diff = (dow - d.getDay() + 7) % 7 || 7;
+    d.setDate(d.getDate() + diff);
+    d.setHours(hh, mm, 0, 0);
+    return d;
+  }
+  function fmt(d) {
+    return d.toLocaleString(undefined, { weekday:"long", hour:"numeric", minute:"2-digit" });
+  }
+
+  document.getElementById('composeBtn')?.addEventListener('click', async () => {
+    const lead = document.getElementById('leadText').value.trim();
+    const make = document.getElementById('make').value.trim();
+    const model = document.getElementById('model').value.trim();
+    const zip = document.getElementById('zip').value.trim();
+    const channel = document.getElementById('channel').value;
+
+    const { text, tokens } = await composeDraftFrontEnd({ lead, make, model, zip, channel });
+    document.getElementById('draftPane').textContent = text;
+
+    const payload = JSON.stringify({ lead, make, model, zip, channel, tokens }, null, 2);
+    const curl = API_BASE
+      ? `curl -X POST '${API_BASE}/api/compose' -H 'Content-Type: application/json' -d '${payload.replace(/\n/g,"")}'`
+      : `# When your AutoGPT Platform is up, set API_BASE and use:\n# curl -X POST '$API_BASE/api/compose' -H 'Content-Type: application/json' -d '${payload.replace(/\n/g,"")}'`;
+    document.getElementById('curlBlock').textContent = curl;
+  });
+
+  document.getElementById('copyDraftBtn')?.addEventListener('click', async () => {
+    const text = document.getElementById('draftPane').textContent;
+    if (!text) return;
+    await navigator.clipboard.writeText(text);
+    alert('Draft copied to clipboard.');
+  });
+
+  document.getElementById('saveRunBtn')?.addEventListener('click', () => {
+    const draft = document.getElementById('draftPane').textContent;
+    if (!draft) return;
+    const runs = JSON.parse(localStorage.getItem('agent_runs') || '[]');
+    const run = { id: 'run_' + Date.now(), status: 'drafted', created_at: new Date().toISOString(), channel: document.getElementById('channel').value, preview: draft.slice(0,180) + (draft.length>180?'…':'' ) };
+    runs.unshift(run);
+    localStorage.setItem('agent_runs', JSON.stringify(runs)); 
+    window.dispatchEvent(new Event('agent_runs_updated')); // step #3 viewer listens
+  });
+  </script>
+
+  <!-- Step 2: Inventory & Incentives token service (place BELOW Step 1 script) -->
+  <script>
+  /* -------- Inventory & Incentives token service w/ 15-min cache -------- */
+  (function(){
+    const CACHE_KEY = 'inv_tokens_cache_v1';
+    const TTL_MS = 15 * 60 * 1000;
+
+    async function fetchJson(url, opts) {
+      const res = await fetch(url, opts);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    }
+
+    async function computeTokens({ make, model, zip }) {
+      let inventory=[], incentives=null, sourceNotes=[];
+      try {
+        // Swap these endpoints for your real ones
+        inventory = await fetchJson('inventory.json'); // e.g., [{vin, make, model, trim, status, price, photo, updated_at}, ...]
+        sourceNotes.push('inventory:live');
+      } catch {
+        sourceNotes.push('inventory:missing');
+      }
+      try {
+        incentives = await fetchJson(`incentives.json?make=${encodeURIComponent(make)}&model=${encodeURIComponent(model)}&zip=${encodeURIComponent(zip)}`);
+        sourceNotes.push('incentives:live');
+      } catch {
+        sourceNotes.push('incentives:missing');
+      }
+
+      const list = (inventory || []).filter(v =>
+        (!make || ciEq(v.make, make)) && (!model || ciEq(v.model, model)) && (!v.status || v.status.toLowerCase() !== 'sold')
+      );
+      const stockCount = list.length;
+      const first = list[0] || {};
+      const trim = first.trim || 'popular trims';
+
+      const cash = incentives?.cash_rebate ? `$${Number(incentives.cash_rebate).toLocaleString()} customer cash` : null;
+      const apr = incentives?.apr ? `${incentives.apr}% APR` : null;
+
+      return {
+        tokens: {
+          stock_count: stockCount || undefined,
+          model_trim: trim,
+          cash_rebate: cash || undefined,
+          apr_rate: apr || undefined,
+          primary_photo: first.photo || undefined
+        },
+        meta: { sourceNotes, updated_at: first.updated_at || null }
+      };
+    }
+
+    function ciEq(a,b){ return String(a||'').toLowerCase() === String(b||'').toLowerCase(); }
+
+    async function get({ make, model, zip }) {
+      const now = Date.now();
+      const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
+      if (cached && (now - cached.ts) < TTL_MS && cached.key === `${make}|${model}|${zip}`) {
+        return cached.payload;
+      }
+      const payload = await computeTokens({ make, model, zip });
+      localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: now, key: `${make}|${model}|${zip}`, payload }));
+      return payload;
+    }
+
+    function renderPreview(payload) {
+      const { tokens, meta } = payload || {};
+      const el = document.getElementById('tokenPreview');
+      const metaEl = document.getElementById('tokenMeta');
+      if (!tokens) { el.textContent = 'No tokens available.'; return; }
+      el.innerHTML = `
+        <code>[[stock_count]]</code>: ${tokens.stock_count ?? '—'} &nbsp;|&nbsp;
+        <code>[[model_trim]]</code>: ${tokens.model_trim ?? '—'} &nbsp;|&nbsp;
+        <code>[[cash_rebate]]</code>: ${tokens.cash_rebate ?? '—'} &nbsp;|&nbsp;
+        <code>[[apr_rate]]</code>: ${tokens.apr_rate ?? '—'}
+      `;
+      const stale = isStale();
+      metaEl.textContent = `${(meta?.sourceNotes||[]).join(', ')}${stale ? ' • cache ≤15m' : ''}${meta?.updated_at ? ' • inv updated ' + meta.updated_at : ''}`;
+      metaEl.style.color = stale ? '#b45309' : '#475569';
+    }
+
+    function isStale() {
+      const cached = JSON.parse(localStorage.getItem('inv_tokens_cache_v1') || 'null');
+      if (!cached) return true;
+      return (Date.now() - cached.ts) >= TTL_MS;
+    }
+
+    // public API for Step #1 composer
+    window.__inventoryTokens = { get: async ({ make, model, zip }) => get({ make, model, zip }).then(p => p.tokens) };
+
+    async function refreshFromInputs() {
+      const make = document.getElementById('make')?.value || '';
+      const model = document.getElementById('model')?.value || '';
+      const zip = document.getElementById('zip')?.value || '';
+      const payload = await get({ make, model, zip });
+      renderPreview(payload);
+    }
+
+    document.getElementById('refreshTokensBtn')?.addEventListener('click', refreshFromInputs);
+    // Auto-refresh when user changes fields in the Playground
+    ['make','model','zip'].forEach(id => {
+      const el = document.getElementById(id);
+      el && el.addEventListener('change', refreshFromInputs);
+    });
+  })();
+  </script>
+
+  <!-- Step 3: Run Log Viewer (place LAST) -->
+  <script>
+  /* -------- Run Log Viewer (localStorage today, API tomorrow) -------- */
+  (async function(){
+    const API_BASE = ""; // later: "https://your-platform.example.com"
+    async function loadRuns() {
+      if (API_BASE) {
+        try {
+          const r = await fetch(`${API_BASE}/api/runs?limit=10`);
+          if (!r.ok) throw new Error('Failed to load runs');
+          return (await r.json()).runs || [];
+        } catch { /* fall through to local */ }
+      }
+      const local = JSON.parse(localStorage.getItem('agent_runs') || '[]');
+      return local.slice(0, 10);
+    }
+
+    function statusBadge(s) {
+      const color = s === 'succeeded' ? '#065f46' : s === 'failed' ? '#b91c1c' : '#334155';
+      return `<span style="border:1px solid ${color};color:${color};padding:2px 6px;border-radius:999px">${s}</span>`;
+    }
+
+    async function render() {
+      const runs = await loadRuns();
+      const el = document.getElementById('runsTable');
+      if (!runs.length) { el.textContent = 'No runs yet.'; return; }
+      el.innerHTML = `
+        <table class="table">
+          <thead><tr><th>When</th><th>Status</th><th>Channel</th><th>Preview</th><th>Actions</th></tr></thead>
+          <tbody>
+            ${runs.map(r => `
+              <tr>
+                <td>${new Date(r.created_at).toLocaleString()}</td>
+                <td>${statusBadge(r.status || 'drafted')}</td>
+                <td>${r.channel || '—'}</td>
+                <td>${(r.preview || '').replace(/</g,'&lt;')}</td>
+                <td>
+                  <button class="btn small" data-run="${r.id}" data-action="copy">Copy ID</button>
+                  <button class="btn small" data-run="${r.id}" data-action="rerun">Re-run</button>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
+    document.getElementById('reloadRunsBtn')?.addEventListener('click', render);
+    document.getElementById('runsTable')?.addEventListener('click', async (e) => {
+      const btn = e.target.closest('button[data-action]');
+      if (!btn) return;
+      const id = btn.getAttribute('data-run');
+      const action = btn.getAttribute('data-action');
+      if (action === 'copy') {
+        await navigator.clipboard.writeText(id);
+        alert('Run ID copied.');
+      } else if (action === 'rerun') {
+        alert('In a real backend, this would POST /api/runs/{id}/rerun.');
+      }
+    });
+
+    window.addEventListener('agent_runs_updated', render);
+    render();
+  })();
+  </script>
+  <!-- ==================== END SCRIPTS ==================== -->
 
 </body>
 </html>
