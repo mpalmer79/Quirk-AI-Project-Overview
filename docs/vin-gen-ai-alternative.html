@@ -11,14 +11,14 @@
   <!-- Keep all relative URLs under this GitHub Pages project -->
   <base href="/Quirk-AI-Project-Overview/">
 
-  <!-- Sitewide styles (topbar, fonts, watermark rules, etc.) -->
+  <!-- Sitewide styles -->
   <link rel="stylesheet" href="assets/style.css" />
-<link rel="stylesheet" href="assets/css/vin-alt.css" />
-<!-- Favicon -->
-<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="alternate icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="assets/css/vin-alt.css" />
 
+  <!-- Favicon -->
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="alternate icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 </head>
 <body class="page">
   <div class="home-wrap">
@@ -171,12 +171,12 @@
 
     <!-- Executive Summary -->
     <section id="executive-summary" class="section">
-      <h2>Executive Summary</h2>
+      <h2 style="text-align:center">Executive Summary</h2>
       <p class="muted">VIN Solutions remains your CRM backbone. The Gen&nbsp;AI layer personalizes emails/SMS/call prompts in real time, injects inventory & incentives, and auto-logs tasks/appointments in VIN.</p>
 
       <div class="cards">
         <div class="card">
-          <h3>Current Pain (VIN-only)</h3>
+          <h3 style="text-align:center">VIN Solutions</h3>
           <ul class="small">
             <li>Canned templates feel impersonal</li>
             <li>Heavy manual personalization & task follow-up</li>
@@ -185,7 +185,7 @@
           </ul>
         </div>
         <div class="card">
-          <h3>Gen AI Overlay</h3>
+          <h3 style="text-align:center">Gen AI Overlay</h3>
           <ul class="small">
             <li>&lt; 5-minute responses with inventory & incentives</li>
             <li>Tasks/appointments created & logged in VIN</li>
@@ -205,7 +205,7 @@
 
     <!-- KPIs -->
     <section id="kpis" class="section">
-      <h2>Target KPIs</h2>
+      <h2 style="text-align:center">Target KPIs</h2>
       <div class="kpi-grid" style="display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin:12px 0 24px;">
         <div class="tile" style="border:1px solid #e2e8f0;border-radius:16px;padding:16px 14px;background:#fff;">
           <h3>Appointment Conversion</h3>
@@ -232,10 +232,10 @@
 
     <!-- Workflow Comparison -->
     <section id="workflow" class="section">
-      <h2>Workflow Comparison</h2>
+      <h2 style="text-align:center">Workflow Comparison</h2>
       <div class="cards">
         <div class="card">
-          <h3>VIN Solutions (Today)</h3>
+          <h3 style="text-align:center">VIN Solutions (Today)</h3>
           <ol class="small">
             <li>New lead → manual template pick</li>
             <li>Agent edits pricing/inventory</li>
@@ -244,7 +244,7 @@
           </ol>
         </div>
         <div class="card">
-          <h3>Gen AI Alternative (Overlay)</h3>
+          <h3 style="text-align:center">Gen AI Alternative (Overlay)</h3>
           <ol class="small">
             <li>Lead hits VIN → AI pulls inventory + incentives</li>
             <li>AI composes email/SMS w/ 2 appt slots (&lt;5 min)</li>
@@ -268,7 +268,7 @@
 
     <!-- Smart Response Library -->
     <section id="library" class="section">
-      <h2>Smart Response Library (Sampler)</h2>
+      <h2 style="text-align:center">Smart Response Library (Sampler)</h2>
       <p class="muted">Standardized email/SMS/call prompts that always push toward an appointment.</p>
 
       <div class="cards">
@@ -300,7 +300,7 @@
 
     <!-- Training & Roleplay -->
     <section id="training" class="section">
-      <h2>Training & Roleplay</h2>
+      <h2 style="text-align:center">Training & Roleplay</h2>
       <p class="muted">Run calls twice: first with a typical VIN template, then with AI prompts. Measure whether the appointment was secured.</p>
 
       <div class="cards">
@@ -327,7 +327,7 @@
 
     <!-- Inventory & Incentives Integration -->
     <section id="inventory" class="section">
-      <h2>Inventory & Incentives Integration</h2>
+      <h2 style="text-align:center">Inventory & Incentives Integration</h2>
       <p class="muted">AI reads live website inventory and OEM programs, then injects tokens into responses while keeping work inside VIN.</p>
 
       <div class="cards">
@@ -361,25 +361,15 @@
       </details>
     </section>
 
-    <!-- >>>>>> Live Tokens <<<<<< -->
-    <section id="live-tokens" class="section">
-      <h2>Live Tokens (Inventory & Incentives)</h2>
-      <p class="muted">Pulls live feeds (or cache) to populate tokens the drafts will use.</p>
-
-      <div class="cards">
-        <div class="card">
-          <h3>Token Preview</h3>
-          <div class="small" id="tokenPreview">Awaiting selection…</div>
-          <div class="small muted" id="tokenMeta" style="margin-top:6px"></div>
-          <button id="refreshTokensBtn" class="btn small" style="margin-top:10px">Refresh Tokens</button>
-        </div>
-      </div>
-    </section>
-    <!-- >>>>>> END Live Tokens <<<<<< -->
+    <!-- (Hidden hooks so tokens.js stays happy after removing the Live Tokens section) -->
+    <div class="sr-only">
+      <div id="tokenPreview"></div>
+      <div id="tokenMeta"></div>
+    </div>
 
     <!-- Desk Log Insights -->
     <section id="insights" class="section">
-      <h2>Desk Log Insights (Snapshot)</h2>
+      <h2 style="text-align:center">Desk Log Insights (Snapshot)</h2>
       <p class="muted">Where automation helps most: faster first replies and auto-nudges when staff are busy.</p>
 
       <div class="cards">
@@ -415,7 +405,7 @@
 
     <!-- Implementation Timeline -->
     <section id="timeline" class="section">
-      <h2>Implementation Timeline</h2>
+      <h2 style="text-align:center">Implementation Timeline</h2>
       <div class="cards">
         <div class="card">
           <h3>Phase 1: Discovery/Design (M1-2)</h3>
@@ -450,7 +440,7 @@
 
     <!-- >>>>>> Recent Agent Runs <<<<<< -->
     <section id="runs" class="section">
-      <h2>Recent Agent Runs</h2>
+      <h2 style="text-align:center">Recent Agent Runs</h2>
       <p class="muted">Drafts saved from the Playground appear here. Later, point this at the Platform backend.</p>
       <div class="cards">
         <div class="card">
@@ -464,7 +454,7 @@
 
     <!-- Downloads -->
     <section id="downloads" class="section">
-      <h2>Downloads</h2>
+      <h2 style="text-align:center">Downloads</h2>
       <p class="muted">Save or print one-pagers, training packets, and response libraries.</p>
 
       <div class="cards">
@@ -526,7 +516,7 @@
 
     <!-- FAQ -->
     <section id="faq" class="section">
-      <h2>FAQ</h2>
+      <h2 style="text-align:center">FAQ</h2>
 
       <details>
         <summary>Will AI replace our BDC agents?</summary>
@@ -575,11 +565,10 @@
     <small>© 2025 Quirk AI — VIN Gen AI Alternative</small>
   </footer>
 
-<!-- Bundled JS (order matters) -->
-<script defer src="assets/js/tokens.js"></script>
-<script defer src="assets/js/playground.js"></script>
-<script defer src="assets/js/batch-composer.js"></script>
-<script defer src="assets/js/run-log.js"></script>
-
+  <!-- Bundled JS (order matters) -->
+  <script defer src="assets/js/tokens.js"></script>
+  <script defer src="assets/js/playground.js"></script>
+  <script defer src="assets/js/batch-composer.js"></script>
+  <script defer src="assets/js/run-log.js"></script>
 </body>
 </html>
