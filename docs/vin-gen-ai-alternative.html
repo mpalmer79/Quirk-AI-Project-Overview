@@ -15,17 +15,16 @@
   <link rel="stylesheet" href="assets/style.css" />
 
   <style>
-    /* ===== Page-scoped polish for VIN Gen AI Alternative ===== */
+    /* ===== Base page polish (existing) ===== */
     .page-wrap { max-width: 1080px; margin: 0 auto; padding: 28px 20px 72px; }
     .hero { text-align: center; margin: 16px 0 24px; }
     .hero h1 { margin: 0 0 8px; font-size: clamp(1.6rem, 3vw, 2.2rem); }
     .hero p { margin: 0; color: #475569; }
 
-    .btn { display:inline-block; border:1px solid #0b6e37; padding:10px 14px; border-radius:999px; text-decoration:none; color:#0b6e37; font-weight:600; text-align:center; background:#fff; }
-    .btn:hover { background:#0b6e37; color:#fff; }
+    .btn { display:inline-block; border:1px solid #0b6e37; padding:10px 14px; border-radius:999px; text-decoration:none; color:#0b6e37; font-weight:600; text-align:center; background:#fff; transition:transform .06s ease; }
+    .btn:hover { background:#0b6e37; color:#fff; transform: translateY(-1px); }
     .btn.small { padding:6px 10px; font-weight:600; }
 
-    /* Section scaffolding */
     .section { margin: 28px 0; }
     .section h2 { margin: 0 0 8px; font-size: clamp(1.25rem, 2.6vw, 1.6rem); }
     .muted { color: #475569; }
@@ -47,7 +46,6 @@
 
     .callout { border-left: 4px solid #0b6e37; background: #f6fff9; padding: 10px 12px; border-radius: 8px; }
 
-    /* Pill styling + badges */
     .pillbar { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px; }
     .pill { display:inline-block; border:1px solid #0b6e37; color:#0b6e37; background:#ffffff; padding:6px 12px; border-radius:999px; font-weight:700; }
     .pill.sub { border-color:#cbd5e1; color:#334155; }
@@ -62,11 +60,100 @@
     .seg button + button { border-left:1px solid #e2e8f0; }
     .seg button.active { background:#0b6e37; color:#fff; }
 
-    /* a11y helper */
     .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
-
-    /* Footer */
     .footer { text-align:center; padding:24px 12px; color:#64748b; }
+
+    /* =============== THEMED BACKGROUND (new) =============== */
+    :root{
+      --bg-ink-900:#0b1320;      /* deep navy */
+      --bg-ink-800:#101b2e;
+      --accent-quirk:#0b6e37;    /* Quirk green */
+      --accent-quirk-50:#effcf4; /* pale green */
+      --glass:#ffffffcc;         /* card surface */
+      --glass-stroke:#e2e8f0a6;
+    }
+
+    /* Page wallpaper: soft grid + vignette + radial glow */
+    body.page{
+      background:
+        radial-gradient(1200px 900px at 80% -10%, rgba(11,110,55,.12), transparent 55%),
+        radial-gradient(900px 700px at -10% 80%, rgba(20,184,166,.10), transparent 60%),
+        url('assets/backgrounds/quirk-grid.svg');
+      background-color: var(--bg-ink-900);
+      background-size: auto, auto, 36px 36px;
+      background-attachment: fixed, fixed, fixed;
+      min-height: 100dvh;
+      position: relative;
+      isolation: isolate;
+    }
+    /* Subtle top-to-bottom fade so content stays legible */
+    body.page::before{
+      content:"";
+      position:fixed; inset:0;
+      background: linear-gradient(180deg, rgba(255,255,255,.30) 0%, rgba(255,255,255,.18) 30%, rgba(255,255,255,.12) 60%, rgba(255,255,255,.06) 100%);
+      pointer-events:none;
+      z-index:-1;
+    }
+
+    /* Topbar as frosted glass */
+    .topbar{
+      backdrop-filter: saturate(140%) blur(6px);
+      background: linear-gradient(180deg, rgba(255,255,255,.78), rgba(255,255,255,.70));
+      border-bottom: 1px solid #e2e8f0a6;
+    }
+
+    /* Cards = soft glass with subtle lift */
+    .card{
+      background: var(--glass);
+      border: 1px solid var(--glass-stroke);
+      box-shadow:
+        0 10px 24px -12px rgba(15,23,42,.35),
+        0 4px 10px -8px rgba(15,23,42,.25);
+      backdrop-filter: blur(4px);
+    }
+
+    /* Inputs/textarea/select to match glass look */
+    input, textarea, select{
+      background: #ffffffef;
+      border:1px solid #e2e8f0;
+      border-radius:10px;
+      padding:10px;
+      outline: none;
+    }
+    input:focus, textarea:focus, select:focus{
+      border-color: var(--accent-quirk);
+      box-shadow: 0 0 0 3px rgba(11,110,55,.15);
+    }
+
+    /* Buttons: add focus ring + micro animation (hover handled above) */
+    .btn:focus{ outline: none; box-shadow: 0 0 0 3px rgba(11,110,55,.25); }
+
+    /* Details blocks—slightly translucent */
+    details{
+      background: #ffffffcc;
+      border-color:#e2e8f0a6;
+      backdrop-filter: blur(2px);
+    }
+
+    /* Tables on glass */
+    .table th{ background: linear-gradient(180deg,#f8fafc,#f1f5f9); }
+    .table td{ background: #fffffffc; }
+
+    /* Hero gets a gentle highlight */
+    .hero h1{
+      background: linear-gradient(90deg, #0f172a 0%, #0b6e37 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .hero p{ color:#334155; }
+
+    /* Footer sits on a faint vignette so it pops above wallpaper */
+    .footer{
+      background: linear-gradient(180deg, transparent, rgba(255,255,255,.45));
+      border-top: 1px solid #e2e8f0a6;
+      border-radius: 16px 16px 0 0;
+    }
   </style>
 </head>
 <body class="page">
@@ -268,7 +355,7 @@
         </div>
         <div class="tile" style="border:1px solid #e2e8f0;border-radius:16px;padding:16px 14px;background:#fff;">
           <h3>Staff Workload</h3>
-          <div class="num" style="font-size:1.6rem;font-weight:800;">−30%</div>
+          <div class="num" style="font-size:1.6rem;font-weight:800;">−30%</</div>
           <div class="muted small">manual tasks/emails</div>
         </div>
         <div class="tile" style="border:1px solid #e2e8f0;border-radius:16px;padding:16px 14px;background:#fff;">
