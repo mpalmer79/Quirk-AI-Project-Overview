@@ -21,21 +21,17 @@
     .hero h1 { margin: 0 0 8px; font-size: clamp(1.6rem, 3vw, 2.2rem); }
     .hero p { margin: 0; color: #475569; }
 
-    /* Removed the TOC block per request */
+    /* Removed the TOC and the Quick Docs button grid per request */
 
-    /* Quick Docs button row (opens PDFs in new tab) */
-    .button-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin:8px 0 24px;}
-    .btn { display:inline-block; border:1px solid #0b6e37; padding:10px 14px; border-radius:10px; text-decoration:none; color:#0b6e37; font-weight:600; text-align:center; background:#fff; }
+    .btn { display:inline-block; border:1px solid #0b6e37; padding:10px 14px; border-radius:999px; text-decoration:none; color:#0b6e37; font-weight:600; text-align:center; background:#fff; }
     .btn:hover { background:#0b6e37; color:#fff; }
+    .btn.small { padding:6px 10px; font-weight:600; }
 
-    .kpi-grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); margin: 12px 0 24px; }
-    .tile { border: 1px solid #e2e8f0; border-radius: 16px; padding: 16px 14px; background: #fff; }
-    .tile h3 { margin: 0 0 6px; font-size: 1.1rem; }
-    .tile .num { font-size: 1.6rem; font-weight: 800; }
-
+    /* Section scaffolding */
     .section { margin: 28px 0; }
     .section h2 { margin: 0 0 8px; font-size: clamp(1.25rem, 2.6vw, 1.6rem); }
     .muted { color: #475569; }
+    .small { font-size: .92rem; }
 
     .cards { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
     .card { border: 1px solid #e2e8f0; border-radius: 16px; background: #fff; padding: 16px; }
@@ -52,7 +48,11 @@
     .table th { background: #f8fafc; font-weight: 600; }
 
     .callout { border-left: 4px solid #0b6e37; background: #f6fff9; padding: 10px 12px; border-radius: 8px; }
-    .small { font-size: .92rem; }
+
+    /* Pill styling to match the green TOC pills */
+    .pillbar { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px; }
+    .pill { display:inline-block; border:1px solid #0b6e37; color:#0b6e37; background:#ffffff; padding:6px 12px; border-radius:999px; font-weight:700; }
+    .pill.sub { border-color:#cbd5e1; color:#334155; }
 
     /* Footer */
     .footer { text-align:center; padding:24px 12px; color:#64748b; }
@@ -81,9 +81,13 @@
       <p class="muted">Designed for BDC teams to respond faster, book more shows, and keep every touch logged in VIN Solutions.</p>
     </section>
 
-    <!-- >>>>>> REPLACED the circled TOC with the Agent Playground <<<<<< -->
+    <!-- >>>>>> Agent Playground replaces the old circled TOC area <<<<<< -->
     <section id="playground" class="section">
-      <h2>Agent Playground (Draft -> Approve -> Send)</h2>
+      <div class="pillbar" aria-hidden="true">
+        <span class="pill">Agent Playground</span>
+        <span class="pill sub">Draft → Approve → Send</span>
+      </div>
+      <h2 class="sr-only">Agent Playground (Draft → Approve → Send)</h2>
       <p class="muted">Paste a lead, pick a model/trim, and generate a ready-to-send draft that always drives to two appointment options.</p>
 
       <details>
@@ -131,8 +135,8 @@
           <h3>Output</h3>
           <div id="draftPane" class="small" style="white-space:pre-wrap;min-height:140px;border:1px dashed #e2e8f0;border-radius:10px;padding:10px"></div>
           <div style="display:flex;gap:8px;margin-top:10px">
-            <button id="copyDraftBtn" class="btn">Copy</button>
-            <button id="saveRunBtn" class="btn" title="Simulates logging a run like AutoGPT Platform">Save as Run</button>
+            <button id="copyDraftBtn" class="btn small">Copy</button>
+            <button id="saveRunBtn" class="btn small" title="Simulates logging a run like AutoGPT Platform">Save as Run</button>
           </div>
           <details style="margin-top:10px">
             <summary>Open for more (cURL for backend wiring)</summary>
@@ -142,22 +146,6 @@
       </div>
     </section>
     <!-- >>>>>> END Agent Playground <<<<<< -->
-
-    <!-- Quick Docs buttons (opens PDFs in new tab; paths use /assets/) -->
-    <div class="button-grid">
-      <a class="btn" target="_blank" rel="noopener" href="assets/Executive_Summary_VIN_vs_GenAI.pdf">Executive Summary</a>
-      <a class="btn" target="_blank" rel="noopener" href="assets/Quirk_AI_Target_KPIs.pdf">Target KPIs</a>
-      <a class="btn" target="_blank" rel="noopener" href="assets/VINS%20vs%20Gen%20AI%20Alternative%20summary.pdf">Workflow Comparison</a>
-      <a class="btn" target="_blank" rel="noopener" href="assets/BDC_Smart_Response_Library_Full.pdf">Smart Response Library</a>
-
-      <a class="btn" target="_blank" rel="noopener" href="assets/BDC_Training_Packet_v2.pdf">Training & Roleplay</a>
-      <a class="btn" target="_blank" rel="noopener" href="assets/GenAI_Inventory_Integration_OnePager_v3.pdf">Inventory & Incentives Integration</a>
-      <a class="btn" target="_blank" rel="noopener" href="assets/desklog_analysis_summary.pdf">Desk Log Insights</a>
-      <a class="btn" target="_blank" rel="noopener" href="assets/BDC_Smart_Response_Project_Plan.pdf">Implementation Timeline</a>
-
-      <a class="btn" target="_blank" rel="noopener" href="assets/Quirk_AI_Project_PDFs.zip">Downloads</a>
-      <a class="btn" target="_blank" rel="noopener" href="assets/Quirk_AI_VIN_GenAI_FAQ.pdf">FAQ</a>
-    </div>
 
     <!-- Executive Summary -->
     <section id="executive-summary" class="section">
@@ -196,25 +184,25 @@
     <!-- KPIs -->
     <section id="kpis" class="section">
       <h2>Target KPIs</h2>
-      <div class="kpi-grid">
-        <div class="tile">
+      <div class="kpi-grid" style="display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin:12px 0 24px;">
+        <div class="tile" style="border:1px solid #e2e8f0;border-radius:16px;padding:16px 14px;background:#fff;">
           <h3>Appointment Conversion</h3>
-          <div class="num">+15–20%</div>
+          <div class="num" style="font-size:1.6rem;font-weight:800;">+15–20%</div>
           <div class="muted small">within 6 months</div>
         </div>
-        <div class="tile">
+        <div class="tile" style="border:1px solid #e2e8f0;border-radius:16px;padding:16px 14px;background:#fff;">
           <h3>Response Speed</h3>
-          <div class="num">&lt; 5 min</div>
+          <div class="num" style="font-size:1.6rem;font-weight:800;">&lt; 5 min</div>
           <div class="muted small">avg compose+send</div>
         </div>
-        <div class="tile">
+        <div class="tile" style="border:1px solid #e2e8f0;border-radius:16px;padding:16px 14px;background:#fff;">
           <h3>Staff Workload</h3>
-          <div class="num">−30%</div>
+          <div class="num" style="font-size:1.6rem;font-weight:800;">−30%</div>
           <div class="muted small">manual tasks/emails</div>
         </div>
-        <div class="tile">
+        <div class="tile" style="border:1px solid #e2e8f0;border-radius:16px;padding:16px 14px;background:#fff;">
           <h3>Follow-up Compliance</h3>
-          <div class="num">95%+</div>
+          <div class="num" style="font-size:1.6rem;font-weight:800;">95%+</div>
           <div class="muted small">VIN tasks on time</div>
         </div>
       </div>
@@ -345,13 +333,13 @@
         <summary>Open for more (fallbacks & SLAs)</summary>
         <div class="small" style="margin-top:8px">
           If inventory feed unreachable → serve cache ≤15 min & flag “stale”.  
-          If incentives timeout → omit incentives line, keep appointment CTA.  
+          If incentives timeout → omit incentives line, keep the appointment CTA.  
           Price/availability mismatch → add “subject to prior sale” + closest alternative.
         </div>
       </details>
     </section>
 
-    <!-- >>>>>> Step 2: Live Tokens section goes right UNDER Inventory & Incentives Integration <<<<<< -->
+    <!-- >>>>>> Live Tokens goes UNDER Inventory & Incentives Integration <<<<<< -->
     <section id="live-tokens" class="section">
       <h2>Live Tokens (Inventory & Incentives)</h2>
       <p class="muted">Pulls live feeds (or cache) to populate tokens the drafts will use.</p>
@@ -361,7 +349,7 @@
           <h3>Token Preview</h3>
           <div class="small" id="tokenPreview">Awaiting selection…</div>
           <div class="small muted" id="tokenMeta" style="margin-top:6px"></div>
-          <button id="refreshTokensBtn" class="btn" style="margin-top:10px">Refresh Tokens</button>
+          <button id="refreshTokensBtn" class="btn small" style="margin-top:10px">Refresh Tokens</button>
         </div>
       </div>
     </section>
@@ -438,7 +426,7 @@
       </div>
     </section>
 
-    <!-- >>>>>> Step 3: Recent Agent Runs goes BEFORE Downloads <<<<<< -->
+    <!-- >>>>>> Recent Agent Runs goes BEFORE Downloads <<<<<< -->
     <section id="runs" class="section">
       <h2>Recent Agent Runs</h2>
       <p class="muted">Drafts saved from the Playground appear here. Later, point this at the Platform backend.</p>
@@ -446,7 +434,7 @@
         <div class="card">
           <h3>Last 10</h3>
           <div id="runsTable" class="small">No runs yet.</div>
-          <button id="reloadRunsBtn" class="btn" style="margin-top:10px">Reload</button>
+          <button id="reloadRunsBtn" class="btn small" style="margin-top:10px">Reload</button>
         </div>
       </div>
     </section>
@@ -648,7 +636,7 @@
     const runs = JSON.parse(localStorage.getItem('agent_runs') || '[]');
     const run = { id: 'run_' + Date.now(), status: 'drafted', created_at: new Date().toISOString(), channel: document.getElementById('channel').value, preview: draft.slice(0,180) + (draft.length>180?'…':'' ) };
     runs.unshift(run);
-    localStorage.setItem('agent_runs', JSON.stringify(runs)); 
+    localStorage.setItem('agent_runs', JSON.stringify(runs));
     window.dispatchEvent(new Event('agent_runs_updated')); // step #3 viewer listens
   });
   </script>
