@@ -56,7 +56,13 @@
     .badge.stale { border-color:#b45309; color:#b45309; }
     .badge.missing { border-color:#64748b; color:#64748b; }
 
-    /* a11y helper in case sitewide CSS doesn't include it */
+    /* Segmented control for profiles */
+    .seg { display:inline-flex; border:1px solid #cbd5e1; border-radius:999px; overflow:hidden; }
+    .seg button { border:0; background:#fff; padding:6px 10px; font-weight:700; color:#334155; cursor:pointer; }
+    .seg button + button { border-left:1px solid #e2e8f0; }
+    .seg button.active { background:#0b6e37; color:#fff; }
+
+    /* a11y helper */
     .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
 
     /* Footer */
@@ -91,7 +97,6 @@
       <div class="pillbar" aria-hidden="true">
         <span class="pill">Agent Playground</span>
         <span class="pill sub">Draft → Approve → Send</span>
-       
       </div>
       <h2 class="sr-only">Agent Playground (Draft → Approve → Send)</h2>
       <p class="muted">Paste a lead, pick a model/trim, and generate a ready-to-send draft that always drives to two appointment options.</p>
@@ -101,7 +106,7 @@
         <div class="small" style="margin-top:8px">
           <ul>
             <li>Builds an email/SMS with [[stock_count]], [[model_trim]], [[cash_rebate]], [[apr_rate]], [[two_appt_options]], and lease tokens when available.</li>
-            <li>Today: uses front-end logic + a tiny Worker to normalize GM Financial offers. Later: switch <code>API_BASE</code> to your AutoGPT Platform URL.</li>
+            <li>Today: uses front-end logic; later, switch <code>API_BASE</code> to your AutoGPT Platform URL or Worker.</li>
           </ul>
         </div>
       </details>
@@ -138,16 +143,39 @@
             </div>
           </div>
 
+          <!-- Agent Profiles -->
+          <div style="margin-top:10px">
+            <label class="small">Agent Profile</label><br>
+            <div id="profilesSeg" class="seg" role="tablist" aria-label="Agent Profiles">
+              <button class="active" data-profile="new_lead" role="tab" aria-selected="true">New Lead</button>
+              <button data-profile="best_price" role="tab" aria-selected="false">Best Price</button>
+              <button data-profile="credit" role="tab" aria-selected="false">Credit-Challenged</button>
+              <button data-profile="manager" role="tab" aria-selected="false">Manager Tone</button>
+            </div>
+            <div class="small muted" id="profileHelp" style="margin-top:6px">Preset shapes tone + CTA; “Best Price” also nudges pricing scenario.</div>
+          </div>
+
           <button id="composeBtn" class="btn" style="margin-top:12px">Generate Draft</button>
         </div>
 
         <div class="card">
           <h3>Output</h3>
           <div id="draftPane" class="small" style="white-space:pre-wrap;min-height:140px;border:1px dashed #e2e8f0;border-radius:10px;padding:10px"></div>
-          <div style="display:flex;gap:8px;margin-top:10px">
+          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
             <button id="copyDraftBtn" class="btn small">Copy</button>
             <button id="saveRunBtn" class="btn small" title="Simulates logging a run like AutoGPT Platform">Save as Run</button>
           </div>
+
+          <!-- Feedback bar -->
+          <div id="feedbackBar" class="small" style="display:flex;gap:8px;margin-top:10px;align-items:center;flex-wrap:wrap">
+            <span class="muted">Feedback:</span>
+            <button id="fbUp" class="btn small" title="Helpful">👍</button>
+            <button id="fbDown" class="btn small" title="Needs work">👎</button>
+            <input id="fbReason" class="small" placeholder="optional note (what was great / missing)" style="flex:1;border:1px solid #e2e8f0;border-radius:8px;padding:8px;min-width:220px">
+            <button id="fbSave" class="btn small" title="Save feedback">Save</button>
+            <span id="fbSaved" class="small muted" style="display:none">Saved ✓</span>
+          </div>
+
           <details style="margin-top:10px">
             <summary>Open for more (cURL for backend wiring)</summary>
 <pre class="small" id="curlBlock" style="overflow:auto"></pre>
@@ -156,6 +184,39 @@
       </div>
     </section>
     <!-- >>>>>> END Agent Playground <<<<<< -->
+
+    <!-- >>>>>> Batch Composer (Queue → Generate → Export) <<<<<< -->
+    <section id="batch" class="section">
+      <div class="pillbar" aria-hidden="true">
+        <span class="pill">Batch Composer</span>
+        <span class="pill sub">Queue → Generate → Export</span>
+      </div>
+      <h2 class="sr-only">Batch Composer</h2>
+      <p class="muted">Paste multiple leads (one per line or blank-line separated). Uses the same Make/Model/ZIP/Offers ZIP and current <strong>Agent Profile</strong> from the Playground.</p>
+
+      <div class="cards" style="margin-top:12px">
+        <div class="card">
+          <h3>Lead List</h3>
+          <label class="small" for="batchInput">Examples: <em>“Name: Maria, asks about rebates”</em> or raw lead snippets. Blank lines create new items.</label>
+          <textarea id="batchInput" rows="8" style="width:100%;border:1px solid #e2e8f0;border-radius:10px;padding:10px"></textarea>
+
+          <div class="small muted" style="margin-top:8px" id="batchCount">0 leads detected</div>
+          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+            <button id="batchParseBtn" class="btn small">Parse</button>
+            <button id="batchGenerateBtn" class="btn small">Generate All</button>
+            <button id="batchExportBtn" class="btn small" title="Export drafts to CSV">Export CSV</button>
+            <button id="batchClearBtn" class="btn small" title="Clear results">Clear</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Results</h3>
+          <div id="batchStatus" class="small muted">No results yet.</div>
+          <div id="batchTableWrap" class="small" style="margin-top:8px;overflow:auto"></div>
+        </div>
+      </div>
+    </section>
+    <!-- >>>>>> END Batch Composer <<<<<< -->
 
     <!-- Executive Summary -->
     <section id="executive-summary" class="section">
@@ -565,11 +626,43 @@
 
   <!-- ====================== SCRIPTS ====================== -->
 
-  <!-- Step 1: Agent Playground script -->
+  <!-- Step 1: Agent Playground script + Agent Profiles + Feedback -->
   <script>
   /* -------- Agent Playground: front-end generator with backend-ready cURL -------- */
   const API_BASE = ""; // later: "https://your-platform.example.com" (FastAPI)
   const OEM_TTL_MS = 15 * 60 * 1000; // 15 minutes
+
+  /* Agent Profile state */
+  let __agentProfile = 'new_lead'; // 'new_lead' | 'best_price' | 'credit' | 'manager'
+
+  /* Profiles: tone + CTA modifiers */
+  const PROFILES = {
+    new_lead: {
+      opener: "Hi",
+      closer: "— Quirk BDC",
+      cta: (a,b)=>`Would ${a} or ${b} work for a quick drive? I can have one ready.`,
+      disclaimer: (ch)=> ch==="email" ? "\n\nPricing/availability subject to prior sale. Incentives subject to eligibility; see dealer for details." : ""
+    },
+    best_price: {
+      opener: "Hi",
+      closer: "— Quirk Pricing Team",
+      cta: (a,b)=>`I can show all programs side-by-side on a vehicle you can drive. Would ${a} or ${b} work for a quick visit?`,
+      forceScenario: "best_price",
+      disclaimer: (ch)=> ch==="email" ? "\n\nAll pricing subject to incentives/eligibility; see dealer for details." : ""
+    },
+    credit: {
+      opener: "Hi",
+      closer: "— Quirk BDC",
+      cta: (a,b)=>`We work with many lenders—happy to walk options with no obligation. Would ${a} or ${b} work to stop by for 15 minutes?`,
+      disclaimer: (ch)=> ch==="email" ? "\n\nFinancing subject to credit approval; terms may vary." : ""
+    },
+    manager: {
+      opener: "Hi",
+      closer: "— Sales Manager, Quirk",
+      cta: (a,b)=>`I'll personally set aside a vehicle for you. Would ${a} or ${b} work for a quick drive?`,
+      disclaimer: (ch)=> ch==="email" ? "\n\nSubject to prior sale; incentives and availability change frequently." : ""
+    }
+  };
 
   /* Intent classifier expanded to catch "rebates/offers/APR/lease" */
   function classifyLeadText(lead) {
@@ -582,11 +675,14 @@
     return "new_inventory";
   }
 
-  function tonePreset() { return { opener: "Hi", closer: "— Quirk BDC" }; }
+  function tonePreset(profileKey) {
+    const p = PROFILES[profileKey] || PROFILES.new_lead;
+    return p;
+  }
 
-  function buildMessage({ scenario, tokens, model, name, twoSlots, channel, meta }) {
-    const { opener, closer } = tonePreset();
-    const greeting = `${opener} ${name || "there"},`;
+  function buildMessage({ scenario, tokens, model, name, twoSlots, channel, meta, profileKey }) {
+    const tone = tonePreset(profileKey);
+    const greeting = `${tone.opener} ${name || "there"},`;
 
     const inventoryLine =
       `We currently have ${tokens.stock_count ?? "several"} ${model} in stock including ${tokens.model_trim ?? "popular trims"}.`;
@@ -601,17 +697,15 @@
       : `Great question on current offers — I’ll pull the exact programs for your ZIP and eligibility.`;
 
     const copyMap = {
-      offers_question: `${offersAck} Would ${twoSlots[0]} or ${twoSlots[1]} work to go over details and take a quick drive?`,
-      new_inventory:   `Would ${twoSlots[0]} or ${twoSlots[1]} work for a quick drive? I can have one ready.`,
-      best_price:      `I can show current programs side-by-side on a vehicle you can drive. Would ${twoSlots[0]} or ${twoSlots[1]} work for a quick visit?`,
-      just_shopping:   `No pressure—15 minutes is enough to compare trims in person. Would ${twoSlots[0]} or ${twoSlots[1]} work?`,
-      trade_in:        `Bring your keys and we’ll give you a firm number in about 20 minutes. Does ${twoSlots[0]} or ${twoSlots[1]} work?`,
+      offers_question: `${offersAck} ${tone.cta(twoSlots[0], twoSlots[1])}`,
+      new_inventory:   tone.cta(twoSlots[0], twoSlots[1]),
+      best_price:      `I can show current programs side-by-side on a vehicle you can drive. ${tone.cta(twoSlots[0], twoSlots[1])}`,
+      just_shopping:   `No pressure—15 minutes is enough to compare trims in person. ${tone.cta(twoSlots[0], twoSlots[1])}`,
+      trade_in:        `Bring your keys and we’ll give you a firm number in about 20 minutes. ${tone.cta(twoSlots[0], twoSlots[1])}`,
     };
     const copy = copyMap[scenario] || copyMap.new_inventory;
 
-    const disclaimer = channel === "email"
-      ? `\n\nPricing/availability subject to prior sale. Incentives subject to eligibility; see dealer for details.`
-      : "";
+    const disclaimer = tone.disclaimer(channel);
 
     // Optional source link (email only)
     const srcLink = (channel === "email" && meta?.oem_source)
@@ -621,7 +715,7 @@
     if (channel === "sms") {
       return `${greeting} ${inventoryLine} ${incentivesLine} ${copy}`;
     }
-    return `${greeting}\n\n${inventoryLine}${incentivesLine ? "\n" + incentivesLine : ""}\n\n${copy}\n\n${closer}${disclaimer}${srcLink}`;
+    return `${greeting}\n\n${inventoryLine}${incentivesLine ? "\n" + incentivesLine : ""}\n\n${copy}\n\n${tone.closer}${disclaimer}${srcLink}`;
   }
 
   function extractName(lead) {
@@ -629,7 +723,7 @@
     return m ? m[1] : null;
   }
 
-  // simple two-slot generator (you can swap for the smarter business-hours version later)
+  // simple two-slot generator
   function generateTwoApptOptions() {
     if (window.__apptOptions?.suggest) return window.__apptOptions.suggest();
     const now = new Date();
@@ -640,30 +734,72 @@
   function nextDowAt(base, dow, hh, mm) { const d = new Date(base); const diff = (dow - d.getDay() + 7) % 7 || 7; d.setDate(d.getDate() + diff); d.setHours(hh, mm, 0, 0); return d; }
   function fmt(d) { return d.toLocaleString(undefined, { weekday:"long", hour:"numeric", minute:"2-digit" }); }
 
-  async function composeDraftFrontEnd({ lead, make, model, zip, offersZip, channel }) {
-    // Pull full payload (tokens + meta) from Step 2
+  async function composeDraftFrontEnd({ lead, make, model, zip, offersZip, channel, profileKey }) {
     const full = await window.__inventoryTokens?.getFull({ make, model, zip, offersZip }).catch(() => null);
     const tokens = full?.tokens || {};
     const meta   = full?.meta   || {};
-
     const twoSlots = generateTwoApptOptions();
-    const scenario = classifyLeadText(lead);
-    const name     = extractName(lead);
 
-    const text = buildMessage({ scenario, tokens, model, name, twoSlots, channel, meta });
+    // Scenario may be forced by the profile
+    const classified = classifyLeadText(lead);
+    const scenario = (PROFILES[profileKey]?.forceScenario) || classified;
 
-    return { text, tokens: { ...tokens, two_appt_options: twoSlots, scenario } };
+    const name = extractName(lead);
+    const text = buildMessage({ scenario, tokens, model, name, twoSlots, channel, meta, profileKey });
+
+    return { text, tokens: { ...tokens, two_appt_options: twoSlots, scenario, profile: profileKey } };
   }
 
-  function setOemHealthBadge(state) {
-    const el = document.getElementById('oemHealthBadge');
-    if (!el) return;
-    el.classList.remove('ok','stale','missing');
-    if (state === 'ok') { el.classList.add('ok'); el.textContent = 'OEM: OK'; }
-    else if (state === 'stale') { el.classList.add('stale'); el.textContent = 'OEM: Stale'; }
-    else { el.classList.add('missing'); el.textContent = 'OEM: Missing'; }
+  /* Profiles UI wiring */
+  (function wireProfiles(){
+    const seg = document.getElementById('profilesSeg');
+    if (!seg) return;
+    seg.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-profile]');
+      if (!btn) return;
+      seg.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      __agentProfile = btn.getAttribute('data-profile');
+      document.getElementById('profileHelp').textContent = ({
+        new_lead: 'Balanced tone. Book a quick drive with two options.',
+        best_price: 'Price-forward tone. Nudges pricing scenario and side-by-side programs.',
+        credit: 'Reassuring tone. Mentions many lenders; low-commitment visit.',
+        manager: 'Authoritative tone. Manager signature and strong CTA.'
+      })[__agentProfile] || 'Preset shapes tone + CTA.';
+    });
+  })();
+
+  /* Feedback helpers */
+  function saveFeedback({ rating }) {
+    const reason = document.getElementById('fbReason')?.value || '';
+    const draft = document.getElementById('draftPane')?.textContent || '';
+    if (!draft) { alert('Generate a draft first.'); return; }
+    const feedback = JSON.parse(localStorage.getItem('agent_feedback') || '[]');
+    const entry = {
+      id: 'fb_' + Date.now(),
+      rating, // 'up' | 'down'
+      reason,
+      draft_preview: draft.slice(0, 240),
+      profile: __agentProfile,
+      channel: document.getElementById('channel')?.value || 'email',
+      make: document.getElementById('make')?.value || '',
+      model: document.getElementById('model')?.value || '',
+      zip: document.getElementById('zip')?.value || '',
+      offersZip: document.getElementById('offersZip')?.value || '',
+      created_at: new Date().toISOString()
+    };
+    feedback.unshift(entry);
+    localStorage.setItem('agent_feedback', JSON.stringify(feedback));
+    const badge = document.getElementById('fbSaved');
+    if (badge) { badge.style.display = 'inline'; setTimeout(()=> badge.style.display='none', 1400); }
+    window.dispatchEvent(new Event('agent_feedback_updated'));
   }
 
+  document.getElementById('fbUp')?.addEventListener('click', () => saveFeedback({ rating: 'up' }));
+  document.getElementById('fbDown')?.addEventListener('click', () => saveFeedback({ rating: 'down' }));
+  document.getElementById('fbSave')?.addEventListener('click', () => saveFeedback({ rating: 'note' }));
+
+  /* Compose + actions */
   document.getElementById('composeBtn')?.addEventListener('click', async () => {
     const lead = document.getElementById('leadText').value.trim();
     const make = document.getElementById('make').value.trim();
@@ -671,11 +807,12 @@
     const zip = document.getElementById('zip').value.trim();
     const offersZip = document.getElementById('offersZip').value.trim() || zip;
     const channel = document.getElementById('channel').value;
+    const profileKey = __agentProfile;
 
-    const { text, tokens } = await composeDraftFrontEnd({ lead, make, model, zip, offersZip, channel });
+    const { text, tokens } = await composeDraftFrontEnd({ lead, make, model, zip, offersZip, channel, profileKey });
     document.getElementById('draftPane').textContent = text;
 
-    const payload = JSON.stringify({ lead, make, model, zip, offersZip, channel, tokens }, null, 2);
+    const payload = JSON.stringify({ lead, make, model, zip, offersZip, channel, profileKey, tokens }, null, 2);
     const curl = API_BASE
       ? `curl -X POST '${API_BASE}/api/compose' -H 'Content-Type: application/json' -d '${payload.replace(/\n/g,"")}'`
       : `# When your AutoGPT Platform is up, set API_BASE and use:\n# curl -X POST '$API_BASE/api/compose' -H 'Content-Type: application/json' -d '${payload.replace(/\n/g,"")}'`;
@@ -693,21 +830,176 @@
     const draft = document.getElementById('draftPane').textContent;
     if (!draft) return;
     const runs = JSON.parse(localStorage.getItem('agent_runs') || '[]');
-    const run = { id: 'run_' + Date.now(), status: 'drafted', created_at: new Date().toISOString(), channel: document.getElementById('channel').value, preview: draft.slice(0,180) + (draft.length>180?'…':'' ) };
+    const run = {
+      id: 'run_' + Date.now(),
+      status: 'drafted',
+      created_at: new Date().toISOString(),
+      channel: document.getElementById('channel').value,
+      profile: __agentProfile,
+      preview: draft.slice(0,180) + (draft.length>180?'…':'' )
+    };
     runs.unshift(run);
     localStorage.setItem('agent_runs', JSON.stringify(runs));
     window.dispatchEvent(new Event('agent_runs_updated'));
   });
   </script>
 
-  <!-- Step 2: Inventory & Incentives token service (with OEM offers & preview upgrades) -->
+  <!-- Step 1B: Batch Composer (queue -> compose -> export) -->
+  <script>
+  (function(){
+    const $ = (id) => document.getElementById(id);
+    const state = { items: [] }; // {id, raw, name, channelPref, channel, make, model, zip, offersZip, draft}
+
+    function parseLeads(raw) {
+      const chunks = String(raw || "").replace(/\r/g,'').split(/\n\s*\n/g).map(s=>s.trim()).filter(Boolean);
+      const leads = (chunks.length > 1 ? chunks : String(raw || "").split(/\n/g).map(s=>s.trim()).filter(Boolean));
+      return leads.map((raw, i) => {
+        const nameMatch = raw.match(/name[:\-]?\s*([A-Z][a-z]+)/i);
+        const channelMatch = raw.match(/\b(sms|text|email)\b/i);
+        return {
+          id: 'lead_' + (Date.now() + i),
+          raw,
+          name: nameMatch ? nameMatch[1] : null,
+          channelPref: channelMatch ? channelMatch[1].toLowerCase() : null,
+        };
+      });
+    }
+    function refreshCount(){ $('batchCount').textContent = `${state.items.length} lead${state.items.length===1?'':'s'} detected`; }
+
+    function renderTable() {
+      if (!state.items.length) { $('batchStatus').textContent = 'No results yet.'; $('batchTableWrap').innerHTML=''; return; }
+      $('batchStatus').textContent = 'Generated drafts appear below.';
+      const rows = state.items.map((it, idx) => `
+        <tr>
+          <td>${idx+1}</td>
+          <td>${(it.name || '—')}</td>
+          <td>${(it.channel || it.channelPref || 'email')}</td>
+          <td>${(it.zip || '—')}</td>
+          <td>${(it.offersZip || '—')}</td>
+          <td style="white-space:pre-wrap">${(it.draft || '—').replace(/</g,'&lt;')}</td>
+          <td style="white-space:nowrap">
+            <button class="btn small" data-id="${it.id}" data-act="copy">Copy</button>
+            <button class="btn small" data-id="${it.id}" data-act="fbup" title="Helpful">👍</button>
+            <button class="btn small" data-id="${it.id}" data-act="fbdown" title="Needs work">👎</button>
+          </td>
+        </tr>
+      `).join('');
+      $('batchTableWrap').innerHTML = `
+        <table class="table">
+          <thead><tr><th>#</th><th>Name</th><th>Channel</th><th>ZIP</th><th>Offers ZIP</th><th>Draft</th><th>Actions</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>`;
+    }
+
+    function exportCSV() {
+      if (!state.items.length) return alert('Nothing to export.');
+      const headers = ['name','channel','zip','offers_zip','make','model','profile','draft'];
+      const lines = [headers.join(',')];
+      state.items.forEach(it => {
+        const vals = [
+          (it.name || ''),
+          (it.channel || it.channelPref || 'email'),
+          (it.zip || ''),
+          (it.offersZip || ''),
+          (it.make || ''),
+          (it.model || ''),
+          (__agentProfile || 'new_lead'),
+          (it.draft || '').replace(/\n/g,' ').replace(/"/g,'""'),
+        ].map(v => `"${v}"`);
+        lines.push(vals.join(','));
+      });
+      const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'batch_drafts.csv';
+      document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    }
+
+    async function generateAll() {
+      if (!state.items.length) return alert('Paste and Parse first.');
+      $('batchGenerateBtn').disabled = true; $('batchGenerateBtn').textContent = 'Generating…';
+
+      const make = $('make')?.value.trim() || 'Chevrolet';
+      const model = $('model')?.value.trim() || 'Traverse';
+      const zip = $('zip')?.value.trim() || '03103';
+      const offersZip = $('offersZip')?.value.trim() || zip;
+      const profileKey = __agentProfile;
+
+      for (const it of state.items) {
+        const channel = it.channelPref || ($('channel')?.value || 'email');
+        it.channel = channel; it.make = make; it.model = model; it.zip = zip; it.offersZip = offersZip;
+
+        const { text } = await composeDraftFrontEnd({ lead: it.raw, make, model, zip, offersZip, channel, profileKey });
+        it.draft = text;
+
+        // Save as run
+        const runs = JSON.parse(localStorage.getItem('agent_runs') || '[]');
+        runs.unshift({
+          id: 'run_' + Date.now() + '_' + Math.random().toString(36).slice(2,7),
+          status: 'drafted',
+          created_at: new Date().toISOString(),
+          channel, profile: profileKey,
+          preview: text.slice(0,180) + (text.length>180?'…':'')
+        });
+        localStorage.setItem('agent_runs', JSON.stringify(runs));
+        window.dispatchEvent(new Event('agent_runs_updated'));
+
+        renderTable();
+      }
+
+      $('batchGenerateBtn').disabled = false; $('batchGenerateBtn').textContent = 'Generate All';
+    }
+
+    // Feedback save for batch items
+    function saveBatchFeedback(id, rating) {
+      const it = state.items.find(x => x.id === id);
+      if (!it?.draft) return;
+      const feedback = JSON.parse(localStorage.getItem('agent_feedback') || '[]');
+      feedback.unshift({
+        id: 'fb_' + Date.now(),
+        rating,
+        reason: '',
+        draft_preview: it.draft.slice(0,240),
+        profile: __agentProfile,
+        channel: it.channel || 'email',
+        make: it.make, model: it.model, zip: it.zip, offersZip: it.offersZip,
+        created_at: new Date().toISOString()
+      });
+      localStorage.setItem('agent_feedback', JSON.stringify(feedback));
+      window.dispatchEvent(new Event('agent_feedback_updated'));
+      alert('Feedback saved.');
+    }
+
+    // Wire buttons
+    $('batchParseBtn')?.addEventListener('click', () => { state.items = parseLeads($('batchInput').value); refreshCount(); renderTable(); });
+    $('batchGenerateBtn')?.addEventListener('click', generateAll);
+    $('batchExportBtn')?.addEventListener('click', exportCSV);
+    $('batchClearBtn')?.addEventListener('click', () => { state.items = []; $('batchInput').value=''; refreshCount(); renderTable(); });
+
+    $('batchTableWrap')?.addEventListener('click', async (e) => {
+      const btn = e.target.closest('button[data-act]');
+      if (!btn) return;
+      const id = btn.getAttribute('data-id');
+      const act = btn.getAttribute('data-act');
+      const it = state.items.find(x => x.id === id);
+      if (!it) return;
+      if (act === 'copy') {
+        await navigator.clipboard.writeText(it.draft || '');
+        alert('Draft copied.');
+      } else if (act === 'fbup') {
+        saveBatchFeedback(id, 'up');
+      } else if (act === 'fbdown') {
+        saveBatchFeedback(id, 'down');
+      }
+    });
+  })();
+  </script>
+
+  <!-- Step 2: Inventory & Incentives token service (with OEM hooks kept; safe if endpoint missing) -->
   <script>
   (function(){
     const CACHE_KEY = 'inv_tokens_cache_v2';
     const TTL_MS = 15 * 60 * 1000;
-
-    // If you used workers.dev, set this to your Worker URL. If you routed /api/oem-offers to the Worker, leave relative.
-    const OEM_ENDPOINT = '/api/oem-offers';
+    const OEM_ENDPOINT = '/api/oem-offers'; // OK to 404 on GH Pages; UI will just show "missing"
 
     async function fetchJson(url, opts) {
       const res = await fetch(url, opts);
@@ -717,19 +1009,15 @@
 
     async function computeTokens({ make, model, zip, offersZip }) {
       let inventory=[], incentives=null, oemOffers=null, sourceNotes=[];
-      try {
-        inventory = await fetchJson('inventory.json');
-        sourceNotes.push('inventory:live');
-      } catch { sourceNotes.push('inventory:missing'); }
+      try { inventory = await fetchJson('inventory.json'); sourceNotes.push('inventory:live'); }
+      catch { sourceNotes.push('inventory:missing'); }
 
-      // OEM offers (GM Financial) via Cloudflare Worker
       try {
         const q = new URLSearchParams({ make, model, zip: offersZip || zip }).toString();
         oemOffers = await fetchJson(`${OEM_ENDPOINT}?${q}`);
         sourceNotes.push('oem:gmfinancial');
       } catch { sourceNotes.push('oem:gmfinancial:missing'); }
 
-      // Optional local incentives fallback
       try {
         incentives = await fetchJson(`incentives.json?make=${encodeURIComponent(make)}&model=${encodeURIComponent(model)}&zip=${encodeURIComponent(zip)}`);
         sourceNotes.push('incentives:local');
@@ -742,13 +1030,8 @@
       const first = list[0] || {};
       const trim = first.trim || 'popular trims';
 
-      // prefer OEM, then local
-      const cash = oemOffers?.cash_rebate
-        ?? (incentives?.cash_rebate ? `$${Number(incentives.cash_rebate).toLocaleString()} customer cash` : null);
-      const apr = (oemOffers?.apr != null)
-        ? `${oemOffers.apr}% APR`
-        : (incentives?.apr ? `${incentives.apr}% APR` : null);
-
+      const cash = oemOffers?.cash_rebate ?? (incentives?.cash_rebate ? `$${Number(incentives.cash_rebate).toLocaleString()} customer cash` : null);
+      const apr = (oemOffers?.apr != null) ? `${oemOffers.apr}% APR` : (incentives?.apr ? `${incentives.apr}% APR` : null);
       const lease = oemOffers?.lease || null;
 
       return {
@@ -800,10 +1083,6 @@
         meta?.oem_source ? ' • <a href="'+meta.oem_source+'" target="_blank" rel="noopener">GM Financial source</a>' : ''
       }`;
       metaEl.style.color = stale ? '#b45309' : '#475569';
-
-      // update the small OEM health badge
-      const state = getOemHealthState(meta);
-      if (state) window.__setOemHealth && window.__setOemHealth(state);
     }
 
     function isStale() {
@@ -812,29 +1091,10 @@
       return (Date.now() - cached.ts) >= TTL_MS;
     }
 
-    function getOemHealthState(meta) {
-      if (!meta?.oem_source || !meta?.fetched_at) return 'missing';
-      const age = Date.now() - new Date(meta.fetched_at).getTime();
-      if (age <= TTL_MS) return 'ok';
-      return 'stale';
-    }
-
     // public APIs
     window.__inventoryTokens = {
-      // tokens only
       get: async ({ make, model, zip, offersZip }) => get({ make, model, zip, offersZip }).then(p => p.tokens),
-      // full payload (tokens + meta)
       getFull: async ({ make, model, zip, offersZip }) => get({ make, model, zip, offersZip })
-    };
-
-    // expose badge setter for Step 1
-    window.__setOemHealth = (state) => {
-      const el = document.getElementById('oemHealthBadge');
-      if (!el) return;
-      el.classList.remove('ok','stale','missing');
-      if      (state === 'ok')     { el.classList.add('ok'); el.textContent = 'OEM: OK'; }
-      else if (state === 'stale')  { el.classList.add('stale'); el.textContent = 'OEM: Stale'; }
-      else                         { el.classList.add('missing'); el.textContent = 'OEM: Missing'; }
     };
 
     async function refreshFromInputs() {
@@ -851,9 +1111,6 @@
       const el = document.getElementById(id);
       el && el.addEventListener('change', refreshFromInputs);
     });
-
-    // initial health badge
-    window.__setOemHealth && window.__setOemHealth('missing');
   })();
   </script>
 
@@ -884,13 +1141,14 @@
       if (!runs.length) { el.textContent = 'No runs yet.'; return; }
       el.innerHTML = `
         <table class="table">
-          <thead><tr><th>When</th><th>Status</th><th>Channel</th><th>Preview</th><th>Actions</th></tr></thead>
+          <thead><tr><th>When</th><th>Status</th><th>Channel</th><th>Profile</th><th>Preview</th><th>Actions</th></tr></thead>
           <tbody>
             ${runs.map(r => `
               <tr>
                 <td>${new Date(r.created_at).toLocaleString()}</td>
                 <td>${statusBadge(r.status || 'drafted')}</td>
                 <td>${r.channel || '—'}</td>
+                <td>${r.profile || 'new_lead'}</td>
                 <td>${(r.preview || '').replace(/</g,'&lt;')}</td>
                 <td>
                   <button class="btn small" data-run="${r.id}" data-action="copy">Copy ID</button>
@@ -918,6 +1176,7 @@
     });
 
     window.addEventListener('agent_runs_updated', render);
+    window.addEventListener('agent_feedback_updated', () => { /* placeholder: could refresh a dashboard */ });
     render();
   })();
   </script>
