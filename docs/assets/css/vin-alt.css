@@ -47,14 +47,21 @@
     .footer { text-align:center; padding:24px 12px; color:#64748b; }
 
     /* =============== LIGHT GRAY TWO-TONE BACKGROUND (reverted) =============== */
-    body.page{
-      /* soft two-tone gray with a very subtle vignette */
-      background:
-        radial-gradient(1200px 800px at 50% -10%, rgba(0,0,0,0.05), transparent 60%),
-        linear-gradient(180deg, #f5f7fa 0%, #ffffff 40%, #f5f7fa 100%);
-      background-attachment: fixed, fixed;
-      min-height: 100dvh;
-    }
+   /* Light kiosk photo background */
+body.page{
+  background:
+    linear-gradient(0deg, rgba(255,255,255,0.90), rgba(255,255,255,0.90)),
+    url('../kiosk.png') center / cover no-repeat fixed; /* image is at assets/kiosk.png */
+  min-height: 100dvh;
+}
+
+/* (optional) subtle glass look for cards on top of photo */
+.card { background: rgba(255,255,255,0.92); }
+
+/* mobile: avoid jumpiness with fixed backgrounds */
+@media (max-width: 768px){
+  body.page{ background-attachment: scroll; }
+}
 
     /* Keep cards crisp on the light background */
     input, textarea, select{
