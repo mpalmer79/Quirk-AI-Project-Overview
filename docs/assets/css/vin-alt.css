@@ -1,1 +1,70 @@
+/* ===== Base page polish (existing) ===== */
+    .page-wrap { max-width: 1080px; margin: 0 auto; padding: 28px 20px 72px; }
+    .hero { text-align: center; margin: 16px 0 24px; }
+    .hero h1 { margin: 0 0 8px; font-size: clamp(1.6rem, 3vw, 2.2rem); }
+    .hero p { margin: 0; color: #475569; }
 
+    .btn { display:inline-block; border:1px solid #0b6e37; padding:10px 14px; border-radius:999px; text-decoration:none; color:#0b6e37; font-weight:600; text-align:center; background:#fff; transition:transform .06s ease; }
+    .btn:hover { background:#0b6e37; color:#fff; transform: translateY(-1px); }
+    .btn.small { padding:6px 10px; font-weight:600; }
+
+    .section { margin: 28px 0; }
+    .section h2 { margin: 0 0 8px; font-size: clamp(1.25rem, 2.6vw, 1.6rem); }
+    .muted { color: #475569; }
+    .small { font-size: .92rem; }
+
+    .cards { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+    .card { border: 1px solid #e2e8f0; border-radius: 16px; background: #fff; padding: 16px; }
+    .card h3 { margin: 0 0 6px; font-size: 1.05rem; }
+    .card p { margin: 6px 0 0; }
+
+    details { border: 1px dashed #e2e8f0; border-radius: 12px; padding: 12px 14px; background: #fff; }
+    details + details { margin-top: 10px; }
+    summary { cursor: pointer; font-weight: 600; }
+    summary::marker { color: #0b6e37; }
+
+    .table { width: 100%; border-collapse: collapse; }
+    .table th, .table td { border: 1px solid #e2e8f0; padding: 10px; text-align: left; }
+    .table th { background: #f8fafc; font-weight: 600; }
+
+    .callout { border-left: 4px solid #0b6e37; background: #f6fff9; padding: 10px 12px; border-radius: 8px; }
+
+    .pillbar { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px; }
+    .pill { display:inline-block; border:1px solid #0b6e37; color:#0b6e37; background:#ffffff; padding:6px 12px; border-radius:999px; font-weight:700; }
+    .pill.sub { border-color:#cbd5e1; color:#334155; }
+    .badge { display:inline-block; padding:2px 8px; border-radius:999px; font-size:.78rem; font-weight:700; border:1px solid #cbd5e1; color:#334155; }
+    .badge.ok { border-color:#0b6e37; color:#0b6e37; }
+    .badge.stale { border-color:#b45309; color:#b45309; }
+    .badge.missing { border-color:#64748b; color:#64748b; }
+
+    /* Segmented control for profiles */
+    .seg { display:inline-flex; border:1px solid #cbd5e1; border-radius:999px; overflow:hidden; }
+    .seg button { border:0; background:#fff; padding:6px 10px; font-weight:700; color:#334155; cursor:pointer; }
+    .seg button + button { border-left:1px solid #e2e8f0; }
+    .seg button.active { background:#0b6e37; color:#fff; }
+
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+    .footer { text-align:center; padding:24px 12px; color:#64748b; }
+
+    /* =============== LIGHT GRAY TWO-TONE BACKGROUND (reverted) =============== */
+    body.page{
+      /* soft two-tone gray with a very subtle vignette */
+      background:
+        radial-gradient(1200px 800px at 50% -10%, rgba(0,0,0,0.05), transparent 60%),
+        linear-gradient(180deg, #f5f7fa 0%, #ffffff 40%, #f5f7fa 100%);
+      background-attachment: fixed, fixed;
+      min-height: 100dvh;
+    }
+
+    /* Keep cards crisp on the light background */
+    input, textarea, select{
+      background: #ffffff;
+      border:1px solid #e2e8f0;
+      border-radius:10px;
+      padding:10px;
+      outline: none;
+    }
+    input:focus, textarea:focus, select:focus{
+      border-color: #0b6e37;
+      box-shadow: 0 0 0 3px rgba(11,110,55,.15);
+    }
