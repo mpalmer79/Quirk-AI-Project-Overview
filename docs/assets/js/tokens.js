@@ -1,6 +1,4 @@
-  <!-- Step 2: Inventory & Incentives token service (with OEM hooks kept; safe if endpoint missing) -->
-  <script>
-  (function(){
+(function(){
     const CACHE_KEY = 'inv_tokens_cache_v2';
     const TTL_MS = 15 * 60 * 1000;
     const OEM_ENDPOINT = '/api/oem-offers'; // OK to 404 on GH Pages; UI will just show "missing"
@@ -116,4 +114,3 @@
       el && el.addEventListener('change', refreshFromInputs);
     });
   })();
-  </script>
