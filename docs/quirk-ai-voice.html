@@ -157,6 +157,226 @@
       <a class="btn btn-primary" href="./roi-calculator.html">Open ROI Calculator</a>
     </section>
   </main>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quirk AI Voice Assistant — General</title>
+  <base href="/Quirk-AI-Project-Overview/">
+  <link rel="stylesheet" href="assets/style.css" />
+  <style>
+    :root { --brand:#0b6e37; }
+    body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial; background:#f6f7f9; }
+    .wrap { max-width: 980px; margin: 24px auto 56px; padding: 0 16px; }
+    header { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .home-btn { text-decoration:none; font-weight:700; color:#fff; background:var(--brand); padding:8px 12px; border-radius:10px; }
+    h1 { margin: 16px 0 8px; }
+    .card { background:#fff; border:1px solid #e5e7eb; border-radius:14px; box-shadow:0 8px 18px rgba(2,6,23,.06); padding:16px; }
+    .chat { height: 420px; overflow:auto; padding:10px; border-radius:12px; background:#fafafa; border:1px solid #eef2f7; }
+    .msg { display:flex; gap:8px; margin:10px 0; }
+    .bubble { max-width: 75%; padding:10px 12px; border-radius:12px; line-height:1.45; }
+    .u { justify-content:flex-end; }
+    .u .bubble { background:#d1fae5; }
+    .a .bubble { background:#fff; border:1px solid #e5e7eb; }
+    .controls { display:flex; gap:8px; margin-top:12px; align-items:center; }
+    .btn { border-radius:999px; border:1px solid rgba(11,110,55,.25); padding:10px 14px; background:#fff; color:var(--brand); font-weight:700; cursor:pointer; }
+    .btn:hover { transform: translateY(-1px); }
+    .mic.live { background:#ffe7e7; border-color:#ffb3b3; color:#a30; }
+    .qbar { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+    .qbar .btn { font-size:.9rem; }
+    .disclaimer { color:#475569; font-size:.85rem; margin-top:10px; }
+    .small { font-size:.9rem; color:#475569; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <a class="home-btn" href="./">HOME</a>
+      <h1 style="flex:1">Quirk AI Voice Assistant</h1>
+      <span class="small">Prototype for <a href="https://www.quirkchevynh.com/" target="_blank" rel="noopener">Quirk Chevrolet Manchester</a></span>
+    </header>
+
+    <section class="card">
+      <div id="chat" class="chat" aria-live="polite" aria-label="Chat transcript"></div>
+      <div class="controls">
+        <input id="text" type="text" placeholder="Ask about hours, service, inventory, specials…" style="flex:1; padding:10px 12px; border-radius:10px; border:1px solid #e5e7eb;">
+        <button id="send" class="btn">Send</button>
+        <button id="mic" class="btn mic" aria-pressed="false">🎙️ Speak</button>
+      </div>
+      <div class="qbar">
+        <button class="btn" data-q="What are today’s sales and service hours?">Today’s hours</button>
+        <button class="btn" data-q="Book a service appointment">Schedule service</button>
+        <button class="btn" data-q="Show me service & parts specials">Service specials</button>
+        <button class="btn" data-q="Do you have any new Silverado 1500 in stock?">Silverado inventory</button>
+        <button class="btn" data-q="Connect me to sales on the phone">Call Sales</button>
+      </div>
+      <p class="disclaimer">Do not enter sensitive information. For warranty, recall, or emergency questions, call the store.</p>
+    </section>
+  </div>
+
+  <script>
+    /************  DEMO KEY (visible in client code)  ************/
+    const apiKey = "AIzaSyDTVPt-nn4hRCab5ErXiNZCG9Cm9lhdM7U";
+    const GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
+
+    // Quirk Chevy NH facts (ground truth)
+    const facts = {
+      name: "Quirk Chevrolet Manchester (Quirk Chevy NH)",
+      address: "1250 S Willow St, Manchester, NH 03103",
+      phones: {
+        main: "(603) 669-2450",
+        sales: "(603) 836-0622",
+        service: "(603) 669-2450",
+        service_alt: "(866) 559-8193",
+        parts: "(603) 836-4393"
+      },
+      hours: {
+        sales: "Mon–Thu 9:00 AM–8:00 PM; Fri–Sat 9:00 AM–6:00 PM; Sun 10:00 AM–5:00 PM",
+        service: "Mon–Fri 7:00 AM–6:00 PM; Sat 7:00 AM–2:00 PM; Sun Closed",
+        parts: "Mon–Fri 7:00 AM–5:30 PM; Sat 7:00 AM–2:00 PM; Sun Closed"
+      },
+      links: {
+        site: "https://www.quirkchevynh.com/",
+        scheduleService: "https://www.quirkchevynh.com/ServiceApptForm/",
+        scheduleServiceLP: "https://www.quirkchevynh.com/schedule-service-online-at-quirk-chevrolet-in-manchester-nh/",
+        serviceSpecials: "https://www.quirkchevynh.com/service/serviceandpartsspecials/",
+        newInventory: "https://www.quirkchevynh.com/new-vehicles/",
+        silverado: "https://www.quirkchevynh.com/new-vehicles/silverado-1500/"
+      }
+    };
+
+    const systemInstruction = `
+You are "Quirk AI Voice", a concise, friendly assistant for Quirk Chevrolet Manchester.
+Be accurate and proactive about next steps (a tel: link or a URL).
+Use ONLY the facts below for hours/phones/links; if unsure, say you're not certain and offer to connect.
+
+FACTS:
+- Address: ${facts.address}
+- Phones: Main ${facts.phones.main}; Sales ${facts.phones.sales}; Service ${facts.phones.service} (alt ${facts.phones.service_alt}); Parts ${facts.phones.parts}
+- Hours — Sales: ${facts.hours.sales}; Service: ${facts.hours.service}; Parts: ${facts.hours.parts}
+- Links — Site: ${facts.links.site}
+  • Schedule Service: ${facts.links.scheduleService}
+  • Service & Parts Specials: ${facts.links.serviceSpecials}
+  • New Inventory: ${facts.links.newInventory} (Silverado: ${facts.links.silverado})
+
+Answer with short paragraphs and bullet points. When helpful, include tel:+16038360622 or a URL.
+Never invent pricing or stock. For VIN/stock-specific questions, link to inventory or offer a call transfer.
+`;
+
+    // --- UI helpers ---
+    const chatEl = document.getElementById('chat');
+    const textEl = document.getElementById('text');
+    const sendBtn = document.getElementById('send');
+    const micBtn  = document.getElementById('mic');
+
+    function addMsg(role, html) {
+      const row = document.createElement('div');
+      row.className = `msg ${role}`;
+      row.innerHTML = `<div class="bubble">${html}</div>`;
+      chatEl.appendChild(row);
+      chatEl.scrollTop = chatEl.scrollHeight;
+    }
+
+    function linkify(s) {
+      const urlRegex = /(https?:\/\/[^\s)]+)|((^|[\s])www\.[^\s)]+)/gi;
+      const telRegex = /(\(?\+?1?\)?[-.\s]?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4})/g;
+      return s
+        .replace(urlRegex, (m) => {
+          const url = m.startsWith('http') ? m : 'https://' + m.trim();
+          return `<a href="${url}" target="_blank" rel="noopener">${m.trim()}</a>`;
+        })
+        .replace(telRegex, (m) => `<a href="tel:${m.replace(/[^\d+]/g,'')}">${m}</a>`)
+        .replace(/\n/g, "<br>");
+    }
+
+    // --- Speech (STT + TTS) ---
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const synth = window.speechSynthesis;
+    function speak(text) {
+      if (!synth) return;
+      const chunks = text.match(/.{1,250}(\s|$)/g) || [text];
+      chunks.forEach(c => {
+        const u = new SpeechSynthesisUtterance(c);
+        u.lang = 'en-US';
+        u.rate = 1.02;
+        synth.speak(u);
+      });
+    }
+
+    let sr;
+    if (SR) {
+      sr = new SR();
+      sr.lang = 'en-US';
+      sr.interimResults = false;
+      sr.continuous = false;
+      sr.onresult = (e) => {
+        const t = e.results[0][0].transcript;
+        textEl.value = t;
+        micBtn.classList.remove('live');
+        micBtn.setAttribute('aria-pressed', 'false');
+        sendBtn.click();
+      };
+      sr.onend = () => { micBtn.classList.remove('live'); micBtn.setAttribute('aria-pressed','false'); };
+    }
+
+    micBtn.onclick = () => {
+      if (!sr) { alert('Speech recognition not supported in this browser.'); return; }
+      const live = micBtn.classList.toggle('live');
+      micBtn.setAttribute('aria-pressed', String(live));
+      live ? sr.start() : sr.stop();
+    };
+
+    // --- Gemini call ---
+    async function callGemini(userText) {
+      const body = {
+        systemInstruction: { parts: [{ text: systemInstruction }] },
+        contents: [
+          { role: "user", parts: [{ text: userText }] }
+        ]
+      };
+      const res = await fetch(`${GEMINI_URL}?key=${encodeURIComponent(apiKey)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+      if (!res.ok) throw new Error(`Gemini error ${res.status}`);
+      const data = await res.json();
+      const text = data?.candidates?.[0]?.content?.parts?.map(p => p.text).join("\n") || "Sorry, I didn’t get that.";
+      return text;
+    }
+
+    // --- Send flow ---
+    async function handleSend() {
+      const t = textEl.value.trim();
+      if (!t) return;
+      addMsg('u', linkify(t));
+      textEl.value = "";
+      try {
+        const answer = await callGemini(t);
+        addMsg('a', linkify(answer));
+        speak(answer);
+      } catch (e) {
+        console.error(e);
+        const msg = "Hmm, I couldn’t reach our AI right now. Please try again or call Sales at (603) 836-0622.";
+        addMsg('a', linkify(msg));
+        speak(msg);
+      }
+    }
+
+    sendBtn.onclick = handleSend;
+    textEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleSend(); });
+    document.querySelectorAll('.qbar .btn').forEach(b => b.onclick = () => { textEl.value = b.dataset.q; handleSend(); });
+
+    // Greeting
+    const greet = `Hi! I’m Quirk AI Voice. Ask me about today’s hours, scheduling service, service specials, or new inventory.
+- Sales: ${facts.hours.sales}
+- Service: ${facts.hours.service}
+Need a person now? Call Sales at ${facts.phones.sales}.`;
+    addMsg('a', linkify(greet));
+  </script>
+</body>
+</html>
 
   <!-- ======= Footer ======= -->
   <footer class="container footer">
