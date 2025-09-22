@@ -12,20 +12,25 @@
   <style>
     :focus-visible { outline: 2px solid #34d399; outline-offset: 2px; }
     body { background: transparent; }
-    /* helper classes used below (Tailwind CDN handles utilities directly) */
+
+    /* Hide number spinners (Estimated payoff) */
+    .no-spin::-webkit-outer-spin-button,
+    .no-spin::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .no-spin { -moz-appearance: textfield; }
   </style>
 </head>
 <body class="p-2">
   <div class="max-w-4xl mx-auto">
-    <!-- removed inner gray border -->
+    <!-- inner border removed per earlier request -->
     <div class="rounded-2xl shadow bg-white/95 p-4 sm:p-6">
       <h2 class="text-center text-xl sm:text-2xl font-bold text-emerald-800">Discovery</h2>
       <p class="text-center text-slate-600 mt-1">Answer a few questions so we can match the right vehicle.</p>
 
       <!-- FORM -->
       <form id="discForm" class="mt-5 grid gap-5">
-        <!-- Row: Vehicle of interest (centered) -->
-        <div class="grid md:grid-cols-2 gap-4 items-end justify-items-center">
+        <!-- Row: Vehicle of interest -->
+        <!-- Default = single centered column; if Silverado => JS switches to 2 cols -->
+        <div id="modelRow" class="grid md:grid-cols-1 justify-items-center gap-4 items-end">
           <label class="block w-full max-w-md mx-auto">
             <span class="block text-sm font-semibold text-slate-700 mb-1">Vehicle you’re interested in</span>
             <select id="model" class="w-full rounded-xl border p-3 bg-white"></select>
@@ -88,7 +93,7 @@
           </label>
         </div>
 
-        <!-- Row: Investment + Budget (currency formatting) -->
+        <!-- Row: Investment + Budget -->
         <div class="grid md:grid-cols-2 gap-4">
           <label class="block">
             <span class="block text-sm font-semibold text-slate-700 mb-1">Initial Investment (approx)</span>
@@ -126,34 +131,40 @@
           </label>
 
           <div id="tradeExtra" class="grid md:grid-cols-4 gap-4 hidden">
+            <!-- Year as dropdown -->
             <label class="block">
               <span class="block text-sm font-semibold text-slate-700 mb-1">Year</span>
-              <input id="tradeYear" type="number" min="1990" max="2099" class="w-full rounded-xl border p-3 bg-white" placeholder="e.g., 2018"/>
+              <select id="tradeYear" class="w-full rounded-xl border p-3 bg-white"></select>
             </label>
+
             <label class="block">
               <span class="block text-sm font-semibold text-slate-700 mb-1">Make</span>
               <input id="tradeMake" type="text" class="w-full rounded-xl border p-3 bg-white" placeholder="e.g., Chevrolet"/>
             </label>
+
             <label class="block">
               <span class="block text-sm font-semibold text-slate-700 mb-1">Model</span>
               <input id="tradeModel" type="text" class="w-full rounded-xl border p-3 bg-white" placeholder="e.g., Equinox"/>
             </label>
+
             <label class="block">
               <span class="block text-sm font-semibold text-slate-700 mb-1">Estimated payoff</span>
-              <div class="relative">
+              <div class="relative inline-block" style="width:10ch;">
                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
-                <input id="payoff" type="number" min="0" step="100" class="w-full rounded-xl border p-3 bg-white pl-7" value="0" />
+                <input id="payoff" type="number" min="0" step="100"
+                       class="no-spin w-full rounded-xl border p-3 bg-white pl-7" value="0" />
               </div>
             </label>
           </div>
         </div>
 
-        <!-- Actions -->
-        <div class="flex justify-between pt-1">
-          <button type="button" id="backBtn" class="px-4 py-2 rounded-xl border bg-white/90">← Back</button>
-          <button type="submit" class="px-5 py-3 rounded-2xl bg-emerald-600 text-white font-semibold shadow hover:brightness-110">
-            Pick a vehicle →
+        <!-- Actions: center the green button, keep Back at left -->
+        <div class="grid grid-cols-3 items-center pt-1">
+          <button type="button" id="backBtn" class="justify-self-start px-4 py-2 rounded-xl border bg-white/90">← Back</button>
+          <button type="submit" class="justify-self-center px-5 py-3 rounded-2xl bg-emerald-600 text-white font-semibold shadow hover:brightness-110">
+            Pick a vehicle
           </button>
+          <span></span>
         </div>
       </form>
     </div>
@@ -166,6 +177,7 @@ const load = (k, def) => { try { const v = JSON.parse(localStorage.getItem(k)); 
 
 // Elements
 const $ = (id) => document.getElementById(id);
+const modelRow = $('modelRow');
 const modelEl   = $('model');
 const cabWrap   = $('cabWrap');
 const cabEl     = $('cab');
@@ -177,7 +189,7 @@ const priceMinEl= $('priceMin');   // Initial Investment
 const priceMaxEl= $('priceMax');   // Monthly Budget
 const replaceEl = $('replace');
 const tradeExtra= $('tradeExtra');
-const tradeYear = $('tradeYear');
+const tradeYear = $('tradeYear');  // now a select
 const tradeMake = $('tradeMake');
 const tradeModel= $('tradeModel');
 const payoffEl  = $('payoff');
@@ -217,15 +229,32 @@ function customSort(a,b){
 }
 const MODELS = [...RAW_MODELS].sort(customSort);
 
+// Fill helpers
 function fillModels(){
   modelEl.innerHTML = MODELS.map(m => `<option>${m}</option>`).join('');
+}
+function fillYears(){
+  const start = 1990;
+  const end = new Date().getFullYear();
+  const opts = ['<option value="">Year</option>'];
+  for (let y=end; y>=start; y--) opts.push(`<option>${y}</option>`);
+  tradeYear.innerHTML = opts.join('');
 }
 function isSilverado(model){
   return /^Silverado\s(1500|2500|3500)/.test(model);
 }
 function updateCabVisibility(){
-  const m = modelEl.value || '';
-  cabWrap.classList.toggle('hidden', !isSilverado(m));
+  const showCab = isSilverado(modelEl.value || '');
+  cabWrap.classList.toggle('hidden', !showCab);
+
+  // switch layout: 1 centered col (no cab) ⇄ 2 cols (with cab)
+  if (showCab){
+    modelRow.classList.remove('md:grid-cols-1', 'justify-items-center');
+    modelRow.classList.add('md:grid-cols-2');
+  } else {
+    modelRow.classList.remove('md:grid-cols-2');
+    modelRow.classList.add('md:grid-cols-1', 'justify-items-center');
+  }
 }
 function toggleTradeFields(){
   const val = replaceEl.value;
@@ -237,6 +266,8 @@ function toggleTradeFields(){
 function seedFromStorage(){
   const needs = load('guided_needs', {});
   fillModels();
+  fillYears();
+
   if (needs.model && MODELS.includes(needs.model)) modelEl.value = needs.model;
   updateCabVisibility();
   if (needs.cab) cabEl.value = needs.cab;
@@ -260,7 +291,7 @@ function seedFromStorage(){
 window.addEventListener('message', (e) => {
   const msg = e?.data || {};
   if (msg.type === 'discovery:init') {
-    // kept for compatibility
+    // compatibility hook
   }
 });
 
@@ -272,7 +303,6 @@ function persist(){
     towing: towingEl.value,
     seating: seatingEl.value,
     fuel: fuelEl.value,
-    // store numerics
     priceMin: priceMinEl.value ? parseCurrency(priceMinEl.value) : null,
     priceMax: priceMaxEl.value ? parseCurrency(priceMaxEl.value) : null,
     replace: replaceEl.value,
@@ -311,6 +341,7 @@ form.addEventListener('submit', (e) => {
 
 // Init
 fillModels();
+fillYears();
 seedFromStorage();
 updateCabVisibility();
 </script>
