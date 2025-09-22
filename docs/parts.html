@@ -181,6 +181,19 @@
       font-weight: 700;
     }
     .roi-table tbody tr:hover { background: #fafafa; }
+
+    /* Robotics hero GIF */
+    .robotics-hero {
+      display: flex;
+      justify-content: center;
+      margin: 6px 0 14px;
+    }
+    .robotics-hero img {
+      max-width: 920px;
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
   </style>
 </head>
 <body>
@@ -409,6 +422,11 @@
         </summary>
 
         <div class="panel">
+          <!-- NEW: centered hero GIF above the two columns -->
+          <div class="robotics-hero" aria-label="Robotics automation demo animation">
+            <img src="assets/deepfleet.gif" alt="Automated deep fleet robotics flow animation" loading="lazy">
+          </div>
+
           <div class="cols">
             <div>
               <h3>Quirk Facilities (Context)</h3>
