@@ -69,7 +69,7 @@
   </footer>
 
 <script>
-/* ========= tiny storage + analytics (kept minimal) ========= */
+/* ========= tiny storage + analytics ========= */
 function track(event, data = {}) {
   try {
     const now = new Date().toISOString();
@@ -85,9 +85,10 @@ const load = (k, def) => { try { const v = JSON.parse(localStorage.getItem(k)); 
 
 /* ========= steps config: ALL steps are external HTMLs ========= */
 const STEPS = [
-  { label:'Welcome',         url:'kiosk-welcome.html',  height:220, subtitle:"We’ll guide you through a few quick steps." },
-  // Increased height so the module never needs its own scrollbar
-  { label:'Discovery',       url:'kiosk-discovery.html',height:560, subtitle:"Tell us your monthly target." },
+  // Taller so Welcome shows both inputs + CTA with no iframe scroll
+  { label:'Welcome',         url:'kiosk-welcome.html',  height:520, subtitle:"We’ll guide you through a few quick steps." },
+  // Taller so the discovery card can grow with more fields, without side scrollbars
+  { label:'Discovery',       url:'kiosk-discovery.html',height:560, subtitle:"Tell us aoub tyour monthly budget." },
   { label:'Vehicle Match',   url:'kiosk-vehicle.html',  height:720, subtitle:"Pick one to continue." },
   { label:'Trade-In',        url:'kiosk-trade.html',    height:620, subtitle:"Enter your VIN/miles; we’ll pre-value it." },
   { label:'Payments',        url:'kiosk-payments.html', height:720, subtitle:"Taxes/fees estimated; lender approval required." },
@@ -126,25 +127,22 @@ function renderProgress(){
   });
 }
 
-/* ========= SAFER: remove known dev notes from child iframes ========= */
+/* ========= SAFER: remove ONLY the dev drawer from child iframes =========
+   The previous broad "kill by phrases" could remove parent containers.
+   We now remove:
+     1) <details> whose <summary> text is exactly "Open for more"
+     2) any element with typical debug hooks (optional)
+*/
 function stripDevNotes(doc){
   try {
     if (!doc) return;
-    // 1) Remove the disclosure drawer labelled exactly "Open for more"
+    // (1) Remove the exact dev drawer
     doc.querySelectorAll('details').forEach(d => {
       const sum = d.querySelector('summary');
       const txt = (sum?.textContent || '').trim().toLowerCase();
       if (txt === 'open for more') d.remove();
     });
-    // 2) Remove any element that contains the internal hint text
-    const killPhrases = ['guided_profile', 'welcome:done', 'posts welcome:done'];
-    doc.querySelectorAll('*').forEach(el => {
-      const t = (el.textContent || '').toLowerCase();
-      if (killPhrases.some(p => t.includes(p))) {
-        el.remove();
-      }
-    });
-    // 3) Common class hooks (if present)
+    // (2) Remove common debug hooks if authors used them
     doc.querySelectorAll('.dev-note, .debug, [data-dev], [data-debug]').forEach(n => n.remove());
   } catch {}
 }
@@ -202,7 +200,6 @@ window.addEventListener('message', (e) => {
   // Discovery
   if (type === 'discovery:update') {
     const p = load("guided_profile", { name:'', contact:'', budget:400 });
-    // Persist budget if provided; ignore other fields here (handled later steps)
     save("guided_profile", { ...p, budget: Number(payload?.budget ?? p.budget) });
     return;
   }
