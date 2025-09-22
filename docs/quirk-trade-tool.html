@@ -68,21 +68,42 @@
 
     /* ===== Make right "Project Library" exactly match center title size ===== */
     /* Center title size lives in global .topbar-title (clamp(16px, 1.8vw, 20px)) */
-    .topbar-menu { font-size: clamp(16px, 1.8vw, 20px); }   /* new */
+    .topbar-menu { font-size: clamp(16px, 1.8vw, 20px); }
     .topbar-title-link {
       color: #fff;
       text-decoration: none;
       font-weight: 600;
-      font-size: inherit;                                   /* changed to inherit */
+      font-size: inherit;
       line-height: 1;
     }
     .topbar-title-link:hover,
     .topbar-title-link:focus {
       text-decoration: underline;
     }
+
+    /* ---------- PAGE-ONLY WATERMARK (50% opacity) ----------
+       This overrides the shared .kiosk-bg watermark to use
+       assets/quirk-lot3.webp behind the content on this page. */
+    body.custom-lot-bg::before{
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(rgba(255,255,255,.06), rgba(255,255,255,.06)),
+        url("assets/quirk-lot3.webp") center / cover no-repeat;
+      opacity: .50;            /* 50% */
+      pointer-events: none;
+      z-index: 0;
+    }
+    body.custom-lot-bg > *{
+      position: relative;
+      z-index: 1;
+    }
   </style>
 </head>
-<body>
+
+<!-- Add custom-lot-bg + kiosk-bg so the page shows the watermark -->
+<body class="custom-lot-bg kiosk-bg">
 <div class="home-header" role="navigation" aria-label="Home link">
   <a class="home-btn" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
 </div>
