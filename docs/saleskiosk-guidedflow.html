@@ -83,12 +83,10 @@ function track(event, data = {}) {
 const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
 const load = (k, def) => { try { const v = JSON.parse(localStorage.getItem(k)); return (v ?? def); } catch { return def; } };
 
-/* ========= steps config: ALL steps are external HTMLs ========= */
+/* ========= steps config (child HTMLs own their UI/logic) ========= */
 const STEPS = [
-  // Taller so Welcome shows both inputs + CTA with no iframe scroll
-  { label:'Welcome',         url:'kiosk-welcome.html',  height:520, subtitle:"We’ll guide you through a few quick steps." },
-  // Taller so the discovery card can grow with more fields, without side scrollbars
-  { label:'Discovery',       url:'kiosk-discovery.html',height:560, subtitle:"Tell us aoub tyour monthly budget." },
+  { label:'Welcome',         url:'kiosk-welcome.html',  height:460, subtitle:"We’ll guide you through a few quick steps." },
+  { label:'Discovery',       url:'kiosk-discovery.html',height:640, subtitle:"Tell us about your monthly budget." },
   { label:'Vehicle Match',   url:'kiosk-vehicle.html',  height:720, subtitle:"Pick one to continue." },
   { label:'Trade-In',        url:'kiosk-trade.html',    height:620, subtitle:"Enter your VIN/miles; we’ll pre-value it." },
   { label:'Payments',        url:'kiosk-payments.html', height:720, subtitle:"Taxes/fees estimated; lender approval required." },
@@ -105,7 +103,7 @@ const stepSubtitle = document.getElementById('stepSubtitle');
 let step = load("guided_step", 0);
 let maxVisited = load("guided_maxVisited", step);
 
-/* ========= render progress row ========= */
+/* ========= progress row ========= */
 function renderProgress(){
   progress.innerHTML = '';
   STEPS.forEach((s, i) => {
@@ -127,26 +125,6 @@ function renderProgress(){
   });
 }
 
-/* ========= SAFER: remove ONLY the dev drawer from child iframes =========
-   The previous broad "kill by phrases" could remove parent containers.
-   We now remove:
-     1) <details> whose <summary> text is exactly "Open for more"
-     2) any element with typical debug hooks (optional)
-*/
-function stripDevNotes(doc){
-  try {
-    if (!doc) return;
-    // (1) Remove the exact dev drawer
-    doc.querySelectorAll('details').forEach(d => {
-      const sum = d.querySelector('summary');
-      const txt = (sum?.textContent || '').trim().toLowerCase();
-      if (txt === 'open for more') d.remove();
-    });
-    // (2) Remove common debug hooks if authors used them
-    doc.querySelectorAll('.dev-note, .debug, [data-dev], [data-debug]').forEach(n => n.remove());
-  } catch {}
-}
-
 /* ========= load a step (sets title, iframe) ========= */
 function loadStep(i){
   step = Math.max(0, Math.min(i, STEPS.length-1));
@@ -160,13 +138,10 @@ function loadStep(i){
   stage.src = cfg.url;
   stage.style.height = (cfg.height || 480) + 'px';
 
-  // Seed common data if present, and strip dev drawer after the child loads
+  // Seed common data if present (no DOM mutations inside the child)
   stage.addEventListener('load', function onload(){
     stage.removeEventListener('load', onload);
     try {
-      const doc = stage.contentDocument || stage.contentWindow?.document;
-      stripDevNotes(doc);
-
       const profile = load("guided_profile", { name:'', contact:'', budget:400 });
       if (cfg.url.includes('kiosk-welcome.html')) {
         stage.contentWindow?.postMessage({ type:'welcome:init', payload:{ profile } }, '*');
@@ -187,7 +162,7 @@ window.addEventListener('message', (e) => {
   if (!data || typeof data !== 'object') return;
   const { type, payload } = data;
 
-  // Welcome
+  // Welcome -> Discovery
   if (type === 'welcome:done') {
     const p = load("guided_profile", { name:'', contact:'', budget:400 });
     const merged = { ...p, ...(payload || {}) };
@@ -203,18 +178,13 @@ window.addEventListener('message', (e) => {
     save("guided_profile", { ...p, budget: Number(payload?.budget ?? p.budget) });
     return;
   }
-  if (type === 'discovery:done') {
-    track('guided_discovery_next');
-    go(2);
-    return;
-  }
+  if (type === 'discovery:done') { track('guided_discovery_next'); go(2); return; }
   if (type === 'discovery:back') { go(0); return; }
 
-  // Vehicle Match (child should persist selection locally)
+  // Vehicle Match (child persists selection)
   if (type === 'vehicle:done') { go(3); return; }
 
   // Trade
-  if (type === 'trade:update') { return; }
   if (type === 'trade:done') { go(4); return; }
 
   // Payments
