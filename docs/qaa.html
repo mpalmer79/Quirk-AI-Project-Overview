@@ -57,9 +57,11 @@
     .section .section-head h2 { margin:0 0 6px; }
     .muted { color:#667085; }
 
-    /* Sticky on-page TOC */
+    /* TOC — now STATIC (removed sticky) */
     .toc {
-      position: sticky; top: 8px; z-index: 5;
+      /* position: sticky; top: 8px; z-index: 5;  <-- removed to stop following on scroll */
+      position: static;
+      top: auto;
       max-width:1100px; margin:10px auto 20px; padding:10px 16px;
       display:flex; flex-wrap:wrap; gap:8px; justify-content:center;
     }
@@ -139,7 +141,7 @@
       </p>
     </section>
 
-    <!-- Sticky On-page TOC -->
+    <!-- On-page TOC (now static) -->
     <nav class="toc" aria-label="Quick links">
       <a class="chip" href="#exec">Executive Summary</a>
       <a class="chip" href="#workflow">Workflow Opportunities</a>
