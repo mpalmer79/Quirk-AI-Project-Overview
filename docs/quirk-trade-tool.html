@@ -66,8 +66,7 @@
       text-decoration: underline;
     }
 
-    /* ===== Make right "Project Library" exactly match center title size ===== */
-    /* Center title size lives in global .topbar-title (clamp(16px, 1.8vw, 20px)) */
+    /* Match topbar right-side link size to center title */
     .topbar-menu { font-size: clamp(16px, 1.8vw, 20px); }
     .topbar-title-link {
       color: #fff;
@@ -81,29 +80,20 @@
       text-decoration: underline;
     }
 
-    /* ---------- PAGE-ONLY WATERMARK (50% opacity) ----------
-       This overrides the shared .kiosk-bg watermark to use
-       assets/quirk-lot3.webp behind the content on this page. */
-    body.custom-lot-bg::before{
-      content: "";
-      position: fixed;
-      inset: 0;
-      background:
-        linear-gradient(rgba(255,255,255,.06), rgba(255,255,255,.06)),
-        url("assets/quirk-lot3.webp") center / cover no-repeat;
-      opacity: .50;            /* 50% */
-      pointer-events: none;
-      z-index: 0;
+    /* ===== Static page watermark (no animation) ===== */
+    body.watermarked::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      background:url("assets/quirk-lot3.webp") center / cover no-repeat;
+      opacity:.5;             /* 50% opacity */
+      pointer-events:none;
+      z-index:0;
     }
-    body.custom-lot-bg > *{
-      position: relative;
-      z-index: 1;
-    }
+    body.watermarked > *{ position:relative; z-index:1; }
   </style>
 </head>
-
-<!-- Add custom-lot-bg + kiosk-bg so the page shows the watermark -->
-<body class="custom-lot-bg kiosk-bg">
+<body class="watermarked">
 <div class="home-header" role="navigation" aria-label="Home link">
   <a class="home-btn" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
 </div>
@@ -112,7 +102,7 @@
   /* You can move this to assets/style.css if you prefer */
   .home-header{
     display:flex;
-    justify-content:center;   /* centers on all viewports, incl. mobile */
+    justify-content:center;   /* centers on all viewports */
     align-items:center;
     padding:12px 0;
   }
