@@ -33,23 +33,18 @@
     .hero .title { font-size:clamp(1.8rem, 3.6vw, 2.6rem); margin:8px 0; }
     .hero .subtitle { margin:0 auto; max-width:1100px; color:#556; }
 
-    /* ---------- Rolling watermark (assets/3.webp) ---------- */
+    /* ---------- Page-specific watermark (assets/3.webp @ 50% opacity) ---------- */
     body.watermarked::before{
       content:"";
       position:fixed;
-      inset:auto 0 10% 0;
-      margin:auto;
-      width:clamp(280px, 40vw, 620px);
-      height:clamp(280px, 40vw, 620px);
-      background:url("assets/3.webp") center/contain no-repeat;
-      opacity:.06;
-      filter:grayscale(100%);
-      pointer-events:none;
-      z-index:0;
-      animation:spin 120s linear infinite;
-      transform-origin:50% 50%;
+      inset:0;
+      background:url("assets/3.webp") center / cover no-repeat;
+      opacity:.5;               /* 50% opacity */
+      pointer-events:none;       /* don't block clicks */
+      z-index:0;                 /* sit behind content */
     }
-    @keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+    /* Ensure all normal content paints above the watermark */
+    body.watermarked > *{ position:relative; z-index:1; }
 
     /* ---------- Local layout & components ---------- */
     .section { max-width:1100px; margin:22px auto; padding:0 16px; }
@@ -57,11 +52,9 @@
     .section .section-head h2 { margin:0 0 6px; }
     .muted { color:#667085; }
 
-    /* TOC — now STATIC (removed sticky) */
+    /* TOC — STATIC (not sticky) */
     .toc {
-      /* position: sticky; top: 8px; z-index: 5;  <-- removed to stop following on scroll */
-      position: static;
-      top: auto;
+      position: static; top: auto; z-index: auto;
       max-width:1100px; margin:10px auto 20px; padding:10px 16px;
       display:flex; flex-wrap:wrap; gap:8px; justify-content:center;
     }
@@ -141,7 +134,7 @@
       </p>
     </section>
 
-    <!-- On-page TOC (now static) -->
+    <!-- On-page TOC (static) -->
     <nav class="toc" aria-label="Quick links">
       <a class="chip" href="#exec">Executive Summary</a>
       <a class="chip" href="#workflow">Workflow Opportunities</a>
