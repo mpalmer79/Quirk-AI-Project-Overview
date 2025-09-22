@@ -948,35 +948,37 @@ footer.footer { flex-shrink: 0; }
 @media (max-width: 768px){
   .home-wrap{ justify-content: center !important; }
 }
-/* === Kiosk watermark (scoped to specific pages) =========================
-   Add class="kiosk-bg" to the <body> of the pages you want the watermark on.
-   Per-page strength: style="--kiosk-tint: 0.55"  (0=transparent, 1=solid)
-   ====================================================================== */
-
-body.kiosk-bg{
-  /* kiosk.png lives next to this CSS file in /assets */
-  background: url("./kiosk.png") center / cover fixed no-repeat !important;
-  min-height: 100vh;
-  position: relative;
+/* ================================
+   Kiosk watermark (opt-in only)
+   Shows the showroom image only on pages
+   whose <body> has class="kiosk-bg".
+   ================================ */
+:root{
+  /* Tweak this to make the image stronger or lighter site-wide */
+  --kiosk-watermark-opacity: 0.58;   /* 0 = invisible, 1 = fully opaque */
 }
 
-/* White overlay controls how much the photo shows through */
+body.kiosk-bg {
+  position: relative; /* ensure content stacks above ::before */
+}
+
 body.kiosk-bg::before{
   content: "";
   position: fixed;
   inset: 0;
-  background: rgba(255, 255, 255, var(--kiosk-tint, 0.60)); /* lower = more photo */
-  pointer-events: none;
+  /* Image lives next to this CSS (assets/style.css), so path is just "kiosk.png" */
+  background:
+    linear-gradient(rgba(255,255,255,.50), rgba(255,255,255,.50)), /* soft tint */
+    url("kiosk.png") center / cover no-repeat;
+  opacity: var(--kiosk-watermark-opacity);
+  pointer-events: none; /* don’t block clicks */
   z-index: 0;
 }
 
-/* Keep real content above the overlay */
 body.kiosk-bg > *{
   position: relative;
-  z-index: 1;
+  z-index: 1; /* paint content above the watermark */
 }
 
-/* Mobile fix: avoid janky fixed backgrounds */
-@media (max-width: 640px){
-  body.kiosk-bg{ background-attachment: scroll; }
-}
+/* Per-page override example:
+   <body class="kiosk-bg" style="--kiosk-watermark-opacity:.50"> */
