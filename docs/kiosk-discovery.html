@@ -1,206 +1,115 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<base href="/Quirk-AI-Project-Overview/">
-<title>Kiosk • Discovery</title>
-<link rel="stylesheet" href="assets/kiosk-shared.css">
-<script src="assets/kiosk-shared.js"></script>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Kiosk — Discovery</title>
 
-<style>
-  /* helper tweaks specific to this page */
-  .label.center { text-align:center; display:block; }
-  .field input[type="text"]::placeholder { color:#9AA2AF; } /* light gray */
-  /* APR input: monospace + centered + auto width in ch units */
-  #apr {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-    text-align:center;
-    width:auto;                 /* JS sets width in “ch” */
-    display:inline-block;
-    padding-left:0.5ch;         /* visual one “space” left */
-    padding-right:0.5ch;        /* visual one “space” right */
-  }
-  /* make sure APR field’s container doesn’t force full width */
-  .field.field--apr input { width:auto; }
-</style>
+  <base href="/Quirk-AI-Project-Overview/"/>
+  <link rel="stylesheet" href="assets/style.css"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    :focus-visible { outline: 2px solid #34d399; outline-offset: 2px; }
+    body { background: transparent; }
+  </style>
 </head>
-<body>
-<div class="kx">
-  <h2>Discovery</h2>
-  <p class="sub">Tell us your monthly target.</p>
+<body class="p-2">
+  <div class="max-w-3xl mx-auto">
+    <div class="rounded-2xl border border-slate-200 shadow bg-white/95 p-4 sm:p-6">
+      <h2 class="text-center text-xl sm:text-2xl font-bold text-emerald-800">Discovery</h2>
+      <p class="text-center text-slate-600 mt-1">Tell us your monthly target.</p>
 
-  <div class="row">
-    <label class="field">
-      <span class="label">Target monthly payment ($)</span>
-      <!-- text + inputmode for numeric keypad; placeholder per requirement -->
-      <input id="budget" type="text" inputmode="numeric" autocomplete="off"
-             placeholder="Estimate 10 - 15% of your gross monthly income">
-    </label>
-  </div>
+      <form id="discForm" class="mt-4 grid gap-4">
+        <div class="grid sm:grid-cols-3 gap-4">
+          <label class="block">
+            <span class="block text-sm font-semibold text-slate-700 mb-1">Budget ($/mo)</span>
+            <input id="budget" type="number" min="50" step="1" class="w-full rounded-xl border p-3 bg-white" placeholder="400" />
+          </label>
 
-  <div class="row row--2">
-    <label class="field">
-      <span class="label">Term (months)</span>
-      <select id="term">
-        <option value="36">36</option>
-        <option value="48">48</option>
-        <option value="60">60</option>
-        <option value="63">63</option>
-        <option value="72">72</option>
-        <option value="84">84</option>
-      </select>
-    </label>
+          <label class="block">
+            <span class="block text-sm font-semibold text-slate-700 mb-1">Term (months)</span>
+            <select id="term" class="w-full rounded-xl border p-3 bg-white">
+              <option>36</option><option>48</option><option selected>72</option><option>84</option>
+            </select>
+          </label>
 
-    <label class="field field--apr">
-      <span class="label center">APR</span>
-      <!-- APR is disabled, centered, and sized dynamically -->
-      <input id="apr" type="text" disabled>
-    </label>
-  </div>
+          <label class="block">
+            <span class="block text-sm font-semibold text-slate-700 mb-1">APR (%)</span>
+            <input id="apr" type="number" step="0.01" min="0" class="w-full rounded-xl border p-3 bg-white" placeholder="6.99"/>
+          </label>
+        </div>
 
-  <!-- New Initial Investment field, same footprint as “Target monthly payment” -->
-  <div class="row">
-    <label class="field">
-      <span class="label center">Initial Investment</span>
-      <input id="down" type="text" inputmode="numeric" autocomplete="off"
-             placeholder="Most lenders prefer at least 20% down payment">
-    </label>
-  </div>
-
-  <div style="display:flex;justify-content:space-between;gap:8px;margin-top:8px">
-    <button id="back" class="btn btn--ghost">← Back</button>
-    <button id="next" class="btn">Pick a vehicle →</button>
-  </div>
+        <div class="flex justify-between">
+          <button type="button" id="backBtn" class="px-4 py-2 rounded-xl border bg-white/90">← Back</button>
+          <button type="submit" class="px-5 py-3 rounded-2xl bg-emerald-600 text-white font-semibold shadow hover:brightness-110">
+            Pick a vehicle →
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 
 <script>
-const { save, load, post, track } = window.kiosk;
+/* ---------- storage helpers ---------- */
+const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
+const load = (k, def) => { try { const v = JSON.parse(localStorage.getItem(k)); return (v ?? def); } catch { return def; } };
 
-/* --- APR logic --- */
-function aprForTerm(t){
-  t = Number(t)||0;
-  return (t <= 63) ? 5.99 : 6.99;
+const $ = (id) => document.getElementById(id);
+const budgetEl = $('budget');
+const termEl   = $('term');
+const aprEl    = $('apr');
+const form     = $('discForm');
+const backBtn  = $('backBtn');
+
+/* Seed from parent message or existing storage */
+function seedFromStorage() {
+  const profile = load('guided_profile', { name:'', contact:'', budget:400 });
+  const desk    = load('guided_desk',    { down:2000, apr:6.99, term:72, taxesFees:995, products:{vsc:false,gap:false,maint:false} });
+
+  budgetEl.value = Number(profile.budget || 400);
+  termEl.value   = String(desk.term || 72);
+  aprEl.value    = Number(desk.apr ?? 6.99);
 }
 
-/* --- Elements --- */
-const budgetEl = document.getElementById('budget');
-const termEl   = document.getElementById('term');
-const aprEl    = document.getElementById('apr');
-const downEl   = document.getElementById('down');
-
-/* --- Currency helpers (no thousands comma; exactly $XXXX.XX) --- */
-function digitsOnly(str){ return (String(str||'')).replace(/[^\d.]/g,''); }
-function toDollarsString(numLike){
-  const n = Number(numLike);
-  if (!isFinite(n)) return '';
-  return '$' + n.toFixed(2); // e.g., 600 -> $600.00
-}
-function parseDollars(inputValue){
-  const raw = digitsOnly(inputValue);
-  const n = Number(raw);
-  return isFinite(n) ? n : 0;
-}
-function attachCurrencyBehavior(inputEl){
-  inputEl.addEventListener('focus', ()=>{
-    // strip formatting for easier typing
-    inputEl.value = digitsOnly(inputEl.value);
-  });
-  inputEl.addEventListener('input', ()=>{
-    // allow only digits and a single dot while typing
-    const cur = inputEl.value;
-    const cleaned = cur.replace(/[^\d.]/g,'').replace(/(\..*)\./g,'$1');
-    inputEl.value = cleaned;
-  });
-  inputEl.addEventListener('blur', ()=>{
-    const n = parseDollars(inputEl.value);
-    inputEl.value = n ? toDollarsString(n) : '';
-    persistAndNotify();
-  });
-}
-
-/* --- Hydrate from storage --- */
-(function hydrate(){
-  const prof = load('guided_profile', { name:'', contact:'', budget:0 });
-  const desk = load('guided_desk',   { apr:6.99, term:72, down:0, taxesFees:995, products:{vsc:false,gap:false,maint:false} });
-
-  // Budget: show stored value formatted, or leave empty for placeholder
-  const b = Number(prof.budget||0);
-  budgetEl.value = b > 0 ? toDollarsString(b) : '';
-
-  // Down payment: same behavior
-  const d = Number(desk.down||0);
-  if (downEl) downEl.value = d > 0 ? toDollarsString(d) : '';
-
-  // Term & APR
-  const t = Number(desk.term || 72);
-  termEl.value = String([36,48,60,63,72,84].includes(t) ? t : 72);
-
-  const apr = aprForTerm(termEl.value).toFixed(2) + '%';
-  aprEl.value = apr;
-  sizeAPRBox();
-})();
-
-/* --- Persist + notify parent --- */
-function persistAndNotify(){
-  // parse currency fields to numbers
-  const budget = parseDollars(budgetEl.value);
-  const term   = Number(termEl.value || 72);
-  const aprNum = aprForTerm(term);
-  const down   = downEl ? parseDollars(downEl.value) : 0;
-
-  // profile: budget
-  const p0 = load('guided_profile', { name:'', contact:'', budget:0 });
-  save('guided_profile', { ...p0, budget });
-
-  // desk: apr, term, down (don’t stomp other fields)
-  const d0 = load('guided_desk', { price:0, down:down, apr:aprNum, term:term, taxesFees:995, products:{vsc:false,gap:false,maint:false} });
-  save('guided_desk', { ...d0, apr: aprNum, term, down });
-
-  // reflect APR in the disabled box
-  aprEl.value = aprNum.toFixed(2) + '%';
-  sizeAPRBox();
-
-  // live update to parent (safe to send extra fields)
-  post('discovery:update', { budget, term, apr: aprNum, down });
-}
-
-/* --- APR auto-size (width = characters + 2 “spaces”) --- */
-function sizeAPRBox(){
-  const v = String(aprEl.value || '');
-  const base = Math.max(v.length + 2, 7); // 6.99% -> 7ch minimum
-  aprEl.style.width = base + 'ch';
-}
-
-/* --- Events --- */
-attachCurrencyBehavior(budgetEl);
-if (downEl) attachCurrencyBehavior(downEl);
-
-termEl.addEventListener('change', persistAndNotify);
-document.getElementById('back').addEventListener('click', ()=>{ post('discovery:back'); });
-
-document.getElementById('next').addEventListener('click', ()=>{
-  persistAndNotify();
-  track('guided_discovery_next');
-  const budget = parseDollars(budgetEl.value);
-  const term   = Number(termEl.value || 72);
-  const apr    = aprForTerm(term);
-  const down   = downEl ? parseDollars(downEl.value) : 0;
-  post('discovery:done', { budget, term, apr, down });
-});
-
-/* --- Accept init message (e.g., parent pre-fills budget) --- */
-window.addEventListener('message', e=>{
-  if(e.data?.type === 'discovery:init'){
-    const b = Number(e.data.payload?.budget);
-    if (!Number.isNaN(b)) { budgetEl.value = toDollarsString(b); }
-    // keep current term selection; APR will refresh on persist
-    persistAndNotify();
+window.addEventListener('message', (e) => {
+  const msg = e?.data || {};
+  if (msg.type === 'discovery:init') {
+    const b = Number(msg.payload?.budget);
+    if (!Number.isNaN(b) && b > 0) budgetEl.value = b;
   }
 });
 
-/* initial persist so others (Vehicle Match) can read term/APR immediately */
-persistAndNotify();
+/* Persist on change, notify parent in real-time */
+function persistAndNotify() {
+  const budget = Math.max(0, Number(budgetEl.value || 0));
+  const term   = Number(termEl.value || 72);
+  const apr    = Number(aprEl.value || 6.99);
+
+  const profile = load('guided_profile', { name:'', contact:'', budget:400 });
+  save('guided_profile', { ...profile, budget });
+
+  const desk = load('guided_desk', { down:2000, apr:6.99, term:72, taxesFees:995, products:{} });
+  save('guided_desk', { ...desk, apr, term });
+
+  window.parent?.postMessage({ type: 'discovery:update', payload: { budget } }, '*');
+}
+
+/* Wire events */
+[budgetEl, termEl, aprEl].forEach(el => el.addEventListener('input', persistAndNotify));
+backBtn.addEventListener('click', () => {
+  window.parent?.postMessage({ type: 'discovery:back' }, '*');
+});
+
+/* Submit = proceed */
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  persistAndNotify();
+  window.parent?.postMessage({ type: 'discovery:done' }, '*');
+});
+
+/* initial fill */
+seedFromStorage();
 </script>
 </body>
 </html>
