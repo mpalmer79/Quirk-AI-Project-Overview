@@ -948,39 +948,35 @@ footer.footer { flex-shrink: 0; }
 @media (max-width: 768px){
   .home-wrap{ justify-content: center !important; }
 }
-/* ----------------------------- */
-/* Global kiosk watermark layer  */
-/* Applies to every page that    */
-/* includes assets/style.css     */
-/* ----------------------------- */
+/* === Kiosk watermark (scoped to specific pages) =========================
+   Add class="kiosk-bg" to the <body> of the pages you want the watermark on.
+   Per-page strength: style="--kiosk-tint: 0.55"  (0=transparent, 1=solid)
+   ====================================================================== */
 
-:root{
-  /* Tweak this for site-wide strength of the watermark image */
-  --kiosk-watermark-opacity: 0.48; /* 0 = invisible, 1 = fully opaque */
-  --kiosk-watermark-image: url("kiosk.png"); /* path is relative to /assets/style.css */
-  --kiosk-watermark-size: cover;
-  --kiosk-watermark-position: center;
+body.kiosk-bg{
+  /* kiosk.png lives next to this CSS file in /assets */
+  background: url("./kiosk.png") center / cover fixed no-repeat !important;
+  min-height: 100vh;
+  position: relative;
 }
 
-/* Draw the watermark ABOVE the body's background but BELOW page content */
-body::before{
-  content:"";
+/* White overlay controls how much the photo shows through */
+body.kiosk-bg::before{
+  content: "";
   position: fixed;
   inset: 0;
-  background-image: var(--kiosk-watermark-image);
-  background-repeat: no-repeat;
-  background-position: var(--kiosk-watermark-position);
-  background-size: var(--kiosk-watermark-size);
-  opacity: var(--kiosk-watermark-opacity);
-  pointer-events: none;     /* never block clicks */
-  z-index: 0;               /* sits under content */
+  background: rgba(255, 255, 255, var(--kiosk-tint, 0.60)); /* lower = more photo */
+  pointer-events: none;
+  z-index: 0;
 }
 
-/* Ensure page content paints above the watermark layer */
-body > *{
+/* Keep real content above the overlay */
+body.kiosk-bg > *{
   position: relative;
   z-index: 1;
 }
 
-/* Optional: disable watermark on a specific page by adding class="no-watermark" to <body> */
-body.no-watermark::before{ opacity: 0; }
+/* Mobile fix: avoid janky fixed backgrounds */
+@media (max-width: 640px){
+  body.kiosk-bg{ background-attachment: scroll; }
+}
