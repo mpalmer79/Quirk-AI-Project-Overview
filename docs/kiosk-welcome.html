@@ -5,13 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Kiosk — Welcome</title>
 
-  <!-- Keep URLs relative to your site root -->
   <base href="/Quirk-AI-Project-Overview/"/>
-
-  <!-- Optional global styles (matches your site) -->
   <link rel="stylesheet" href="assets/style.css"/>
-
-  <!-- Tailwind (CDN) -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
@@ -20,30 +15,27 @@
   </style>
 </head>
 <body class="p-2">
+  <!-- No inner card title/subtitle, no inner border -->
   <div class="max-w-3xl mx-auto">
-    <div class="rounded-2xl border border-slate-200 shadow bg-white/95 p-4 sm:p-6">
-      <h2 class="text-center text-xl sm:text-2xl font-bold text-emerald-800">Welcome</h2>
-      <p class="text-center text-slate-600 mt-1">We’ll guide you through a few quick steps.</p>
-
-      <form id="welcomeForm" class="mt-4 grid sm:grid-cols-2 gap-4">
+    <form id="welcomeForm" class="mt-2 grid gap-4">
+      <div class="grid sm:grid-cols-2 gap-4">
         <label class="block">
           <span class="block text-sm font-semibold text-slate-700 mb-1">Your name / company</span>
-          <input id="name" class="w-full rounded-xl border p-3 bg-white" placeholder="e.g., Quirk Auto" required/>
+          <input id="name" type="text" class="w-full rounded-xl border p-3 bg-white" placeholder="e.g., Quirk Auto" autocomplete="name">
         </label>
 
         <label class="block">
           <span class="block text-sm font-semibold text-slate-700 mb-1">Text or email to send your quote</span>
-          <input id="contact" class="w-full rounded-xl border p-3 bg-white" placeholder="(555) 555-5555 or you@example.com" required/>
+          <input id="contact" type="text" class="w-full rounded-xl border p-3 bg-white" placeholder="(555) 555-5555 or you@example.com" autocomplete="email">
         </label>
+      </div>
 
-        <div class="sm:col-span-2 flex justify-end gap-2">
-          <button id="continueBtn" type="submit"
-                  class="px-5 py-3 rounded-2xl bg-emerald-600 text-white font-semibold shadow hover:brightness-110">
-            Continue →
-          </button>
-        </div>
-      </form>
-    </div>
+      <div class="flex justify-end">
+        <button type="submit" class="px-5 py-3 rounded-2xl bg-emerald-600 text-white font-semibold shadow hover:brightness-110">
+          Continue →
+        </button>
+      </div>
+    </form>
   </div>
 
 <script>
@@ -51,50 +43,40 @@
 const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
 const load = (k, def) => { try { const v = JSON.parse(localStorage.getItem(k)); return (v ?? def); } catch { return def; } };
 
-/* ---------- form + init ---------- */
 const $ = (id) => document.getElementById(id);
-const nameEl = $('name');
+const nameEl    = $('name');
 const contactEl = $('contact');
-const form = $('welcomeForm');
+const form      = $('welcomeForm');
 
-function isEmail(s){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((s||'').trim()); }
-function phoneDigits(s){ return (s||'').replace(/\D/g,''); }
-function validContact(s){ return isEmail(s) || phoneDigits(s).length === 10; }
+/* Seed from storage or from parent postMessage */
+function seed() {
+  const profile = load('guided_profile', { name:'', contact:'', budget:400 });
+  nameEl.value    = profile.name    || '';
+  contactEl.value = profile.contact || '';
+}
+seed();
 
-/* Prefill from parent or prior localStorage */
 window.addEventListener('message', (e) => {
   const msg = e?.data || {};
   if (msg.type === 'welcome:init') {
-    const profile = msg.payload?.profile || load('guided_profile', {name:'', contact:'', budget:400});
-    nameEl.value = profile.name || '';
-    contactEl.value = profile.contact || '';
+    const p = msg.payload || {};
+    if (typeof p.name === 'string')    nameEl.value    = p.name;
+    if (typeof p.contact === 'string') contactEl.value = p.contact;
   }
 });
 
-/* Submit → save + notify parent */
+/* Save and advance */
 form.addEventListener('submit', (e) => {
   e.preventDefault();
-  const name = nameEl.value.trim();
+  const name    = nameEl.value.trim();
   const contact = contactEl.value.trim();
-  if (!name) { nameEl.focus(); return; }
-  if (!validContact(contact)) { contactEl.focus(); return; }
 
-  const existing = load('guided_profile', { name:'', contact:'', budget:400 });
-  const merged = { ...existing, name, contact };
-  save('guided_profile', merged);
+  const current = load('guided_profile', { name:'', contact:'', budget:400 });
+  save('guided_profile', { ...current, name, contact });
 
-  // tell the parent container we’re done with this step
-  window.parent?.postMessage({ type: 'welcome:done', payload: merged }, '*');
+  // tell parent to advance to Discovery
+  window.parent?.postMessage({ type:'welcome:done', payload:{ name, contact } }, '*');
 });
-
-/* In case the parent iframe loads before it posts init */
-(function seedFromStorage(){
-  const profile = load('guided_profile', null);
-  if (profile) {
-    nameEl.value = profile.name || '';
-    contactEl.value = profile.contact || '';
-  }
-})();
 </script>
 </body>
 </html>
