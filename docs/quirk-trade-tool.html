@@ -80,15 +80,21 @@
       text-decoration: underline;
     }
 
-    /* ===== Static page watermark (no animation) ===== */
+    /* ===== Static page watermark (no animation/bobbing) ===== */
     body.watermarked::before{
       content:"";
       position:fixed;
       inset:0;
       background:url("assets/quirk-lot3.webp") center / cover no-repeat;
-      opacity:.5;             /* 50% opacity */
+      opacity:.5;                 /* 50% opacity */
       pointer-events:none;
       z-index:0;
+
+      /* kill ANY inherited animations/transforms from other CSS */
+      animation:none !important;
+      transition:none !important;
+      transform:none !important;
+      will-change:auto !important;
     }
     body.watermarked > *{ position:relative; z-index:1; }
   </style>
