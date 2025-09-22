@@ -13,39 +13,43 @@
     :focus-visible { outline: 2px solid #34d399; outline-offset: 2px; }
     body { background: transparent; }
 
-    /* Generic field styling (no @apply so it works without a build step) */
     .field-label{display:block;font-size:.875rem;font-weight:600;color:#334155;margin-bottom:.25rem}
     .field-input{width:100%;border:1px solid #e5e7eb;border-radius:.75rem;padding:.75rem;background:#fff}
     .field-input:focus{outline:2px solid #10b981;outline-offset:2px}
 
-    /* Hide number spinners where we still use type=number anywhere */
     input[type="number"]::-webkit-outer-spin-button,
     input[type="number"]::-webkit-inner-spin-button{ -webkit-appearance: none; margin: 0; }
     input[type="number"]{ -moz-appearance: textfield; }
 
-    /* Compact widths requested */
-    .w-seating   { width: 8ch; }     /* “5”, “6–7”, “8+” fit snugly */
-    .w-fuel      { width: 12ch; }    /* just a bit wider than “Gasoline” */
-    .w-invest    { width: 28ch; }    /* Initial Investment box */
-    .w-budget    { width: 26ch; }    /* Monthly budget box */
-    .w-payoff    { width: 22ch; }    /* Estimated payoff a bit wider */
+    /* Compact widths */
+    .w-seating   { width: 8ch; }
+    .w-fuel      { width: 12ch; }
+    .w-invest    { width: 28ch; }
+    .w-budget    { width: 26ch; }
+    .w-payoff    { width: 22ch; }
 
-    /* Center the first row’s “Vehicle you’re interested in” nicely */
-    .first-row { grid-template-columns: 1fr; }
-    @media (min-width: 900px){ .first-row { grid-template-columns: 1fr 1fr; } }
+    /* First row: keep centered at all sizes */
+    .first-row { display:grid; grid-template-columns: 1fr; place-items:center; gap:1rem; }
+    @media (min-width: 900px){
+      .first-row { grid-template-columns: 1fr 1fr; }
+    }
 
-    /* Section title to match the green “Discovery” style */
+    /* Section title */
     .section-title{
       text-align:center;color:#065f46;font-weight:800;
       font-size:1.25rem;margin-top:1.25rem;margin-bottom:.25rem;
+      border:0 !important;
     }
+    /* Kill any decorative line some global CSS might add */
+    .section-title::before,
+    .section-title::after{ content:none !important; display:none !important; }
     .subtle { color:#64748b }
 
-    /* Currency inputs: leave room after the $ and tweak paddings as requested */
-    .currency { padding-left: 2.5rem; }       /* base left padding (pl-10) */
-    .currency.tight { padding-left: 2.25rem; }/* a touch less (pl-9) */
-
-    /* Keep the green CTA centered and without any arrow graphic */
+    /* Currency inputs */
+    .currency { padding-left: 2.5rem; }       /* $ + a bit of space */
+    .currency.tight { padding-left: 2.25rem; }/* a touch less for budget */
+    
+    /* Center CTA; no right arrow graphics involved */
     .cta { display:flex; justify-content:center; }
   </style>
 </head>
@@ -57,8 +61,8 @@
 
       <!-- FORM -->
       <form id="discForm" class="mt-5 grid gap-5">
-        <!-- Row: Vehicle of interest (centered row) -->
-        <div class="grid first-row gap-4 items-end place-items-center md:place-items-stretch">
+        <!-- Row: Vehicle of interest (centered; cab appears to the right only for Silverado) -->
+        <div class="first-row items-end">
           <label class="block w-full md:w-auto">
             <span class="field-label">Vehicle you’re interested in</span>
             <select id="model" class="field-input"></select>
@@ -124,15 +128,16 @@
           </label>
         </div>
 
-        <!-- Row: Investment + Budget (compact, paddings adjusted) -->
+        <!-- Row: Investment + Budget (compact, paddings/placeholder adjusted) -->
         <div class="grid md:grid-cols-2 gap-4">
           <label class="block">
             <span class="field-label">Initial Investment (approx)</span>
             <div class="relative">
               <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 select-none">$</span>
+              <!-- four leading spaces to nudge right two more characters, updated wording -->
               <input id="downPayment" type="text"
                      class="field-input currency w-invest"
-                     placeholder="  20% recommended downpayment"/>
+                     placeholder="    20% recommended down payment"/>
             </div>
           </label>
 
@@ -147,7 +152,7 @@
           </label>
         </div>
 
-        <!-- ===== Vehicle you're replacing (centered heading like Discovery) ===== -->
+        <!-- ===== Vehicle you're replacing (centered; no underline) ===== -->
         <h3 class="section-title">Vehicle you’re replacing</h3>
         <p class="text-center subtle -mt-2">Tell us a bit about the one you’re trading.</p>
 
@@ -155,9 +160,7 @@
         <div class="grid md:grid-cols-4 gap-4">
           <label class="block">
             <span class="field-label">Year</span>
-            <select id="tradeYear" class="field-input">
-              <!-- options filled by JS; first option will be “Select Year” -->
-            </select>
+            <select id="tradeYear" class="field-input"></select>
           </label>
 
           <label class="block">
@@ -267,12 +270,11 @@ function fillYears(){
 
 /* ------------- “fresh” defaults ------------- */
 function setFreshDefaults(){
-  // DO NOT load from prior localStorage; start clean
-  // Budget shown as 650.00 (formatted) and payoff as 0.00
+  // Do not load prior storage; start clean
   budgetEl.value = formatMoney(650);
   payoffEl.value = formatMoney(0);
-  downEl.value   = "";               // placeholder visible
-  milesEl.value  = "";               // placeholder visible
+  downEl.value   = "";
+  milesEl.value  = "";
 }
 
 /* ------------- persistence ------------- */
@@ -296,10 +298,10 @@ function persist(){
   window.parent?.postMessage({ type: 'discovery:update', payload: { model: data.model } }, '*');
 }
 
-/* ------------- wire currency behavior ------------- */
+/* ------------- currency behavior ------------- */
 function attachCurrency(el){
   el.addEventListener('blur', () => { el.value = formatMoney(parseMoney(el.value)); persist(); });
-  el.addEventListener('input', () => { /* live store numeric */ persist(); });
+  el.addEventListener('input', () => { persist(); });
 }
 [downEl, budgetEl, payoffEl].forEach(attachCurrency);
 
@@ -321,9 +323,9 @@ form.addEventListener('submit', (e) => {
 /* ------------- boot ------------- */
 fillModels();
 fillYears();
-updateCabVisibility();
+updateCabVisibility();   // hides cab by default unless Silverado selected
 setFreshDefaults();
-persist(); // store the initial fresh state
+persist();
 </script>
 </body>
 </html>
