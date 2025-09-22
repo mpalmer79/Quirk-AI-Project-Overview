@@ -69,7 +69,7 @@
   </footer>
 
 <script>
-/* ========= tiny storage + analytics ========= */
+/* ========= tiny storage + analytics (kept minimal) ========= */
 function track(event, data = {}) {
   try {
     const now = new Date().toISOString();
@@ -83,27 +83,29 @@ function track(event, data = {}) {
 const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
 const load = (k, def) => { try { const v = JSON.parse(localStorage.getItem(k)); return (v ?? def); } catch { return def; } };
 
-/* ========= steps config (child HTMLs own their UI/logic) ========= */
+/* ========= steps config: ALL steps are external HTMLs ========= */
 const STEPS = [
-  { label:'Welcome',         url:'kiosk-welcome.html',  height:460, subtitle:"We’ll guide you through a few quick steps." },
-  { label:'Discovery',       url:'kiosk-discovery.html',height:640, subtitle:"Tell us about your monthly budget." },
-  { label:'Vehicle Match',   url:'kiosk-vehicle.html',  height:720, subtitle:"Pick one to continue." },
-  { label:'Trade-In',        url:'kiosk-trade.html',    height:620, subtitle:"Enter your VIN/miles; we’ll pre-value it." },
-  { label:'Payments',        url:'kiosk-payments.html', height:720, subtitle:"Taxes/fees estimated; lender approval required." },
-  { label:'Credit Start',    url:'kiosk-credit.html',   height:520, subtitle:"Soft pull first. No impact to score until you consent to submit." },
-  { label:"F&I Options",     url:'kiosk-fandi.html',    height:420, subtitle:"Add options and see the impact instantly." },
-  { label:'Review & Handoff',url:'kiosk-review.html',   height:520, subtitle:"We’ll prep your buyer’s order and hand you off." }
+  { label: 'Welcome',          url: 'kiosk-welcome.html',  height: 460, subtitle: "We’ll guide you through a few quick steps.", showHeader: true },
+  // Hide the parent header on Discovery to avoid duplicate titles (child renders its own)
+  { label: 'Discovery',        url: 'kiosk-discovery.html',height: 640, subtitle: "Tell us about your monthly budget.", showHeader: false },
+  { label: 'Vehicle Match',    url: 'kiosk-vehicle.html',  height: 720, subtitle: "Pick one to continue.", showHeader: true },
+  { label: 'Trade-In',         url: 'kiosk-trade.html',    height: 620, subtitle: "Enter your VIN/miles; we’ll pre-value it.", showHeader: true },
+  { label: 'Payments',         url: 'kiosk-payments.html', height: 720, subtitle: "Taxes/fees estimated; lender approval required.", showHeader: true },
+  { label: 'Credit Start',     url: 'kiosk-credit.html',   height: 520, subtitle: "Soft pull first. No impact to score until you consent to submit.", showHeader: true },
+  { label: "F&I Options",     url: 'kiosk-fandi.html',    height: 420, subtitle: "Add options and see the impact instantly.", showHeader: true },
+  { label: 'Review & Handoff', url: 'kiosk-review.html',   height: 520, subtitle: "We’ll prep your buyer’s order and hand you off.", showHeader: true }
 ];
 
 const stage = document.getElementById('stage');
 const progress = document.getElementById('progress');
+const stepHeader = document.getElementById('stepHeader');
 const stepTitle = document.getElementById('stepTitle');
 const stepSubtitle = document.getElementById('stepSubtitle');
 
 let step = load("guided_step", 0);
 let maxVisited = load("guided_maxVisited", step);
 
-/* ========= progress row ========= */
+/* ========= render progress row ========= */
 function renderProgress(){
   progress.innerHTML = '';
   STEPS.forEach((s, i) => {
@@ -125,7 +127,7 @@ function renderProgress(){
   });
 }
 
-/* ========= load a step (sets title, iframe) ========= */
+/* ========= load a step (sets title, iframe, and header visibility) ========= */
 function loadStep(i){
   step = Math.max(0, Math.min(i, STEPS.length-1));
   maxVisited = Math.max(maxVisited, step);
@@ -133,12 +135,20 @@ function loadStep(i){
   save("guided_maxVisited", maxVisited);
 
   const cfg = STEPS[step];
-  stepTitle.textContent = cfg.label;
-  stepSubtitle.textContent = cfg.subtitle || '';
+
+  // Toggle parent header visibility per step
+  if (cfg.showHeader === false) {
+    stepHeader.style.display = 'none';
+  } else {
+    stepHeader.style.display = '';
+    stepTitle.textContent = cfg.label;
+    stepSubtitle.textContent = cfg.subtitle || '';
+  }
+
   stage.src = cfg.url;
   stage.style.height = (cfg.height || 480) + 'px';
 
-  // Seed common data if present (no DOM mutations inside the child)
+  // After the child loads, seed optional data (no DOM mutation inside the child)
   stage.addEventListener('load', function onload(){
     stage.removeEventListener('load', onload);
     try {
@@ -162,7 +172,7 @@ window.addEventListener('message', (e) => {
   if (!data || typeof data !== 'object') return;
   const { type, payload } = data;
 
-  // Welcome -> Discovery
+  // Welcome
   if (type === 'welcome:done') {
     const p = load("guided_profile", { name:'', contact:'', budget:400 });
     const merged = { ...p, ...(payload || {}) };
@@ -178,13 +188,18 @@ window.addEventListener('message', (e) => {
     save("guided_profile", { ...p, budget: Number(payload?.budget ?? p.budget) });
     return;
   }
-  if (type === 'discovery:done') { track('guided_discovery_next'); go(2); return; }
+  if (type === 'discovery:done') {
+    track('guided_discovery_next');
+    go(2);
+    return;
+  }
   if (type === 'discovery:back') { go(0); return; }
 
-  // Vehicle Match (child persists selection)
+  // Vehicle Match (child should persist selection locally)
   if (type === 'vehicle:done') { go(3); return; }
 
   // Trade
+  if (type === 'trade:update') { return; }
   if (type === 'trade:done') { go(4); return; }
 
   // Payments
