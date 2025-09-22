@@ -12,27 +12,27 @@
   <style>
     :focus-visible { outline: 2px solid #34d399; outline-offset: 2px; }
     body { background: transparent; }
-    .field-label { @apply block text-sm font-semibold text-slate-700 mb-1; }
-    .field-input { @apply w-full rounded-xl border p-3 bg-white; }
+    /* helper classes used below (Tailwind CDN handles utilities directly) */
   </style>
 </head>
 <body class="p-2">
   <div class="max-w-4xl mx-auto">
-    <div class="rounded-2xl border border-slate-200 shadow bg-white/95 p-4 sm:p-6">
+    <!-- removed inner gray border -->
+    <div class="rounded-2xl shadow bg-white/95 p-4 sm:p-6">
       <h2 class="text-center text-xl sm:text-2xl font-bold text-emerald-800">Discovery</h2>
       <p class="text-center text-slate-600 mt-1">Answer a few questions so we can match the right vehicle.</p>
 
       <!-- FORM -->
       <form id="discForm" class="mt-5 grid gap-5">
-        <!-- Row: Vehicle of interest -->
-        <div class="grid md:grid-cols-2 gap-4 items-end">
-          <label class="block">
-            <span class="field-label">Vehicle you’re interested in</span>
-            <select id="model" class="field-input"></select>
+        <!-- Row: Vehicle of interest (centered) -->
+        <div class="grid md:grid-cols-2 gap-4 items-end justify-items-center">
+          <label class="block w-full max-w-md mx-auto">
+            <span class="block text-sm font-semibold text-slate-700 mb-1">Vehicle you’re interested in</span>
+            <select id="model" class="w-full rounded-xl border p-3 bg-white"></select>
           </label>
-          <label id="cabWrap" class="block hidden">
-            <span class="field-label">Cab style (Silverado)</span>
-            <select id="cab" class="field-input">
+          <label id="cabWrap" class="block hidden w-full max-w-md">
+            <span class="block text-sm font-semibold text-slate-700 mb-1">Cab style (Silverado)</span>
+            <select id="cab" class="w-full rounded-xl border p-3 bg-white">
               <option value="">Any</option>
               <option>Regular Cab</option>
               <option>Double Cab</option>
@@ -44,8 +44,8 @@
         <!-- Row: Primary use + Towing need -->
         <div class="grid md:grid-cols-2 gap-4">
           <label class="block">
-            <span class="field-label">Primary use</span>
-            <select id="use" class="field-input">
+            <span class="block text-sm font-semibold text-slate-700 mb-1">Primary use</span>
+            <select id="use" class="w-full rounded-xl border p-3 bg-white">
               <option>Daily commute</option>
               <option>Family / kids</option>
               <option>Work / jobsite</option>
@@ -55,8 +55,8 @@
             </select>
           </label>
           <label class="block">
-            <span class="field-label">Towing need</span>
-            <select id="towing" class="field-input">
+            <span class="block text-sm font-semibold text-slate-700 mb-1">Towing need</span>
+            <select id="towing" class="w-full rounded-xl border p-3 bg-white">
               <option>None</option>
               <option>Light (≤ 3,500 lbs)</option>
               <option>Medium (3,500–7,500 lbs)</option>
@@ -68,8 +68,8 @@
         <!-- Row: Seating + Fuel type -->
         <div class="grid md:grid-cols-2 gap-4">
           <label class="block">
-            <span class="field-label">Preferred seating</span>
-            <select id="seating" class="field-input">
+            <span class="block text-sm font-semibold text-slate-700 mb-1">Preferred seating</span>
+            <select id="seating" class="w-full rounded-xl border p-3 bg-white">
               <option>2</option>
               <option selected>5</option>
               <option>6–7</option>
@@ -77,40 +77,45 @@
             </select>
           </label>
           <label class="block">
-            <span class="field-label">Fuel type</span>
-            <select id="fuel" class="field-input">
+            <span class="block text-sm font-semibold text-slate-700 mb-1">Fuel type</span>
+            <select id="fuel" class="w-full rounded-xl border p-3 bg-white">
               <option selected>Gasoline</option>
               <option>Diesel</option>
               <option>Hybrid</option>
-              <option>Plug‑in Hybrid</option>
+              <option>Plug-in Hybrid</option>
               <option>Electric</option>
             </select>
           </label>
         </div>
 
-        <!-- Row: Price range (optional) -->
+        <!-- Row: Investment + Budget (currency formatting) -->
         <div class="grid md:grid-cols-2 gap-4">
           <label class="block">
-            <span class="field-label">Preferred price (min)</span>
-            <div class="relative">
-              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
-              <input id="priceMin" type="number" min="0" step="500" class="field-input pl-7" placeholder="e.g., 25000"/>
-            </div>
+            <span class="block text-sm font-semibold text-slate-700 mb-1">Initial Investment (approx)</span>
+            <input
+              id="priceMin"
+              type="text"
+              inputmode="decimal"
+              class="w-full rounded-xl border p-3 bg-white"
+              placeholder="20% recommended downpayment" />
           </label>
+
           <label class="block">
-            <span class="field-label">Preferred price (max)</span>
-            <div class="relative">
-              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
-              <input id="priceMax" type="number" min="0" step="500" class="field-input pl-7" placeholder="e.g., 50000"/>
-            </div>
+            <span class="block text-sm font-semibold text-slate-700 mb-1">What is your monthly budget?</span>
+            <input
+              id="priceMax"
+              type="text"
+              inputmode="decimal"
+              class="w-full rounded-xl border p-3 bg-white"
+              placeholder="$650.00" />
           </label>
         </div>
 
         <!-- Row: Replacement / Trade info -->
         <div class="grid gap-4">
           <label class="block">
-            <span class="field-label">Vehicle you’re replacing</span>
-            <select id="replace" class="field-input">
+            <span class="block text-sm font-semibold text-slate-700 mb-1">Vehicle you’re replacing</span>
+            <select id="replace" class="w-full rounded-xl border p-3 bg-white">
               <option selected>N/A (not replacing)</option>
               <option>Car (sedan/coupe)</option>
               <option>SUV / Crossover</option>
@@ -122,22 +127,22 @@
 
           <div id="tradeExtra" class="grid md:grid-cols-4 gap-4 hidden">
             <label class="block">
-              <span class="field-label">Year</span>
-              <input id="tradeYear" type="number" min="1990" max="2099" class="field-input" placeholder="e.g., 2018"/>
+              <span class="block text-sm font-semibold text-slate-700 mb-1">Year</span>
+              <input id="tradeYear" type="number" min="1990" max="2099" class="w-full rounded-xl border p-3 bg-white" placeholder="e.g., 2018"/>
             </label>
             <label class="block">
-              <span class="field-label">Make</span>
-              <input id="tradeMake" type="text" class="field-input" placeholder="e.g., Chevrolet"/>
+              <span class="block text-sm font-semibold text-slate-700 mb-1">Make</span>
+              <input id="tradeMake" type="text" class="w-full rounded-xl border p-3 bg-white" placeholder="e.g., Chevrolet"/>
             </label>
             <label class="block">
-              <span class="field-label">Model</span>
-              <input id="tradeModel" type="text" class="field-input" placeholder="e.g., Equinox"/>
+              <span class="block text-sm font-semibold text-slate-700 mb-1">Model</span>
+              <input id="tradeModel" type="text" class="w-full rounded-xl border p-3 bg-white" placeholder="e.g., Equinox"/>
             </label>
             <label class="block">
-              <span class="field-label">Estimated payoff</span>
+              <span class="block text-sm font-semibold text-slate-700 mb-1">Estimated payoff</span>
               <div class="relative">
                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
-                <input id="payoff" type="number" min="0" step="100" class="field-input pl-7" value="0" />
+                <input id="payoff" type="number" min="0" step="100" class="w-full rounded-xl border p-3 bg-white pl-7" value="0" />
               </div>
             </label>
           </div>
@@ -168,8 +173,8 @@ const useEl     = $('use');
 const towingEl  = $('towing');
 const seatingEl = $('seating');
 const fuelEl    = $('fuel');
-const priceMinEl= $('priceMin');
-const priceMaxEl= $('priceMax');
+const priceMinEl= $('priceMin');   // Initial Investment
+const priceMaxEl= $('priceMax');   // Monthly Budget
 const replaceEl = $('replace');
 const tradeExtra= $('tradeExtra');
 const tradeYear = $('tradeYear');
@@ -178,6 +183,21 @@ const tradeModel= $('tradeModel');
 const payoffEl  = $('payoff');
 const form      = $('discForm');
 const backBtn   = $('backBtn');
+
+// Currency helpers
+const fmtUSD = new Intl.NumberFormat('en-US', { style:'currency', currency:'USD', minimumFractionDigits:2 });
+function parseCurrency(str){
+  const n = Number(String(str || '').replace(/[^0-9.]/g,''));
+  return Number.isFinite(n) ? n : 0;
+}
+function formatInputCurrency(el){
+  const n = parseCurrency(el.value);
+  el.value = n ? fmtUSD.format(n) : '';
+}
+function unformatInput(el){
+  const n = parseCurrency(el.value);
+  el.value = n ? String(n) : '';
+}
 
 // Build model list
 const RAW_MODELS = [
@@ -195,22 +215,18 @@ function customSort(a,b){
   if (wa !== wb) return wa - wb;
   return a.localeCompare(b);
 }
-
 const MODELS = [...RAW_MODELS].sort(customSort);
 
 function fillModels(){
   modelEl.innerHTML = MODELS.map(m => `<option>${m}</option>`).join('');
 }
-
 function isSilverado(model){
   return /^Silverado\s(1500|2500|3500)/.test(model);
 }
-
 function updateCabVisibility(){
   const m = modelEl.value || '';
   cabWrap.classList.toggle('hidden', !isSilverado(m));
 }
-
 function toggleTradeFields(){
   const val = replaceEl.value;
   const show = val && !val.startsWith('N/A');
@@ -220,37 +236,31 @@ function toggleTradeFields(){
 // Seed from storage / parent
 function seedFromStorage(){
   const needs = load('guided_needs', {});
-  const profile = load('guided_profile', { name:'', contact:'', budget:400 });
-
-  // Models
   fillModels();
   if (needs.model && MODELS.includes(needs.model)) modelEl.value = needs.model;
   updateCabVisibility();
   if (needs.cab) cabEl.value = needs.cab;
 
-  // Prefs
   if (needs.use) useEl.value = needs.use;
   if (needs.towing) towingEl.value = needs.towing;
   if (needs.seating) seatingEl.value = needs.seating;
   if (needs.fuel) fuelEl.value = needs.fuel;
-  if (needs.priceMin != null) priceMinEl.value = needs.priceMin;
-  if (needs.priceMax != null) priceMaxEl.value = needs.priceMax;
 
-  // Trade
+  if (needs.priceMin != null) priceMinEl.value = fmtUSD.format(Number(needs.priceMin));
+  if (needs.priceMax != null) priceMaxEl.value = fmtUSD.format(Number(needs.priceMax));
+
   if (needs.replace) replaceEl.value = needs.replace;
   toggleTradeFields();
-  if (needs.tradeYear) tradeYear.value = needs.tradeYear;
-  if (needs.tradeMake) tradeMake.value = needs.tradeMake;
+  if (needs.tradeYear)  tradeYear.value  = needs.tradeYear;
+  if (needs.tradeMake)  tradeMake.value  = needs.tradeMake;
   if (needs.tradeModel) tradeModel.value = needs.tradeModel;
   if (needs.payoff != null) payoffEl.value = needs.payoff;
-
-  // Also accept init message (budget no longer used, but supported)
 }
 
 window.addEventListener('message', (e) => {
   const msg = e?.data || {};
   if (msg.type === 'discovery:init') {
-    // Nothing special to seed now; left for compatibility
+    // kept for compatibility
   }
 });
 
@@ -262,8 +272,9 @@ function persist(){
     towing: towingEl.value,
     seating: seatingEl.value,
     fuel: fuelEl.value,
-    priceMin: priceMinEl.value ? Number(priceMinEl.value) : null,
-    priceMax: priceMaxEl.value ? Number(priceMaxEl.value) : null,
+    // store numerics
+    priceMin: priceMinEl.value ? parseCurrency(priceMinEl.value) : null,
+    priceMax: priceMaxEl.value ? parseCurrency(priceMaxEl.value) : null,
     replace: replaceEl.value,
     tradeYear: tradeYear.value || null,
     tradeMake: tradeMake.value || null,
@@ -271,16 +282,22 @@ function persist(){
     payoff: payoffEl.value ? Number(payoffEl.value) : 0
   };
   save('guided_needs', data);
-  // Keep profile around; we still notify parent so it can advance/progress
   window.parent?.postMessage({ type: 'discovery:update', payload: { model: data.model } }, '*');
 }
 
 // Wire events
-[modelEl, cabEl, useEl, towingEl, seatingEl, fuelEl, priceMinEl, priceMaxEl, replaceEl, tradeYear, tradeMake, tradeModel, payoffEl]
+[modelEl, cabEl, useEl, towingEl, seatingEl, fuelEl, replaceEl, tradeYear, tradeMake, tradeModel, payoffEl]
   .forEach(el => el.addEventListener('input', persist));
 
 modelEl.addEventListener('change', () => { updateCabVisibility(); persist(); });
 replaceEl.addEventListener('change', () => { toggleTradeFields(); persist(); });
+
+// Currency inputs: format on blur, unformat on focus, persist when typing
+[priceMinEl, priceMaxEl].forEach(el => {
+  el.addEventListener('focus', () => unformatInput(el));
+  el.addEventListener('blur',  () => { formatInputCurrency(el); persist(); });
+  el.addEventListener('input', persist);
+});
 
 backBtn.addEventListener('click', () => {
   window.parent?.postMessage({ type: 'discovery:back' }, '*');
