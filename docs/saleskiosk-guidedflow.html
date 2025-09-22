@@ -125,6 +125,29 @@ function renderProgress(){
   });
 }
 
+/* ========= remove dev drawer / notes inside child pages ========= */
+function stripDevNotes(doc){
+  try {
+    if (!doc) return;
+    // 1) Remove the specific <details> drawer whose summary says "Open for more"
+    doc.querySelectorAll('summary').forEach(s => {
+      const txt = (s.textContent || '').trim().toLowerCase();
+      if (txt === 'open for more') {
+        const d = s.closest('details');
+        if (d) d.remove();
+      }
+    });
+    // 2) Remove any elements clearly marked as developer notes
+    doc.querySelectorAll('details.dev-note, .dev-notes, .developer-notes').forEach(el => el.remove());
+    // 3) Remove text blocks that expose internal implementation notes
+    const killPhrases = ['guided_profile', 'welcome:done'];
+    doc.querySelectorAll('p,li,small,div,span').forEach(el => {
+      const t = (el.textContent || '').toLowerCase();
+      if (killPhrases.some(ph => t.includes(ph))) el.remove();
+    });
+  } catch {}
+}
+
 /* ========= load a step (sets title, iframe) ========= */
 function loadStep(i){
   step = Math.max(0, Math.min(i, STEPS.length-1));
@@ -138,10 +161,13 @@ function loadStep(i){
   stage.src = cfg.url;
   stage.style.height = (cfg.height || 480) + 'px';
 
-  // Seed common data if present
+  // Seed common data if present, and strip dev notes after the child loads
   stage.addEventListener('load', function onload(){
     stage.removeEventListener('load', onload);
     try {
+      const doc = stage.contentDocument || stage.contentWindow?.document;
+      stripDevNotes(doc);
+
       const profile = load("guided_profile", { name:'', contact:'', budget:400 });
       if (cfg.url.includes('kiosk-welcome.html')) {
         stage.contentWindow?.postMessage({ type:'welcome:init', payload:{ profile } }, '*');
@@ -190,7 +216,6 @@ window.addEventListener('message', (e) => {
 
   // Trade
   if (type === 'trade:update') {
-    // child may persist trade to localStorage; we just allow updates if needed
     return;
   }
   if (type === 'trade:done') { go(4); return; }
