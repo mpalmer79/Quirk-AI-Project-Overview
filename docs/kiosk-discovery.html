@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Kiosk — Discovery</title>
+  <title>Kiosk — Discovery (Qualification)</title>
 
   <base href="/Quirk-AI-Project-Overview/"/>
   <link rel="stylesheet" href="assets/style.css"/>
@@ -15,31 +15,60 @@
   </style>
 </head>
 <body class="p-2">
-  <div class="max-w-3xl mx-auto">
+  <div class="max-w-4xl mx-auto">
     <div class="rounded-2xl border border-slate-200 shadow bg-white/95 p-4 sm:p-6">
       <h2 class="text-center text-xl sm:text-2xl font-bold text-emerald-800">Discovery</h2>
-      <p class="text-center text-slate-600 mt-1">Tell us your monthly target.</p>
+      <p class="text-center text-slate-600 mt-1">Tell us a little about the vehicle you're shopping for.</p>
 
-      <form id="discForm" class="mt-4 grid gap-4">
-        <div class="grid sm:grid-cols-3 gap-4">
+      <!-- QUALIFICATION FORM -->
+      <form id="discForm" class="mt-5 grid gap-5">
+        <!-- Row: Model of interest -->
+        <div class="grid sm:grid-cols-2 gap-4 items-end">
           <label class="block">
-            <span class="block text-sm font-semibold text-slate-700 mb-1">Budget ($/mo)</span>
-            <input id="budget" type="number" min="50" step="1" class="w-full rounded-xl border p-3 bg-white" placeholder="400" />
+            <span class="block text-sm font-semibold text-slate-700 mb-1">Vehicle you're interested in</span>
+            <select id="model" class="w-full rounded-xl border p-3 bg-white" required></select>
           </label>
 
+          <!-- Silverado sub-choice (hidden unless a Silverado model is chosen) -->
+          <label id="cabWrap" class="block hidden">
+            <span class="block text-sm font-semibold text-slate-700 mb-1">Cab style (Silverado)</span>
+            <select id="cabStyle" class="w-full rounded-xl border p-3 bg-white">
+              <option value="">Any</option>
+              <option>Regular Cab</option>
+              <option>Double Cab</option>
+              <option>Crew Cab</option>
+            </select>
+          </label>
+        </div>
+
+        <!-- Row: Replacing vehicle + payoff -->
+        <div class="grid sm:grid-cols-2 gap-4 items-end">
           <label class="block">
-            <span class="block text-sm font-semibold text-slate-700 mb-1">Term (months)</span>
-            <select id="term" class="w-full rounded-xl border p-3 bg-white">
-              <option>36</option><option>48</option><option selected>72</option><option>84</option>
+            <span class="block text-sm font-semibold text-slate-700 mb-1">Vehicle you're replacing</span>
+            <select id="replaceType" class="w-full rounded-xl border p-3 bg-white">
+              <option value="N/A">N/A (not replacing)</option>
+              <option>Car</option>
+              <option>SUV</option>
+              <option>Truck</option>
+              <option>Van</option>
+              <option>EV / Hybrid</option>
+              <option>Other</option>
             </select>
           </label>
 
           <label class="block">
-            <span class="block text-sm font-semibold text-slate-700 mb-1">APR (%)</span>
-            <input id="apr" type="number" step="0.01" min="0" class="w-full rounded-xl border p-3 bg-white" placeholder="6.99"/>
+            <span class="block text-sm font-semibold text-slate-700 mb-1">Estimated payoff amount (if applicable)</span>
+            <div class="relative">
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
+              <input id="payoff" type="number" min="0" step="1"
+                     class="w-full rounded-xl border p-3 pl-7 bg-white"
+                     value="0" />
+            </div>
+            <p id="payoffHint" class="text-xs text-slate-500 mt-1">Enter $0 if you don't have a loan.</p>
           </label>
         </div>
 
+        <!-- Controls -->
         <div class="flex justify-between">
           <button type="button" id="backBtn" class="px-4 py-2 rounded-xl border bg-white/90">← Back</button>
           <button type="submit" class="px-5 py-3 rounded-2xl bg-emerald-600 text-white font-semibold shadow hover:brightness-110">
@@ -56,59 +85,130 @@ const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } cat
 const load = (k, def) => { try { const v = JSON.parse(localStorage.getItem(k)); return (v ?? def); } catch { return def; } };
 
 const $ = (id) => document.getElementById(id);
-const budgetEl = $('budget');
-const termEl   = $('term');
-const aprEl    = $('apr');
-const form     = $('discForm');
-const backBtn  = $('backBtn');
+const modelEl   = $('model');
+const cabWrapEl = $('cabWrap');
+const cabEl     = $('cabStyle');
+const replaceEl = $('replaceType');
+const payoffEl  = $('payoff');
+const backBtn   = $('backBtn');
+const form      = $('discForm');
 
-/* Seed from parent message or existing storage */
+/* ---------- Build model list ----------
+   Requirement: include models from the screenshot, add Trax, and
+   order so that Corvette* appear at the top and Trax at the bottom,
+   with the remainder alphabetized. */
+const RAW_MODELS = [
+  'Blazer',
+  'Colorado',
+  'Corvette E-Ray',
+  'Corvette Stingray',
+  'Equinox',
+  'Express Cargo 2500',
+  'Express Cargo 3500',
+  'Express Cutaway 3500',
+  'Low Cab Forward 4500',
+  'Silverado 1500',
+  'Silverado 2500 HD',
+  'Silverado 3500 HD Chassis Cab',
+  'Silverado 4000 HD',
+  'Silverado 4500 HD',
+  'Silverado 5500 HD',
+  'Silverado 6500 HD',
+  'Silverado EV',
+  'Suburban',
+  'Tahoe',
+  'Trailblazer',
+  'Traverse',
+  // IMPORTANT: include Trax per request; we’ll move it to bottom later
+  'Trax'
+].filter(Boolean);
+
+// Custom sort: Corvette* first (preserve their relative order),
+// then everything else A→Z (excluding Trax), and Trax last.
+const corvette = RAW_MODELS.filter(m => m.toLowerCase().startsWith('corvette'));
+const othersAZ = RAW_MODELS
+  .filter(m => !m.toLowerCase().startsWith('corvette') && m.toLowerCase() !== 'trax')
+  .sort((a,b) => a.localeCompare(b));
+const traxLast = RAW_MODELS.find(m => m.toLowerCase() === 'trax');
+const MODELS = [...corvette, ...othersAZ, traxLast].filter(Boolean);
+
+function populateModels() {
+  modelEl.innerHTML = '<option value="" disabled selected>Select a model</option>' +
+    MODELS.map(m => `<option>${m}</option>`).join('');
+}
+
+/* ---------- Seed from storage or parent ---------- */
 function seedFromStorage() {
-  const profile = load('guided_profile', { name:'', contact:'', budget:400 });
-  const desk    = load('guided_desk',    { down:2000, apr:6.99, term:72, taxesFees:995, products:{vsc:false,gap:false,maint:false} });
-
-  budgetEl.value = Number(profile.budget || 400);
-  termEl.value   = String(desk.term || 72);
-  aprEl.value    = Number(desk.apr ?? 6.99);
+  const profile = load('guided_profile', { interestedModel:'', silveradoCab:'', replaceType:'N/A', payoff:0 });
+  if (profile.interestedModel) {
+    // wait for populateModels()
+    setTimeout(() => {
+      modelEl.value = profile.interestedModel;
+      toggleCab(profile.interestedModel);
+      if (profile.silveradoCab) cabEl.value = profile.silveradoCab;
+    });
+  }
+  replaceEl.value = profile.replaceType || 'N/A';
+  payoffEl.value  = Number(profile.payoff || 0);
+  updatePayoffState();
 }
 
 window.addEventListener('message', (e) => {
   const msg = e?.data || {};
   if (msg.type === 'discovery:init') {
-    const b = Number(msg.payload?.budget);
-    if (!Number.isNaN(b) && b > 0) budgetEl.value = b;
+    // Nothing specific to seed here right now; left for future use
   }
 });
 
-/* Persist on change, notify parent in real-time */
-function persistAndNotify() {
-  const budget = Math.max(0, Number(budgetEl.value || 0));
-  const term   = Number(termEl.value || 72);
-  const apr    = Number(aprEl.value || 6.99);
-
-  const profile = load('guided_profile', { name:'', contact:'', budget:400 });
-  save('guided_profile', { ...profile, budget });
-
-  const desk = load('guided_desk', { down:2000, apr:6.99, term:72, taxesFees:995, products:{} });
-  save('guided_desk', { ...desk, apr, term });
-
-  window.parent?.postMessage({ type: 'discovery:update', payload: { budget } }, '*');
+/* ---------- UI helpers ---------- */
+function toggleCab(model) {
+  if ((model || '').toLowerCase().startsWith('silverado')) {
+    cabWrapEl.classList.remove('hidden');
+  } else {
+    cabWrapEl.classList.add('hidden');
+    cabEl.value = '';
+  }
 }
 
-/* Wire events */
-[budgetEl, termEl, aprEl].forEach(el => el.addEventListener('input', persistAndNotify));
+function updatePayoffState(){
+  const na = replaceEl.value === 'N/A';
+  payoffEl.disabled = na;
+  document.getElementById('payoffHint').textContent = na
+    ? 'No payoff needed when not replacing.'
+    : 'Enter your approximate remaining loan balance.';
+}
+
+/* ---------- Persist + notify parent ---------- */
+function persistAndNotify(){
+  const payload = {
+    interestedModel: modelEl.value || '',
+    silveradoCab: cabEl.value || '',
+    replaceType: replaceEl.value || 'N/A',
+    payoff: Math.max(0, Number(payoffEl.value || 0))
+  };
+  const prior = load('guided_profile', {});
+  save('guided_profile', { ...prior, ...payload });
+  // Let the parent know something changed (for analytics/progress)
+  window.parent?.postMessage({ type: 'discovery:update', payload }, '*');
+}
+
+/* ---------- Wire events ---------- */
+modelEl.addEventListener('change', (e) => { toggleCab(e.target.value); persistAndNotify(); });
+[ cabEl, replaceEl, payoffEl ].forEach(el => el.addEventListener('input', persistAndNotify));
+replaceEl.addEventListener('change', () => { updatePayoffState(); persistAndNotify(); });
+
 backBtn.addEventListener('click', () => {
   window.parent?.postMessage({ type: 'discovery:back' }, '*');
 });
 
-/* Submit = proceed */
 form.addEventListener('submit', (e) => {
   e.preventDefault();
   persistAndNotify();
   window.parent?.postMessage({ type: 'discovery:done' }, '*');
 });
 
-/* initial fill */
+/* ---------- init ---------- */
+populateModels();
 seedFromStorage();
 </script>
 </body>
