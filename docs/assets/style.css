@@ -948,3 +948,35 @@ footer.footer { flex-shrink: 0; }
 @media (max-width: 768px){
   .home-wrap{ justify-content: center !important; }
 }
+/* =============================
+   Quirk AI Sales Kiosk — Global watermark opacity control
+   Paste this block at the *bottom* of assets/style.css
+   Adjust --kiosk-watermark-alpha toward 1.00 for a more opaque (less transparent) overlay.
+   ============================= */
+
+:root {
+  /* 0.88 was the old value used inline on pages; raise toward 1.00 to make the image less visible */
+  --kiosk-watermark-alpha: 0.96;
+}
+
+/* Apply globally so it overrides per‑page inline styles (even those using !important). */
+html body {
+  background:
+    linear-gradient(rgba(255, 255, 255, var(--kiosk-watermark-alpha)), rgba(255, 255, 255, var(--kiosk-watermark-alpha))),
+    url("assets/kiosk.png") center / cover fixed no-repeat !important;
+  min-height: 100vh;
+}
+
+/* ---------------------------------------------
+   OPTIONAL (scoped version):
+   If you prefer to limit to kiosk pages only, comment out the rule above
+   and use the rule below, then add class="kiosk" to the <body> tag on
+   the kiosk pages (saleskiosk-guidedflow.html, kiosk-*.html, etc.).
+
+body.kiosk {
+  background:
+    linear-gradient(rgba(255, 255, 255, var(--kiosk-watermark-alpha)), rgba(255, 255, 255, var(--kiosk-watermark-alpha))),
+    url("assets/kiosk.png") center / cover fixed no-repeat !important;
+  min-height: 100vh;
+}
+---------------------------------------------- */
