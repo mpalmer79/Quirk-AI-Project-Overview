@@ -13,25 +13,40 @@
     :focus-visible { outline: 2px solid #34d399; outline-offset: 2px; }
     body { background: transparent; }
 
-    .field-label { @apply block text-sm font-semibold text-slate-700 mb-1; }
-    .field-input { @apply w-full rounded-xl border p-3 bg-white; }
+    /* Generic field styling (no @apply so it works without a build step) */
+    .field-label{display:block;font-size:.875rem;font-weight:600;color:#334155;margin-bottom:.25rem}
+    .field-input{width:100%;border:1px solid #e5e7eb;border-radius:.75rem;padding:.75rem;background:#fff}
+    .field-input:focus{outline:2px solid #10b981;outline-offset:2px}
 
-    /* make the two currency fields narrower as in the mock */
-    .short-money { width: 17rem; }
-    @media (min-width: 640px){ .short-money { width: 20rem; } }
-    @media (min-width: 768px){ .short-money { width: 22rem; } }
+    /* Hide number spinners where we still use type=number anywhere */
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button{ -webkit-appearance: none; margin: 0; }
+    input[type="number"]{ -moz-appearance: textfield; }
 
-    /* small payoff box, no spinner */
-    .payoff-input { width: 8.5rem; -moz-appearance: textfield; }
-    .payoff-input::-webkit-outer-spin-button,
-    .payoff-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    /* Compact widths requested */
+    .w-seating   { width: 8ch; }     /* “5”, “6–7”, “8+” fit snugly */
+    .w-fuel      { width: 12ch; }    /* just a bit wider than “Gasoline” */
+    .w-invest    { width: 28ch; }    /* Initial Investment box */
+    .w-budget    { width: 26ch; }    /* Monthly budget box */
+    .w-payoff    { width: 22ch; }    /* Estimated payoff a bit wider */
 
-    /* center the “Vehicle you’re replacing” section title and style like Discovery */
-    .trade-title {
-      @apply text-center font-extrabold;
-      color: #0b6e37;              /* same green tone */
-      font-size: clamp(1.2rem, 2.2vw, 1.4rem);
+    /* Center the first row’s “Vehicle you’re interested in” nicely */
+    .first-row { grid-template-columns: 1fr; }
+    @media (min-width: 900px){ .first-row { grid-template-columns: 1fr 1fr; } }
+
+    /* Section title to match the green “Discovery” style */
+    .section-title{
+      text-align:center;color:#065f46;font-weight:800;
+      font-size:1.25rem;margin-top:1.25rem;margin-bottom:.25rem;
     }
+    .subtle { color:#64748b }
+
+    /* Currency inputs: leave room after the $ and tweak paddings as requested */
+    .currency { padding-left: 2.5rem; }       /* base left padding (pl-10) */
+    .currency.tight { padding-left: 2.25rem; }/* a touch less (pl-9) */
+
+    /* Keep the green CTA centered and without any arrow graphic */
+    .cta { display:flex; justify-content:center; }
   </style>
 </head>
 <body class="p-2">
@@ -42,15 +57,16 @@
 
       <!-- FORM -->
       <form id="discForm" class="mt-5 grid gap-5">
-        <!-- Row: Vehicle of interest (centered pair when Silverado adds cab) -->
-        <div class="grid md:grid-cols-2 gap-4 items-end justify-center">
-          <label class="block">
+        <!-- Row: Vehicle of interest (centered row) -->
+        <div class="grid first-row gap-4 items-end place-items-center md:place-items-stretch">
+          <label class="block w-full md:w-auto">
             <span class="field-label">Vehicle you’re interested in</span>
             <select id="model" class="field-input"></select>
           </label>
-          <label id="cabWrap" class="block hidden">
+
+          <label id="cabWrap" class="block hidden w-full md:w-auto">
             <span class="field-label">Cab style (Silverado)</span>
-            <select id="cab" class="field-input">
+            <select id="cab" class="field-input w-[18ch]">
               <option value="">Any</option>
               <option>Regular Cab</option>
               <option>Double Cab</option>
@@ -59,7 +75,7 @@
           </label>
         </div>
 
-        <!-- Row: Primary use + Tow Capacity -->
+        <!-- Row: Primary use + Tow capacity -->
         <div class="grid md:grid-cols-2 gap-4">
           <label class="block">
             <span class="field-label">Primary use</span>
@@ -72,9 +88,10 @@
               <option>Luxury / performance</option>
             </select>
           </label>
+
           <label class="block">
             <span class="field-label">Tow Capacity needed</span>
-            <select id="towing" class="field-input sm:max-w-md short-money">
+            <select id="towing" class="field-input w-[22ch]">
               <option>None</option>
               <option>Light (≤ 3,500 lbs)</option>
               <option>Medium (3,500–7,500 lbs)</option>
@@ -83,20 +100,21 @@
           </label>
         </div>
 
-        <!-- Row: Seating + Fuel type -->
+        <!-- Row: Seating + Fuel type (both trimmed) -->
         <div class="grid md:grid-cols-2 gap-4">
           <label class="block">
             <span class="field-label">Preferred seating</span>
-            <select id="seating" class="field-input short-money">
+            <select id="seating" class="field-input w-seating">
               <option>2</option>
               <option selected>5</option>
               <option>6–7</option>
               <option>8+</option>
             </select>
           </label>
+
           <label class="block">
             <span class="field-label">Fuel type</span>
-            <select id="fuel" class="field-input short-money">
+            <select id="fuel" class="field-input w-fuel">
               <option selected>Gasoline</option>
               <option>Diesel</option>
               <option>Hybrid</option>
@@ -106,34 +124,39 @@
           </label>
         </div>
 
-        <!-- Row: Money inputs (narrower) -->
+        <!-- Row: Investment + Budget (compact, paddings adjusted) -->
         <div class="grid md:grid-cols-2 gap-4">
           <label class="block">
             <span class="field-label">Initial Investment (approx)</span>
             <div class="relative">
-              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
-              <input id="priceMin" type="text" inputmode="numeric" class="field-input pl-7 short-money"
-                     placeholder="20% recommended downpayment"/>
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 select-none">$</span>
+              <input id="downPayment" type="text"
+                     class="field-input currency w-invest"
+                     placeholder="  20% recommended downpayment"/>
             </div>
           </label>
+
           <label class="block">
             <span class="field-label">What is your monthly budget?</span>
             <div class="relative">
-              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
-              <input id="priceMax" type="text" inputmode="numeric" class="field-input pl-7 short-money"
-                     placeholder="$650.00"/>
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 select-none">$</span>
+              <input id="budget" type="text"
+                     class="field-input currency tight w-budget"
+                     value="650.00"/>
             </div>
           </label>
         </div>
 
-        <!-- Trade section -->
-        <h3 class="trade-title mt-1">Vehicle you’re replacing</h3>
+        <!-- ===== Vehicle you're replacing (centered heading like Discovery) ===== -->
+        <h3 class="section-title">Vehicle you’re replacing</h3>
+        <p class="text-center subtle -mt-2">Tell us a bit about the one you’re trading.</p>
 
+        <!-- Trade details -->
         <div class="grid md:grid-cols-4 gap-4">
           <label class="block">
             <span class="field-label">Year</span>
             <select id="tradeYear" class="field-input">
-              <!-- options added in JS -->
+              <!-- options filled by JS; first option will be “Select Year” -->
             </select>
           </label>
 
@@ -150,70 +173,75 @@
           <label class="block">
             <span class="field-label">Estimated payoff</span>
             <div class="relative">
-              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
-              <input id="payoff" type="text" inputmode="numeric"
-                     class="field-input pl-7 payoff-input appearance-none"
-                     placeholder="Enter payoff amount here" />
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 select-none">$</span>
+              <input id="payoff" type="text" class="field-input currency w-payoff" value="0.00"/>
             </div>
           </label>
         </div>
 
-        <!-- Current mileage under Year row -->
+        <!-- Current mileage -->
         <div class="grid md:grid-cols-4 gap-4">
           <label class="block">
             <span class="field-label">Current mileage</span>
-            <input id="mileage" type="text" inputmode="numeric" class="field-input"
-                   placeholder="Enter miles"/>
+            <input id="miles" type="text" maxlength="8" class="field-input w-[16ch]" placeholder="Enter miles"/>
           </label>
         </div>
 
         <!-- Actions -->
-        <div class="flex justify-center pt-1">
-          <div class="flex gap-3">
-            <button type="button" id="backBtn" class="px-4 py-2 rounded-xl border bg-white/90">← Back</button>
-            <button type="submit" class="px-5 py-3 rounded-2xl bg-emerald-600 text-white font-semibold shadow hover:brightness-110">
-              Pick a vehicle →
-            </button>
-          </div>
+        <div class="cta pt-2">
+          <button type="button" id="backBtn" class="px-4 py-2 rounded-xl border bg-white/90 mr-3">← Back</button>
+          <button type="submit" class="px-5 py-3 rounded-2xl bg-emerald-600 text-white font-semibold shadow hover:brightness-110">
+            Pick a vehicle
+          </button>
         </div>
       </form>
     </div>
   </div>
 
 <script>
-/* ---------- storage helpers ---------- */
-const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
-const load = (k, def) => { try { const v = JSON.parse(localStorage.getItem(k)); return (v ?? def); } catch { return def; } };
-
-/* Elements */
+/* ---------------- helpers ---------------- */
 const $ = (id) => document.getElementById(id);
+const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
+
+function formatMoney(val){
+  const n = Number(val || 0);
+  return n.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+function parseMoney(str){
+  return Number(String(str || "0").replace(/[^\d.]/g,'') || 0);
+}
+
+/* ---------------- elements ---------------- */
 const modelEl   = $('model');
 const cabWrap   = $('cabWrap');
 const cabEl     = $('cab');
+
 const useEl     = $('use');
 const towingEl  = $('towing');
 const seatingEl = $('seating');
 const fuelEl    = $('fuel');
-const priceMinEl= $('priceMin');
-const priceMaxEl= $('priceMax');
-const yearEl    = $('tradeYear');
+
+const downEl    = $('downPayment');
+const budgetEl  = $('budget');
+
+const tradeYear = $('tradeYear');
 const tradeMake = $('tradeMake');
 const tradeModel= $('tradeModel');
 const payoffEl  = $('payoff');
-const mileageEl = $('mileage');
+const milesEl   = $('miles');
+
 const form      = $('discForm');
 const backBtn   = $('backBtn');
 
-/* Build model list */
+/* ------------- data ------------- */
 const RAW_MODELS = [
-  'Blazer', 'Colorado', 'Corvette E-Ray', 'Corvette Stingray', 'Equinox',
-  'Express Cargo 2500', 'Express Cargo 3500', 'Express Cutaway 3500',
-  'Low Cab Forward 4500', 'Low Cab Forward 4500 HD', 'Low Cab Forward 5500 HD', 'Low Cab Forward 6500 HD',
-  'Silverado 1500', 'Silverado 2500 HD', 'Silverado 3500 HD', 'Silverado 3500 HD Chassis Cab',
-  'Silverado 4500 HD', 'Silverado 5500 HD', 'Silverado 6500 HD', 'Silverado EV',
-  'Suburban', 'Tahoe', 'Trailblazer', 'Traverse', 'Trax'
+  'Blazer','Colorado','Corvette E-Ray','Corvette Stingray','Equinox',
+  'Express Cargo 2500','Express Cargo 3500','Express Cutaway 3500',
+  'Low Cab Forward 4500','Low Cab Forward 4500 HD','Low Cab Forward 5500 HD','Low Cab Forward 6500 HD',
+  'Silverado 1500','Silverado 2500 HD','Silverado 3500 HD','Silverado 3500 HD Chassis Cab',
+  'Silverado 4500 HD','Silverado 5500 HD','Silverado 6500 HD','Silverado EV',
+  'Suburban','Tahoe','Trailblazer','Traverse','Trax'
 ];
-
 function customSort(a,b){
   const weight = (name) => name.startsWith('Corvette') ? 0 : (name === 'Trax' ? 2 : 1);
   const wa = weight(a), wb = weight(b);
@@ -222,55 +250,32 @@ function customSort(a,b){
 }
 const MODELS = [...RAW_MODELS].sort(customSort);
 
+/* ------------- init lists ------------- */
 function fillModels(){
   modelEl.innerHTML = MODELS.map(m => `<option>${m}</option>`).join('');
 }
+function isSilverado(model){ return /^Silverado\s(1500|2500|3500)/.test(model); }
+function updateCabVisibility(){ cabWrap.classList.toggle('hidden', !isSilverado(modelEl.value || '')); }
 
-/* Silverado cab visibility */
-function isSilverado(model){
-  return /^Silverado\s(1500|2500|3500)/.test(model);
-}
-function updateCabVisibility(){
-  const m = modelEl.value || '';
-  cabWrap.classList.toggle('hidden', !isSilverado(m));
-}
-
-/* Years dropdown */
 function fillYears(){
-  const now = new Date().getFullYear();
+  const thisYear = new Date().getFullYear();
   const start = 1990;
-  let opts = `<option value="" disabled selected>Select Year</option>`;
-  for(let y = now; y >= start; y--){
-    opts += `<option value="${y}">${y}</option>`;
-  }
-  yearEl.innerHTML = opts;
+  const opts = [`<option value="" selected disabled>Select Year</option>`];
+  for(let y=thisYear; y>=start; y--) opts.push(`<option>${y}</option>`);
+  tradeYear.innerHTML = opts.join('');
 }
 
-/* Toggle extra trade fields – vehicle type dropdown removed per spec */
-
-/* Currency helpers */
-const numFrom = (s) => Number(String(s).replace(/[^\d.]/g,'') || 0);
-const toMoney = (n) => n === 0 ? '' : n.toLocaleString(undefined,{style:'currency',currency:'USD',maximumFractionDigits:2});
-
-function attachMoneyMask(el){
-  el.addEventListener('blur', () => {
-    const val = numFrom(el.value);
-    el.value = val ? toMoney(val) : '';
-  });
-  el.addEventListener('focus', () => {
-    el.select();
-  });
+/* ------------- “fresh” defaults ------------- */
+function setFreshDefaults(){
+  // DO NOT load from prior localStorage; start clean
+  // Budget shown as 650.00 (formatted) and payoff as 0.00
+  budgetEl.value = formatMoney(650);
+  payoffEl.value = formatMoney(0);
+  downEl.value   = "";               // placeholder visible
+  milesEl.value  = "";               // placeholder visible
 }
 
-function attachCommaMask(el){
-  el.addEventListener('blur', () => {
-    const n = numFrom(el.value);
-    el.value = n ? n.toLocaleString() : '';
-  });
-  el.addEventListener('focus', () => el.select());
-}
-
-/* Persist */
+/* ------------- persistence ------------- */
 function persist(){
   const data = {
     model: modelEl.value,
@@ -279,76 +284,46 @@ function persist(){
     towing: towingEl.value,
     seating: seatingEl.value,
     fuel: fuelEl.value,
-    priceMin: numFrom(priceMinEl.value) || null,
-    priceMax: numFrom(priceMaxEl.value) || null,
-    tradeYear: yearEl.value || null,
+    downPayment: parseMoney(downEl.value),
+    budget: parseMoney(budgetEl.value),
+    tradeYear: tradeYear.value || null,
     tradeMake: tradeMake.value || null,
     tradeModel: tradeModel.value || null,
-    payoff: numFrom(payoffEl.value) || null,
-    mileage: numFrom(mileageEl.value) || null
+    payoff: parseMoney(payoffEl.value),
+    miles: milesEl.value ? Number(String(milesEl.value).replace(/[^\d]/g,'')) : null,
   };
   save('guided_needs', data);
   window.parent?.postMessage({ type: 'discovery:update', payload: { model: data.model } }, '*');
 }
 
-/* Wire events */
-[
-  modelEl, cabEl, useEl, towingEl, seatingEl, fuelEl,
-  priceMinEl, priceMaxEl, yearEl, tradeMake, tradeModel, payoffEl, mileageEl
-].forEach(el => el.addEventListener('input', persist));
+/* ------------- wire currency behavior ------------- */
+function attachCurrency(el){
+  el.addEventListener('blur', () => { el.value = formatMoney(parseMoney(el.value)); persist(); });
+  el.addEventListener('input', () => { /* live store numeric */ persist(); });
+}
+[downEl, budgetEl, payoffEl].forEach(attachCurrency);
+
+/* ------------- events ------------- */
+[modelEl, cabEl, useEl, towingEl, seatingEl, fuelEl, tradeYear, tradeMake, tradeModel, milesEl]
+  .forEach(el => el.addEventListener('input', persist));
 
 modelEl.addEventListener('change', () => { updateCabVisibility(); persist(); });
 
 backBtn.addEventListener('click', () => {
   window.parent?.postMessage({ type: 'discovery:back' }, '*');
 });
-
 form.addEventListener('submit', (e) => {
   e.preventDefault();
   persist();
   window.parent?.postMessage({ type: 'discovery:done' }, '*');
 });
 
-/* Masks */
-attachMoneyMask(priceMinEl);
-attachMoneyMask(priceMaxEl);
-attachMoneyMask(payoffEl);
-attachCommaMask(mileageEl);
-
-/* Seed from storage / parent */
-function seedFromStorage(){
-  const needs = load('guided_needs', {});
-  fillModels();
-  fillYears();
-
-  if (needs.model && MODELS.includes(needs.model)) modelEl.value = needs.model;
-  updateCabVisibility();
-  if (needs.cab) cabEl.value = needs.cab;
-
-  if (needs.use) useEl.value = needs.use;
-  if (needs.towing) towingEl.value = needs.towing;
-  if (needs.seating) seatingEl.value = needs.seating;
-  if (needs.fuel) fuelEl.value = needs.fuel;
-
-  if (needs.priceMin) priceMinEl.value = toMoney(needs.priceMin);
-  if (needs.priceMax) priceMaxEl.value = toMoney(needs.priceMax);
-
-  if (needs.tradeYear) yearEl.value = needs.tradeYear;
-  if (needs.tradeMake) tradeMake.value = needs.tradeMake;
-  if (needs.tradeModel) tradeModel.value = needs.tradeModel;
-  if (needs.payoff) payoffEl.value = toMoney(needs.payoff);
-  if (needs.mileage) mileageEl.value = Number(needs.mileage).toLocaleString();
-}
-
-window.addEventListener('message', (e) => {
-  // placeholder for parent-originated seeding if needed later
-});
-
-/* Init */
+/* ------------- boot ------------- */
 fillModels();
 fillYears();
-seedFromStorage();
 updateCabVisibility();
+setFreshDefaults();
+persist(); // store the initial fresh state
 </script>
 </body>
 </html>
