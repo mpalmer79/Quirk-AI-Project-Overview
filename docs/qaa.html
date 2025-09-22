@@ -33,17 +33,16 @@
     .hero .title { font-size:clamp(1.8rem, 3.6vw, 2.6rem); margin:8px 0; }
     .hero .subtitle { margin:0 auto; max-width:1100px; color:#556; }
 
-    /* ---------- Page-specific watermark (assets/3.webp @ 50% opacity) ---------- */
+    /* ---------- Static watermark (no animation/bobbing) ---------- */
     body.watermarked::before{
       content:"";
       position:fixed;
       inset:0;
       background:url("assets/3.webp") center / cover no-repeat;
-      opacity:.5;               /* 50% opacity */
-      pointer-events:none;       /* don't block clicks */
-      z-index:0;                 /* sit behind content */
+      opacity:.5;              /* 50% opacity */
+      pointer-events:none;
+      z-index:0;
     }
-    /* Ensure all normal content paints above the watermark */
     body.watermarked > *{ position:relative; z-index:1; }
 
     /* ---------- Local layout & components ---------- */
@@ -52,9 +51,9 @@
     .section .section-head h2 { margin:0 0 6px; }
     .muted { color:#667085; }
 
-    /* TOC — STATIC (not sticky) */
+    /* On-page TOC — static (no sticky) */
     .toc {
-      position: static; top: auto; z-index: auto;
+      position: static; top: auto; z-index: 1;
       max-width:1100px; margin:10px auto 20px; padding:10px 16px;
       display:flex; flex-wrap:wrap; gap:8px; justify-content:center;
     }
@@ -106,8 +105,8 @@
     .footer{
       width:100%;
       padding:22px 0 28px;
-      display:grid;           /* robust centering even with Android zoom/text autoscale */
-      place-items:center;     /* centers both horizontally and vertically */
+      display:grid;           /* robust centering */
+      place-items:center;     /* centers both axes */
       text-align:center;
     }
     .footer .copyright{
@@ -122,7 +121,6 @@
   <main class="page-wrap">
     <!-- Hero -->
     <section class="hero" aria-labelledby="page-title">
-      <!-- HOME pill moved down and centered -->
       <div class="home-wrap">
         <a class="home-btn" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
       </div>
