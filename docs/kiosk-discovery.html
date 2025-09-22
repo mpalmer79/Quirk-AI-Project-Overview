@@ -13,23 +13,20 @@
     :focus-visible { outline: 2px solid #34d399; outline-offset: 2px; }
     body { background: transparent; }
 
-    /* Hide number spinners (Estimated payoff) */
+    /* remove number spinners */
     .no-spin::-webkit-outer-spin-button,
-    .no-spin::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-    .no-spin { -moz-appearance: textfield; }
+    .no-spin::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
+    .no-spin { -moz-appearance:textfield; }
   </style>
 </head>
 <body class="p-2">
   <div class="max-w-4xl mx-auto">
-    <!-- inner border removed per earlier request -->
     <div class="rounded-2xl shadow bg-white/95 p-4 sm:p-6">
       <h2 class="text-center text-xl sm:text-2xl font-bold text-emerald-800">Discovery</h2>
       <p class="text-center text-slate-600 mt-1">Answer a few questions so we can match the right vehicle.</p>
 
-      <!-- FORM -->
       <form id="discForm" class="mt-5 grid gap-5">
-        <!-- Row: Vehicle of interest -->
-        <!-- Default = single centered column; if Silverado => JS switches to 2 cols -->
+        <!-- Vehicle of interest row (centers when Silverado cab is hidden) -->
         <div id="modelRow" class="grid md:grid-cols-1 justify-items-center gap-4 items-end">
           <label class="block w-full max-w-md mx-auto">
             <span class="block text-sm font-semibold text-slate-700 mb-1">Vehicle you’re interested in</span>
@@ -46,7 +43,7 @@
           </label>
         </div>
 
-        <!-- Row: Primary use + Towing need -->
+        <!-- Primary use + Tow capacity -->
         <div class="grid md:grid-cols-2 gap-4">
           <label class="block">
             <span class="block text-sm font-semibold text-slate-700 mb-1">Primary use</span>
@@ -59,8 +56,10 @@
               <option>Luxury / performance</option>
             </select>
           </label>
-          <label class="block">
-            <span class="block text-sm font-semibold text-slate-700 mb-1">Towing need</span>
+
+          <!-- shorter width on md+ -->
+          <label class="block md:max-w-[18rem]">
+            <span class="block text-sm font-semibold text-slate-700 mb-1">Tow Capacity needed</span>
             <select id="towing" class="w-full rounded-xl border p-3 bg-white">
               <option>None</option>
               <option>Light (≤ 3,500 lbs)</option>
@@ -70,9 +69,9 @@
           </label>
         </div>
 
-        <!-- Row: Seating + Fuel type -->
+        <!-- Seating + Fuel (trimmed widths) -->
         <div class="grid md:grid-cols-2 gap-4">
-          <label class="block">
+          <label class="block md:max-w-[7.5rem]">
             <span class="block text-sm font-semibold text-slate-700 mb-1">Preferred seating</span>
             <select id="seating" class="w-full rounded-xl border p-3 bg-white">
               <option>2</option>
@@ -81,7 +80,8 @@
               <option>8+</option>
             </select>
           </label>
-          <label class="block">
+
+          <label class="block md:max-w-[16rem]">
             <span class="block text-sm font-semibold text-slate-700 mb-1">Fuel type</span>
             <select id="fuel" class="w-full rounded-xl border p-3 bg-white">
               <option selected>Gasoline</option>
@@ -93,72 +93,64 @@
           </label>
         </div>
 
-        <!-- Row: Investment + Budget -->
+        <!-- Investment + Budget -->
         <div class="grid md:grid-cols-2 gap-4">
           <label class="block">
             <span class="block text-sm font-semibold text-slate-700 mb-1">Initial Investment (approx)</span>
-            <input
-              id="priceMin"
-              type="text"
-              inputmode="decimal"
-              class="w-full rounded-xl border p-3 bg-white"
-              placeholder="20% recommended downpayment" />
+            <input id="priceMin" type="text" inputmode="decimal"
+                   class="w-full rounded-xl border p-3 bg-white"
+                   placeholder="20% recommended downpayment" />
           </label>
 
           <label class="block">
             <span class="block text-sm font-semibold text-slate-700 mb-1">What is your monthly budget?</span>
-            <input
-              id="priceMax"
-              type="text"
-              inputmode="decimal"
-              class="w-full rounded-xl border p-3 bg-white"
-              placeholder="$650.00" />
+            <input id="priceMax" type="text" inputmode="decimal"
+                   class="w-full rounded-xl border p-3 bg-white"
+                   placeholder="$650.00" />
           </label>
         </div>
 
-        <!-- Row: Replacement / Trade info -->
-        <div class="grid gap-4">
+        <!-- ===== Trade section header (no dropdown) ===== -->
+        <h3 class="text-center text-emerald-800 font-bold text-xl sm:text-2xl mt-2">Vehicle you’re replacing</h3>
+
+        <!-- Trade fields -->
+        <div id="tradeExtra" class="grid md:grid-cols-4 gap-4">
+          <!-- Year (placeholder 'Choose Year') -->
           <label class="block">
-            <span class="block text-sm font-semibold text-slate-700 mb-1">Vehicle you’re replacing</span>
-            <select id="replace" class="w-full rounded-xl border p-3 bg-white">
-              <option selected>N/A (not replacing)</option>
-              <option>Car (sedan/coupe)</option>
-              <option>SUV / Crossover</option>
-              <option>Truck</option>
-              <option>Van</option>
-              <option>Other</option>
-            </select>
+            <span class="block text-sm font-semibold text-slate-700 mb-1">Year</span>
+            <select id="tradeYear" class="w-full rounded-xl border p-3 bg-white"></select>
           </label>
 
-          <div id="tradeExtra" class="grid md:grid-cols-4 gap-4 hidden">
-            <!-- Year as dropdown -->
-            <label class="block">
-              <span class="block text-sm font-semibold text-slate-700 mb-1">Year</span>
-              <select id="tradeYear" class="w-full rounded-xl border p-3 bg-white"></select>
-            </label>
+          <label class="block">
+            <span class="block text-sm font-semibold text-slate-700 mb-1">Make</span>
+            <input id="tradeMake" type="text" class="w-full rounded-xl border p-3 bg-white" placeholder="e.g., Chevrolet"/>
+          </label>
 
-            <label class="block">
-              <span class="block text-sm font-semibold text-slate-700 mb-1">Make</span>
-              <input id="tradeMake" type="text" class="w-full rounded-xl border p-3 bg-white" placeholder="e.g., Chevrolet"/>
-            </label>
+          <label class="block">
+            <span class="block text-sm font-semibold text-slate-700 mb-1">Model</span>
+            <input id="tradeModel" type="text" class="w-full rounded-xl border p-3 bg-white" placeholder="e.g., Equinox"/>
+          </label>
 
-            <label class="block">
-              <span class="block text-sm font-semibold text-slate-700 mb-1">Model</span>
-              <input id="tradeModel" type="text" class="w-full rounded-xl border p-3 bg-white" placeholder="e.g., Equinox"/>
-            </label>
+          <!-- Estimated payoff (slightly wider than before) -->
+          <label class="block">
+            <span class="block text-sm font-semibold text-slate-700 mb-1">Estimated payoff</span>
+            <div class="relative inline-block" style="width:12ch;">
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
+              <input id="payoff" type="number" min="0" step="100"
+                     class="no-spin w-full rounded-xl border p-3 bg-white pl-7" value="0" />
+            </div>
+          </label>
 
-            <label class="block">
-              <span class="block text-sm font-semibold text-slate-700 mb-1">Estimated payoff</span>
-              <div class="relative inline-block" style="width:10ch;">
-                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">$</span>
-                <input id="payoff" type="number" min="0" step="100"
-                       class="no-spin w-full rounded-xl border p-3 bg-white pl-7" value="0" />
-              </div>
-            </label>
-          </div>
+          <!-- New row, beneath Year: Current mileage -->
+          <label class="block md:col-start-1">
+            <span class="block text-sm font-semibold text-slate-700 mb-1">Current mileage</span>
+            <input id="mileage" type="text" inputmode="numeric" maxlength="8"
+                   class="w-full rounded-xl border p-3 bg-white"
+                   placeholder="Enter miles" />
+          </label>
         </div>
 
-        <!-- Actions: center the green button, keep Back at left -->
+        <!-- Actions (center primary CTA) -->
         <div class="grid grid-cols-3 items-center pt-1">
           <button type="button" id="backBtn" class="justify-self-start px-4 py-2 rounded-xl border bg-white/90">← Back</button>
           <button type="submit" class="justify-self-center px-5 py-3 rounded-2xl bg-emerald-600 text-white font-semibold shadow hover:brightness-110">
@@ -171,12 +163,13 @@
   </div>
 
 <script>
-// ---------- storage helpers ----------
+/* ---------- storage helpers ---------- */
 const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
 const load = (k, def) => { try { const v = JSON.parse(localStorage.getItem(k)); return (v ?? def); } catch { return def; } };
 
-// Elements
 const $ = (id) => document.getElementById(id);
+
+/* Elements */
 const modelRow = $('modelRow');
 const modelEl   = $('model');
 const cabWrap   = $('cabWrap');
@@ -185,88 +178,74 @@ const useEl     = $('use');
 const towingEl  = $('towing');
 const seatingEl = $('seating');
 const fuelEl    = $('fuel');
-const priceMinEl= $('priceMin');   // Initial Investment
-const priceMaxEl= $('priceMax');   // Monthly Budget
-const replaceEl = $('replace');
-const tradeExtra= $('tradeExtra');
-const tradeYear = $('tradeYear');  // now a select
+const priceMinEl= $('priceMin'); // Initial Investment
+const priceMaxEl= $('priceMax'); // Monthly Budget
+const tradeYear = $('tradeYear');
 const tradeMake = $('tradeMake');
 const tradeModel= $('tradeModel');
 const payoffEl  = $('payoff');
+const mileageEl = $('mileage');
 const form      = $('discForm');
 const backBtn   = $('backBtn');
 
-// Currency helpers
+/* Currency helpers (investment/budget) */
 const fmtUSD = new Intl.NumberFormat('en-US', { style:'currency', currency:'USD', minimumFractionDigits:2 });
-function parseCurrency(str){
-  const n = Number(String(str || '').replace(/[^0-9.]/g,''));
-  return Number.isFinite(n) ? n : 0;
-}
-function formatInputCurrency(el){
-  const n = parseCurrency(el.value);
-  el.value = n ? fmtUSD.format(n) : '';
-}
-function unformatInput(el){
-  const n = parseCurrency(el.value);
-  el.value = n ? String(n) : '';
-}
+function parseCurrency(str){ const n = Number(String(str||'').replace(/[^0-9.]/g,'')); return Number.isFinite(n) ? n : 0; }
+function formatInputCurrency(el){ const n = parseCurrency(el.value); el.value = n ? fmtUSD.format(n) : ''; }
+function unformatInput(el){ const n = parseCurrency(el.value); el.value = n ? String(n) : ''; }
 
-// Build model list
+/* Mileage formatting (adds commas) */
+const fmtInt = new Intl.NumberFormat('en-US', { maximumFractionDigits:0 });
+function parseIntOnly(str){ const n = Number(String(str||'').replace(/[^0-9]/g,'')); return Number.isFinite(n) ? n : 0; }
+function formatMileage(el){ const n = parseIntOnly(el.value); el.value = n ? fmtInt.format(n) : ''; }
+function unformatMileage(el){ el.value = String(parseIntOnly(el.value) || ''); }
+
+/* Models */
 const RAW_MODELS = [
-  'Blazer', 'Colorado', 'Corvette E-Ray', 'Corvette Stingray', 'Equinox',
-  'Express Cargo 2500', 'Express Cargo 3500', 'Express Cutaway 3500',
-  'Low Cab Forward 4500', 'Low Cab Forward 4500 HD', 'Low Cab Forward 5500 HD', 'Low Cab Forward 6500 HD',
-  'Silverado 1500', 'Silverado 2500 HD', 'Silverado 3500 HD', 'Silverado 3500 HD Chassis Cab',
-  'Silverado 4500 HD', 'Silverado 5500 HD', 'Silverado 6500 HD', 'Silverado EV',
-  'Suburban', 'Tahoe', 'Trailblazer', 'Traverse', 'Trax'
+  'Blazer','Colorado','Corvette E-Ray','Corvette Stingray','Equinox',
+  'Express Cargo 2500','Express Cargo 3500','Express Cutaway 3500',
+  'Low Cab Forward 4500','Low Cab Forward 4500 HD','Low Cab Forward 5500 HD','Low Cab Forward 6500 HD',
+  'Silverado 1500','Silverado 2500 HD','Silverado 3500 HD','Silverado 3500 HD Chassis Cab',
+  'Silverado 4500 HD','Silverado 5500 HD','Silverado 6500 HD','Silverado EV',
+  'Suburban','Tahoe','Trailblazer','Traverse','Trax'
 ];
 
 function customSort(a,b){
-  const weight = (name) => name.startsWith('Corvette') ? 0 : (name === 'Trax' ? 2 : 1);
+  const weight = (n) => n.startsWith('Corvette') ? 0 : (n === 'Trax' ? 2 : 1);
   const wa = weight(a), wb = weight(b);
   if (wa !== wb) return wa - wb;
   return a.localeCompare(b);
 }
 const MODELS = [...RAW_MODELS].sort(customSort);
 
-// Fill helpers
-function fillModels(){
-  modelEl.innerHTML = MODELS.map(m => `<option>${m}</option>`).join('');
-}
-function fillYears(){
-  const start = 1990;
-  const end = new Date().getFullYear();
-  const opts = ['<option value="">Year</option>'];
-  for (let y=end; y>=start; y--) opts.push(`<option>${y}</option>`);
-  tradeYear.innerHTML = opts.join('');
-}
-function isSilverado(model){
-  return /^Silverado\s(1500|2500|3500)/.test(model);
-}
+function fillModels(){ modelEl.innerHTML = MODELS.map(m=>`<option>${m}</option>`).join(''); }
+function isSilverado(model){ return /^Silverado\s(1500|2500|3500)/.test(model); }
+
 function updateCabVisibility(){
   const showCab = isSilverado(modelEl.value || '');
   cabWrap.classList.toggle('hidden', !showCab);
-
-  // switch layout: 1 centered col (no cab) ⇄ 2 cols (with cab)
   if (showCab){
-    modelRow.classList.remove('md:grid-cols-1', 'justify-items-center');
+    modelRow.classList.remove('md:grid-cols-1','justify-items-center');
     modelRow.classList.add('md:grid-cols-2');
   } else {
     modelRow.classList.remove('md:grid-cols-2');
-    modelRow.classList.add('md:grid-cols-1', 'justify-items-center');
+    modelRow.classList.add('md:grid-cols-1','justify-items-center');
   }
 }
-function toggleTradeFields(){
-  const val = replaceEl.value;
-  const show = val && !val.startsWith('N/A');
-  tradeExtra.classList.toggle('hidden', !show);
+
+/* Years */
+function fillYears(){
+  const start = 1990;
+  const end = new Date().getFullYear();
+  const opts = ['<option value="" selected disabled>Choose Year</option>'];
+  for(let y=end; y>=start; y--) opts.push(`<option>${y}</option>`);
+  tradeYear.innerHTML = opts.join('');
 }
 
-// Seed from storage / parent
+/* Seed */
 function seedFromStorage(){
   const needs = load('guided_needs', {});
-  fillModels();
-  fillYears();
+  fillModels(); fillYears();
 
   if (needs.model && MODELS.includes(needs.model)) modelEl.value = needs.model;
   updateCabVisibility();
@@ -280,21 +259,14 @@ function seedFromStorage(){
   if (needs.priceMin != null) priceMinEl.value = fmtUSD.format(Number(needs.priceMin));
   if (needs.priceMax != null) priceMaxEl.value = fmtUSD.format(Number(needs.priceMax));
 
-  if (needs.replace) replaceEl.value = needs.replace;
-  toggleTradeFields();
   if (needs.tradeYear)  tradeYear.value  = needs.tradeYear;
   if (needs.tradeMake)  tradeMake.value  = needs.tradeMake;
   if (needs.tradeModel) tradeModel.value = needs.tradeModel;
   if (needs.payoff != null) payoffEl.value = needs.payoff;
+  if (needs.mileage != null) mileageEl.value = needs.mileage ? fmtInt.format(needs.mileage) : '';
 }
 
-window.addEventListener('message', (e) => {
-  const msg = e?.data || {};
-  if (msg.type === 'discovery:init') {
-    // compatibility hook
-  }
-});
-
+/* Persist */
 function persist(){
   const data = {
     model: modelEl.value,
@@ -305,41 +277,39 @@ function persist(){
     fuel: fuelEl.value,
     priceMin: priceMinEl.value ? parseCurrency(priceMinEl.value) : null,
     priceMax: priceMaxEl.value ? parseCurrency(priceMaxEl.value) : null,
-    replace: replaceEl.value,
     tradeYear: tradeYear.value || null,
     tradeMake: tradeMake.value || null,
     tradeModel: tradeModel.value || null,
-    payoff: payoffEl.value ? Number(payoffEl.value) : 0
+    payoff: payoffEl.value ? Number(payoffEl.value) : 0,
+    mileage: mileageEl.value ? parseIntOnly(mileageEl.value) : null
   };
   save('guided_needs', data);
   window.parent?.postMessage({ type: 'discovery:update', payload: { model: data.model } }, '*');
 }
 
-// Wire events
-[modelEl, cabEl, useEl, towingEl, seatingEl, fuelEl, replaceEl, tradeYear, tradeMake, tradeModel, payoffEl]
+/* Events */
+[modelEl,cabEl,useEl,towingEl,seatingEl,fuelEl,tradeYear,tradeMake,tradeModel,payoffEl]
   .forEach(el => el.addEventListener('input', persist));
 
 modelEl.addEventListener('change', () => { updateCabVisibility(); persist(); });
-replaceEl.addEventListener('change', () => { toggleTradeFields(); persist(); });
 
-// Currency inputs: format on blur, unformat on focus, persist when typing
-[priceMinEl, priceMaxEl].forEach(el => {
-  el.addEventListener('focus', () => unformatInput(el));
-  el.addEventListener('blur',  () => { formatInputCurrency(el); persist(); });
+/* Currency fields */
+[priceMinEl, priceMaxEl].forEach(el=>{
+  el.addEventListener('focus', ()=>unformatInput(el));
+  el.addEventListener('blur', ()=>{ formatInputCurrency(el); persist(); });
   el.addEventListener('input', persist);
 });
 
-backBtn.addEventListener('click', () => {
-  window.parent?.postMessage({ type: 'discovery:back' }, '*');
-});
+/* Mileage formatting */
+mileageEl.addEventListener('focus', ()=>unformatMileage(mileageEl));
+mileageEl.addEventListener('blur',  ()=>{ formatMileage(mileageEl); persist(); });
+mileageEl.addEventListener('input', persist);
 
-form.addEventListener('submit', (e) => {
-  e.preventDefault();
-  persist();
-  window.parent?.postMessage({ type: 'discovery:done' }, '*');
-});
+/* Buttons */
+backBtn.addEventListener('click', ()=>{ window.parent?.postMessage({ type:'discovery:back' }, '*'); });
+form.addEventListener('submit', (e)=>{ e.preventDefault(); persist(); window.parent?.postMessage({ type:'discovery:done' }, '*'); });
 
-// Init
+/* Init */
 fillModels();
 fillYears();
 seedFromStorage();
