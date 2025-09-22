@@ -948,3 +948,39 @@ footer.footer { flex-shrink: 0; }
 @media (max-width: 768px){
   .home-wrap{ justify-content: center !important; }
 }
+/* ----------------------------- */
+/* Global kiosk watermark layer  */
+/* Applies to every page that    */
+/* includes assets/style.css     */
+/* ----------------------------- */
+
+:root{
+  /* Tweak this for site-wide strength of the watermark image */
+  --kiosk-watermark-opacity: 0.48; /* 0 = invisible, 1 = fully opaque */
+  --kiosk-watermark-image: url("kiosk.png"); /* path is relative to /assets/style.css */
+  --kiosk-watermark-size: cover;
+  --kiosk-watermark-position: center;
+}
+
+/* Draw the watermark ABOVE the body's background but BELOW page content */
+body::before{
+  content:"";
+  position: fixed;
+  inset: 0;
+  background-image: var(--kiosk-watermark-image);
+  background-repeat: no-repeat;
+  background-position: var(--kiosk-watermark-position);
+  background-size: var(--kiosk-watermark-size);
+  opacity: var(--kiosk-watermark-opacity);
+  pointer-events: none;     /* never block clicks */
+  z-index: 0;               /* sits under content */
+}
+
+/* Ensure page content paints above the watermark layer */
+body > *{
+  position: relative;
+  z-index: 1;
+}
+
+/* Optional: disable watermark on a specific page by adding class="no-watermark" to <body> */
+body.no-watermark::before{ opacity: 0; }
