@@ -125,25 +125,15 @@ function renderProgress(){
   });
 }
 
-/* ========= remove dev drawer / notes inside child pages ========= */
+/* ========= SAFER: remove only the known dev drawer ========= */
 function stripDevNotes(doc){
   try {
     if (!doc) return;
-    // 1) Remove the specific <details> drawer whose summary says "Open for more"
-    doc.querySelectorAll('summary').forEach(s => {
-      const txt = (s.textContent || '').trim().toLowerCase();
-      if (txt === 'open for more') {
-        const d = s.closest('details');
-        if (d) d.remove();
-      }
-    });
-    // 2) Remove any elements clearly marked as developer notes
-    doc.querySelectorAll('details.dev-note, .dev-notes, .developer-notes').forEach(el => el.remove());
-    // 3) Remove text blocks that expose internal implementation notes
-    const killPhrases = ['guided_profile', 'welcome:done'];
-    doc.querySelectorAll('p,li,small,div,span').forEach(el => {
-      const t = (el.textContent || '').toLowerCase();
-      if (killPhrases.some(ph => t.includes(ph))) el.remove();
+    // Remove the <details> whose summary text is exactly "Open for more" (case-insensitive)
+    doc.querySelectorAll('details').forEach(d => {
+      const sum = d.querySelector('summary');
+      const txt = (sum?.textContent || '').trim().toLowerCase();
+      if (txt === 'open for more') d.remove();
     });
   } catch {}
 }
@@ -161,7 +151,7 @@ function loadStep(i){
   stage.src = cfg.url;
   stage.style.height = (cfg.height || 480) + 'px';
 
-  // Seed common data if present, and strip dev notes after the child loads
+  // Seed common data if present, and strip the dev drawer after the child loads
   stage.addEventListener('load', function onload(){
     stage.removeEventListener('load', onload);
     try {
@@ -215,9 +205,7 @@ window.addEventListener('message', (e) => {
   if (type === 'vehicle:done') { go(3); return; }
 
   // Trade
-  if (type === 'trade:update') {
-    return;
-  }
+  if (type === 'trade:update') { return; }
   if (type === 'trade:done') { go(4); return; }
 
   // Payments
