@@ -86,7 +86,8 @@ const load = (k, def) => { try { const v = JSON.parse(localStorage.getItem(k)); 
 /* ========= steps config: ALL steps are external HTMLs ========= */
 const STEPS = [
   { label:'Welcome',         url:'kiosk-welcome.html',  height:220, subtitle:"We’ll guide you through a few quick steps." },
-  { label:'Discovery',       url:'kiosk-discovery.html',height:280, subtitle:"Tell us your monthly target." },
+  // Increased height so the module never needs its own scrollbar
+  { label:'Discovery',       url:'kiosk-discovery.html',height:560, subtitle:"Tell us your monthly target." },
   { label:'Vehicle Match',   url:'kiosk-vehicle.html',  height:720, subtitle:"Pick one to continue." },
   { label:'Trade-In',        url:'kiosk-trade.html',    height:620, subtitle:"Enter your VIN/miles; we’ll pre-value it." },
   { label:'Payments',        url:'kiosk-payments.html', height:720, subtitle:"Taxes/fees estimated; lender approval required." },
@@ -125,16 +126,26 @@ function renderProgress(){
   });
 }
 
-/* ========= SAFER: remove only the known dev drawer ========= */
+/* ========= SAFER: remove known dev notes from child iframes ========= */
 function stripDevNotes(doc){
   try {
     if (!doc) return;
-    // Remove the <details> whose summary text is exactly "Open for more" (case-insensitive)
+    // 1) Remove the disclosure drawer labelled exactly "Open for more"
     doc.querySelectorAll('details').forEach(d => {
       const sum = d.querySelector('summary');
       const txt = (sum?.textContent || '').trim().toLowerCase();
       if (txt === 'open for more') d.remove();
     });
+    // 2) Remove any element that contains the internal hint text
+    const killPhrases = ['guided_profile', 'welcome:done', 'posts welcome:done'];
+    doc.querySelectorAll('*').forEach(el => {
+      const t = (el.textContent || '').toLowerCase();
+      if (killPhrases.some(p => t.includes(p))) {
+        el.remove();
+      }
+    });
+    // 3) Common class hooks (if present)
+    doc.querySelectorAll('.dev-note, .debug, [data-dev], [data-debug]').forEach(n => n.remove());
   } catch {}
 }
 
@@ -151,7 +162,7 @@ function loadStep(i){
   stage.src = cfg.url;
   stage.style.height = (cfg.height || 480) + 'px';
 
-  // Seed common data if present, and strip the dev drawer after the child loads
+  // Seed common data if present, and strip dev drawer after the child loads
   stage.addEventListener('load', function onload(){
     stage.removeEventListener('load', onload);
     try {
@@ -191,6 +202,7 @@ window.addEventListener('message', (e) => {
   // Discovery
   if (type === 'discovery:update') {
     const p = load("guided_profile", { name:'', contact:'', budget:400 });
+    // Persist budget if provided; ignore other fields here (handled later steps)
     save("guided_profile", { ...p, budget: Number(payload?.budget ?? p.budget) });
     return;
   }
