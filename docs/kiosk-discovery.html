@@ -238,18 +238,29 @@
             <input id="miles" type="text" maxlength="8" class="field-input w-[16ch]" placeholder="Enter miles"/>
           </label>
 
-          <label class="block">
-            <span class="field-label">Vehicle condition</span>
-            <select id="vehicleCondition" class="field-input w-condition">
-              <option>Grade 5 – Vehicle in excellent condition.</option>
-              <option>Grade 4 – Vehicle is better than average.</option>
-              <option selected>Grade 3 – Normal wear and tear.</option>
-              <option>Grade 2 – Shows signs of excessive wear and tear.</option>
-              <option>Grade 1 – Shows signs of severe abuse.</option>
-              <option>Grade 0 – Vehicle is inoperative.</option>
-            </select>
-          </label>
-        </div>
+         <label class="block">
+  <span class="field-label">Vehicle condition</span>
+  <select id="vehicleCondition" class="field-input w-condition text-slate-400" required>
+    <option value="" disabled selected>Grade your vehicle</option>
+    <option value="5">Grade 5 – Vehicle in excellent condition.</option>
+    <option value="4">Grade 4 – Vehicle is better than average.</option>
+    <option value="3">Grade 3 – Normal wear and tear.</option>
+    <option value="2">Grade 2 – Shows signs of excessive wear and tear.</option>
+    <option value="1">Grade 1 – Shows signs of severe abuse.</option>
+    <option value="0">Grade 0 – Vehicle is inoperative.</option>
+  </select>
+</label>
+
+<script>
+  // Keep placeholder gray until a real value is chosen
+  (function () {
+    const sel = document.getElementById('vehicleCondition');
+    function tint() { sel.classList.toggle('text-slate-400', sel.value === ''); }
+    sel.addEventListener('change', tint);
+    tint();
+  })();
+</script>
+
 
         <!-- Actions -->
         <div class="cta pt-2">
