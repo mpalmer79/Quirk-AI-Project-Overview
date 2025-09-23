@@ -37,12 +37,13 @@
     .w-budget    { width: 18ch !important; }
     .w-lease     { width: 16ch !important; }
     .w-payoff    { width: 22ch !important; }
+    .w-condition { width: 40ch !important; } /* not required, but kept if you want a fixed width later */
 
     input[type="number"]::-webkit-outer-spin-button,
     input[type="number"]::-webkit-inner-spin-button{ -webkit-appearance: none; margin: 0; }
     input[type="number"]{ -moz-appearance: textfield; }
 
-    /* First row behavior */
+    /* First row (Silverado cab logic) */
     #firstRow{
       display:grid;
       grid-template-columns: 1fr;
@@ -189,45 +190,26 @@
         <h3 class="section-title">Vehicle you’re replacing</h3>
         <p class="text-center subtle -mt-2">Tell us about the vehicle you’re trading in.</p>
 
-        <!-- Row 5: (Year column now stacks Year + Vehicle condition) + Make + Model + Payoff -->
+        <!-- Row 5: Year / Make / Model / Estimated payoff -->
         <div class="grid md:grid-cols-4 gap-4">
-          <!-- Column 1: Year (placeholder) + Vehicle condition directly underneath -->
-          <div class="grid gap-4">
-            <label class="block">
-              <span class="field-label">Year</span>
-              <select id="tradeYear" class="field-input w-full text-slate-400" required>
-                <option value="" selected disabled>Select Year</option>
-                <!-- options injected by JS -->
-              </select>
-            </label>
+          <label class="block">
+            <span class="field-label">Year</span>
+            <select id="tradeYear" class="field-input w-full text-slate-400" required>
+              <option value="" selected disabled>Select Year</option>
+              <!-- options injected by JS -->
+            </select>
+          </label>
 
-            <label class="block">
-              <span class="field-label">Vehicle condition</span>
-              <select id="vehicleCondition" class="field-input w-full text-slate-400" required>
-                <option value="" disabled selected>Grade your vehicle</option>
-                <option value="5">Grade 5 – Vehicle in excellent condition.</option>
-                <option value="4">Grade 4 – Vehicle is better than average.</option>
-                <option value="3">Grade 3 – Normal wear and tear.</option>
-                <option value="2">Grade 2 – Shows signs of excessive wear and tear.</option>
-                <option value="1">Grade 1 – Shows signs of severe abuse.</option>
-                <option value="0">Grade 0 – Vehicle is inoperative.</option>
-              </select>
-            </label>
-          </div>
-
-          <!-- Column 2: Make -->
           <label class="block">
             <span class="field-label">Make</span>
             <input id="tradeMake" type="text" class="field-input w-full" placeholder="e.g., Chevrolet"/>
           </label>
 
-          <!-- Column 3: Model -->
           <label class="block">
             <span class="field-label">Model</span>
             <input id="tradeModel" type="text" class="field-input w-full" placeholder="e.g., Equinox"/>
           </label>
 
-          <!-- Column 4: Estimated payoff -->
           <label class="block">
             <span class="field-label">Estimated payoff</span>
             <div class="relative">
@@ -241,19 +223,34 @@
               />
             </div>
           </label>
+        </div> <!-- /Row 5 -->
 
-          <!-- Under Column 4: Who are you financed with? -->
+        <!-- Row 6: Vehicle condition (under Year) + Current mileage (under Make) + Financed with (under Estimated payoff) -->
+        <div class="grid md:grid-cols-4 gap-4">
+          <label class="block">
+            <span class="field-label">Vehicle condition</span>
+            <select id="vehicleCondition" class="field-input w-full text-slate-400" required>
+              <option value="" disabled selected>Grade your vehicle</option>
+              <option value="5">Grade 5 – Vehicle in excellent condition.</option>
+              <option value="4">Grade 4 – Vehicle is better than average.</option>
+              <option value="3">Grade 3 – Normal wear and tear.</option>
+              <option value="2">Grade 2 – Shows signs of excessive wear and tear.</option>
+              <option value="1">Grade 1 – Shows signs of severe abuse.</option>
+              <option value="0">Grade 0 – Vehicle is inoperative.</option>
+            </select>
+          </label>
+
+          <label class="block">
+            <span class="field-label">Current mileage</span>
+            <input id="miles" type="text" maxlength="8" class="field-input w-full" placeholder="Enter miles"/>
+          </label>
+
+          <!-- keep column 3 empty to preserve alignment under Model -->
+          <div class="hidden md:block"></div>
+
           <label class="block md:col-start-4">
             <span class="field-label">Who are you financed with?</span>
             <input id="financedWith" type="text" class="field-input w-payoff" placeholder="e.g., GM Financial"/>
-          </label>
-        </div> <!-- /Row 5 -->
-
-        <!-- Row 6: Current mileage only -->
-        <div class="grid md:grid-cols-2 gap-4">
-          <label class="block">
-            <span class="field-label">Current mileage</span>
-            <input id="miles" type="text" maxlength="8" class="field-input w-[16ch]" placeholder="Enter miles"/>
           </label>
         </div> <!-- /Row 6 -->
 
@@ -333,7 +330,7 @@ function fillModels(){
 function fillYears(){
   const thisYear = new Date().getFullYear();
   const start = 1990;
-  const opts = [`<option value="" selected disabled>Select Year</option>`]; // placeholder stays selected
+  const opts = [`<option value="" selected disabled>Select Year</option>`]; // placeholder first
   for(let y=thisYear; y>=start; y--) opts.push(`<option>${y}</option>`);
   tradeYear.innerHTML = opts.join('');
 }
@@ -352,7 +349,6 @@ function setFreshDefaults(){
   downEl.value   = "";                 // placeholder
   milesEl.value  = "";
   leaseEl.value  = "";                 // show "Yes" placeholder
-  // tradeYear left at "" via default option
 }
 
 /* ------------- persistence ------------- */
@@ -394,7 +390,7 @@ function attachCurrency(el, {blankOkay=false}={}){
 }
 attachCurrency(downEl,   {blankOkay:true});
 attachCurrency(budgetEl, {blankOkay:true});
-attachCurrency(payoffEl, {blankOkay,true:true}); // allow blank to keep placeholder
+attachCurrency(payoffEl, {blankOkay:true});  // <-- fixed typo here
 
 /* ------------- placeholder tint for selects ------------- */
 function tintSelect(sel){ sel.classList.toggle('text-slate-400', sel.value === ''); }
