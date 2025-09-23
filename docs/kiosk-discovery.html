@@ -37,7 +37,7 @@
     .w-budget    { width: 18ch !important; }
     .w-lease     { width: 16ch !important; }
     .w-payoff    { width: 22ch !important; }
-    .w-condition { width: 40ch !important; } /* not required, but kept if you want a fixed width later */
+    .w-condition { width: 40ch !important; }
 
     input[type="number"]::-webkit-outer-spin-button,
     input[type="number"]::-webkit-inner-spin-button{ -webkit-appearance: none; margin: 0; }
@@ -73,6 +73,7 @@
     /* Currency inputs */
     .currency { padding-left: 2.5rem; }
     .currency.tight { padding-left: 2.25rem; }
+    .pad-dollar { padding-left: 1.6rem; } /* space for the $ */
 
     .cta { display:flex; justify-content:center; }
   </style>
@@ -83,8 +84,11 @@
       <h2 class="text-center text-xl sm:text-2xl font-bold text-emerald-800">Discovery</h2>
       <p class="text-center text-slate-600 mt-1">Answer a few questions so we can match the right vehicle.</p>
 
+      <!-- Screen-reader live region for dynamic changes -->
+      <div id="live" class="sr-only" aria-live="polite"></div>
+
       <!-- FORM -->
-      <form id="discForm" class="mt-5 grid gap-5">
+      <form id="discForm" class="mt-5 grid gap-5" novalidate>
         <!-- Row 1: Vehicle (center by default). Cab shows to the right only for Silverado -->
         <div id="firstRow">
           <label id="modelWrap" class="block">
@@ -160,6 +164,8 @@
               <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 select-none">$</span>
               <input id="downPayment" type="text"
                      class="field-input currency w-invest placeholder-slate-400"
+                     inputmode="decimal" pattern="^\d+(\.\d{1,2})?$"
+                     title="Enter dollars and cents (e.g., 1500 or 1500.50)"
                      placeholder="    20% down recommended"/>
             </div>
           </label>
@@ -171,6 +177,8 @@
               <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 select-none">$</span>
               <input id="budget" type="text"
                      class="field-input currency tight w-budget placeholder-slate-400"
+                     inputmode="decimal" pattern="^\d+(\.\d{1,2})?$"
+                     title="Enter dollars and cents (e.g., 650 or 650.00)"
                      placeholder="650.00"/>
             </div>
           </label>
@@ -217,8 +225,9 @@
               <input
                 id="payoff"
                 type="text"
-                class="field-input currency w-payoff placeholder-slate-400"
-                style="padding-left:1.6rem;"
+                class="field-input currency w-payoff placeholder-slate-400 pad-dollar"
+                inputmode="decimal" pattern="^\d+(\.\d{1,2})?$"
+                title="Enter dollars and cents (e.g., 12000 or 12000.00)"
                 placeholder="0.00"
               />
             </div>
@@ -242,10 +251,12 @@
 
           <label class="block">
             <span class="field-label">Current mileage</span>
-            <input id="miles" type="text" maxlength="8" class="field-input w-full" placeholder="Enter miles"/>
+            <input id="miles" type="text" maxlength="8" class="field-input w-full"
+                   inputmode="numeric" pattern="^\d{1,7}$"
+                   title="Digits only, up to 7 (e.g., 45200)"
+                   placeholder="Enter miles"/>
           </label>
 
-          <!-- keep column 3 empty to preserve alignment under Model -->
           <div class="hidden md:block"></div>
 
           <label class="block md:col-start-4">
@@ -269,6 +280,7 @@
 /* ---------------- helpers ---------------- */
 const $ = (id) => document.getElementById(id);
 const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
+const TARGET_ORIGIN = window.location.origin;
 
 function formatMoney(val){
   const n = Number(val || 0);
@@ -277,6 +289,7 @@ function formatMoney(val){
 function parseMoney(str){
   return Number(String(str || "0").replace(/[^\d.]/g,'') || 0);
 }
+function debounce(fn, ms){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), ms); }; }
 
 /* ---------------- elements ---------------- */
 const firstRow  = $('firstRow');
@@ -303,6 +316,7 @@ const vehicleConditionEl = $('vehicleCondition');
 
 const form      = $('discForm');
 const backBtn   = $('backBtn');
+const live      = $('live');
 
 /* ------------- data ------------- */
 const RAW_MODELS = [
@@ -319,27 +333,40 @@ function customSort(a,b){
   if (wa !== wb) return wa - wb;
   return a.localeCompare(b);
 }
-const MODELS = [...RAW_MODELS].sort(customSort);
 
-function isSilverado(model){ return /^Silverado\s(1500|2500|3500)/.test(model); }
+/* ------------- init lists (JSON with fallback) ------------- */
+async function fillModels(){
+  let list = [];
+  try {
+    const res = await fetch('assets/models.json', { cache: 'no-store' });
+    if (!res.ok) throw 0;
+    const arr = await res.json();
+    if (Array.isArray(arr) && arr.length) list = arr;
+  } catch {}
+  if (!list.length) list = RAW_MODELS;
 
-/* ------------- init lists ------------- */
-function fillModels(){
-  modelEl.innerHTML = MODELS.map(m => `<option>${m}</option>`).join('');
+  list = [...list].sort(customSort);
+  modelEl.innerHTML = list.map(m => `<option>${m}</option>`).join('');
 }
 function fillYears(){
   const thisYear = new Date().getFullYear();
   const start = 1990;
-  const opts = [`<option value="" selected disabled>Select Year</option>`]; // placeholder first
+  const opts = [`<option value="" selected disabled>Select Year</option>`];
   for(let y=thisYear; y>=start; y--) opts.push(`<option>${y}</option>`);
   tradeYear.innerHTML = opts.join('');
 }
 
-/* ------------- Silverado layout toggle ------------- */
+/* ------------- Silverado layout toggle + a11y announce ------------- */
+function isSilverado(model){ return /^Silverado\s(1500|2500|3500)/.test(model); }
 function updateCabVisibility(){
   const showCab = isSilverado(modelEl.value || '');
   cabWrap.classList.toggle('hidden', !showCab);
   firstRow.classList.toggle('two-cols', showCab);
+  if (live) {
+    live.textContent = showCab
+      ? 'Cab style options are now available for Silverado.'
+      : 'Cab style options hidden for non-Silverado models.';
+  }
 }
 
 /* ------------- fresh defaults ------------- */
@@ -372,8 +399,9 @@ function persist(){
     vehicleCondition: vehicleConditionEl.value
   };
   try { localStorage.setItem('guided_needs', JSON.stringify(data)); } catch {}
-  window.parent?.postMessage({ type: 'discovery:update', payload: { budget: data.budget, model: data.model } }, '*');
+  window.parent?.postMessage({ type: 'discovery:update', payload: { budget: data.budget, model: data.model } }, TARGET_ORIGIN);
 }
+const persistDebounced = debounce(persist, 120);
 
 /* ------------- currency behavior ------------- */
 function attachCurrency(el, {blankOkay=false}={}){
@@ -386,11 +414,11 @@ function attachCurrency(el, {blankOkay=false}={}){
     }
     persist();
   });
-  el.addEventListener('input', () => { persist(); });
+  el.addEventListener('input', () => { persistDebounced(); });
 }
 attachCurrency(downEl,   {blankOkay:true});
 attachCurrency(budgetEl, {blankOkay:true});
-attachCurrency(payoffEl, {blankOkay:true});  // <-- fixed typo here
+attachCurrency(payoffEl, {blankOkay:true});
 
 /* ------------- placeholder tint for selects ------------- */
 function tintSelect(sel){ sel.classList.toggle('text-slate-400', sel.value === ''); }
@@ -401,31 +429,36 @@ tradeYear.addEventListener('change', () => tintSelect(tradeYear));
 /* ------------- events ------------- */
 [modelEl, cabEl, useEl, towingEl, seatingEl, fuelEl, tradeYear, tradeMake, tradeModel,
  milesEl, financedWithEl, leaseEl, vehicleConditionEl]
-  .forEach(el => el.addEventListener('input', persist));
+  .forEach(el => el.addEventListener('input', persistDebounced));
 
 modelEl.addEventListener('change', () => { updateCabVisibility(); persist(); });
 
 backBtn.addEventListener('click', () => {
-  window.parent?.postMessage({ type: 'discovery:back' }, '*');
+  window.parent?.postMessage({ type: 'discovery:back' }, TARGET_ORIGIN);
 });
 form.addEventListener('submit', (e) => {
   e.preventDefault();
   persist();
-  window.parent?.postMessage({ type: 'discovery:done' }, '*');
+  window.parent?.postMessage({ type: 'discovery:done' }, TARGET_ORIGIN);
 });
 
 /* ------------- auto-report height to parent ------------- */
 function sendHeight(){
   const h = document.documentElement.scrollHeight;
-  window.parent?.postMessage({ type: 'discovery:height', payload: { height: h } }, '*');
+  window.parent?.postMessage({ type: 'discovery:height', payload: { height: h } }, TARGET_ORIGIN);
 }
 window.addEventListener('load', sendHeight);
-new ResizeObserver(sendHeight).observe(document.documentElement);
+if ('ResizeObserver' in window) {
+  new ResizeObserver(sendHeight).observe(document.documentElement);
+} else {
+  setInterval(sendHeight, 500); // fallback
+}
 
 /* ------------- boot ------------- */
-fillModels();
+fillModels().then(() => {
+  updateCabVisibility();
+});
 fillYears();
-updateCabVisibility();
 setFreshDefaults();
 tintSelect(leaseEl);
 tintSelect(vehicleConditionEl);
