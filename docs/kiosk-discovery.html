@@ -37,7 +37,7 @@
     .w-budget    { width: 18ch !important; }
     .w-lease     { width: 16ch !important; }
     .w-payoff    { width: 22ch !important; }
-    .w-condition { width: 40ch !important; }
+    .w-condition { width: 40ch !important; } /* available if you want a fixed width later */
 
     input[type="number"]::-webkit-outer-spin-button,
     input[type="number"]::-webkit-inner-spin-button{ -webkit-appearance: none; margin: 0; }
@@ -70,10 +70,13 @@
 
     .subtle { color:#64748b }
 
-    /* Currency inputs */
+    /* Currency inputs (down payment + budget use the larger pad) */
     .currency { padding-left: 2.5rem; }
     .currency.tight { padding-left: 2.25rem; }
-    .pad-dollar { padding-left: 1.6rem; } /* space for the $ */
+
+    /* Tighter $ layout (payoff) */
+    .dollar{position:absolute;left:.5rem;top:50%;transform:translateY(-50%);color:#64748b;user-select:none;}
+    .currency-slim{padding-left:1.15rem;} /* digits sit right next to the $ */
 
     .cta { display:flex; justify-content:center; }
   </style>
@@ -221,11 +224,11 @@
           <label class="block">
             <span class="field-label">Estimated payoff</span>
             <div class="relative">
-              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 select-none">$</span>
+              <span class="dollar">$</span>
               <input
                 id="payoff"
                 type="text"
-                class="field-input currency w-payoff placeholder-slate-400 pad-dollar"
+                class="field-input w-payoff currency-slim placeholder-slate-400"
                 inputmode="decimal" pattern="^\d+(\.\d{1,2})?$"
                 title="Enter dollars and cents (e.g., 12000 or 12000.00)"
                 placeholder="0.00"
@@ -257,6 +260,7 @@
                    placeholder="Enter miles"/>
           </label>
 
+          <!-- keep column 3 empty to preserve alignment under Model -->
           <div class="hidden md:block"></div>
 
           <label class="block md:col-start-4">
