@@ -13,7 +13,7 @@
     :focus-visible { outline: 2px solid #34d399; outline-offset: 2px; }
     body { background: transparent; }
 
-    /* ===== No inner scrollbars; let page grow naturally ===== */
+    /* No inner scrollbars; let page grow */
     html, body { height: auto; overflow: visible !important; }
     #discoveryShell, #discoveryCard, #discoveryCard .card-body {
       max-height: none !important;
@@ -24,28 +24,25 @@
     .field-label{display:block;font-size:.875rem;font-weight:600;color:#334155;margin-bottom:.25rem}
     .field-input{border:1px solid #e5e7eb;border-radius:.75rem;padding:.75rem;background:#fff}
     .field-input:focus{outline:2px solid #10b981;outline-offset:2px}
-    .field-input.w-full{width:100%} /* only full-width when explicitly requested */
+    .field-input.w-full{width:100%}
 
-    /* Compact widths (tuned to your markups) */
+    /* Compact widths */
     .w-model     { width: 34ch !important; }
     .w-cab       { width: 20ch !important; }
-    .w-use       { width: 28ch !important; }     /* Primary use (short) */
+    .w-use       { width: 28ch !important; }
     .w-towing    { width: 22ch !important; }
     .w-seating   { width: 8ch  !important; }
     .w-fuel      { width: 12ch !important; }
-    .w-invest    { width: 25ch !important; }     /* Initial Investment (+3ch) */
-    .w-budget    { width: 18ch !important; }     /* centered column */
-    .w-lease     { width: 16ch !important; }     /* Show me lease specials (short) */
+    .w-invest    { width: 25ch !important; }
+    .w-budget    { width: 18ch !important; }
+    .w-lease     { width: 16ch !important; }
     .w-payoff    { width: 22ch !important; }
-    .w-condition { width: 40ch !important; }     /* Vehicle condition */
 
     input[type="number"]::-webkit-outer-spin-button,
     input[type="number"]::-webkit-inner-spin-button{ -webkit-appearance: none; margin: 0; }
     input[type="number"]{ -moz-appearance: textfield; }
 
-    /* ===== First row behavior =====
-       Default: single column, centered (vehicle centered)
-       When Silverado selected: .two-cols -> two columns (vehicle left, cab right) */
+    /* First row behavior */
     #firstRow{
       display:grid;
       grid-template-columns: 1fr;
@@ -76,7 +73,6 @@
     .currency { padding-left: 2.5rem; }
     .currency.tight { padding-left: 2.25rem; }
 
-    /* Center CTA */
     .cta { display:flex; justify-content:center; }
   </style>
 </head>
@@ -157,7 +153,6 @@
 
         <!-- Row 4: Investment + Budget + Lease specials -->
         <div class="grid md:grid-cols-3 gap-4">
-          <!-- Left: Initial Investment (wider) -->
           <label class="block">
             <span class="field-label">Initial Investment (approx)</span>
             <div class="relative">
@@ -168,19 +163,16 @@
             </div>
           </label>
 
-         <!-- Center: Monthly budget (center column) -->
-<label class="block justify-self-center">
-  <span class="field-label">What is your monthly budget?</span>
-  <div class="relative">
-    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 select-none">$</span>
-    <input
-      id="budget"
-      type="text"
-      class="field-input currency tight w-budget placeholder-slate-400"
-      placeholder="650.00"
-    />
-  </div>
-</label>
+          <!-- Center: Monthly budget -->
+          <label class="block justify-self-center">
+            <span class="field-label">What is your monthly budget?</span>
+            <div class="relative">
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 select-none">$</span>
+              <input id="budget" type="text"
+                     class="field-input currency tight w-budget placeholder-slate-400"
+                     placeholder="650.00"/>
+            </div>
+          </label>
 
           <!-- Right: Show me lease specials -->
           <label class="block">
@@ -197,23 +189,45 @@
         <h3 class="section-title">Vehicle you’re replacing</h3>
         <p class="text-center subtle -mt-2">Tell us about the vehicle you’re trading in.</p>
 
-        <!-- Row 5: Year / Make / Model / Estimated payoff -->
+        <!-- Row 5: (Year column now stacks Year + Vehicle condition) + Make + Model + Payoff -->
         <div class="grid md:grid-cols-4 gap-4">
-          <label class="block">
-            <span class="field-label">Year</span>
-            <select id="tradeYear" class="field-input w-full"></select>
-          </label>
+          <!-- Column 1: Year (placeholder) + Vehicle condition directly underneath -->
+          <div class="grid gap-4">
+            <label class="block">
+              <span class="field-label">Year</span>
+              <select id="tradeYear" class="field-input w-full text-slate-400" required>
+                <option value="" selected disabled>Select Year</option>
+                <!-- options injected by JS -->
+              </select>
+            </label>
 
+            <label class="block">
+              <span class="field-label">Vehicle condition</span>
+              <select id="vehicleCondition" class="field-input w-full text-slate-400" required>
+                <option value="" disabled selected>Grade your vehicle</option>
+                <option value="5">Grade 5 – Vehicle in excellent condition.</option>
+                <option value="4">Grade 4 – Vehicle is better than average.</option>
+                <option value="3">Grade 3 – Normal wear and tear.</option>
+                <option value="2">Grade 2 – Shows signs of excessive wear and tear.</option>
+                <option value="1">Grade 1 – Shows signs of severe abuse.</option>
+                <option value="0">Grade 0 – Vehicle is inoperative.</option>
+              </select>
+            </label>
+          </div>
+
+          <!-- Column 2: Make -->
           <label class="block">
             <span class="field-label">Make</span>
             <input id="tradeMake" type="text" class="field-input w-full" placeholder="e.g., Chevrolet"/>
           </label>
 
+          <!-- Column 3: Model -->
           <label class="block">
             <span class="field-label">Model</span>
             <input id="tradeModel" type="text" class="field-input w-full" placeholder="e.g., Equinox"/>
           </label>
 
+          <!-- Column 4: Estimated payoff -->
           <label class="block">
             <span class="field-label">Estimated payoff</span>
             <div class="relative">
@@ -228,31 +242,18 @@
             </div>
           </label>
 
-          <!-- Row 5b: Financed with (align under Estimated payoff, same width) -->
+          <!-- Under Column 4: Who are you financed with? -->
           <label class="block md:col-start-4">
             <span class="field-label">Who are you financed with?</span>
             <input id="financedWith" type="text" class="field-input w-payoff" placeholder="e.g., GM Financial"/>
           </label>
         </div> <!-- /Row 5 -->
 
-        <!-- Row 6: Current mileage + Vehicle condition -->
+        <!-- Row 6: Current mileage only -->
         <div class="grid md:grid-cols-2 gap-4">
           <label class="block">
             <span class="field-label">Current mileage</span>
             <input id="miles" type="text" maxlength="8" class="field-input w-[16ch]" placeholder="Enter miles"/>
-          </label>
-
-          <label class="block">
-            <span class="field-label">Vehicle condition</span>
-            <select id="vehicleCondition" class="field-input w-condition text-slate-400" required>
-              <option value="" disabled selected>Grade your vehicle</option>
-              <option value="5">Grade 5 – Vehicle in excellent condition.</option>
-              <option value="4">Grade 4 – Vehicle is better than average.</option>
-              <option value="3">Grade 3 – Normal wear and tear.</option>
-              <option value="2">Grade 2 – Shows signs of excessive wear and tear.</option>
-              <option value="1">Grade 1 – Shows signs of severe abuse.</option>
-              <option value="0">Grade 0 – Vehicle is inoperative.</option>
-            </select>
           </label>
         </div> <!-- /Row 6 -->
 
@@ -310,7 +311,9 @@ const backBtn   = $('backBtn');
 const RAW_MODELS = [
   'Blazer','Colorado','Corvette E-Ray','Corvette Stingray','Equinox',
   'Express Cargo 2500','Express Cargo 3500','Express Cutaway 3500',
-  'Silverado 1500','Silverado 2500 HD','Silverado 3500 HD','Silverado 3500 HD Chassis Cab','Silverado EV',
+  'Low Cab Forward 4500','Low Cab Forward 4500 HD','Low Cab Forward 5500 HD','Low Cab Forward 6500 HD',
+  'Silverado 1500','Silverado 2500 HD','Silverado 3500 HD','Silverado 3500 HD Chassis Cab',
+  'Silverado 4500 HD','Silverado 5500 HD','Silverado 6500 HD','Silverado EV',
   'Suburban','Tahoe','Trailblazer','Traverse','Trax'
 ];
 function customSort(a,b){
@@ -330,7 +333,7 @@ function fillModels(){
 function fillYears(){
   const thisYear = new Date().getFullYear();
   const start = 1990;
-  const opts = [`<option value="" selected disabled>Select Year</option>`];
+  const opts = [`<option value="" selected disabled>Select Year</option>`]; // placeholder stays selected
   for(let y=thisYear; y>=start; y--) opts.push(`<option>${y}</option>`);
   tradeYear.innerHTML = opts.join('');
 }
@@ -344,11 +347,12 @@ function updateCabVisibility(){
 
 /* ------------- fresh defaults ------------- */
 function setFreshDefaults(){
-  budgetEl.value = "";                 // keep placeholder
-  payoffEl.value = "";                 // keep placeholder
-  downEl.value   = "";                 // keep placeholder
+  budgetEl.value = "";                 // placeholder
+  payoffEl.value = "";                 // placeholder
+  downEl.value   = "";                 // placeholder
   milesEl.value  = "";
-  leaseEl.value  = "";                 // show the "Yes" placeholder
+  leaseEl.value  = "";                 // show "Yes" placeholder
+  // tradeYear left at "" via default option
 }
 
 /* ------------- persistence ------------- */
@@ -388,14 +392,15 @@ function attachCurrency(el, {blankOkay=false}={}){
   });
   el.addEventListener('input', () => { persist(); });
 }
-attachCurrency(downEl,   {blankOkay:true}); // keep placeholder if left empty
-attachCurrency(budgetEl, {blankOkay:true}); // keep placeholder if left empty
-attachCurrency(payoffEl, {blankOkay:true}); // keep placeholder if left empty
+attachCurrency(downEl,   {blankOkay:true});
+attachCurrency(budgetEl, {blankOkay:true});
+attachCurrency(payoffEl, {blankOkay,true:true}); // allow blank to keep placeholder
 
 /* ------------- placeholder tint for selects ------------- */
 function tintSelect(sel){ sel.classList.toggle('text-slate-400', sel.value === ''); }
 leaseEl.addEventListener('change', () => tintSelect(leaseEl));
 vehicleConditionEl.addEventListener('change', () => tintSelect(vehicleConditionEl));
+tradeYear.addEventListener('change', () => tintSelect(tradeYear));
 
 /* ------------- events ------------- */
 [modelEl, cabEl, useEl, towingEl, seatingEl, fuelEl, tradeYear, tradeMake, tradeModel,
@@ -413,7 +418,7 @@ form.addEventListener('submit', (e) => {
   window.parent?.postMessage({ type: 'discovery:done' }, '*');
 });
 
-/* ------------- auto-report height to parent (helps kill the iframe scrollbar) ------------- */
+/* ------------- auto-report height to parent ------------- */
 function sendHeight(){
   const h = document.documentElement.scrollHeight;
   window.parent?.postMessage({ type: 'discovery:height', payload: { height: h } }, '*');
@@ -428,6 +433,7 @@ updateCabVisibility();
 setFreshDefaults();
 tintSelect(leaseEl);
 tintSelect(vehicleConditionEl);
+tintSelect(tradeYear);
 persist();
 sendHeight();
 </script>
