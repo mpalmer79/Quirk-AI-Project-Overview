@@ -389,7 +389,7 @@ function attachCurrency(el, {blankOkay=false}={}){
   el.addEventListener('input', () => { persist(); });
 }
 attachCurrency(downEl,   {blankOkay:true}); // keep placeholder if left empty
-attachCurrency(budgetEl, {blankOkay:false});
+attachCurrency(budgetEl, {blankOkay:true}); // keep placeholder if left empty
 attachCurrency(payoffEl, {blankOkay:true}); // keep placeholder if left empty
 
 /* ------------- placeholder tint for selects ------------- */
