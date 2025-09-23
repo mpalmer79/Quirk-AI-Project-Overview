@@ -779,7 +779,7 @@
     "updated_at": "2025-08-27T14:12:31Z"
   },
   {
-    "stock_number": "U31292",
+    "stock_number": "N31292",
     "stock_type": "New",
     "vin": "S1Y1JF9ZDG4REY2XB",
     "year": 2025,
@@ -791,7 +791,7 @@
     "msrp": 51315,
     "mileage": 10,
     "body": "Truck",
-    "drivetrain": "RWD",
+    "drivetrain": "4WD",
     "ext_color": "Green",
     "int_color": "Gray",
     "photo_url_primary": "https://dealer.example.com/photos/U31292.jpg",
