@@ -70,13 +70,13 @@
 
     .subtle { color:#64748b }
 
-    /* Currency inputs (down payment + budget use the larger pad) */
-    .currency { padding-left: 2.5rem; }
-    .currency.tight { padding-left: 2.25rem; }
+    /* --- Currency padding (force-win vs Tailwind) --- */
+    .currency       { padding-left: 2.75rem !important; } /* down payment, default money */
+    .currency.tight { padding-left: 2.25rem !important; } /* monthly budget */
 
-    /* Tighter $ layout (payoff) */
-    .dollar{position:absolute;left:.5rem;top:50%;transform:translateY(-50%);color:#64748b;user-select:none;}
-    .currency-slim{padding-left:1.15rem;} /* digits sit right next to the $ */
+    /* Payoff: tighter layout so first digit sits just after $ */
+    .dollar{position:absolute;left:.55rem;top:50%;transform:translateY(-50%);color:#64748b;user-select:none;}
+    .currency-slim{padding-left:1.45rem !important;}
 
     .cta { display:flex; justify-content:center; }
   </style>
@@ -169,7 +169,7 @@
                      class="field-input currency w-invest placeholder-slate-400"
                      inputmode="decimal" pattern="^\d+(\.\d{1,2})?$"
                      title="Enter dollars and cents (e.g., 1500 or 1500.50)"
-                     placeholder="    20% down recommended"/>
+                     placeholder="20% down recommended"/>
             </div>
           </label>
 
