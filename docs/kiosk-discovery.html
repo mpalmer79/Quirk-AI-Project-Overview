@@ -13,51 +13,50 @@
     :focus-visible { outline: 2px solid #34d399; outline-offset: 2px; }
     body { background: transparent; }
 
-    /* ====== No inner scrollbars / let page grow naturally ====== */
+    /* ===== No inner scrollbars; let page grow naturally ===== */
     html, body { height: auto; overflow: visible !important; }
-    #discoveryShell,
-    #discoveryCard,
-    #discoveryCard .card-body {
+    #discoveryShell, #discoveryCard, #discoveryCard .card-body {
       max-height: none !important;
       overflow: visible !important;
     }
 
     /* Inputs */
     .field-label{display:block;font-size:.875rem;font-weight:600;color:#334155;margin-bottom:.25rem}
-    .field-input{width:100%;border:1px solid #e5e7eb;border-radius:.75rem;padding:.75rem;background:#fff}
+    .field-input{border:1px solid #e5e7eb;border-radius:.75rem;padding:.75rem;background:#fff}
     .field-input:focus{outline:2px solid #10b981;outline-offset:2px}
+    .field-input.w-full{width:100%} /* only full-width when explicitly asked */
+
+    /* Make the compact widths WIN over any generic widths */
+    .w-model   { width: 34ch !important; }
+    .w-cab     { width: 20ch !important; }
+    .w-seating { width: 8ch  !important; }
+    .w-fuel    { width: 12ch !important; }
+    .w-invest  { width: 22ch !important; }  /* shortened */
+    .w-budget  { width: 18ch !important; }  /* shortened */
+    .w-payoff  { width: 22ch !important; }
 
     input[type="number"]::-webkit-outer-spin-button,
     input[type="number"]::-webkit-inner-spin-button{ -webkit-appearance: none; margin: 0; }
     input[type="number"]{ -moz-appearance: textfield; }
 
-    /* Compact widths (shortened per your marks) */
-    .w-model    { width: 34ch; }   /* vehicle select */
-    .w-cab      { width: 20ch; }   /* cab select */
-    .w-seating  { width: 8ch; }
-    .w-fuel     { width: 12ch; }
-    .w-invest   { width: 22ch; }   /* shortened */
-    .w-budget   { width: 18ch; }   /* shortened */
-    .w-payoff   { width: 22ch; }
-
-    /* ====== First row layout behavior ======
-       - Default: 1 column, centered (vehicle centered)
-       - If Silverado selected: 2 columns (vehicle left, cab to its right) */
+    /* ===== First row behavior =====
+       Default: single column, centered (vehicle centered)
+       When Silverado selected: .two-cols -> two columns (vehicle left, cab right) */
     #firstRow{
       display:grid;
-      grid-template-columns: 1fr;        /* single column by default */
-      justify-content: center;           /* center the grid itself */
-      gap: 1rem;
+      grid-template-columns: 1fr;
+      justify-content:center;
+      gap:1rem;
+      align-items:end;
     }
-    #firstRow > *{ justify-self: center; }  /* center the item in the single column */
+    #firstRow > *{ justify-self:center; }
 
-    /* Turn into two columns only when we add .two-cols via JS */
     #firstRow.two-cols{
-      grid-template-columns: auto auto;  /* two natural-width columns */
-      justify-content: center;           /* keep the pair visually centered overall */
-      align-items: end;
+      grid-template-columns: auto auto;
+      justify-content:center;
+      align-items:end;
     }
-    #firstRow.two-cols > *{ justify-self: start; } /* shift items left inside their cells */
+    #firstRow.two-cols > *{ justify-self:start; }
 
     /* Section title */
     .section-title{
@@ -86,14 +85,14 @@
 
       <!-- FORM -->
       <form id="discForm" class="mt-5 grid gap-5">
-        <!-- Row: Vehicle of interest (center by default; cab appears to the right only for Silverado) -->
-        <div id="firstRow" class="items-end">
-          <label id="modelWrap" class="block w-full md:w-auto">
+        <!-- Row 1: Vehicle (center by default). Cab shows to the right only for Silverado -->
+        <div id="firstRow">
+          <label id="modelWrap" class="block">
             <span class="field-label">Vehicle you’re interested in</span>
             <select id="model" class="field-input w-model"></select>
           </label>
 
-          <label id="cabWrap" class="block hidden w-full md:w-auto">
+          <label id="cabWrap" class="block hidden">
             <span class="field-label">Cab style (Silverado)</span>
             <select id="cab" class="field-input w-cab">
               <option value="">Any</option>
@@ -104,11 +103,11 @@
           </label>
         </div>
 
-        <!-- Row: Primary use + Tow capacity -->
+        <!-- Row 2: Primary use + Tow -->
         <div class="grid md:grid-cols-2 gap-4">
           <label class="block">
             <span class="field-label">Primary use</span>
-            <select id="use" class="field-input">
+            <select id="use" class="field-input w-full">
               <option>Daily commute</option>
               <option>Family / kids</option>
               <option>Work / jobsite</option>
@@ -129,7 +128,7 @@
           </label>
         </div>
 
-        <!-- Row: Seating + Fuel type -->
+        <!-- Row 3: Seating + Fuel -->
         <div class="grid md:grid-cols-2 gap-4">
           <label class="block">
             <span class="field-label">Preferred seating</span>
@@ -153,7 +152,7 @@
           </label>
         </div>
 
-        <!-- Row: Investment + Budget (both shortened) -->
+        <!-- Row 4: Investment + Budget (shortened widths) -->
         <div class="grid md:grid-cols-2 gap-4">
           <label class="block">
             <span class="field-label">Initial Investment (approx)</span>
@@ -176,25 +175,24 @@
           </label>
         </div>
 
-        <!-- ===== Vehicle you're replacing ===== -->
+        <!-- Vehicle you’re replacing -->
         <h3 class="section-title">Vehicle you’re replacing</h3>
         <p class="text-center subtle -mt-2">Tell us a bit about the one you’re trading.</p>
 
-        <!-- Trade details -->
         <div class="grid md:grid-cols-4 gap-4">
           <label class="block">
             <span class="field-label">Year</span>
-            <select id="tradeYear" class="field-input"></select>
+            <select id="tradeYear" class="field-input w-full"></select>
           </label>
 
           <label class="block">
             <span class="field-label">Make</span>
-            <input id="tradeMake" type="text" class="field-input" placeholder="e.g., Chevrolet"/>
+            <input id="tradeMake" type="text" class="field-input w-full" placeholder="e.g., Chevrolet"/>
           </label>
 
           <label class="block">
             <span class="field-label">Model</span>
-            <input id="tradeModel" type="text" class="field-input" placeholder="e.g., Equinox"/>
+            <input id="tradeModel" type="text" class="field-input w-full" placeholder="e.g., Equinox"/>
           </label>
 
           <label class="block">
@@ -206,7 +204,6 @@
           </label>
         </div>
 
-        <!-- Current mileage -->
         <div class="grid md:grid-cols-4 gap-4">
           <label class="block">
             <span class="field-label">Current mileage</span>
@@ -292,14 +289,14 @@ function fillYears(){
   tradeYear.innerHTML = opts.join('');
 }
 
-/* ------------- Silverado-specific layout toggle ------------- */
+/* ------------- Silverado layout toggle ------------- */
 function updateCabVisibility(){
   const showCab = isSilverado(modelEl.value || '');
   cabWrap.classList.toggle('hidden', !showCab);
-  firstRow.classList.toggle('two-cols', showCab);  // flips the row into two columns when needed
+  firstRow.classList.toggle('two-cols', showCab);
 }
 
-/* ------------- “fresh” defaults ------------- */
+/* ------------- fresh defaults ------------- */
 function setFreshDefaults(){
   budgetEl.value = formatMoney(650);
   payoffEl.value = formatMoney(0);
@@ -350,12 +347,21 @@ form.addEventListener('submit', (e) => {
   window.parent?.postMessage({ type: 'discovery:done' }, '*');
 });
 
+/* ------------- auto-report height to parent (helps kill the iframe scrollbar) ------------- */
+function sendHeight(){
+  const h = document.documentElement.scrollHeight;
+  window.parent?.postMessage({ type: 'discovery:height', payload: { height: h } }, '*');
+}
+window.addEventListener('load', sendHeight);
+new ResizeObserver(sendHeight).observe(document.documentElement);
+
 /* ------------- boot ------------- */
 fillModels();
 fillYears();
-updateCabVisibility();   // hides cab by default unless Silverado selected
+updateCabVisibility();
 setFreshDefaults();
 persist();
+sendHeight();
 </script>
 </body>
 </html>
