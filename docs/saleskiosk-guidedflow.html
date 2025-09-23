@@ -87,12 +87,13 @@ const load = (k, def) => { try { const v = JSON.parse(localStorage.getItem(k)); 
 const STEPS = [
   { label: 'Welcome',          url: 'kiosk-welcome.html',  height: 460, subtitle: "We’ll guide you through a few quick steps.", showHeader: true },
   // Hide the parent header on Discovery to avoid duplicate titles (child renders its own)
-  { label: 'Discovery',        url: 'kiosk-discovery.html',height: 640, subtitle: "Tell us about your monthly budget.", showHeader: false },
+  // Increased default height; child will still auto-resize this via postMessage.
+  { label: 'Discovery',        url: 'kiosk-discovery.html',height: 860, subtitle: "Tell us about your monthly budget.", showHeader: false },
   { label: 'Vehicle Match',    url: 'kiosk-vehicle.html',  height: 720, subtitle: "Pick one to continue.", showHeader: true },
   { label: 'Trade-In',         url: 'kiosk-trade.html',    height: 620, subtitle: "Enter your VIN/miles; we’ll pre-value it.", showHeader: true },
   { label: 'Payments',         url: 'kiosk-payments.html', height: 720, subtitle: "Taxes/fees estimated; lender approval required.", showHeader: true },
   { label: 'Credit Start',     url: 'kiosk-credit.html',   height: 520, subtitle: "Soft pull first. No impact to score until you consent to submit.", showHeader: true },
-  { label: "F&I Options",     url: 'kiosk-fandi.html',    height: 420, subtitle: "Add options and see the impact instantly.", showHeader: true },
+  { label: "F&I Options",      url: 'kiosk-fandi.html',    height: 420, subtitle: "Add options and see the impact instantly.", showHeader: true },
   { label: 'Review & Handoff', url: 'kiosk-review.html',   height: 520, subtitle: "We’ll prep your buyer’s order and hand you off.", showHeader: true }
 ];
 
@@ -146,6 +147,7 @@ function loadStep(i){
   }
 
   stage.src = cfg.url;
+  stage.dataset.step = cfg.label; // mark the iframe so resize code can find it
   stage.style.height = (cfg.height || 480) + 'px';
 
   // After the child loads, seed optional data (no DOM mutation inside the child)
@@ -194,6 +196,14 @@ window.addEventListener('message', (e) => {
     return;
   }
   if (type === 'discovery:back') { go(0); return; }
+
+  // **Auto-resize Discovery frame**
+  if (type === 'discovery:height') {
+    const h = Math.max(720, Math.min(1400, Number(payload?.height || 0)));
+    const frame = document.querySelector('iframe[data-step="Discovery"]') || stage;
+    if (frame) frame.style.height = h + 'px';
+    return;
+  }
 
   // Vehicle Match (child should persist selection locally)
   if (type === 'vehicle:done') { go(3); return; }
