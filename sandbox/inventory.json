@@ -1,5 +1,4 @@
-
-    [
+[
   {
     "stock_number": "N10001",
     "stock_type": "New",
@@ -769,7 +768,9 @@
     "model": "Equinox",
     "trim": "LS",
     "status": "in_stock",
-    "price": 27000,
+    "price": 27000
+  },
+  {
     "stock_number": "N24662",
     "stock_type": "New",
     "vin": "WSDSFF8EJJ7LT4PNW",
@@ -825,9 +826,8 @@
     "int_color": "Gray",
     "photo_url_primary": "https://dealer.example.com/photos/N66531.jpg",
     "updated_at": "2025-08-27T14:12:31Z"
-  }
-]
-
+  },
+  {
     "stock_number": "N59797",
     "stock_type": "Used",
     "vin": "ZTC6H1FV0NECRVFRG",
