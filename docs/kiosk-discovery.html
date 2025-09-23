@@ -211,12 +211,18 @@
           </label>
 
           <label class="block">
-            <span class="field-label">Estimated payoff</span>
-            <div class="relative">
-              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 select-none">$</span>
-              <input id="payoff" type="text" class="field-input currency w-payoff" style="padding-left: calc(2.5rem + 2ch);" value="0.00"/>
-            </div>
-          </label>
+  <span class="field-label">Estimated payoff</span>
+  <div class="relative">
+    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 select-none">$</span>
+    <input
+      id="payoff"
+      type="text"
+      class="field-input currency w-payoff placeholder-slate-400"
+      style="padding-left:1.6rem"   <!-- nudges value close to the $; tweak ±0.1rem if needed -->
+      placeholder="0.00"
+    />
+  </div>
+</label>
 
           <!-- Row 5b: Financed with (align under Estimated payoff, same width) -->
           <label class="block md:col-start-4">
