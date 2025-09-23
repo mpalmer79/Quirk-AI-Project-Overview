@@ -1,6 +1,10 @@
-<!doctype html><html lang="en"><head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<base href="/Quirk-AI-Project-Overview/"><title>Kiosk • Vehicle Match</title>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<base href="/Quirk-AI-Project-Overview/">
+<title>Kiosk • Vehicle Match</title>
 <link rel="stylesheet" href="assets/kiosk-shared.css">
 <script src="assets/kiosk-shared.js"></script>
 <style>
@@ -30,32 +34,30 @@
   .meta { display:flex; justify-content:center; gap:8px; margin-bottom:10px; }
   .pill { display:inline-flex; align-items:center; gap:6px; padding:.25rem .6rem; border-radius:9999px; background:#f1f5f9; color:#334155; font-size:.75rem; font-weight:600; }
 </style>
-</head><body>
+</head>
+<body>
 <div class="kx">
-  <!-- Removed inner SectionTitle and subtext per request -->
-
   <div class="meta">
-    <!-- Keep just the found count. Removed the buying-power chip -->
     <span id="found" class="pill">0 vehicles found</span>
   </div>
 
   <div id="list" class="grid"></div>
 
   <p class="note" style="margin-top:10px">
-    Inventory loads from <code>inventory.json</code> (root), then <code>assets/inventory.json</code>, then <code>sandbox/inventory.json</code>.
+    Inventory now loads <strong>only</strong> from <code>sandbox/inventory.json</code>.
   </p>
 </div>
 
 <script>
 const { save, load, post } = window.kiosk;
 
-/* ---------- finance helpers (same filter logic; UI chip removed) ---------- */
+/* ---------- finance helpers ---------- */
 function amountFromPayment(pmt, aprPct, termMonths){
   const r = aprPct/100/12;
   if (!r) return pmt * termMonths;
   return pmt * (1 - Math.pow(1 + r, -termMonths)) / r;
 }
-const OVER_FLEX    = 5000;   // allow up to +$5,000 over buying power
+const OVER_FLEX    = 5000;
 const DOWN_DEFAULT = 0;
 
 /* ---------- image sources (with placeholder) ---------- */
@@ -95,15 +97,20 @@ function pickThumb(v){
   return libraryImage(v.make, v.model);
 }
 
-/* ---------- inventory loader ---------- */
+/* ---------- inventory loader (force sandbox only) ---------- */
 async function loadInventory(){
-  try { const r = await fetch('inventory.json', {cache:'no-store'}); if (r.ok) return await r.json(); } catch {}
-  try { const r = await fetch('assets/inventory.json', {cache:'no-store'}); if (r.ok) return await r.json(); } catch {}
-  try { const r = await fetch('sandbox/inventory.json', {cache:'no-store'}); if (r.ok) return await r.json(); } catch {}
-  return [];
+  const url = 'sandbox/inventory.json?t=' + Date.now(); // cache-buster
+  try {
+    const r = await fetch(url, { cache: 'no-store' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return await r.json();
+  } catch (err) {
+    console.error('Failed to load sandbox inventory:', err);
+    return [];
+  }
 }
 
-/* ---------- card renderer (centered title & price; trim inline) ---------- */
+/* ---------- card renderer ---------- */
 function card(row){
   const v = {
     vin:   row.vin ?? row.VIN ?? row.vin_number ?? '',
@@ -114,7 +121,7 @@ function card(row){
     color: row.color ?? row.Color ?? '',
     price: Number(row.price ?? row.salePrice ?? row.msrp ?? row.Price ?? 0),
     stockType: row.stockType ?? row.stock_type ?? row.StockType ?? '',
-    photo: row.photo ?? row.Photo ?? null
+    photo: row.photo ?? row.photo_url_primary ?? row.Photo ?? null
   };
 
   const el = document.createElement('button');
@@ -158,7 +165,7 @@ function card(row){
   return el;
 }
 
-/* ---------- init: filter by buying power (same as before), render, show count ---------- */
+/* ---------- init: filter, render, show count ---------- */
 (async function init(){
   const inv = await loadInventory();
 
@@ -190,4 +197,5 @@ function card(row){
     `${keep.length} vehicle${keep.length===1?'':'s'} found`;
 })();
 </script>
-</body></html>
+</body>
+</html>
