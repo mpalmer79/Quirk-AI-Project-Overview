@@ -760,17 +760,6 @@
     "updated_at": "2025-09-23T20:11:00Z"
   },
   {
-    "stock_number": "N10041",
-    "stock_type": "New",
-    "vin": "1G1PE5SB6G1567890",
-    "year": 2025,
-    "make": "Chevrolet",
-    "model": "Equinox",
-    "trim": "LS",
-    "status": "in_stock",
-    "price": 27000
-  },
-  {
     "stock_number": "N24662",
     "stock_type": "New",
     "vin": "WSDSFF8EJJ7LT4PNW",
@@ -1378,23 +1367,5 @@
     "photo_url_primary": "https://dealer.example.com/photos/N87607.jpg",
     "updated_at": "2025-08-27T14:12:31Z"
   },
-  {
-    "stock_number": "N24662",
-    "stock_type": "New",
-    "vin": "WSDSFF8EJJ7LT4PNW",
-    "year": 2025,
-    "make": "Chevrolet",
-    "model": "Trax",
-    "trim": "1RS",
-    "status": "in_transit",
-    "price": 32922,
-    "msrp": 33001,
-    "mileage": 47615,
-    "body": "SUV",
-    "drivetrain": "4WD",
-    "ext_color": "Gray",
-    "int_color": "Beige",
-    "photo_url_primary": "https://dealer.example.com/photos/N24662.jpg",
-    "updated_at": "2025-08-27T14:12:31Z"
-  }
+  
 ]
