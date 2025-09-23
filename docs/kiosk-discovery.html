@@ -13,6 +13,16 @@
     :focus-visible { outline: 2px solid #34d399; outline-offset: 2px; }
     body { background: transparent; }
 
+    /* ====== No inner scrollbars / let page grow naturally ====== */
+    html, body { height: auto; overflow: visible !important; }
+    #discoveryShell,
+    #discoveryCard,
+    #discoveryCard .card-body {
+      max-height: none !important;
+      overflow: visible !important;
+    }
+
+    /* Inputs */
     .field-label{display:block;font-size:.875rem;font-weight:600;color:#334155;margin-bottom:.25rem}
     .field-input{width:100%;border:1px solid #e5e7eb;border-radius:.75rem;padding:.75rem;background:#fff}
     .field-input:focus{outline:2px solid #10b981;outline-offset:2px}
@@ -21,18 +31,33 @@
     input[type="number"]::-webkit-inner-spin-button{ -webkit-appearance: none; margin: 0; }
     input[type="number"]{ -moz-appearance: textfield; }
 
-    /* Compact widths */
-    .w-seating   { width: 8ch; }
-    .w-fuel      { width: 12ch; }
-    .w-invest    { width: 28ch; }
-    .w-budget    { width: 26ch; }
-    .w-payoff    { width: 22ch; }
+    /* Compact widths (shortened per your marks) */
+    .w-model    { width: 34ch; }   /* vehicle select */
+    .w-cab      { width: 20ch; }   /* cab select */
+    .w-seating  { width: 8ch; }
+    .w-fuel     { width: 12ch; }
+    .w-invest   { width: 22ch; }   /* shortened */
+    .w-budget   { width: 18ch; }   /* shortened */
+    .w-payoff   { width: 22ch; }
 
-    /* First row: keep centered at all sizes */
-    .first-row { display:grid; grid-template-columns: 1fr; place-items:center; gap:1rem; }
-    @media (min-width: 900px){
-      .first-row { grid-template-columns: 1fr 1fr; }
+    /* ====== First row layout behavior ======
+       - Default: 1 column, centered (vehicle centered)
+       - If Silverado selected: 2 columns (vehicle left, cab to its right) */
+    #firstRow{
+      display:grid;
+      grid-template-columns: 1fr;        /* single column by default */
+      justify-content: center;           /* center the grid itself */
+      gap: 1rem;
     }
+    #firstRow > *{ justify-self: center; }  /* center the item in the single column */
+
+    /* Turn into two columns only when we add .two-cols via JS */
+    #firstRow.two-cols{
+      grid-template-columns: auto auto;  /* two natural-width columns */
+      justify-content: center;           /* keep the pair visually centered overall */
+      align-items: end;
+    }
+    #firstRow.two-cols > *{ justify-self: start; } /* shift items left inside their cells */
 
     /* Section title */
     .section-title{
@@ -40,37 +65,37 @@
       font-size:1.25rem;margin-top:1.25rem;margin-bottom:.25rem;
       border:0 !important;
     }
-    /* Kill any decorative line some global CSS might add */
     .section-title::before,
     .section-title::after{ content:none !important; display:none !important; }
+
     .subtle { color:#64748b }
 
     /* Currency inputs */
-    .currency { padding-left: 2.5rem; }       /* $ + a bit of space */
-    .currency.tight { padding-left: 2.25rem; }/* a touch less for budget */
-    
-    /* Center CTA; no right arrow graphics involved */
+    .currency { padding-left: 2.5rem; }
+    .currency.tight { padding-left: 2.25rem; }
+
+    /* Center CTA */
     .cta { display:flex; justify-content:center; }
   </style>
 </head>
 <body class="p-2">
-  <div class="max-w-4xl mx-auto">
-    <div class="rounded-2xl border border-slate-200 shadow bg-white/95 p-4 sm:p-6">
+  <div id="discoveryShell" class="max-w-4xl mx-auto">
+    <div id="discoveryCard" class="rounded-2xl border border-slate-200 shadow bg-white/95 p-4 sm:p-6">
       <h2 class="text-center text-xl sm:text-2xl font-bold text-emerald-800">Discovery</h2>
       <p class="text-center text-slate-600 mt-1">Answer a few questions so we can match the right vehicle.</p>
 
       <!-- FORM -->
       <form id="discForm" class="mt-5 grid gap-5">
-        <!-- Row: Vehicle of interest (centered; cab appears to the right only for Silverado) -->
-        <div class="first-row items-end">
-          <label class="block w-full md:w-auto">
+        <!-- Row: Vehicle of interest (center by default; cab appears to the right only for Silverado) -->
+        <div id="firstRow" class="items-end">
+          <label id="modelWrap" class="block w-full md:w-auto">
             <span class="field-label">Vehicle you’re interested in</span>
-            <select id="model" class="field-input"></select>
+            <select id="model" class="field-input w-model"></select>
           </label>
 
           <label id="cabWrap" class="block hidden w-full md:w-auto">
             <span class="field-label">Cab style (Silverado)</span>
-            <select id="cab" class="field-input w-[18ch]">
+            <select id="cab" class="field-input w-cab">
               <option value="">Any</option>
               <option>Regular Cab</option>
               <option>Double Cab</option>
@@ -104,7 +129,7 @@
           </label>
         </div>
 
-        <!-- Row: Seating + Fuel type (both trimmed) -->
+        <!-- Row: Seating + Fuel type -->
         <div class="grid md:grid-cols-2 gap-4">
           <label class="block">
             <span class="field-label">Preferred seating</span>
@@ -128,13 +153,12 @@
           </label>
         </div>
 
-        <!-- Row: Investment + Budget (compact, paddings/placeholder adjusted) -->
+        <!-- Row: Investment + Budget (both shortened) -->
         <div class="grid md:grid-cols-2 gap-4">
           <label class="block">
             <span class="field-label">Initial Investment (approx)</span>
             <div class="relative">
               <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 select-none">$</span>
-              <!-- four leading spaces to nudge right two more characters, updated wording -->
               <input id="downPayment" type="text"
                      class="field-input currency w-invest"
                      placeholder="    20% recommended down payment"/>
@@ -152,7 +176,7 @@
           </label>
         </div>
 
-        <!-- ===== Vehicle you're replacing (centered; no underline) ===== -->
+        <!-- ===== Vehicle you're replacing ===== -->
         <h3 class="section-title">Vehicle you’re replacing</h3>
         <p class="text-center subtle -mt-2">Tell us a bit about the one you’re trading.</p>
 
@@ -215,6 +239,7 @@ function parseMoney(str){
 }
 
 /* ---------------- elements ---------------- */
+const firstRow  = $('firstRow');
 const modelEl   = $('model');
 const cabWrap   = $('cabWrap');
 const cabEl     = $('cab');
@@ -253,13 +278,12 @@ function customSort(a,b){
 }
 const MODELS = [...RAW_MODELS].sort(customSort);
 
+function isSilverado(model){ return /^Silverado\s(1500|2500|3500)/.test(model); }
+
 /* ------------- init lists ------------- */
 function fillModels(){
   modelEl.innerHTML = MODELS.map(m => `<option>${m}</option>`).join('');
 }
-function isSilverado(model){ return /^Silverado\s(1500|2500|3500)/.test(model); }
-function updateCabVisibility(){ cabWrap.classList.toggle('hidden', !isSilverado(modelEl.value || '')); }
-
 function fillYears(){
   const thisYear = new Date().getFullYear();
   const start = 1990;
@@ -268,9 +292,15 @@ function fillYears(){
   tradeYear.innerHTML = opts.join('');
 }
 
+/* ------------- Silverado-specific layout toggle ------------- */
+function updateCabVisibility(){
+  const showCab = isSilverado(modelEl.value || '');
+  cabWrap.classList.toggle('hidden', !showCab);
+  firstRow.classList.toggle('two-cols', showCab);  // flips the row into two columns when needed
+}
+
 /* ------------- “fresh” defaults ------------- */
 function setFreshDefaults(){
-  // Do not load prior storage; start clean
   budgetEl.value = formatMoney(650);
   payoffEl.value = formatMoney(0);
   downEl.value   = "";
