@@ -64,7 +64,11 @@
     </div>
   </div>
 
-  <script>
+  <footer class="footer">
+    <small>© 2025 Quirk AI — Sales Kiosk</small>
+  </footer>
+
+<script>
 /* ========= tiny storage + analytics (kept minimal) ========= */
 function track(event, data = {}) {
   try {
@@ -79,12 +83,13 @@ function track(event, data = {}) {
 const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
 const load = (k, def) => { try { const v = JSON.parse(localStorage.getItem(k)); return (v ?? def); } catch { return def; } };
 
+const ORIGIN = window.location.origin; // secure postMessage target
+
 /* ========= steps config: ALL steps are external HTMLs ========= */
 const STEPS = [
   { label: 'Welcome',          url: 'kiosk-welcome.html',  height: 460, subtitle: "We’ll guide you through a few quick steps.", showHeader: true },
   // Hide the parent header on Discovery to avoid duplicate titles (child renders its own)
-  // Increased default height; child will still auto-resize this via postMessage.
-  { label: 'Discovery',        url: 'kiosk-discovery.html',height: 860, subtitle: "Tell us about your monthly budget.", showHeader: false },
+  { label: 'Discovery',        url: 'kiosk-discovery.html',height: 640, subtitle: "Tell us about your monthly budget.", showHeader: false },
   { label: 'Vehicle Match',    url: 'kiosk-vehicle.html',  height: 720, subtitle: "Pick one to continue.", showHeader: true },
   { label: 'Trade-In',         url: 'kiosk-trade.html',    height: 620, subtitle: "Enter your VIN/miles; we’ll pre-value it.", showHeader: true },
   { label: 'Payments',         url: 'kiosk-payments.html', height: 720, subtitle: "Taxes/fees estimated; lender approval required.", showHeader: true },
@@ -143,8 +148,9 @@ function loadStep(i){
   }
 
   stage.src = cfg.url;
-  stage.dataset.step = cfg.label; // mark the iframe so resize code can find it
   stage.style.height = (cfg.height || 480) + 'px';
+  stage.style.minHeight = (cfg.height || 480) + 'px';
+  stage.setAttribute('data-step', cfg.label);
 
   // After the child loads, seed optional data (no DOM mutation inside the child)
   stage.addEventListener('load', function onload(){
@@ -152,10 +158,10 @@ function loadStep(i){
     try {
       const profile = load("guided_profile", { name:'', contact:'', budget:400 });
       if (cfg.url.includes('kiosk-welcome.html')) {
-        stage.contentWindow?.postMessage({ type:'welcome:init', payload:{ profile } }, '*');
+        stage.contentWindow?.postMessage({ type:'welcome:init', payload:{ profile } }, ORIGIN);
       }
       if (cfg.url.includes('kiosk-discovery.html')) {
-        stage.contentWindow?.postMessage({ type:'discovery:init', payload:{ budget: profile.budget } }, '*');
+        stage.contentWindow?.postMessage({ type:'discovery:init', payload:{ budget: profile.budget } }, ORIGIN);
       }
     } catch {}
   });
@@ -164,8 +170,11 @@ function loadStep(i){
 }
 function go(i){ loadStep(i); }
 
-/* ========= message bridge from children ========= */
+/* ========= message bridge from children (secured) ========= */
 window.addEventListener('message', (e) => {
+  // only accept messages from our own origin (GitHub Pages)
+  if (e.origin !== ORIGIN) return;
+
   const data = e?.data || {};
   if (!data || typeof data !== 'object') return;
   const { type, payload } = data;
@@ -186,20 +195,17 @@ window.addEventListener('message', (e) => {
     save("guided_profile", { ...p, budget: Number(payload?.budget ?? p.budget) });
     return;
   }
+  if (type === 'discovery:height' && step === 1) {
+    const h = Math.max(560, Number(payload?.height || 0) | 0);
+    stage.style.height = h + 'px';
+    return;
+  }
   if (type === 'discovery:done') {
     track('guided_discovery_next');
     go(2);
     return;
   }
   if (type === 'discovery:back') { go(0); return; }
-
-  // **Auto-resize Discovery frame**
-  if (type === 'discovery:height') {
-    const h = Math.max(720, Math.min(1400, Number(payload?.height || 0)));
-    const frame = document.querySelector('iframe[data-step="Discovery"]') || stage;
-    if (frame) frame.style.height = h + 'px';
-    return;
-  }
 
   // Vehicle Match (child should persist selection locally)
   if (type === 'vehicle:done') { go(3); return; }
