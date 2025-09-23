@@ -184,7 +184,7 @@
   <span class="field-label">Show me lease specials</span>
   <select id="leaseSpecials"
           class="field-input text-slate-400"
-          style="width:16ch"  <!-- shorten box to your target -->
+          style="width:16ch;"
           required>
     <option value="" disabled selected>Yes</option>  <!-- placeholder -->
     <option value="Yes">Yes</option>
@@ -193,15 +193,14 @@
 </label>
 
 <script>
-  // Keep placeholder gray until a real value is chosen
+  // Keep placeholder gray until a real choice is made
   (function () {
     const sel = document.getElementById('leaseSpecials');
-    function tint() { sel.classList.toggle('text-slate-400', sel.value === ''); }
+    function tint(){ sel.classList.toggle('text-slate-400', sel.value === ''); }
     sel.addEventListener('change', tint);
     tint();
   })();
 </script>
-
 
         <!-- Vehicle you’re replacing -->
         <h3 class="section-title">Vehicle you’re replacing</h3>
