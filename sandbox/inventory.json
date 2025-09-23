@@ -1,5 +1,65 @@
 [
   {
+    [
+  {
+    "stock_number": "N24662",
+    "stock_type": "New",
+    "vin": "WSDSFF8EJJ7LT4PNW",
+    "year": 2025,
+    "make": "Chevrolet",
+    "model": "Trax",
+    "trim": "1RS",
+    "status": "in_transit",
+    "price": 32922,
+    "msrp": 33001,
+    "mileage": 10,
+    "body": "SUV",
+    "drivetrain": "4WD",
+    "ext_color": "Gray",
+    "int_color": "Beige",
+    "photo_url_primary": "https://dealer.example.com/photos/N24662.jpg",
+    "updated_at": "2025-08-27T14:12:31Z"
+  },
+  {
+    "stock_number": "U31292",
+    "stock_type": "New",
+    "vin": "S1Y1JF9ZDG4REY2XB",
+    "year": 2025,
+    "make": "Chevrolet",
+    "model": "Silverado 1500",
+    "trim": "LT",
+    "status": "in_stock",
+    "price": 50412,
+    "msrp": 51315,
+    "mileage": 10,
+    "body": "Truck",
+    "drivetrain": "RWD",
+    "ext_color": "Green",
+    "int_color": "Gray",
+    "photo_url_primary": "https://dealer.example.com/photos/U31292.jpg",
+    "updated_at": "2025-08-27T14:12:31Z"
+  },
+  {
+    "stock_number": "N66531",
+    "stock_type": "New",
+    "vin": "YXHW9W3X2VJN31MW2",
+    "year": 2025,
+    "make": "Chevrolet",
+    "model": "Trax",
+    "trim": "2RS",
+    "status": "in_stock",
+    "price": 30316,
+    "msrp": 31807,
+    "mileage": 10,
+    "body": "SUV",
+    "drivetrain": "FWD",
+    "ext_color": "Silver",
+    "int_color": "Gray",
+    "photo_url_primary": "https://dealer.example.com/photos/N66531.jpg",
+    "updated_at": "2025-08-27T14:12:31Z"
+  }
+]
+
     "stock_number": "N59797",
     "stock_type": "Used",
     "vin": "ZTC6H1FV0NECRVFRG",
