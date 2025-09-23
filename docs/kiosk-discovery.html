@@ -29,15 +29,15 @@
     /* Compact widths (tuned to your markups) */
     .w-model     { width: 34ch !important; }
     .w-cab       { width: 20ch !important; }
-    .w-use       { width: 28ch !important; }     /* 1) shorten Primary use */
+    .w-use       { width: 28ch !important; }     /* Primary use (short) */
     .w-towing    { width: 22ch !important; }
     .w-seating   { width: 8ch  !important; }
     .w-fuel      { width: 12ch !important; }
-    .w-invest    { width: 25ch !important; }     /* 2) add ~3ch to Initial Investment */
+    .w-invest    { width: 25ch !important; }     /* Initial Investment (+3ch) */
     .w-budget    { width: 18ch !important; }     /* centered column */
-    .w-lease     { width: 24ch !important; }     /* 4) “Show me lease specials” box */
+    .w-lease     { width: 16ch !important; }     /* Show me lease specials (short) */
     .w-payoff    { width: 22ch !important; }
-    .w-condition { width: 40ch !important; }     /* 5) Vehicle condition */
+    .w-condition { width: 40ch !important; }     /* Vehicle condition */
 
     input[type="number"]::-webkit-outer-spin-button,
     input[type="number"]::-webkit-inner-spin-button{ -webkit-appearance: none; margin: 0; }
@@ -106,7 +106,7 @@
           </label>
         </div>
 
-        <!-- Row 2: Primary use + Tow (Primary use shortened) -->
+        <!-- Row 2: Primary use + Tow -->
         <div class="grid md:grid-cols-2 gap-4">
           <label class="block">
             <span class="field-label">Primary use</span>
@@ -157,18 +157,18 @@
 
         <!-- Row 4: Investment + Budget + Lease specials -->
         <div class="grid md:grid-cols-3 gap-4">
-          <!-- Left: Initial Investment (wider by ~3ch) -->
+          <!-- Left: Initial Investment (wider) -->
           <label class="block">
             <span class="field-label">Initial Investment (approx)</span>
             <div class="relative">
               <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 select-none">$</span>
               <input id="downPayment" type="text"
-                     class="field-input currency w-invest"
-                     placeholder="    20% down recommended "/>
+                     class="field-input currency w-invest placeholder-slate-400"
+                     placeholder="    20% down recommended"/>
             </div>
           </label>
 
-          <!-- Center: Monthly budget (centered column) -->
+          <!-- Center: Monthly budget (center column) -->
           <label class="block justify-self-center">
             <span class="field-label">What is your monthly budget?</span>
             <div class="relative">
@@ -179,28 +179,16 @@
             </div>
           </label>
 
-          <!-- Right: Show me lease specials (Yes/No) -->
+          <!-- Right: Show me lease specials -->
           <label class="block">
-  <span class="field-label">Show me lease specials</span>
-  <select id="leaseSpecials"
-          class="field-input text-slate-400"
-          style="width:16ch;"
-          required>
-    <option value="" disabled selected>Yes</option>  <!-- placeholder -->
-    <option value="Yes">Yes</option>
-    <option value="No">No</option>
-  </select>
-</label>
-
-<script>
-  // Keep placeholder gray until a real choice is made
-  (function () {
-    const sel = document.getElementById('leaseSpecials');
-    function tint(){ sel.classList.toggle('text-slate-400', sel.value === ''); }
-    sel.addEventListener('change', tint);
-    tint();
-  })();
-</script>
+            <span class="field-label">Show me lease specials</span>
+            <select id="leaseSpecials" class="field-input w-lease text-slate-400" required>
+              <option value="" disabled selected>Yes</option> <!-- placeholder -->
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </label>
+        </div> <!-- /Row 4 -->
 
         <!-- Vehicle you’re replacing -->
         <h3 class="section-title">Vehicle you’re replacing</h3>
@@ -224,25 +212,25 @@
           </label>
 
           <label class="block">
-  <span class="field-label">Estimated payoff</span>
-  <div class="relative">
-    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 select-none">$</span>
-    <input
-      id="payoff"
-      type="text"
-      class="field-input currency w-payoff placeholder-slate-400"
-      style="padding-left:1.6rem;"
-      placeholder="0.00"
-    />
-  </div>
-</label>
+            <span class="field-label">Estimated payoff</span>
+            <div class="relative">
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 select-none">$</span>
+              <input
+                id="payoff"
+                type="text"
+                class="field-input currency w-payoff placeholder-slate-400"
+                style="padding-left:1.6rem;"
+                placeholder="0.00"
+              />
+            </div>
+          </label>
 
           <!-- Row 5b: Financed with (align under Estimated payoff, same width) -->
           <label class="block md:col-start-4">
             <span class="field-label">Who are you financed with?</span>
             <input id="financedWith" type="text" class="field-input w-payoff" placeholder="e.g., GM Financial"/>
           </label>
-        </div>
+        </div> <!-- /Row 5 -->
 
         <!-- Row 6: Current mileage + Vehicle condition -->
         <div class="grid md:grid-cols-2 gap-4">
@@ -251,29 +239,19 @@
             <input id="miles" type="text" maxlength="8" class="field-input w-[16ch]" placeholder="Enter miles"/>
           </label>
 
-         <label class="block">
-  <span class="field-label">Vehicle condition</span>
-  <select id="vehicleCondition" class="field-input w-condition text-slate-400" required>
-    <option value="" disabled selected>Grade your vehicle</option>
-    <option value="5">Grade 5 – Vehicle in excellent condition.</option>
-    <option value="4">Grade 4 – Vehicle is better than average.</option>
-    <option value="3">Grade 3 – Normal wear and tear.</option>
-    <option value="2">Grade 2 – Shows signs of excessive wear and tear.</option>
-    <option value="1">Grade 1 – Shows signs of severe abuse.</option>
-    <option value="0">Grade 0 – Vehicle is inoperative.</option>
-  </select>
-</label>
-
-<script>
-  // Keep placeholder gray until a real value is chosen
-  (function () {
-    const sel = document.getElementById('vehicleCondition');
-    function tint() { sel.classList.toggle('text-slate-400', sel.value === ''); }
-    sel.addEventListener('change', tint);
-    tint();
-  })();
-</script>
-
+          <label class="block">
+            <span class="field-label">Vehicle condition</span>
+            <select id="vehicleCondition" class="field-input w-condition text-slate-400" required>
+              <option value="" disabled selected>Grade your vehicle</option>
+              <option value="5">Grade 5 – Vehicle in excellent condition.</option>
+              <option value="4">Grade 4 – Vehicle is better than average.</option>
+              <option value="3">Grade 3 – Normal wear and tear.</option>
+              <option value="2">Grade 2 – Shows signs of excessive wear and tear.</option>
+              <option value="1">Grade 1 – Shows signs of severe abuse.</option>
+              <option value="0">Grade 0 – Vehicle is inoperative.</option>
+            </select>
+          </label>
+        </div> <!-- /Row 6 -->
 
         <!-- Actions -->
         <div class="cta pt-2">
@@ -366,10 +344,10 @@ function updateCabVisibility(){
 /* ------------- fresh defaults ------------- */
 function setFreshDefaults(){
   budgetEl.value = formatMoney(650);
-  payoffEl.value = formatMoney(0);
-  downEl.value   = "";
+  payoffEl.value = "";                 // keep placeholder
+  downEl.value   = "";                 // keep placeholder
   milesEl.value  = "";
-  leaseEl.value  = "";   // show the "Yes" placeholder by default
+  leaseEl.value  = "";                 // show the "Yes" placeholder
 }
 
 /* ------------- persistence ------------- */
@@ -383,29 +361,44 @@ function persist(){
     fuel: fuelEl.value,
     downPayment: parseMoney(downEl.value),
     budget: parseMoney(budgetEl.value),
-    leaseSpecials: leaseEl.value,                  // NEW
+    leaseSpecials: leaseEl.value,
     tradeYear: tradeYear.value || null,
     tradeMake: tradeMake.value || null,
     tradeModel: tradeModel.value || null,
     payoff: parseMoney(payoffEl.value),
-    financedWith: financedWithEl.value || "",      // NEW
+    financedWith: financedWithEl.value || "",
     miles: milesEl.value ? Number(String(milesEl.value).replace(/[^\d]/g,'')) : null,
-    vehicleCondition: vehicleConditionEl.value     // NEW
+    vehicleCondition: vehicleConditionEl.value
   };
   try { localStorage.setItem('guided_needs', JSON.stringify(data)); } catch {}
   window.parent?.postMessage({ type: 'discovery:update', payload: { budget: data.budget, model: data.model } }, '*');
 }
 
 /* ------------- currency behavior ------------- */
-function attachCurrency(el){
-  el.addEventListener('blur', () => { el.value = formatMoney(parseMoney(el.value)); persist(); });
+function attachCurrency(el, {blankOkay=false}={}){
+  el.addEventListener('blur', () => {
+    const raw = String(el.value || '').replace(/[^\d.]/g,'');
+    if (raw || !blankOkay) {
+      el.value = formatMoney(parseMoney(el.value));
+    } else {
+      el.value = ''; // preserve placeholder if blank is allowed
+    }
+    persist();
+  });
   el.addEventListener('input', () => { persist(); });
 }
-[downEl, budgetEl, payoffEl].forEach(attachCurrency);
+attachCurrency(downEl,   {blankOkay:true}); // keep placeholder if left empty
+attachCurrency(budgetEl, {blankOkay:false});
+attachCurrency(payoffEl, {blankOkay:true}); // keep placeholder if left empty
+
+/* ------------- placeholder tint for selects ------------- */
+function tintSelect(sel){ sel.classList.toggle('text-slate-400', sel.value === ''); }
+leaseEl.addEventListener('change', () => tintSelect(leaseEl));
+vehicleConditionEl.addEventListener('change', () => tintSelect(vehicleConditionEl));
 
 /* ------------- events ------------- */
 [modelEl, cabEl, useEl, towingEl, seatingEl, fuelEl, tradeYear, tradeMake, tradeModel,
- milesEl, vehicleConditionEl, financedWithEl, leaseEl]
+ milesEl, financedWithEl, leaseEl, vehicleConditionEl]
   .forEach(el => el.addEventListener('input', persist));
 
 modelEl.addEventListener('change', () => { updateCabVisibility(); persist(); });
@@ -432,6 +425,8 @@ fillModels();
 fillYears();
 updateCabVisibility();
 setFreshDefaults();
+tintSelect(leaseEl);
+tintSelect(vehicleConditionEl);
 persist();
 sendHeight();
 </script>
