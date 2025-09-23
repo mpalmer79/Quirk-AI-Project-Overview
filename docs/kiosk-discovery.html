@@ -24,16 +24,20 @@
     .field-label{display:block;font-size:.875rem;font-weight:600;color:#334155;margin-bottom:.25rem}
     .field-input{border:1px solid #e5e7eb;border-radius:.75rem;padding:.75rem;background:#fff}
     .field-input:focus{outline:2px solid #10b981;outline-offset:2px}
-    .field-input.w-full{width:100%} /* only full-width when explicitly asked */
+    .field-input.w-full{width:100%} /* only full-width when explicitly requested */
 
-    /* Make the compact widths WIN over any generic widths */
-    .w-model   { width: 34ch !important; }
-    .w-cab     { width: 20ch !important; }
-    .w-seating { width: 8ch  !important; }
-    .w-fuel    { width: 12ch !important; }
-    .w-invest  { width: 22ch !important; }  /* shortened */
-    .w-budget  { width: 18ch !important; }  /* shortened */
-    .w-payoff  { width: 22ch !important; }
+    /* Compact widths (tuned to your markups) */
+    .w-model     { width: 34ch !important; }
+    .w-cab       { width: 20ch !important; }
+    .w-use       { width: 28ch !important; }     /* 1) shorten Primary use */
+    .w-towing    { width: 22ch !important; }
+    .w-seating   { width: 8ch  !important; }
+    .w-fuel      { width: 12ch !important; }
+    .w-invest    { width: 25ch !important; }     /* 2) add ~3ch to Initial Investment */
+    .w-budget    { width: 18ch !important; }     /* centered column */
+    .w-lease     { width: 24ch !important; }     /* 4) “Show me lease specials” box */
+    .w-payoff    { width: 22ch !important; }
+    .w-condition { width: 40ch !important; }     /* 5) Vehicle condition */
 
     input[type="number"]::-webkit-outer-spin-button,
     input[type="number"]::-webkit-inner-spin-button{ -webkit-appearance: none; margin: 0; }
@@ -50,7 +54,6 @@
       align-items:end;
     }
     #firstRow > *{ justify-self:center; }
-
     #firstRow.two-cols{
       grid-template-columns: auto auto;
       justify-content:center;
@@ -103,11 +106,11 @@
           </label>
         </div>
 
-        <!-- Row 2: Primary use + Tow -->
+        <!-- Row 2: Primary use + Tow (Primary use shortened) -->
         <div class="grid md:grid-cols-2 gap-4">
           <label class="block">
             <span class="field-label">Primary use</span>
-            <select id="use" class="field-input w-full">
+            <select id="use" class="field-input w-use">
               <option>Daily commute</option>
               <option>Family / kids</option>
               <option>Work / jobsite</option>
@@ -119,7 +122,7 @@
 
           <label class="block">
             <span class="field-label">Tow Capacity needed</span>
-            <select id="towing" class="field-input w-[22ch]">
+            <select id="towing" class="field-input w-towing">
               <option>None</option>
               <option>Light (≤ 3,500 lbs)</option>
               <option>Medium (3,500–7,500 lbs)</option>
@@ -152,8 +155,9 @@
           </label>
         </div>
 
-        <!-- Row 4: Investment + Budget (shortened widths) -->
-        <div class="grid md:grid-cols-2 gap-4">
+        <!-- Row 4: Investment + Budget + Lease specials -->
+        <div class="grid md:grid-cols-3 gap-4">
+          <!-- Left: Initial Investment (wider by ~3ch) -->
           <label class="block">
             <span class="field-label">Initial Investment (approx)</span>
             <div class="relative">
@@ -164,7 +168,8 @@
             </div>
           </label>
 
-          <label class="block">
+          <!-- Center: Monthly budget (centered column) -->
+          <label class="block justify-self-center">
             <span class="field-label">What is your monthly budget?</span>
             <div class="relative">
               <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 select-none">$</span>
@@ -173,12 +178,22 @@
                      value="650.00"/>
             </div>
           </label>
+
+          <!-- Right: Show me lease specials (Yes/No) -->
+          <label class="block">
+            <span class="field-label">Show me lease specials</span>
+            <select id="leaseSpecials" class="field-input w-lease">
+              <option>No</option>
+              <option>Yes</option>
+            </select>
+          </label>
         </div>
 
         <!-- Vehicle you’re replacing -->
         <h3 class="section-title">Vehicle you’re replacing</h3>
-        <p class="text-center subtle -mt-2">Tell us about the vehicle you'll be trading in.</p>
+        <p class="text-center subtle -mt-2">Tell us a bit about the one you’re trading.</p>
 
+        <!-- Row 5: Year / Make / Model / Estimated payoff -->
         <div class="grid md:grid-cols-4 gap-4">
           <label class="block">
             <span class="field-label">Year</span>
@@ -202,12 +217,31 @@
               <input id="payoff" type="text" class="field-input currency w-payoff" value="0.00"/>
             </div>
           </label>
+
+          <!-- Row 5b: Financed with (align under Estimated payoff, same width) -->
+          <label class="block md:col-start-4">
+            <span class="field-label">Who are you financed with?</span>
+            <input id="financedWith" type="text" class="field-input w-payoff" placeholder="e.g., GM Financial"/>
+          </label>
         </div>
 
-        <div class="grid md:grid-cols-4 gap-4">
+        <!-- Row 6: Current mileage + Vehicle condition -->
+        <div class="grid md:grid-cols-2 gap-4">
           <label class="block">
             <span class="field-label">Current mileage</span>
             <input id="miles" type="text" maxlength="8" class="field-input w-[16ch]" placeholder="Enter miles"/>
+          </label>
+
+          <label class="block">
+            <span class="field-label">Vehicle condition</span>
+            <select id="vehicleCondition" class="field-input w-condition">
+              <option>Grade 5 – Vehicle in excellent condition.</option>
+              <option>Grade 4 – Vehicle is better than average.</option>
+              <option selected>Grade 3 – Normal wear and tear.</option>
+              <option>Grade 2 – Shows signs of excessive wear and tear.</option>
+              <option>Grade 1 – Shows signs of severe abuse.</option>
+              <option>Grade 0 – Vehicle is inoperative.</option>
+            </select>
           </label>
         </div>
 
@@ -248,12 +282,15 @@ const fuelEl    = $('fuel');
 
 const downEl    = $('downPayment');
 const budgetEl  = $('budget');
+const leaseEl   = $('leaseSpecials');
 
 const tradeYear = $('tradeYear');
 const tradeMake = $('tradeMake');
 const tradeModel= $('tradeModel');
 const payoffEl  = $('payoff');
+const financedWithEl = $('financedWith');
 const milesEl   = $('miles');
+const vehicleConditionEl = $('vehicleCondition');
 
 const form      = $('discForm');
 const backBtn   = $('backBtn');
@@ -302,6 +339,7 @@ function setFreshDefaults(){
   payoffEl.value = formatMoney(0);
   downEl.value   = "";
   milesEl.value  = "";
+  leaseEl.value  = "No";
 }
 
 /* ------------- persistence ------------- */
@@ -315,14 +353,17 @@ function persist(){
     fuel: fuelEl.value,
     downPayment: parseMoney(downEl.value),
     budget: parseMoney(budgetEl.value),
+    leaseSpecials: leaseEl.value,                  // NEW
     tradeYear: tradeYear.value || null,
     tradeMake: tradeMake.value || null,
     tradeModel: tradeModel.value || null,
     payoff: parseMoney(payoffEl.value),
+    financedWith: financedWithEl.value || "",      // NEW
     miles: milesEl.value ? Number(String(milesEl.value).replace(/[^\d]/g,'')) : null,
+    vehicleCondition: vehicleConditionEl.value     // NEW
   };
-  save('guided_needs', data);
-  window.parent?.postMessage({ type: 'discovery:update', payload: { model: data.model } }, '*');
+  try { localStorage.setItem('guided_needs', JSON.stringify(data)); } catch {}
+  window.parent?.postMessage({ type: 'discovery:update', payload: { budget: data.budget, model: data.model } }, '*');
 }
 
 /* ------------- currency behavior ------------- */
@@ -333,7 +374,8 @@ function attachCurrency(el){
 [downEl, budgetEl, payoffEl].forEach(attachCurrency);
 
 /* ------------- events ------------- */
-[modelEl, cabEl, useEl, towingEl, seatingEl, fuelEl, tradeYear, tradeMake, tradeModel, milesEl]
+[modelEl, cabEl, useEl, towingEl, seatingEl, fuelEl, tradeYear, tradeMake, tradeModel,
+ milesEl, vehicleConditionEl, financedWithEl, leaseEl]
   .forEach(el => el.addEventListener('input', persist));
 
 modelEl.addEventListener('change', () => { updateCabVisibility(); persist(); });
