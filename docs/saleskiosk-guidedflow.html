@@ -168,14 +168,11 @@ function go(i){ loadStep(i); }
 
 /* ========= helper: apply height from child ========= */
 function applyChildHeight(h){
-  const min = 520;                          // sane minimum
-  const desired = Math.max(min, Number(h)||0);
-  // a bit of breathing room but never run past viewport
-  const target = Math.min(desired + 16, window.innerHeight - 40);
-  stage.style.height = target + 'px';
+  const desired = Math.max(520, Number(h) || 0);
+  const target  = desired + 16;        // small bottom padding/breathing room
+  stage.style.height    = target + 'px';
   stage.style.minHeight = target + 'px';
-  // ensure the iframe itself doesn't show a scroll bar
-  stage.style.overflow = 'hidden';
+  stage.style.overflow  = 'hidden';    // ensure no inner scrollbars
 }
 
 /* ========= message bridge from children (secured) ========= */
