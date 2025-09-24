@@ -37,7 +37,7 @@
     .w-budget    { width: 18ch !important; }
     .w-lease     { width: 16ch !important; }
     .w-payoff    { width: 22ch !important; }
-    .w-condition { width: 40ch !important; } /* available if you want a fixed width later */
+    .w-condition { width: 40ch !important; }
 
     input[type="number"]::-webkit-outer-spin-button,
     input[type="number"]::-webkit-inner-spin-button{ -webkit-appearance: none; margin: 0; }
@@ -70,11 +70,10 @@
 
     .subtle { color:#64748b }
 
-    /* --- Currency padding (force-win vs Tailwind) --- */
-    .currency       { padding-left: 2.75rem !important; } /* down payment, default money */
-    .currency.tight { padding-left: 2.25rem !important; } /* monthly budget */
+    /* --- Currency padding --- */
+    .currency       { padding-left: 2.75rem !important; }
+    .currency.tight { padding-left: 2.25rem !important; }
 
-    /* Payoff: tighter layout so first digit sits just after $ */
     .dollar{position:absolute;left:.55rem;top:50%;transform:translateY(-50%);color:#64748b;user-select:none;}
     .currency-slim{padding-left:1.45rem !important;}
 
@@ -190,7 +189,7 @@
           <label class="block">
             <span class="field-label">Show me lease specials</span>
             <select id="leaseSpecials" class="field-input w-lease text-slate-400" required>
-              <option value="" disabled selected>Yes</option> <!-- placeholder -->
+              <option value="" disabled selected>Yes</option>
               <option value="Yes">Yes</option>
               <option value="No">No</option>
             </select>
@@ -207,7 +206,6 @@
             <span class="field-label">Year</span>
             <select id="tradeYear" class="field-input w-full text-slate-400" required>
               <option value="" selected disabled>Select Year</option>
-              <!-- options injected by JS -->
             </select>
           </label>
 
@@ -237,7 +235,7 @@
           </label>
         </div> <!-- /Row 5 -->
 
-        <!-- Row 6: Vehicle condition (under Year) + Current mileage (under Make) + Financed with (under Estimated payoff) -->
+        <!-- Row 6 -->
         <div class="grid md:grid-cols-4 gap-4">
           <label class="block">
             <span class="field-label">Vehicle condition</span>
@@ -260,7 +258,6 @@
                    placeholder="Enter miles"/>
           </label>
 
-          <!-- keep column 3 empty to preserve alignment under Model -->
           <div class="hidden md:block"></div>
 
           <label class="block md:col-start-4">
@@ -283,7 +280,8 @@
 <script>
 /* ---------------- helpers ---------------- */
 const $ = (id) => document.getElementById(id);
-const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
+const saveLocal = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
+const loadLocal = (k, d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } };
 const TARGET_ORIGIN = window.location.origin;
 
 function formatMoney(val){
@@ -375,14 +373,34 @@ function updateCabVisibility(){
 
 /* ------------- fresh defaults ------------- */
 function setFreshDefaults(){
-  budgetEl.value = "";                 // placeholder
-  payoffEl.value = "";                 // placeholder
-  downEl.value   = "";                 // placeholder
+  budgetEl.value = "";
+  payoffEl.value = "";
+  downEl.value   = "";
   milesEl.value  = "";
-  leaseEl.value  = "";                 // show "Yes" placeholder
+  leaseEl.value  = "";
 }
 
-/* ------------- persistence ------------- */
+/* ------------- (save shopper’s selection) ------------- */
+/** Normalize variants into a base model key for inventory filtering. */
+function normalizeModel(label){
+  if (!label) return '';
+  const L = String(label).trim().toLowerCase();
+  if (L.includes('corvette')) return 'Corvette'; // E-Ray, Stingray → Corvette
+  return String(label).trim();
+}
+/** Persist both the raw pick and normalized base for kiosk-vehicle.html */
+function persistInterestModel(){
+  const raw  = String(modelEl.value || '').trim();
+  const norm = normalizeModel(raw);
+  saveLocal('guided_interest_raw', raw);
+  saveLocal('guided_interest_model', norm);
+  // also mirror into the larger needs object so existing code keeps working
+  const needs = loadLocal('guided_needs', {});
+  saveLocal('guided_needs', { ...needs, model: raw });
+}
+/* ------------------------------------------------------ */
+
+/* ------------- persistence of the whole form ------------- */
 function persist(){
   const data = {
     model: modelEl.value,
@@ -402,7 +420,8 @@ function persist(){
     miles: milesEl.value ? Number(String(milesEl.value).replace(/[^\d]/g,'')) : null,
     vehicleCondition: vehicleConditionEl.value
   };
-  try { localStorage.setItem('guided_needs', JSON.stringify(data)); } catch {}
+  saveLocal('guided_needs', data);
+  // advertise key bits upward
   window.parent?.postMessage({ type: 'discovery:update', payload: { budget: data.budget, model: data.model } }, TARGET_ORIGIN);
 }
 const persistDebounced = debounce(persist, 120);
@@ -414,7 +433,7 @@ function attachCurrency(el, {blankOkay=false}={}){
     if (raw || !blankOkay) {
       el.value = formatMoney(parseMoney(el.value));
     } else {
-      el.value = ''; // preserve placeholder if blank is allowed
+      el.value = '';
     }
     persist();
   });
@@ -435,13 +454,18 @@ tradeYear.addEventListener('change', () => tintSelect(tradeYear));
  milesEl, financedWithEl, leaseEl, vehicleConditionEl]
   .forEach(el => el.addEventListener('input', persistDebounced));
 
-modelEl.addEventListener('change', () => { updateCabVisibility(); persist(); });
+modelEl.addEventListener('change', () => {
+  updateCabVisibility();
+  persistInterestModel(); // <-- ensure the picker is saved right away
+  persist();
+});
 
 backBtn.addEventListener('click', () => {
   window.parent?.postMessage({ type: 'discovery:back' }, TARGET_ORIGIN);
 });
 form.addEventListener('submit', (e) => {
   e.preventDefault();
+  persistInterestModel();
   persist();
   window.parent?.postMessage({ type: 'discovery:done' }, TARGET_ORIGIN);
 });
@@ -455,20 +479,32 @@ window.addEventListener('load', sendHeight);
 if ('ResizeObserver' in window) {
   new ResizeObserver(sendHeight).observe(document.documentElement);
 } else {
-  setInterval(sendHeight, 500); // fallback
+  setInterval(sendHeight, 500);
 }
 
 /* ------------- boot ------------- */
-fillModels().then(() => {
+(async () => {
+  await fillModels();
+
+  // restore previous raw pick if present
+  const priorRaw = loadLocal('guided_interest_raw', '');
+  if (priorRaw) {
+    const opt = [...modelEl.options].find(o => o.value === priorRaw);
+    if (opt) modelEl.value = priorRaw;
+  }
+
   updateCabVisibility();
-});
-fillYears();
-setFreshDefaults();
-tintSelect(leaseEl);
-tintSelect(vehicleConditionEl);
-tintSelect(tradeYear);
-persist();
-sendHeight();
+  fillYears();
+  setFreshDefaults();
+  tintSelect(leaseEl);
+  tintSelect(vehicleConditionEl);
+  tintSelect(tradeYear);
+
+  // seed normalized/needs on first load
+  persistInterestModel();
+  persist();
+  sendHeight();
+})();
 </script>
 </body>
 </html>
