@@ -8,6 +8,10 @@
   <link rel="stylesheet" href="assets/kiosk-shared.css">
   <script src="assets/kiosk-shared.js"></script>
   <style>
+    /* Make the child page grow with no inner scrollbar */
+    html, body { height:auto; overflow:visible !important; }
+    .kx { overflow:visible; padding-bottom:24px; }
+
     /* ====== Layout & centering ====== */
     .kx { max-width: 1100px; margin: 0 auto; }
     .card-title { text-align:center; margin:6px 0 14px; color:#0f766e; font-weight:800; font-size:1.25rem; }
@@ -323,7 +327,7 @@ function sendPayload(){
   const now = new Date();
   const max = now.getFullYear() + 1;
   const start = 1990;
-  const opts = ['<option value="" selected disabled>Select Year</option>'];
+  const opts = ['<option value="" selected disabled">Select Year</option>'];
   for (let y=max; y>=start; y--) opts.push(`<option>${y}</option>`);
   yearEl.innerHTML = opts.join('');
 })();
@@ -461,7 +465,7 @@ vinEl.addEventListener('input', (e)=>{
 (function autoHeight(){
   const TARGET_ORIGIN = window.location.origin;
   function sendHeight(){
-    const h = document.documentElement.scrollHeight;
+    const h = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
     window.parent?.postMessage({ type: 'trade:height', payload: { height: h } }, TARGET_ORIGIN);
   }
   window.addEventListener('load', sendHeight);
@@ -469,7 +473,9 @@ vinEl.addEventListener('input', (e)=>{
     new ResizeObserver(sendHeight).observe(document.documentElement);
   } else {
     setInterval(sendHeight, 600);
+    window.addEventListener('resize', sendHeight);
   }
+  document.addEventListener('input', sendHeight, true);
 })();
 
 document.getElementById('next').addEventListener('click', ()=>{
