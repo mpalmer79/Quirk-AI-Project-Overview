@@ -8,33 +8,53 @@
   <link rel="stylesheet" href="assets/kiosk-shared.css">
   <script src="assets/kiosk-shared.js"></script>
   <style>
+    /* Let the page grow—no inner scrollbars */
+    html, body { height:auto; overflow:visible !important; }
+    .kx { max-height:none; overflow:visible; padding-bottom:24px; }
+
     .row.row--2 { grid-template-columns: 1fr; }
     @media (min-width: 720px){
       .row.row--2 { display:grid; gap:12px; grid-template-columns: 1fr 1fr; }
     }
+
     .fieldset {
       border:1px solid #e5e7eb; border-radius:16px;
-      padding:14px; background:#fff; margin-bottom:14px;
+      padding:14px; background:#fff; margin:0 auto 14px;
     }
+    /* Center the cards on the page */
+    .narrow { max-width: 980px; }
+
     .section-title {
-      margin:8px 0 10px; color:#0f766e; font-weight:800; font-size:1.1rem;
+      margin:8px auto 10px; color:#0f766e; font-weight:800; font-size:1.1rem;
+      max-width:980px;
     }
+
     .sr-only {
       position:absolute !important; width:1px; height:1px; padding:0; margin:-1px;
       overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
     }
-    /* Compact mileage field: visually about 10ch; JS enforces 8 digits */
-    #miles { width:10ch; }
+
+    /* Compact mileage field: show ~8 characters */
+    #miles { width:8ch; }
+
+    /* Wearables: 3-up on desktop: Tire | Brake | Other Wear */
+    .wear-grid { display:grid; gap:12px; grid-template-columns: 1fr; }
+    @media (min-width: 900px){
+      .wear-grid { grid-template-columns: 1fr 1fr 1fr; align-items:end; }
+      .wear-grid .full { grid-column: 1 / -1; }
+    }
+
+    /* Footer CTA row */
+    .cta { display:flex; justify-content:flex-end; gap:8px; margin:14px auto 0; max-width:980px; }
   </style>
 </head>
 <body>
 <div class="kx">
   <h2>Trade-In</h2>
-  <!-- removed duplicate descriptive subline -->
-  <h3 class="section-title">Vehicle Details</h3>
 
   <!-- Vehicle Details -->
-  <div class="fieldset">
+  <h3 class="section-title">Vehicle Details</h3>
+  <div class="fieldset narrow">
     <div class="row row--2">
       <label class="field">
         <span class="label">VIN</span>
@@ -88,25 +108,25 @@
     <div class="row row--2">
       <label class="field">
         <span class="label">Exterior Color</span>
-        <input id="extColor" placeholder="">
+        <input id="extColor">
       </label>
 
       <label class="field">
         <span class="label">Interior Color</span>
-        <input id="intColor" placeholder="">
+        <input id="intColor">
       </label>
     </div>
 
     <div class="row row--2">
       <label class="field">
         <span class="label">Number of Keys Included</span>
-        <input id="keys" type="number" min="0" max="10" placeholder="">
+        <input id="keys" type="number" min="0" max="10">
       </label>
 
       <label class="field">
         <span class="label">Title Status</span>
         <select id="title">
-          <option>Clean</option>
+          <option>Clean / I have Title</option>
           <option>Lien</option>
           <option>Rebuilt</option>
           <option>Salvage</option>
@@ -117,7 +137,7 @@
     <div class="row row--2">
       <label class="field">
         <span class="label">Number of Owners (estimate OK)</span>
-        <input id="owners" type="number" min="0" max="20" placeholder="">
+        <input id="owners" type="number" min="0" max="20">
       </label>
 
       <label class="field">
@@ -135,9 +155,9 @@
     </label>
   </div>
 
-  <!-- Tell us about your Vehicle -->
+  <!-- Tell us about your Vehicle (centered) -->
   <h3 class="section-title">Tell us about your Vehicle</h3>
-  <div class="fieldset">
+  <div class="fieldset narrow">
     <div class="row row--2">
       <label class="field">
         <span class="label">Any warning lights on dashboard?</span>
@@ -177,10 +197,10 @@
     </label>
   </div>
 
-  <!-- Wearable Items Check -->
+  <!-- Wearable Items Check (centered, 3-up layout) -->
   <h3 class="section-title">Wearable Items Check</h3>
-  <div class="fieldset">
-    <div class="row row--2">
+  <div class="fieldset narrow">
+    <div class="wear-grid">
       <label class="field">
         <span class="label">Tire Condition</span>
         <select id="tires">
@@ -200,16 +220,16 @@
           <option>Needs Replacement</option>
         </select>
       </label>
-    </div>
 
-    <label class="field">
-      <span class="label">Other Wear Items (issues?)</span>
-      <textarea id="wear" rows="2"></textarea>
-    </label>
+      <label class="field">
+        <span class="label">Other Wear Items (issues?)</span>
+        <textarea id="wear" rows="2"></textarea>
+      </label>
+    </div>
   </div>
 
-  <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">
-    <button id="next" class="btn">Start credit →</button>
+  <div class="cta">
+    <button id="next" class="btn">Ownership options →</button>
   </div>
 </div>
 
@@ -249,7 +269,7 @@ const wearEl  = document.getElementById('wear');
 let lastBodyClass = ""; // from VPIC, used by estimator
 let currentRange = {low:0, high:0};
 
-/* hard-limit mileage to 8 digits even though type=number ignores maxlength */
+/* Hard-limit mileage to 8 digits even though type=number ignores maxlength */
 milesEl.addEventListener('input', () => {
   const digits = String(milesEl.value || '').replace(/\D/g,'').slice(0,8);
   milesEl.value = digits;
@@ -404,7 +424,7 @@ vinEl.addEventListener('input', (e)=>{
   tiresEl, brakesEl, wearEl
 ].forEach(el=> el.addEventListener('input', recomputeSilent));
 
-// Initial state from any stored payload
+/* Boot from any stored payload */
 (function boot(){
   const prev = load('guided_trade', null);
   if (prev){
@@ -418,7 +438,7 @@ vinEl.addEventListener('input', (e)=>{
     extEl.value = prev.exterior || '';
     intEl.value = prev.interior || '';
     keysEl.value = prev.keys || '';
-    titleEl.value = prev.title || 'Clean';
+    titleEl.value = prev.title || 'Clean / I have Title';
     ownersEl.value = prev.owners || '';
     accidentEl.value = prev.accident || 'No';
     accidentRepairEl.value = prev.accidentRepair || '';
@@ -438,11 +458,24 @@ vinEl.addEventListener('input', (e)=>{
   recomputeSilent();
 })();
 
+/* CTA */
 document.getElementById('next').addEventListener('click', ()=>{
   const payload = sendPayload();
   track?.('guided_trade_next');
   post('trade:done', payload);
 });
+
+/* ---- Auto-size to parent to avoid inner scrollbar ---- */
+function sendHeight(){
+  const h = document.documentElement.scrollHeight;
+  window.parent?.postMessage({ type: 'trade:height', payload: { height: h } }, window.location.origin);
+}
+window.addEventListener('load', sendHeight);
+if ('ResizeObserver' in window) {
+  new ResizeObserver(sendHeight).observe(document.documentElement);
+} else {
+  setInterval(sendHeight, 500);
+}
 </script>
 </body>
 </html>
