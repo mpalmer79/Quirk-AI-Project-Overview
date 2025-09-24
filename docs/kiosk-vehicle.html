@@ -29,17 +29,18 @@
 
   .title { margin-top:10px; font-weight:800; color:#0f172a; }
   .price { color:#047857; font-weight:900; font-size:1.1rem; margin-top:6px; }
-  .muted { display:none; }
 
-  .meta { display:flex; justify-content:center; gap:8px; margin-bottom:10px; }
+  .meta { display:flex; justify-content:center; gap:8px; margin-bottom:10px; flex-wrap:wrap; }
   .pill { display:inline-flex; align-items:center; gap:6px; padding:.25rem .6rem; border-radius:9999px; background:#f1f5f9; color:#334155; font-size:.75rem; font-weight:600; }
+  .pill.warn { background:#fff7ed; color:#9a3412; border:1px solid #fed7aa; }
 </style>
 </head>
 <body>
 <div class="kx">
   <div class="meta">
     <span id="found" class="pill">0 vehicles found</span>
-    <span id="filterTag" class="pill" style="display:none"></span>
+    <span id="pickedModel" class="pill" style="display:none"></span>
+    <span id="overBudget" class="pill warn" style="display:none">Over budget – showing closest matches</span>
   </div>
 
   <div id="list" class="grid"></div>
@@ -52,34 +53,6 @@
 <script>
 const { save, load, post } = window.kiosk;
 
-/* ---------- model helpers (reads selection from Discovery) ---------- */
-function normalizeModel(label){
-  if (!label) return '';
-  const L = String(label).trim().toLowerCase();
-  if (L.includes('corvette')) return 'Corvette'; // E-Ray, Stingray → Corvette
-  return String(label).trim();
-}
-function getChosenModel(){
-  // preferred: normalized model saved by Discovery
-  const normalized = load('guided_interest_model', null);
-  if (normalized) return { base: normalized, raw: load('guided_interest_raw', normalized) };
-
-  // fallback: whatever Discovery put in guided_needs.model
-  const needs = load('guided_needs', {});
-  const raw = needs?.model || '';
-  return { base: normalizeModel(raw), raw };
-}
-function rowModel(r){
-  return String(r.model ?? r.Model ?? '').trim();
-}
-function matchesChosenModel(r, chosen){
-  if (!chosen.base) return true; // nothing selected → show all (debug safety)
-  const m = rowModel(r);
-  if (!m) return false;
-  if (chosen.base === 'Corvette') return /corvette/i.test(m); // show any Corvette variant
-  return m === chosen.base || m === chosen.raw; // exact for other models
-}
-
 /* ---------- finance helpers ---------- */
 function amountFromPayment(pmt, aprPct, termMonths){
   const r = aprPct/100/12;
@@ -89,7 +62,7 @@ function amountFromPayment(pmt, aprPct, termMonths){
 const OVER_FLEX    = 5000;
 const DOWN_DEFAULT = 0;
 
-/* ---------- image sources (with placeholder) ---------- */
+/* ---------- images (with placeholder) ---------- */
 const VEHICLE_IMAGES = {
   '2025_Chevrolet_Silverado 1500': 'assets/2025-silverado-1500.jpg',
   '2025_Chevrolet_Equinox':       'assets/2025-equinox.jpg',
@@ -137,6 +110,14 @@ async function loadInventory(){
     console.error('Failed to load sandbox inventory:', err);
     return [];
   }
+}
+
+/* ---------- helpers ---------- */
+function normalizeModelPick(p){
+  if (!p) return '';
+  // Collapse Corvette variants to a single base model
+  if (/^corvette/i.test(p)) return 'Corvette';
+  return p;
 }
 
 /* ---------- card renderer ---------- */
@@ -194,12 +175,24 @@ function card(row){
   return el;
 }
 
-/* ---------- init: filter (by model + budget), render, show count ---------- */
+/* ---------- init ---------- */
 (async function init(){
-  const chosen = getChosenModel();
-
   const inv = await loadInventory();
 
+  // Shopper’s discovery
+  const needs = load('guided_needs', {});
+  let modelFilter = normalizeModelPick(needs?.model || '');
+
+  // Show chosen model (if any)
+  const modelPill = document.getElementById('pickedModel');
+  if (modelFilter) {
+    modelPill.style.display = '';
+    modelPill.textContent = `Model: ${modelFilter}`;
+  } else {
+    modelPill.style.display = 'none';
+  }
+
+  // Budget context
   const profile = load('guided_profile', { budget: 400 });
   const monthlyTarget = Number(profile.budget || 400);
 
@@ -211,31 +204,45 @@ function card(row){
   const principal = amountFromPayment(monthlyTarget, apr, term) + down;
   const cap = principal + OVER_FLEX;
 
-  const normalized = inv.map(r => ({
+  // 1) Filter by MODEL first (if provided)
+  const byModel = inv.filter(v => {
+    if (!modelFilter) return true;
+    const m = String(v.model || v.Model || '').toLowerCase();
+    return m.includes(modelFilter.toLowerCase());
+  });
+
+  // 2) Then apply price screen
+  const normalized = byModel.map(r => ({
     raw: r,
     price: Number(r.price ?? r.salePrice ?? r.msrp ?? r.Price ?? 0)
   }));
 
-  const keep = normalized
+  let keep = normalized
     .filter(x => x.price > 0 && x.price <= cap)
-    .map(x => x.raw)
-    .filter(r => matchesChosenModel(r, chosen))   // ← model filter from Discovery
-    .sort((a,b)=> (a.price||0) - (b.price||0));
+    .sort((a,b)=>a.price-b.price)
+    .map(x => x.raw);
 
+  const overBadge = document.getElementById('overBudget');
+
+  // If nothing meets the budget, fall back to show model matches regardless of price
+  if (keep.length === 0 && byModel.length > 0) {
+    overBadge.style.display = '';
+    keep = normalized
+      .filter(x => x.price > 0)
+      .sort((a,b)=>a.price-b.price)
+      .map(x => x.raw)
+      .slice(0, 24);
+  } else {
+    overBadge.style.display = 'none';
+  }
+
+  // Render
   const listEl = document.getElementById('list');
   listEl.innerHTML = '';
   keep.forEach(v => listEl.appendChild(card(v)));
 
-  const countEl = document.getElementById('found');
-  countEl.textContent = `${keep.length} vehicle${keep.length===1?'':'s'} found`;
-
-  const tag = document.getElementById('filterTag');
-  if (chosen.base) {
-    tag.style.display = 'inline-flex';
-    tag.textContent = `Model: ${chosen.base}`;
-  } else {
-    tag.style.display = 'none';
-  }
+  document.getElementById('found').textContent =
+    `${keep.length} vehicle${keep.length===1?'':'s'} found`;
 })();
 </script>
 </body>
