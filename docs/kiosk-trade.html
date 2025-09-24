@@ -16,37 +16,29 @@
       border:1px solid #e5e7eb; border-radius:16px;
       padding:14px; background:#fff; margin-bottom:14px;
     }
-    /* top section header that replaces the duplicate "Trade-In" sub line */
     .section-title {
-      margin: 8px 0 10px;
-      color:#0f766e; font-weight:800; font-size:1.1rem;
+      margin:8px 0 10px; color:#0f766e; font-weight:800; font-size:1.1rem;
     }
-
-    /* hide the VIN hint from visual UI but keep it for screen readers */
     .sr-only {
-      position:absolute !important;
-      width:1px; height:1px; padding:0; margin:-1px;
+      position:absolute !important; width:1px; height:1px; padding:0; margin:-1px;
       overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
     }
-
-    /* Compact mileage field: visually ~8–10 characters wide */
+    /* Compact mileage field: visually about 10ch; JS enforces 8 digits */
     #miles { width:10ch; }
   </style>
 </head>
 <body>
 <div class="kx">
   <h2>Trade-In</h2>
-  <!-- Removed the duplicate descriptive subline -->
+  <!-- removed duplicate descriptive subline -->
   <h3 class="section-title">Vehicle Details</h3>
 
-  <!-- Single fieldset: VIN / Miles / Condition first, then the rest -->
+  <!-- Vehicle Details -->
   <div class="fieldset">
-
     <div class="row row--2">
       <label class="field">
         <span class="label">VIN</span>
         <input id="vin" maxlength="17" placeholder="Enter 17 digit VIN" aria-describedby="vinHint">
-        <!-- keep the hint for a11y, but visually hidden -->
         <small id="vinHint" class="sr-only">VIN auto-capitalizes; letters I, O, Q are invalid.</small>
       </label>
 
@@ -104,6 +96,116 @@
         <input id="intColor" placeholder="">
       </label>
     </div>
+
+    <div class="row row--2">
+      <label class="field">
+        <span class="label">Number of Keys Included</span>
+        <input id="keys" type="number" min="0" max="10" placeholder="">
+      </label>
+
+      <label class="field">
+        <span class="label">Title Status</span>
+        <select id="title">
+          <option>Clean</option>
+          <option>Lien</option>
+          <option>Rebuilt</option>
+          <option>Salvage</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="row row--2">
+      <label class="field">
+        <span class="label">Number of Owners (estimate OK)</span>
+        <input id="owners" type="number" min="0" max="20" placeholder="">
+      </label>
+
+      <label class="field">
+        <span class="label">Has the vehicle ever been in an accident?</span>
+        <select id="accident">
+          <option>No</option>
+          <option>Yes</option>
+        </select>
+      </label>
+    </div>
+
+    <label class="field">
+      <span class="label">If yes, was it professionally repaired?</span>
+      <textarea id="accidentRepair" rows="3" placeholder="Yes / No / Details"></textarea>
+    </label>
+  </div>
+
+  <!-- Tell us about your Vehicle -->
+  <h3 class="section-title">Tell us about your Vehicle</h3>
+  <div class="fieldset">
+    <div class="row row--2">
+      <label class="field">
+        <span class="label">Any warning lights on dashboard?</span>
+        <select id="warnings"><option>No</option><option>Yes</option></select>
+      </label>
+      <div class="field" aria-hidden="true"></div>
+    </div>
+
+    <label class="field">
+      <span class="label">Mechanical issues</span>
+      <textarea id="mech" rows="3"></textarea>
+    </label>
+
+    <label class="field">
+      <span class="label">Cosmetic issues</span>
+      <textarea id="cosmetic" rows="3"></textarea>
+    </label>
+
+    <label class="field">
+      <span class="label">Interior clean and damage-free?</span>
+      <textarea id="interior" rows="2"></textarea>
+    </label>
+
+    <label class="field">
+      <span class="label">Aftermarket parts or modifications?</span>
+      <textarea id="mods" rows="2"></textarea>
+    </label>
+
+    <label class="field">
+      <span class="label">Unusual smells?</span>
+      <textarea id="smells" rows="2"></textarea>
+    </label>
+
+    <label class="field">
+      <span class="label">Routine services up to date?</span>
+      <textarea id="service" rows="2"></textarea>
+    </label>
+  </div>
+
+  <!-- Wearable Items Check -->
+  <h3 class="section-title">Wearable Items Check</h3>
+  <div class="fieldset">
+    <div class="row row--2">
+      <label class="field">
+        <span class="label">Tire Condition</span>
+        <select id="tires">
+          <option>New</option>
+          <option>Good</option>
+          <option>Worn</option>
+          <option>Needs Replacement</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span class="label">Brake Condition</span>
+        <select id="brakes">
+          <option>New</option>
+          <option>Good</option>
+          <option>Worn</option>
+          <option>Needs Replacement</option>
+        </select>
+      </label>
+    </div>
+
+    <label class="field">
+      <span class="label">Other Wear Items (issues?)</span>
+      <textarea id="wear" rows="2"></textarea>
+    </label>
   </div>
 
   <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">
@@ -125,6 +227,24 @@ const modelEl = document.getElementById('model');
 const trimEl  = document.getElementById('trim');
 const extEl   = document.getElementById('extColor');
 const intEl   = document.getElementById('intColor');
+
+const keysEl  = document.getElementById('keys');
+const titleEl = document.getElementById('title');
+const ownersEl= document.getElementById('owners');
+const accidentEl = document.getElementById('accident');
+const accidentRepairEl = document.getElementById('accidentRepair');
+
+const warningsEl = document.getElementById('warnings');
+const mechEl  = document.getElementById('mech');
+const cosmeticEl = document.getElementById('cosmetic');
+const interiorEl = document.getElementById('interior');
+const modsEl  = document.getElementById('mods');
+const smellsEl= document.getElementById('smells');
+const serviceEl= document.getElementById('service');
+
+const tiresEl = document.getElementById('tires');
+const brakesEl= document.getElementById('brakes');
+const wearEl  = document.getElementById('wear');
 
 let lastBodyClass = ""; // from VPIC, used by estimator
 let currentRange = {low:0, high:0};
@@ -155,8 +275,23 @@ function sendPayload(){
     trim: trimEl.value || '',
     exterior: extEl.value || '',
     interior: intEl.value || '',
+    keys: keysEl.value || '',
+    title: titleEl.value || '',
+    owners: ownersEl.value || '',
+    accident: accidentEl.value || '',
+    accidentRepair: accidentRepairEl.value || '',
+    warnings: warningsEl.value || '',
+    mech: mechEl.value || '',
+    cosmetic: cosmeticEl.value || '',
+    interiorNotes: interiorEl.value || '',
+    mods: modsEl.value || '',
+    smells: smellsEl.value || '',
+    service: serviceEl.value || '',
+    tires: tiresEl.value || '',
+    brakes: brakesEl.value || '',
+    wear: wearEl.value || '',
     bodyClass: lastBodyClass || '',
-    rangeLow: currentRange.low,   // computed silently
+    rangeLow: currentRange.low,
     rangeHigh: currentRange.high
   };
   save('guided_trade', payload);
@@ -262,9 +397,12 @@ vinEl.addEventListener('input', (e)=>{
   if (v.length === 17) decodeVIN(v);
   sendPayload();
 });
-[ milesEl, condEl, yearEl, makeEl, modelEl, trimEl, extEl, intEl ].forEach(el=>{
-  el.addEventListener('input', recomputeSilent);
-});
+[
+  milesEl, condEl, yearEl, makeEl, modelEl, trimEl, extEl, intEl,
+  keysEl, titleEl, ownersEl, accidentEl, accidentRepairEl,
+  warningsEl, mechEl, cosmeticEl, interiorEl, modsEl, smellsEl, serviceEl,
+  tiresEl, brakesEl, wearEl
+].forEach(el=> el.addEventListener('input', recomputeSilent));
 
 // Initial state from any stored payload
 (function boot(){
@@ -279,6 +417,21 @@ vinEl.addEventListener('input', (e)=>{
     trimEl.value = prev.trim || '';
     extEl.value = prev.exterior || '';
     intEl.value = prev.interior || '';
+    keysEl.value = prev.keys || '';
+    titleEl.value = prev.title || 'Clean';
+    ownersEl.value = prev.owners || '';
+    accidentEl.value = prev.accident || 'No';
+    accidentRepairEl.value = prev.accidentRepair || '';
+    warningsEl.value = prev.warnings || 'No';
+    mechEl.value = prev.mech || '';
+    cosmeticEl.value = prev.cosmetic || '';
+    interiorEl.value = prev.interiorNotes || '';
+    modsEl.value = prev.mods || '';
+    smellsEl.value = prev.smells || '';
+    serviceEl.value = prev.service || '';
+    tiresEl.value = prev.tires || 'New';
+    brakesEl.value = prev.brakes || 'New';
+    wearEl.value = prev.wear || '';
     lastBodyClass = prev.bodyClass || '';
   }
   if (vinEl.value && vinEl.value.length === 17) decodeVIN(vinEl.value);
