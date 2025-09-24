@@ -166,6 +166,18 @@ function loadStep(i){
 }
 function go(i){ loadStep(i); }
 
+/* ========= helper: apply height from child ========= */
+function applyChildHeight(h){
+  const min = 520;                          // sane minimum
+  const desired = Math.max(min, Number(h)||0);
+  // a bit of breathing room but never run past viewport
+  const target = Math.min(desired + 16, window.innerHeight - 40);
+  stage.style.height = target + 'px';
+  stage.style.minHeight = target + 'px';
+  // ensure the iframe itself doesn't show a scroll bar
+  stage.style.overflow = 'hidden';
+}
+
 /* ========= message bridge from children (secured) ========= */
 window.addEventListener('message', (e) => {
   // only accept messages from our own origin (GitHub Pages)
@@ -174,6 +186,12 @@ window.addEventListener('message', (e) => {
   const data = e?.data || {};
   if (!data || typeof data !== 'object') return;
   const { type, payload } = data;
+
+  // Generic height handler for ANY step that reports height
+  if (type && type.endsWith(':height')) {
+    applyChildHeight(payload?.height);
+    return;
+  }
 
   // Welcome
   if (type === 'welcome:done') {
@@ -191,9 +209,9 @@ window.addEventListener('message', (e) => {
     save("guided_profile", { ...p, budget: Number(payload?.budget ?? p.budget) });
     return;
   }
+  // (Kept for compatibility; generic :height above also covers this)
   if (type === 'discovery:height' && step === 1) {
-    const h = Math.max(560, Number(payload?.height || 0) | 0);
-    stage.style.height = h + 'px';
+    applyChildHeight(payload?.height);
     return;
   }
   if (type === 'discovery:done') {
