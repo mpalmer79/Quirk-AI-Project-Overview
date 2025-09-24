@@ -81,10 +81,9 @@ const load = (k, def) => { try { const v = JSON.parse(localStorage.getItem(k)); 
 
 const ORIGIN = window.location.origin; // secure postMessage target
 
-/* ========= steps config: ALL steps are external HTMLs ========= */
+/* ========= steps config ========= */
 const STEPS = [
   { label: 'Welcome',          url: 'kiosk-welcome.html',  height: 460, subtitle: "We’ll guide you through a few quick steps.", showHeader: true },
-  // Hide the parent header on Discovery to avoid duplicate titles (child renders its own)
   { label: 'Discovery',        url: 'kiosk-discovery.html',height: 640, subtitle: "Tell us about your monthly budget.", showHeader: false },
   { label: 'Vehicle Match',    url: 'kiosk-vehicle.html',  height: 720, subtitle: "Pick one to continue.", showHeader: true },
   { label: 'Trade-In',         url: 'kiosk-trade.html',    height: 620, subtitle: "Enter your VIN/miles; we’ll pre-value it.", showHeader: true },
@@ -103,7 +102,7 @@ const stepSubtitle = document.getElementById('stepSubtitle');
 let step = load("guided_step", 0);
 let maxVisited = load("guided_maxVisited", step);
 
-/* ========= render progress row ========= */
+/* ========= render progress ========= */
 function renderProgress(){
   progress.innerHTML = '';
   STEPS.forEach((s, i) => {
@@ -125,7 +124,7 @@ function renderProgress(){
   });
 }
 
-/* ========= load a step (sets title, iframe, and header visibility) ========= */
+/* ========= load a step ========= */
 function loadStep(i){
   step = Math.max(0, Math.min(i, STEPS.length-1));
   maxVisited = Math.max(maxVisited, step);
@@ -134,7 +133,6 @@ function loadStep(i){
 
   const cfg = STEPS[step];
 
-  // Toggle parent header visibility per step
   if (cfg.showHeader === false) {
     stepHeader.style.display = 'none';
   } else {
@@ -148,7 +146,6 @@ function loadStep(i){
   stage.style.minHeight = (cfg.height || 480) + 'px';
   stage.setAttribute('data-step', cfg.label);
 
-  // After the child loads, seed optional data (no DOM mutation inside the child)
   stage.addEventListener('load', function onload(){
     stage.removeEventListener('load', onload);
     try {
@@ -166,31 +163,29 @@ function loadStep(i){
 }
 function go(i){ loadStep(i); }
 
-/* ========= helper: apply height from child ========= */
+/* ========= clamp iframe height from child ========= */
 function applyChildHeight(h){
-  const desired = Math.max(520, Number(h) || 0);
-  const target  = desired + 16;        // small bottom padding/breathing room
+  const desired = Math.max(520, Number(h)||0);          // content height request
+  const maxView = Math.max(420, window.innerHeight - 120); // keep within viewport with breathing room
+  const target  = Math.min(desired + 16, maxView);      // +16px padding, clamped
   stage.style.height    = target + 'px';
   stage.style.minHeight = target + 'px';
-  stage.style.overflow  = 'hidden';    // ensure no inner scrollbars
+  stage.style.overflow  = 'hidden';
 }
 
-/* ========= message bridge from children (secured) ========= */
+/* ========= message bridge ========= */
 window.addEventListener('message', (e) => {
-  // only accept messages from our own origin (GitHub Pages)
   if (e.origin !== ORIGIN) return;
 
   const data = e?.data || {};
   if (!data || typeof data !== 'object') return;
   const { type, payload } = data;
 
-  // Generic height handler for ANY step that reports height
   if (type && type.endsWith(':height')) {
     applyChildHeight(payload?.height);
     return;
   }
 
-  // Welcome
   if (type === 'welcome:done') {
     const p = load("guided_profile", { name:'', contact:'', budget:400 });
     const merged = { ...p, ...(payload || {}) };
@@ -200,13 +195,11 @@ window.addEventListener('message', (e) => {
     return;
   }
 
-  // Discovery
   if (type === 'discovery:update') {
     const p = load("guided_profile", { name:'', contact:'', budget:400 });
     save("guided_profile", { ...p, budget: Number(payload?.budget ?? p.budget) });
     return;
   }
-  // (Kept for compatibility; generic :height above also covers this)
   if (type === 'discovery:height' && step === 1) {
     applyChildHeight(payload?.height);
     return;
@@ -218,24 +211,19 @@ window.addEventListener('message', (e) => {
   }
   if (type === 'discovery:back') { go(0); return; }
 
-  // Vehicle Match (child should persist selection locally)
   if (type === 'vehicle:done') { go(3); return; }
 
-  // Trade
   if (type === 'trade:update') { return; }
   if (type === 'trade:done') { go(4); return; }
 
-  // Payments
   if (type === 'payments:done') { go(5); return; }
 
-  // Credit
   if (type === 'credit:done') { go(6); return; }
 
-  // F&I
   if (type === 'fandi:done') { go(7); return; }
 });
 
-/* ========= init (first tab only resets) ========= */
+/* ========= init ========= */
 (function init(){
   if (!sessionStorage.getItem('guided_session_started')) {
     sessionStorage.setItem('guided_session_started', '1');
