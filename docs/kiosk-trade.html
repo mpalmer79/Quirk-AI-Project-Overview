@@ -8,26 +8,11 @@
   <link rel="stylesheet" href="assets/kiosk-shared.css">
   <script src="assets/kiosk-shared.js"></script>
   <style>
-    .row{display:grid;gap:10px}
-    .row--2{grid-template-columns:1fr; }
-    .row--3{grid-template-columns:1fr; }
-    @media (min-width: 800px){
-      .row--2{grid-template-columns:1fr 1fr}
-      .row--3{grid-template-columns:1fr 1fr 1fr}
-    }
-    .field{display:flex;flex-direction:column}
-    .label{font-weight:700;color:#0f3c2f;margin-bottom:6px}
-    .hint{font-size:.85rem;color:#64748b}
-    .chip{display:inline-flex;align-items:center;gap:6px;padding:.35rem .6rem;border-radius:9999px;background:#eef2f7;color:#334155;font-size:.8rem}
-    .split{display:flex;justify-content:space-between;gap:10px;align-items:center}
-    .muted{color:#6b7280}
-    .pillbtn{border:none;background:#0ea5a6;color:#fff;border-radius:9999px;padding:.45rem .8rem;cursor:pointer}
-    .pillbtn:disabled{opacity:.6;cursor:not-allowed}
-    .sectionTitle{font-weight:900;color:#0f3c2f;margin:18px 0 8px}
-    .card{border:1px solid #e5e7eb;border-radius:16px;padding:16px;background:#fff}
-    .thin{padding:10px}
-    input,select,textarea{border:1px solid #e5e7eb;border-radius:12px;padding:.70rem;background:#fff}
-    textarea{min-height:60px}
+    .row.row--2 { grid-template-columns: 1fr; }
+    @media (min-width: 720px){ .row.row--2 { display:grid; gap:12px; grid-template-columns: 1fr 1fr; } }
+    .fieldset { border:1px solid #e5e7eb; border-radius:16px; padding:14px; background:#fff; margin-bottom:14px; }
+    .fieldset h3 { margin:0 0 10px; color:#0f766e; font-weight:800; }
+    /* we no longer show the estimate pill or a decode button */
   </style>
 </head>
 <body>
@@ -35,15 +20,14 @@
   <h2>Trade-In</h2>
   <p class="sub">Enter your vehicle details; we’ll pre-value it and keep everything with your deal.</p>
 
-  <!-- Quick Estimator -->
-  <div class="card">
-    <div class="sectionTitle">Quick Estimator</div>
+  <!-- Quick Estimator (no visible estimate, no decode button) -->
+  <div class="fieldset">
+    <h3>Quick Estimator</h3>
     <div class="row row--2">
       <label class="field">
         <span class="label">VIN</span>
-        <input id="vin" placeholder="Enter 17 digit VIN" minlength="17" maxlength="17"
-               pattern="[A-HJ-NPR-Za-hj-npr-z0-9]{17}" aria-describedby="vinHint" autocomplete="off">
-        <div id="vinHint" class="hint">VIN auto-capitalizes; letters I, O, Q are invalid.</div>
+        <input id="vin" maxlength="17" placeholder="Enter 17 digit VIN" aria-describedby="vinHint">
+        <small id="vinHint" class="hint">VIN auto-capitalizes; letters I, O, Q are invalid.</small>
       </label>
 
       <label class="field">
@@ -63,26 +47,18 @@
         </select>
       </label>
 
-      <div class="field">
-        <span class="label">Estimate</span>
-        <div class="split">
-          <span id="rangeNote" class="chip">Est. range: $3,900 – $9,100</span>
-          <button id="decodeBtn" class="pillbtn" type="button">Decode VIN & Prefill</button>
-        </div>
-      </div>
+      <!-- right column intentionally left blank so nothing shows -->
+      <div class="field" aria-hidden="true"></div>
     </div>
   </div>
 
   <!-- Vehicle Details -->
-  <div class="card" style="margin-top:12px">
-    <div class="sectionTitle">Vehicle Details</div>
-
+  <div class="fieldset">
+    <h3>Vehicle Details</h3>
     <div class="row row--2">
       <label class="field">
         <span class="label">Year</span>
-        <select id="year">
-          <option value="">Select Year</option>
-        </select>
+        <select id="year"></select>
       </label>
 
       <label class="field">
@@ -114,196 +90,185 @@
         <input id="intColor" placeholder="">
       </label>
     </div>
-
-    <div class="row row--2">
-      <label class="field">
-        <span class="label">Number of Keys Included</span>
-        <input id="keys" type="number" min="0" max="10" placeholder="">
-      </label>
-
-      <label class="field">
-        <span class="label">Title Status</span>
-        <select id="title">
-          <option>Clean</option>
-          <option>Lien</option>
-          <option>Rebuilt</option>
-          <option>Salvage</option>
-        </select>
-      </label>
-    </div>
-
-    <div class="row row--2">
-      <label class="field">
-        <span class="label">Number of Owners (estimate OK)</span>
-        <input id="owners" type="number" min="0" max="20">
-      </label>
-
-      <label class="field">
-        <span class="label">Has the vehicle ever been in an accident?</span>
-        <select id="accident"><option>No</option><option>Yes</option></select>
-      </label>
-    </div>
-
-    <label class="field">
-      <span class="label">If yes, was it professionally repaired?</span>
-      <textarea id="accidentRepair" placeholder="Yes / No / Details"></textarea>
-    </label>
-
-    <!-- Extra decoded specs (read-only chips) -->
-    <div id="decodedChips" class="thin" style="display:none;margin-top:6px">
-      <span class="chip" id="chipBody"></span>
-      <span class="chip" id="chipDrive"></span>
-      <span class="chip" id="chipTrans"></span>
-      <span class="chip" id="chipEngine"></span>
-    </div>
   </div>
 
-  <div class="split" style="margin-top:12px">
-    <span class="muted">We’ll keep your trade info with your deal.</span>
+  <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">
     <button id="next" class="btn">Start credit →</button>
   </div>
 </div>
 
 <script>
-/* ---------- helpers ---------- */
+/* ---------------- helpers / globals ---------------- */
 const { save, load, post, track } = window.kiosk;
-const $ = id => document.getElementById(id);
 
-const vinEl   = $('vin');
-const milesEl = $('miles');
-const condEl  = $('cond');
-const noteEl  = $('rangeNote');
-const decodeBtn = $('decodeBtn');
+const vinEl   = document.getElementById('vin');
+const milesEl = document.getElementById('miles');
+const condEl  = document.getElementById('cond');
 
-const yearEl  = $('year');
-const makeEl  = $('make');
-const modelEl = $('model');
-const trimEl  = $('trim');
-const extEl   = $('extColor');
-const intEl   = $('intColor');
-const keysEl  = $('keys');
-const titleEl = $('title');
-const ownersEl= $('owners');
-const accEl   = $('accident');
-const accRepEl= $('accidentRepair');
+const yearEl  = document.getElementById('year');
+const makeEl  = document.getElementById('make');
+const modelEl = document.getElementById('model');
+const trimEl  = document.getElementById('trim');
+const extEl   = document.getElementById('extColor');
+const intEl   = document.getElementById('intColor');
 
-const chipsWrap = $('decodedChips');
-const chipBody  = $('chipBody');
-const chipDrive = $('chipDrive');
-const chipTrans = $('chipTrans');
-const chipEng   = $('chipEngine');
+let lastBodyClass = ""; // from VPIC, used by estimator
+let currentRange = {low:0, high:0};
 
-function estimate(lowBase=3000, highBase=7000){
-  const miles = Number(milesEl.value||0);
-  const adj = Math.max(0, (100000 - miles)/100000);
-  const low = Math.round(lowBase * (0.7 + adj*0.6));
-  const high = Math.round(highBase * (0.7 + adj*0.6));
-  return [low, high];
+function clampVIN(raw){
+  return String(raw||"")
+    .toUpperCase()
+    .replace(/[IOQ]/g,'')      // illegal VIN chars
+    .replace(/[^A-Z0-9]/g,'')  // strip symbols/spaces
+    .slice(0,17);
 }
-function persist(){
-  const [low, high] = estimate();
+
+function sendPayload(){
   const payload = {
-    vin: vinEl.value||'',
-    miles: milesEl.value||'',
+    vin: vinEl.value || '',
+    miles: milesEl.value || '',
     condition: condEl.value,
     year: yearEl.value || '',
     make: makeEl.value || '',
     model: modelEl.value || '',
     trim: trimEl.value || '',
-    rangeLow: low, rangeHigh: high
+    exterior: extEl.value || '',
+    interior: intEl.value || '',
+    bodyClass: lastBodyClass || '',
+    rangeLow: currentRange.low,   // computed silently
+    rangeHigh: currentRange.high
   };
   save('guided_trade', payload);
   post('trade:update', payload);
-  noteEl.textContent = `Est. range: $${low.toLocaleString()} – $${high.toLocaleString()}`;
+  return payload;
 }
 
-/* ---------- Year list: current year + 1 back to 1990 ---------- */
+/* ---------------- years list (current year + 1 back to 1990) ---------------- */
 (function fillYears(){
-  const thisYear = new Date().getFullYear();
-  const top = thisYear + 1;
-  const opts = ['<option value="">Select Year</option>'];
-  for (let y = top; y >= 1990; y--) opts.push(`<option value="${y}">${y}</option>`);
+  const now = new Date();
+  const max = now.getFullYear() + 1;
+  const start = 1990;
+  const opts = ['<option value="" selected disabled>Select Year</option>'];
+  for (let y=max; y>=start; y--) opts.push(`<option>${y}</option>`);
   yearEl.innerHTML = opts.join('');
 })();
 
-/* ---------- VIN decoder (NHTSA VPIC) ---------- */
-const VPIC_URL = vin => `https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinValues/${encodeURIComponent(vin)}?format=json`;
-
-function setIf(v, setter){ if (v && String(v).trim() && v !== 'Not Applicable') setter(String(v).trim()); }
-function showChips(spec){
-  const chips = [];
-  chipBody.textContent  = spec.body   ? `Body: ${spec.body}` : '';
-  chipDrive.textContent = spec.drive  ? `Drive: ${spec.drive}` : '';
-  chipTrans.textContent = spec.trans  ? `Trans: ${spec.trans}` : '';
-  chipEng.textContent   = spec.engine ? `Engine: ${spec.engine}` : '';
-  chipsWrap.style.display = (spec.body || spec.drive || spec.trans || spec.engine) ? 'block' : 'none';
+/* ---------------- wholesale estimator (silent) ---------------- */
+const WHOLESALE_ANCHORS = {
+  SedanCompact: 22000, SedanMidsize: 28000,
+  SUVCompact:   32000, SUVMidsize: 42000, SUVFull: 56000,
+  PickupHalf:   55000, PickupHD:   65000,
+  SportsCar:    60000, Van:        36000, Other: 30000
+};
+function segmentFromBody(body=""){
+  const b = body.toLowerCase();
+  if (b.includes("pickup") && b.includes("light")) return "PickupHalf";
+  if (b.includes("pickup") && (b.includes("heavy")||b.includes("3500")||b.includes("hd"))) return "PickupHD";
+  if (b.includes("sport utility") || b.includes("suv")) {
+    if (b.includes("small")||b.includes("compact")) return "SUVCompact";
+    if (b.includes("full")) return "SUVFull";
+    return "SUVMidsize";
+  }
+  if (b.includes("van")) return "Van";
+  if (b.includes("coupe")||b.includes("convertible")||b.includes("roadster")||b.includes("sport")) return "SportsCar";
+  if (b.includes("sedan")) return (b.includes("mid")||b.includes("large")) ? "SedanMidsize" : "SedanCompact";
+  return "Other";
 }
+const COND_MULTI = { Excellent:1.05, Good:1.00, Average:0.93, Rough:0.85 };
+function mileageMultiplier(miles){
+  const m = Number(miles||0);
+  const delta10k = (m - 100000) / 10000;
+  let mult = 1 + (delta10k > 0 ? -0.025*delta10k : 0.02*Math.abs(delta10k));
+  return Math.max(0.6, Math.min(1.15, mult));
+}
+function ageMultiplier(age){
+  if (age <= 1) return 0.78;
+  const mult = 0.78 * Math.pow(0.83, age-1);
+  return Math.max(0.10, mult);
+}
+function wholesaleEstimate({year, bodyClass, miles, condition}){
+  const seg = segmentFromBody(bodyClass);
+  const anchor = WHOLESALE_ANCHORS[seg] || WHOLESALE_ANCHORS.Other;
+  const curYear = new Date().getFullYear();
+  const age = Math.max(0, (curYear - Number(year||curYear)));
+  const condMult = COND_MULTI[condition] || COND_MULTI.Average;
+  let point = anchor * ageMultiplier(age) * mileageMultiplier(miles) * condMult * 1.00;
+  point *= 0.72; // wholesale tilt
+  point = Math.min(100000, Math.max(900, point));
+  const spread = Math.max(500, point * 0.12);
+  return { low: Math.round(point - spread), high: Math.round(point + spread), seg };
+}
+function recomputeSilent(){
+  currentRange = wholesaleEstimate({
+    year: yearEl.value,
+    bodyClass: lastBodyClass,
+    miles: milesEl.value,
+    condition: condEl.value
+  });
+  sendPayload(); // persist silently
+}
+
+/* ---------------- VIN decoder (VPIC) ---------------- */
 async function decodeVIN(vin){
-  if (!vin || vin.length !== 17) return;
-  try{
-    decodeBtn.disabled = true;
-    decodeBtn.textContent = 'Decoding…';
-    const r = await fetch(VPIC_URL(vin), { cache: 'no-store' });
-    const j = await r.json();
-    const row = (j && j.Results && j.Results[0]) || {};
+  const clean = clampVIN(vin);
+  vinEl.value = clean;
+  if (clean.length !== 17) return;
 
-    // Map to fields
-    setIf(row.ModelYear, v=>{
-      // ensure option exists
-      if (![...yearEl.options].some(o=>o.value===v)){
-        const opt = document.createElement('option'); opt.value=v; opt.textContent=v; yearEl.appendChild(opt);
-      }
-      yearEl.value = v;
-    });
-    setIf(row.Make,  v=> makeEl.value = v);
-    setIf(row.Model, v=> modelEl.value = v);
-    // Trim often in "Series" or "Trim"
-    setIf(row.Trim,   v=> trimEl.value = v);
-    if (!trimEl.value) setIf(row.Series, v=> trimEl.value = v);
+  try {
+    const url = `https://vpic.nhtsa.dot.gov/api/vehicles/decodevinvaluesextended/${encodeURIComponent(clean)}?format=json`;
+    const r = await fetch(url);
+    const data = await r.json();
+    const row = (data.Results && data.Results[0]) || {};
 
-    // Extra decoded chips (read-only helpers)
-    const body  = row.BodyClass || '';
-    const drive = row.DriveType || row.AWD || '';
-    const trans = [row.TransmissionStyle, row.TransmissionSpeeds].filter(Boolean).join(' • ');
-    const eng   = [
-      row.EngineConfiguration, row.EngineCylinders ? `${row.EngineCylinders} cyl` : '',
-      row.DisplacementL ? `${row.DisplacementL}L` : (row.DisplacementCC ? `${row.DisplacementCC}cc` : '')
-    ].filter(Boolean).join(' • ');
-    showChips({ body, drive, trans, engine: eng });
+    if (row.ModelYear) yearEl.value = row.ModelYear;
+    if (row.Make)      makeEl.value = row.Make;
+    if (row.Model)     modelEl.value = row.Model;
 
-    // Announce success
-    noteEl.textContent = 'VIN decoded. Review the fields below.';
+    const tr = row.Trim || row.Series || "";
+    if (tr) trimEl.value = tr;
+
+    lastBodyClass = row.BodyClass || "";
+    recomputeSilent();
   } catch (e){
-    noteEl.textContent = 'Could not decode VIN right now.';
-    showChips({});
-    console.error('VIN decode error:', e);
-  } finally{
-    decodeBtn.disabled = false;
-    decodeBtn.textContent = 'Decode VIN & Prefill';
-    persist();
+    console.warn('VPIC decode failed', e);
   }
 }
 
-/* ---------- events ---------- */
-[vinEl, milesEl, condEl, yearEl, makeEl, modelEl, trimEl, extEl, intEl, keysEl, titleEl, ownersEl, accEl, accRepEl]
-  .forEach(el => el.addEventListener('input', persist));
-
-// Auto-capitalize VIN and decode on 17 chars
+/* ---------------- wire up events ---------------- */
 vinEl.addEventListener('input', (e)=>{
-  const cur = (vinEl.value || '').toUpperCase().replace(/[^A-HJ-NPR-Z0-9]/g,'');
-  if (cur !== vinEl.value) vinEl.value = cur;
-  if (cur.length === 17) decodeVIN(cur);
+  const v = clampVIN(e.target.value);
+  if (v !== e.target.value) e.target.value = v;
+  if (v.length === 17) decodeVIN(v);
+  sendPayload();
 });
-decodeBtn.addEventListener('click', ()=> decodeVIN(vinEl.value.trim().toUpperCase()));
+[ milesEl, condEl, yearEl, makeEl, modelEl, trimEl, extEl, intEl ].forEach(el=>{
+  el.addEventListener('input', recomputeSilent);
+});
+
+// Initial state from any stored payload
+(function boot(){
+  const prev = load('guided_trade', null);
+  if (prev){
+    vinEl.value = prev.vin || '';
+    milesEl.value = prev.miles || '';
+    condEl.value = prev.condition || 'Average';
+    yearEl.value = prev.year || '';
+    makeEl.value = prev.make || '';
+    modelEl.value = prev.model || '';
+    trimEl.value = prev.trim || '';
+    extEl.value = prev.exterior || '';
+    intEl.value = prev.interior || '';
+    lastBodyClass = prev.bodyClass || '';
+  }
+  if (vinEl.value && vinEl.value.length === 17) decodeVIN(vinEl.value);
+  recomputeSilent();
+})();
 
 document.getElementById('next').addEventListener('click', ()=>{
-  persist();
-  track('guided_trade_next');
-  post('trade:done', load('guided_trade',{}));
+  const payload = sendPayload();
+  track?.('guided_trade_next');
+  post('trade:done', payload);
 });
-
-/* ---------- boot ---------- */
-persist();
 </script>
 </body>
 </html>
