@@ -9,30 +9,50 @@
   <script src="assets/kiosk-shared.js"></script>
   <style>
     .row.row--2 { grid-template-columns: 1fr; }
-    @media (min-width: 720px){ .row.row--2 { display:grid; gap:12px; grid-template-columns: 1fr 1fr; } }
-    .fieldset { border:1px solid #e5e7eb; border-radius:16px; padding:14px; background:#fff; margin-bottom:14px; }
-    .fieldset h3 { margin:0 0 10px; color:#0f766e; font-weight:800; }
-    /* we no longer show the estimate pill or a decode button */
+    @media (min-width: 720px){
+      .row.row--2 { display:grid; gap:12px; grid-template-columns: 1fr 1fr; }
+    }
+    .fieldset {
+      border:1px solid #e5e7eb; border-radius:16px;
+      padding:14px; background:#fff; margin-bottom:14px;
+    }
+    /* top section header that replaces the duplicate "Trade-In" sub line */
+    .section-title {
+      margin: 8px 0 10px;
+      color:#0f766e; font-weight:800; font-size:1.1rem;
+    }
+
+    /* hide the VIN hint from visual UI but keep it for screen readers */
+    .sr-only {
+      position:absolute !important;
+      width:1px; height:1px; padding:0; margin:-1px;
+      overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+    }
+
+    /* Compact mileage field: visually ~8–10 characters wide */
+    #miles { width:10ch; }
   </style>
 </head>
 <body>
 <div class="kx">
   <h2>Trade-In</h2>
-  <p class="sub">Enter your vehicle details; we’ll pre-value it and keep everything with your deal.</p>
+  <!-- Removed the duplicate descriptive subline -->
+  <h3 class="section-title">Vehicle Details</h3>
 
-  <!-- Quick Estimator (no visible estimate, no decode button) -->
+  <!-- Single fieldset: VIN / Miles / Condition first, then the rest -->
   <div class="fieldset">
-    <h3>Quick Estimator</h3>
+
     <div class="row row--2">
       <label class="field">
         <span class="label">VIN</span>
         <input id="vin" maxlength="17" placeholder="Enter 17 digit VIN" aria-describedby="vinHint">
-        <small id="vinHint" class="hint">VIN auto-capitalizes; letters I, O, Q are invalid.</small>
+        <!-- keep the hint for a11y, but visually hidden -->
+        <small id="vinHint" class="sr-only">VIN auto-capitalizes; letters I, O, Q are invalid.</small>
       </label>
 
       <label class="field">
         <span class="label">Current Mileage</span>
-        <input id="miles" type="number" min="0" step="100" placeholder="e.g., 45,000">
+        <input id="miles" type="number" min="0" step="1" inputmode="numeric" placeholder="e.g., 45,000">
       </label>
     </div>
 
@@ -46,15 +66,9 @@
           <option>Rough</option>
         </select>
       </label>
-
-      <!-- right column intentionally left blank so nothing shows -->
       <div class="field" aria-hidden="true"></div>
     </div>
-  </div>
 
-  <!-- Vehicle Details -->
-  <div class="fieldset">
-    <h3>Vehicle Details</h3>
     <div class="row row--2">
       <label class="field">
         <span class="label">Year</span>
@@ -115,6 +129,13 @@ const intEl   = document.getElementById('intColor');
 let lastBodyClass = ""; // from VPIC, used by estimator
 let currentRange = {low:0, high:0};
 
+/* hard-limit mileage to 8 digits even though type=number ignores maxlength */
+milesEl.addEventListener('input', () => {
+  const digits = String(milesEl.value || '').replace(/\D/g,'').slice(0,8);
+  milesEl.value = digits;
+});
+
+/* VIN cleanup */
 function clampVIN(raw){
   return String(raw||"")
     .toUpperCase()
