@@ -1,49 +1,339 @@
-<!doctype html><html lang="en"><head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<base href="/Quirk-AI-Project-Overview/"><title>Kiosk • Trade-In</title>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<base href="/Quirk-AI-Project-Overview/">
+<title>Kiosk • Trade-In</title>
+
 <link rel="stylesheet" href="assets/kiosk-shared.css">
 <script src="assets/kiosk-shared.js"></script>
-</head><body>
+
+<style>
+  .kx h2 { margin-bottom:.25rem }
+  .sub  { margin:0 0 .75rem; color:#475569 }
+
+  .grid { display:grid; gap:10px }
+  .g2   { grid-template-columns: 1fr }
+  @media (min-width: 680px){ .g2{ grid-template-columns: 1fr 1fr } }
+
+  .field { display:block }
+  .label { display:block; font-weight:700; color:#0f172a; margin-bottom:4px }
+  .hint  { color:#64748b; font-size:.85rem }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  select,
+  textarea{
+    width:100%;
+    border:1px solid #e2e8f0;
+    border-radius:12px;
+    padding:.65rem .8rem;
+    background:#fff;
+  }
+  textarea{ min-height:68px; resize:vertical }
+
+  .section{
+    background:#fff;
+    border:1px solid #e2e8f0;
+    border-radius:16px;
+    padding:14px;
+    margin-top:12px;
+  }
+  .section h3{
+    margin:0 0 8px;
+    color:#065f46;
+    font-weight:800;
+    font-size:1.05rem;
+  }
+
+  .bar { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:10px }
+  .pill { display:inline-flex; align-items:center; gap:6px; padding:.25rem .6rem; border-radius:9999px; background:#f1f5f9; color:#334155; font-size:.8rem; font-weight:600; }
+  .agree { display:flex; align-items:center; gap:8px }
+
+  .btn-row { display:flex; justify-content:flex-end; gap:8px; margin-top:10px }
+  .btn.secondary{ background:#fff; color:#0f172a; border:1px solid #e2e8f0 }
+  .btn:disabled{ opacity:.5; cursor:not-allowed }
+</style>
+</head>
+<body>
 <div class="kx">
-  <h2>Trade-In</h2><p class="sub">Enter your VIN/miles; we’ll pre-value it.</p>
-  <div class="row row--2">
-    <label class="field"><span class="label">VIN</span><input id="vin" placeholder="17 characters"></label>
-    <label class="field"><span class="label">Miles</span><input id="miles" type="number" min="0" step="100"></label>
+  <h2>Trade-In</h2>
+  <p class="sub">Enter your vehicle details; we’ll pre-value it and keep everything with your deal.</p>
+
+  <!-- quick top-line estimator (VIN / Miles / Condition) -->
+  <div class="section">
+    <h3>Quick Estimator</h3>
+    <div class="grid g2">
+      <label class="field">
+        <span class="label">VIN</span>
+        <input id="vin" type="text" placeholder="Enter 17 digit VIN" maxlength="17" />
+        <div class="hint">VIN auto-capitalizes; letters I, O, Q are invalid.</div>
+      </label>
+
+      <label class="field">
+        <span class="label">Current Mileage</span>
+        <input id="miles" type="number" min="0" step="100" placeholder="e.g., 45,000">
+      </label>
+
+      <label class="field">
+        <span class="label">Condition</span>
+        <select id="cond">
+          <option>Average</option>
+          <option>Good</option>
+          <option>Excellent</option>
+          <option>Rough</option>
+        </select>
+      </label>
+
+      <div class="field">
+        <span class="label">Estimate</span>
+        <span id="rangeNote" class="pill">Complete fields to estimate…</span>
+      </div>
+    </div>
   </div>
-  <label class="field"><span class="label">Condition</span>
-    <select id="cond">
-      <option>Average</option><option>Good</option><option>Excellent</option><option>Rough</option>
-    </select>
-  </label>
-  <div style="display:flex;justify-content:space-between;gap:8px;margin-top:8px">
-    <span class="note" id="rangeNote">Complete fields to estimate range…</span>
-    <button id="next" class="btn">Start credit →</button>
+
+  <!-- Vehicle Details -->
+  <div class="section">
+    <h3>Vehicle Details</h3>
+    <div class="grid g2">
+      <label class="field">
+        <span class="label">Year</span>
+        <select id="year">
+          <option value="">Select Year</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span class="label">Make</span>
+        <input id="make" type="text" placeholder="e.g., Chevrolet">
+      </label>
+
+      <label class="field">
+        <span class="label">Model</span>
+        <input id="model" type="text" placeholder="e.g., Equinox">
+      </label>
+
+      <label class="field">
+        <span class="label">Trim Level (if known)</span>
+        <input id="trim" type="text" placeholder="e.g., LT, Premier">
+      </label>
+
+      <label class="field">
+        <span class="label">Exterior Color</span>
+        <input id="extColor" type="text">
+      </label>
+
+      <label class="field">
+        <span class="label">Interior Color</span>
+        <input id="intColor" type="text">
+      </label>
+
+      <label class="field">
+        <span class="label">Number of Keys Included</span>
+        <input id="keys" type="number" min="0" max="10">
+      </label>
+
+      <label class="field">
+        <span class="label">Title Status</span>
+        <select id="title">
+          <option>Clean</option>
+          <option>Lien</option>
+          <option>Rebuilt</option>
+          <option>Salvage</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span class="label">Number of Owners (estimate OK)</span>
+        <input id="owners" type="number" min="0" max="20">
+      </label>
+
+      <label class="field">
+        <span class="label">Has the vehicle ever been in an accident?</span>
+        <select id="accident">
+          <option>No</option>
+          <option>Yes</option>
+        </select>
+      </label>
+    </div>
+
+    <label class="field" style="margin-top:8px">
+      <span class="label">If yes, was it professionally repaired?</span>
+      <textarea id="accidentRepair" placeholder="Yes / No / Details"></textarea>
+    </label>
+  </div>
+
+  <!-- Condition Qs -->
+  <div class="section">
+    <h3>Tell us about your Vehicle</h3>
+    <label class="field">
+      <span class="label">Any warning lights on dashboard?</span>
+      <select id="warnings"><option>No</option><option>Yes</option></select>
+    </label>
+
+    <label class="field">
+      <span class="label">Mechanical issues</span>
+      <textarea id="mech"></textarea>
+    </label>
+
+    <label class="field">
+      <span class="label">Cosmetic issues</span>
+      <textarea id="cosmetic"></textarea>
+    </label>
+
+    <label class="field">
+      <span class="label">Interior clean and damage-free?</span>
+      <textarea id="interior"></textarea>
+    </label>
+
+    <label class="field">
+      <span class="label">Aftermarket parts or modifications?</span>
+      <textarea id="mods"></textarea>
+    </label>
+
+    <label class="field">
+      <span class="label">Unusual smells?</span>
+      <textarea id="smells"></textarea>
+    </label>
+
+    <label class="field">
+      <span class="label">Routine services up to date?</span>
+      <textarea id="service"></textarea>
+    </label>
+  </div>
+
+  <!-- Wearables -->
+  <div class="section">
+    <h3>Wearable Items Check</h3>
+    <div class="grid g2">
+      <label class="field">
+        <span class="label">Tire Condition</span>
+        <select id="tires">
+          <option>New</option>
+          <option>Good</option>
+          <option>Worn</option>
+          <option>Needs Replacement</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span class="label">Brake Condition</span>
+        <select id="brakes">
+          <option>New</option>
+          <option>Good</option>
+          <option>Worn</option>
+          <option>Needs Replacement</option>
+        </select>
+      </label>
+    </div>
+
+    <label class="field" style="margin-top:8px">
+      <span class="label">Other Wear Items (issues?)</span>
+      <textarea id="wear"></textarea>
+    </label>
+  </div>
+
+  <!-- Final disclaimer + actions -->
+  <div class="section">
+    <h3>Final Disclaimer</h3>
+    <p class="sub">I confirm the information provided is accurate to the best of my knowledge. I understand that the appraisal value may change if the vehicle's actual condition does not match the details above.</p>
+    <label class="agree">
+      <input type="checkbox" id="agree">
+      <span>I agree and confirm</span>
+    </label>
+
+    <div class="btn-row">
+      <button type="button" id="back" class="btn secondary">← Back</button>
+      <button type="button" id="next" class="btn" disabled>Start credit →</button>
+    </div>
   </div>
 </div>
-<script>
-const {save, load, post, track} = window.kiosk;
-const vinEl = document.getElementById('vin');
-const milesEl = document.getElementById('miles');
-const condEl = document.getElementById('cond');
-const noteEl = document.getElementById('rangeNote');
 
+<script>
+/* kiosk helpers */
+const { save, load, post, track } = window.kiosk;
+
+/* el helpers */
+const $ = (id) => document.getElementById(id);
+
+/* populate year options */
+(function fillYears(){
+  const sel = $('year');
+  const thisYear = new Date().getFullYear();
+  for(let y=thisYear; y>=1990; y--){
+    const o = document.createElement('option');
+    o.value = String(y); o.textContent = y;
+    sel.appendChild(o);
+  }
+})();
+
+/* estimate range (same logic you were using) */
 function estimate(lowBase=3000, highBase=7000){
-  const miles = Number(milesEl.value||0);
-  const adj = Math.max(0, (100000 - miles)/100000);
-  const low = Math.round(lowBase * (0.7 + adj*0.6));
-  const high = Math.round(highBase * (0.7 + adj*0.6));
+  const miles = Number(($('miles').value||'').toString().replace(/[^\d]/g,''));
+  const adj = Math.max(0, (100000 - (isNaN(miles)?0:miles))/100000);
+  const low = Math.round(lowBase  * (0.7 + adj*0.6));
+  const high= Math.round(highBase * (0.7 + adj*0.6));
   return [low, high];
 }
-function persist(){
+function showEstimate(){
   const [low, high] = estimate();
-  const payload = { vin: vinEl.value||'', miles: milesEl.value||'', condition: condEl.value, rangeLow: low, rangeHigh: high };
-  save('guided_trade', payload);
-  post('trade:update', payload);
-  noteEl.textContent = `Est. range: $${low.toLocaleString()} – $${high.toLocaleString()}`;
+  $('rangeNote').textContent = `Est. range: $${low.toLocaleString()} – $${high.toLocaleString()}`;
 }
-[vinEl, milesEl, condEl].forEach(el=> el.addEventListener('input', persist));
-document.getElementById('next').addEventListener('click', ()=>{
-  persist(); track('guided_trade_next'); post('trade:done', load('guided_trade',{}));
+
+/* persistence */
+const FIELDS = [
+  'vin','miles','cond','year','make','model','trim','extColor','intColor','keys','title',
+  'owners','accident','accidentRepair','warnings','mech','cosmetic','interior','mods',
+  'smells','service','tires','brakes','wear'
+];
+
+function collect(){
+  const obj = {};
+  FIELDS.forEach(id => obj[id] = ($(id)?.value ?? ''));
+  const [low, high] = estimate();
+  obj.rangeLow = low; obj.rangeHigh = high;
+  obj.agree = $('agree').checked;
+  return obj;
+}
+function persist(){
+  const data = collect();
+  save('guided_trade', data);
+  post('trade:update', data);
+}
+
+FIELDS.forEach(id => $(id).addEventListener('input', ()=>{ persist(); if(id==='miles') showEstimate(); }));
+$('vin').addEventListener('input', persist);
+$('agree').addEventListener('change', ()=> {
+  $('next').disabled = !$('agree').checked;
+  persist();
 });
+$('miles').addEventListener('input', showEstimate);
+
+/* nav buttons */
+$('back').addEventListener('click', ()=> {
+  persist();
+  post('trade:back');
+});
+$('next').addEventListener('click', ()=> {
+  persist();
+  track('guided_trade_next');
+  post('trade:done', load('guided_trade', {}));
+});
+
+/* restore any prior answers & init */
+(function boot(){
+  showEstimate();
+  const prior = load('guided_trade', null);
+  if (prior){
+    FIELDS.forEach(id => { if (prior[id] != null && $(id)) $(id).value = prior[id]; });
+    if (prior.agree) $('agree').checked = true;
+    $('next').disabled = !$('agree').checked;
+    showEstimate();
+  }
+})();
 </script>
-</body></html>
+</body>
+</html>
