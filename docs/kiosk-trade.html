@@ -161,39 +161,46 @@
   <!-- Tell us about your Vehicle (centered/narrow) -->
   <h3 class="card-title">Tell us about your Vehicle</h3>
   <div class="fieldset narrow">
+    <!-- Row 1: Warnings (left) + Mechanical (right) -->
     <div class="row row--2">
       <label class="field">
         <span class="label">Any warning lights on dashboard?</span>
         <select id="warnings"><option>No</option><option>Yes</option></select>
       </label>
-      <div class="field" aria-hidden="true"></div>
+
+      <label class="field">
+        <span class="label">Mechanical issues</span>
+        <textarea id="mech" rows="3"></textarea>
+      </label>
     </div>
 
-    <label class="field">
-      <span class="label">Mechanical issues</span>
-      <textarea id="mech" rows="3"></textarea>
-    </label>
+    <!-- Row 2: Cosmetic (left) + Interior (right) -->
+    <div class="row row--2">
+      <label class="field">
+        <span class="label">Cosmetic issues</span>
+        <textarea id="cosmetic" rows="3"></textarea>
+      </label>
 
-    <label class="field">
-      <span class="label">Cosmetic issues</span>
-      <textarea id="cosmetic" rows="3"></textarea>
-    </label>
+      <label class="field">
+        <span class="label">Interior clean and damage-free?</span>
+        <textarea id="interior" rows="2"></textarea>
+      </label>
+    </div>
 
-    <label class="field">
-      <span class="label">Interior clean and damage-free?</span>
-      <textarea id="interior" rows="2"></textarea>
-    </label>
+    <!-- Row 3: Mods (left, centered) + Smells (right) -->
+    <div class="row row--2">
+      <label class="field">
+        <span class="label">Aftermarket parts or modifications?</span>
+        <textarea id="mods" rows="2"></textarea>
+      </label>
 
-    <label class="field">
-      <span class="label">Aftermarket parts or modifications?</span>
-      <textarea id="mods" rows="2"></textarea>
-    </label>
+      <label class="field">
+        <span class="label">Unusual smells?</span>
+        <textarea id="smells" rows="2"></textarea>
+      </label>
+    </div>
 
-    <label class="field">
-      <span class="label">Unusual smells?</span>
-      <textarea id="smells" rows="2"></textarea>
-    </label>
-
+    <!-- Row 4: Routine services (full width) -->
     <label class="field">
       <span class="label">Routine services up to date?</span>
       <textarea id="service" rows="2"></textarea>
