@@ -30,6 +30,15 @@
     @media (min-width: 860px){
       .row--2 { grid-template-columns: 1fr 1fr; }
     }
+    /* Wearable Items row — auto-fit into up to 3 columns when space allows */
+.row--3 {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  justify-items: stretch;
+  align-items: start;
+}
+.row--3 > .field { min-width: 0; } /* allow inputs to shrink nicely */
 
     /* Wearable Items row — auto-fit into up to 3 columns when space allows */
     .row--3 {
