@@ -98,64 +98,48 @@
     }
     body.watermarked > *{ position:relative; z-index:1; }
 
-    /* ===== QR Library Card (added section) ===== */
-    .qr-card{
-      margin: 56px auto 48px;    /* healthy vertical space below dealer list */
-      max-width: 1160px;
+    /* ====== QR library card (unchanged layout) ====== */
+    .qr-shelf { margin: 48px auto 24px; max-width: 1200px; padding: 0 16px; }
+    .qr-card {
       background: #fff;
       border: 1px solid #e5e7eb;
       border-radius: 16px;
-      padding: 28px;
-      box-shadow: 0 2px 10px rgba(0,0,0,.06);
+      box-shadow: 0 2px 8px rgba(0,0,0,.05);
+      padding: 24px;
     }
-    .qr-grid{
+    .qr-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr); /* 3 across */
-      gap: 24px;                              /* comfy spacing */
+      grid-template-columns: repeat(3, minmax(180px, 1fr));
+      gap: 24px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
     }
-    .qr-item{
-      display: grid;
-      gap: 8px;
-      justify-items: center;
+    .qr-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .qr-item a { text-decoration: none; }
+    .qr-thumb {
+      width: 160px;
+      height: 160px;
+      object-fit: contain;
+      display: block;
+      border-radius: 6px;
+      border: 1px solid #e5e7eb;
+      background: #fff;
     }
-    .qr-box{
-      /* (kept for reference; not used now that images are in place) */
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      border: 1px dashed #cbd5e1;
-      border-radius: 10px;
-      background: #f8fafc;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .qr-name {
       font-weight: 700;
       color: #0b6e37;
-      letter-spacing: .4px;
-      user-select: none;
+      text-align: center;
+      line-height: 1.25;
     }
-    .qr-item img{
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      border-radius: 10px;
-      display: block;
-    }
-    .qr-caption{
-      font-size: .95rem;
+    .qr-caption {
       font-weight: 600;
       color: #0f172a;
       text-align: center;
       line-height: 1.25;
     }
-
-    /* Keep layout readable on small screens without changing the spec on desktop */
-    @media (max-width: 860px){
-      .qr-card{ margin: 40px 16px; padding: 20px; }
-      .qr-grid{ grid-template-columns: repeat(2, 1fr); }
-    }
-    @media (max-width: 560px){
-      .qr-grid{ grid-template-columns: 1fr; }
-    }
+    @media (max-width: 900px) { .qr-grid { grid-template-columns: repeat(2, minmax(180px, 1fr)); } }
+    @media (max-width: 560px) { .qr-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body class="watermarked">
@@ -164,23 +148,23 @@
 </div>
 
 <style>
-  /* You can move this to assets/style.css if you prefer */
+  /* (kept as-is) */
   .home-header{
     display:flex;
-    justify-content:center;   /* centers on all viewports */
+    justify-content:center;
     align-items:center;
     padding:12px 0;
-    margin-top:48px; /* <-- add (or edit) this line to push the HOME button down */
+    margin-top:48px;
   }
   .home-btn{
     display:inline-block;
-    background:#000;          /* black rectangle */
-    color:#fff;               /* white text */
+    background:#000;
+    color:#fff;
     text-decoration:none;
     font-weight:700;
     letter-spacing:.3px;
     padding:10px 18px;
-    border-radius:8px;        /* remove if you want sharp corners */
+    border-radius:8px;
     line-height:1;
   }
   .home-btn:focus-visible{
@@ -198,7 +182,7 @@
       <!-- Center title -->
       <div class="topbar-title">Quirk Trade Tool</div>
 
-      <!-- Right: single Project Library link (mirrors VIN Solutions bar) -->
+      <!-- Right: single Project Library link -->
       <nav class="topbar-menu" aria-label="Secondary Navigation">
         <a class="topbar-title-link" href="./project-library.html">Project Library</a>
       </nav>
@@ -232,108 +216,120 @@
     </ul>
   </main>
 
-  <!-- ======= White Library Card with 3×5 QR Grid ======= -->
-  <section class="qr-card" aria-label="Dealer QR codes">
-    <div class="qr-grid">
-      <!-- Row 1 -->
-      <div class="qr-item">
-        <a href="docs/assets/QuirkNH.png" target="_blank" rel="noopener" aria-label="Open Quirk NH Auto Dealers QR">
-          <img src="docs/assets/QuirkNH.png" alt="Quirk NH Auto Dealers QR" loading="lazy">
-        </a>
-        <div class="qr-caption">Quirk NH Auto Dealers</div>
-      </div>
-      <div class="qr-item">
-        <a href="docs/assets/QuirkBuickGMC_MA.png" target="_blank" rel="noopener" aria-label="Open Quirk Buick GMC MA QR">
-          <img src="docs/assets/QuirkBuickGMC_MA.png" alt="Quirk Buick GMC MA QR" loading="lazy">
-        </a>
-        <div class="qr-caption">Quirk Buick GMC MA</div>
-      </div>
-      <div class="qr-item">
-        <a href="docs/assets/QuirkChevy_MA.png" target="_blank" rel="noopener" aria-label="Open Quirk Chevrolet MA QR">
-          <img src="docs/assets/QuirkChevy_MA.png" alt="Quirk Chevrolet MA QR" loading="lazy">
-        </a>
-        <div class="qr-caption">Quirk Chevrolet MA</div>
-      </div>
+  <!-- ======= QR Library Card (5 x 3 grid) ======= -->
+  <section class="qr-shelf" aria-label="Dealership QR codes">
+    <div class="qr-card">
+      <ul class="qr-grid">
+        <li class="qr-item">
+          <a href="docs/assets/QuirkNH.png" target="_blank" rel="noopener">
+            <img class="qr-thumb" src="docs/assets/QuirkNH.png" alt="Quirk NH Auto Dealers QR">
+          </a>
+          <div class="qr-name">Quirk NH Auto Dealers QR</div>
+          <div class="qr-caption">Quirk NH Auto Dealers</div>
+        </li>
+        <li class="qr-item">
+          <a href="docs/assets/QuirkBuickGMC_MA.png" target="_blank" rel="noopener">
+            <img class="qr-thumb" src="docs/assets/QuirkBuickGMC_MA.png" alt="Quirk Buick GMC MA QR">
+          </a>
+          <div class="qr-name">Quirk Buick GMC MA QR</div>
+          <div class="qr-caption">Quirk Buick GMC MA</div>
+        </li>
+        <li class="qr-item">
+          <a href="docs/assets/QuirkChevy_MA.png" target="_blank" rel="noopener">
+            <img class="qr-thumb" src="docs/assets/QuirkChevy_MA.png" alt="Quirk Chevrolet MA QR">
+          </a>
+          <div class="qr-name">Quirk Chevrolet MA QR</div>
+          <div class="qr-caption">Quirk Chevrolet MA</div>
+        </li>
 
-      <!-- Row 2 -->
-      <div class="qr-item">
-        <a href="docs/assets/QuirkCDJR_Boston.png" target="_blank" rel="noopener" aria-label="Open Quirk CDJR Boston QR">
-          <img src="docs/assets/QuirkCDJR_Boston.png" alt="Quirk CDJR Boston QR" loading="lazy">
-        </a>
-        <div class="qr-caption">Quirk CDJR Boston</div>
-      </div>
-      <div class="qr-item">
-        <a href="docs/assets/QuirkCDJR_Marshfield.png" target="_blank" rel="noopener" aria-label="Open Quirk CDJR Marshfield QR">
-          <img src="docs/assets/QuirkCDJR_Marshfield.png" alt="Quirk CDJR Marshfield QR" loading="lazy">
-        </a>
-        <div class="qr-caption">Quirk CDJR Marshfield</div>
-      </div>
-      <div class="qr-item">
-        <a href="docs/assets/QuirkJeep_Braintree.png" target="_blank" rel="noopener" aria-label="Open Quirk Chrysler Jeep QR">
-          <img src="docs/assets/QuirkJeep_Braintree.png" alt="Quirk Chrysler Jeep QR" loading="lazy">
-        </a>
-        <div class="qr-caption">Quirk Chrysler Jeep</div>
-      </div>
+        <li class="qr-item">
+          <a href="docs/assets/QuirkCDJR_Boston.png" target="_blank" rel="noopener">
+            <img class="qr-thumb" src="docs/assets/QuirkCDJR_Boston.png" alt="Quirk CDJR Boston QR">
+          </a>
+          <div class="qr-name">Quirk CDJR Boston QR</div>
+          <div class="qr-caption">Quirk CDJR Boston</div>
+        </li>
+        <li class="qr-item">
+          <a href="docs/assets/QuirkCDJR_Marshfield.png" target="_blank" rel="noopener">
+            <img class="qr-thumb" src="docs/assets/QuirkCDJR_Marshfield.png" alt="Quirk CDJR Marshfield QR">
+          </a>
+          <div class="qr-name">Quirk CDJR Marshfield QR</div>
+          <div class="qr-caption">Quirk CDJR Marshfield</div>
+        </li>
+        <li class="qr-item">
+          <a href="docs/assets/QuirkJeep_Braintree.png" target="_blank" rel="noopener">
+            <img class="qr-thumb" src="docs/assets/QuirkJeep_Braintree.png" alt="Quirk Chrysler Jeep QR">
+          </a>
+          <div class="qr-name">Quirk Chrysler Jeep QR</div>
+          <div class="qr-caption">Quirk Chrysler Jeep</div>
+        </li>
 
-      <!-- Row 3 -->
-      <div class="qr-item">
-        <a href="docs/assets/QuirkFord.png" target="_blank" rel="noopener" aria-label="Open Quirk Ford QR">
-          <img src="docs/assets/QuirkFord.png" alt="Quirk Ford QR" loading="lazy">
-        </a>
-        <div class="qr-caption">Quirk Ford</div>
-      </div>
-      <div class="qr-item">
-        <a href="docs/assets/QuirkGenesis.png" target="_blank" rel="noopener" aria-label="Open Genesis of Braintree QR">
-          <img src="docs/assets/QuirkGenesis.png" alt="Genesis of Braintree QR" loading="lazy">
-        </a>
-        <div class="qr-caption">Genesis of Braintree</div>
-      </div>
-      <div class="qr-item">
-        <a href="docs/assets/QuirkHundai.png" target="_blank" rel="noopener" aria-label="Open Quirk Hyundai QR">
-          <img src="docs/assets/QuirkHundai.png" alt="Quirk Hyundai QR" loading="lazy">
-        </a>
-        <div class="qr-caption">Quirk Hyundai</div>
-      </div>
+        <li class="qr-item">
+          <a href="docs/assets/QuirkFord.png" target="_blank" rel="noopener">
+            <img class="qr-thumb" src="docs/assets/QuirkFord.png" alt="Quirk Ford QR">
+          </a>
+          <div class="qr-name">Quirk Ford QR</div>
+          <div class="qr-caption">Quirk Ford</div>
+        </li>
+        <li class="qr-item">
+          <a href="docs/assets/QuirkGenesis.png" target="_blank" rel="noopener">
+            <img class="qr-thumb" src="docs/assets/QuirkGenesis.png" alt="Genesis of Braintree QR">
+          </a>
+          <div class="qr-name">Genesis of Braintree QR</div>
+          <div class="qr-caption">Genesis of Braintree</div>
+        </li>
+        <li class="qr-item">
+          <a href="docs/assets/QuirkHundai.png" target="_blank" rel="noopener">
+            <img class="qr-thumb" src="docs/assets/QuirkHundai.png" alt="Quirk Hyundai QR">
+          </a>
+          <div class="qr-name">Quirk Hyundai QR</div>
+          <div class="qr-caption">Quirk Hyundai</div>
+        </li>
 
-      <!-- Row 4 -->
-      <div class="qr-item">
-        <a href="docs/assets/QuirkKia_Braintree.png" target="_blank" rel="noopener" aria-label="Open Quirk Kia MA QR">
-          <img src="docs/assets/QuirkKia_Braintree.png" alt="Quirk Kia MA QR" loading="lazy">
-        </a>
-        <div class="qr-caption">Quirk Kia MA</div>
-      </div>
-      <div class="qr-item">
-        <a href="docs/assets/QuirkKia_Marshfield.png" target="_blank" rel="noopener" aria-label="Open Quirk Kia South QR">
-          <img src="docs/assets/QuirkKia_Marshfield.png" alt="Quirk Kia South QR" loading="lazy">
-        </a>
-        <div class="qr-caption">Quirk Kia South</div>
-      </div>
-      <div class="qr-item">
-        <a href="docs/assets/QuirkMazda.png" target="_blank" rel="noopener" aria-label="Open Quirk Mazda QR">
-          <img src="docs/assets/QuirkMazda.png" alt="Quirk Mazda QR" loading="lazy">
-        </a>
-        <div class="qr-caption">Quirk Mazda</div>
-      </div>
+        <li class="qr-item">
+          <a href="docs/assets/QuirkKia_Braintree.png" target="_blank" rel="noopener">
+            <img class="qr-thumb" src="docs/assets/QuirkKia_Braintree.png" alt="Quirk Kia MA QR">
+          </a>
+          <div class="qr-name">Quirk Kia MA QR</div>
+          <div class="qr-caption">Quirk Kia MA</div>
+        </li>
+        <li class="qr-item">
+          <a href="docs/assets/QuirkKia_Marshfield.png" target="_blank" rel="noopener">
+            <img class="qr-thumb" src="docs/assets/QuirkKia_Marshfield.png" alt="Quirk Kia South QR">
+          </a>
+          <div class="qr-name">Quirk Kia South QR</div>
+          <div class="qr-caption">Quirk Kia South</div>
+        </li>
+        <li class="qr-item">
+          <a href="docs/assets/QuirkMazda.png" target="_blank" rel="noopener">
+            <img class="qr-thumb" src="docs/assets/QuirkMazda.png" alt="Quirk Mazda QR">
+          </a>
+          <div class="qr-name">Quirk Mazda QR</div>
+          <div class="qr-caption">Quirk Mazda</div>
+        </li>
 
-      <!-- Row 5 -->
-      <div class="qr-item">
-        <a href="docs/assets/QuirkNissan.png" target="_blank" rel="noopener" aria-label="Open Quirk Nissan QR">
-          <img src="docs/assets/QuirkNissan.png" alt="Quirk Nissan QR" loading="lazy">
-        </a>
-        <div class="qr-caption">Quirk Nissan</div>
-      </div>
-      <div class="qr-item">
-        <a href="docs/assets/QuirkSubaru.png" target="_blank" rel="noopener" aria-label="Open Quirk Subaru QR">
-          <img src="docs/assets/QuirkSubaru.png" alt="Quirk Subaru QR" loading="lazy">
-        </a>
-        <div class="qr-caption">Quirk Subaru</div>
-      </div>
-      <div class="qr-item">
-        <a href="docs/assets/QuirkVW_MA.png" target="_blank" rel="noopener" aria-label="Open Quirk Volkswagen MA QR">
-          <img src="docs/assets/QuirkVW_MA.png" alt="Quirk Volkswagen MA QR" loading="lazy">
-        </a>
-        <div class="qr-caption">Quirk Volkswagen MA</div>
-      </div>
+        <li class="qr-item">
+          <a href="docs/assets/QuirkNissan.png" target="_blank" rel="noopener">
+            <img class="qr-thumb" src="docs/assets/QuirkNissan.png" alt="Quirk Nissan QR">
+          </a>
+          <div class="qr-name">Quirk Nissan QR</div>
+          <div class="qr-caption">Quirk Nissan</div>
+        </li>
+        <li class="qr-item">
+          <a href="docs/assets/QuirkSubaru.png" target="_blank" rel="noopener">
+            <img class="qr-thumb" src="docs/assets/QuirkSubaru.png" alt="Quirk Subaru QR">
+          </a>
+          <div class="qr-name">Quirk Subaru QR</div>
+          <div class="qr-caption">Quirk Subaru</div>
+        </li>
+        <li class="qr-item">
+          <a href="docs/assets/QuirkVW_MA.png" target="_blank" rel="noopener">
+            <img class="qr-thumb" src="docs/assets/QuirkVW_MA.png" alt="Quirk Volkswagen MA QR">
+          </a>
+          <div class="qr-name">Quirk Volkswagen MA QR</div>
+          <div class="qr-caption">Quirk Volkswagen MA</div>
+        </li>
+      </ul>
     </div>
   </section>
 
