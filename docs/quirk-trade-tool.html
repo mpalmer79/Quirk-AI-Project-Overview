@@ -97,6 +97,67 @@
       will-change:auto !important;
     }
     body.watermarked > *{ position:relative; z-index:1; }
+
+    /* ===== QR Library Card (added section) ===== */
+    .qr-card{
+      /* healthy vertical space below dealer list */
+      margin: 56px auto 48px;
+      /* wide white card with soft border */
+      max-width: 1160px;
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.06);
+    }
+    .qr-grid{
+      display: grid;
+      grid-template-columns: repeat(3, 1fr); /* 3 across */
+      gap: 24px;                              /* comfy spacing */
+    }
+    .qr-item{
+      display: grid;
+      gap: 8px;
+      justify-items: center;
+    }
+    .qr-box{
+      /* Square placeholder for QR images */
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border: 1px dashed #cbd5e1;
+      border-radius: 10px;
+      background: #f8fafc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #0b6e37;
+      letter-spacing: .4px;
+      user-select: none;
+    }
+    .qr-item img{
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 10px;
+      display: block;
+    }
+    .qr-caption{
+      font-size: .95rem;
+      font-weight: 600;
+      color: #0f172a;
+      text-align: center;
+      line-height: 1.25;
+    }
+
+    /* Keep layout readable on small screens without changing the spec on desktop */
+    @media (max-width: 860px){
+      .qr-card{ margin: 40px 16px; padding: 20px; }
+      .qr-grid{ grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 560px){
+      .qr-grid{ grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body class="watermarked">
@@ -172,6 +233,77 @@
       <li><a href="https://quirkvwmatrade.netlify.app/" target="_blank" rel="noopener">Quirk Volkswagen MA</a></li>
     </ul>
   </main>
+
+  <!-- ======= NEW White Library Card with 3×5 QR Grid ======= -->
+  <section class="qr-card" aria-label="Dealer QR codes">
+    <div class="qr-grid">
+      <!-- Replace each .qr-box with an <img src="..."> for the real QR when ready -->
+      <div class="qr-item">
+        <div class="qr-box">QR</div>
+        <div class="qr-caption">Quirk NH Auto Dealers</div>
+      </div>
+      <div class="qr-item">
+        <div class="qr-box">QR</div>
+        <div class="qr-caption">Quirk Buick GMC MA</div>
+      </div>
+      <div class="qr-item">
+        <div class="qr-box">QR</div>
+        <div class="qr-caption">Quirk Chevrolet MA</div>
+      </div>
+
+      <div class="qr-item">
+        <div class="qr-box">QR</div>
+        <div class="qr-caption">Quirk CDJR Boston</div>
+      </div>
+      <div class="qr-item">
+        <div class="qr-box">QR</div>
+        <div class="qr-caption">Quirk CDJR Marshfield</div>
+      </div>
+      <div class="qr-item">
+        <div class="qr-box">QR</div>
+        <div class="qr-caption">Quirk Chrysler Jeep</div>
+      </div>
+
+      <div class="qr-item">
+        <div class="qr-box">QR</div>
+        <div class="qr-caption">Quirk Ford</div>
+      </div>
+      <div class="qr-item">
+        <div class="qr-box">QR</div>
+        <div class="qr-caption">Genesis of Braintree</div>
+      </div>
+      <div class="qr-item">
+        <div class="qr-box">QR</div>
+        <div class="qr-caption">Quirk Hyundai</div>
+      </div>
+
+      <div class="qr-item">
+        <div class="qr-box">QR</div>
+        <div class="qr-caption">Quirk Kia MA</div>
+      </div>
+      <div class="qr-item">
+        <div class="qr-box">QR</div>
+        <div class="qr-caption">Quirk Kia South</div>
+      </div>
+      <div class="qr-item">
+        <div class="qr-box">QR</div>
+        <div class="qr-caption">Quirk Mazda</div>
+      </div>
+
+      <div class="qr-item">
+        <div class="qr-box">QR</div>
+        <div class="qr-caption">Quirk Nissan</div>
+      </div>
+      <div class="qr-item">
+        <div class="qr-box">QR</div>
+        <div class="qr-caption">Quirk Subaru</div>
+      </div>
+      <div class="qr-item">
+        <div class="qr-box">QR</div>
+        <div class="qr-caption">Quirk Volkswagen MA</div>
+      </div>
+    </div>
+  </section>
 
   <!-- ======= Footer ======= -->
   <footer class="footer">
