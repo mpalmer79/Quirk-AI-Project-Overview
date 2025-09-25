@@ -5,27 +5,123 @@
 <script src="assets/kiosk-shared.js"></script>
 </head><body>
 <div class="kx">
-  <h2>Start your credit application</h2><p class="sub">Soft pull first. No impact to score until you consent to submit.</p>
-  <div class="row row--2">
-    <label class="field"><span class="label">Full name</span><input id="full"></label>
-    <label class="field"><span class="label">Email</span><input id="email" type="email"></label>
-    <label class="field"><span class="label">Mobile</span><input id="mobile"></label>
-    <label class="field"><span class="label">ZIP</span><input id="zip"></label>
-    <label class="field"><span class="label">Income (monthly)</span><input id="income" type="number"></label>
+  <h2>Start your credit application</h2>
+  <p class="sub">Soft pull first. No impact to score until you consent to submit.</p>
+
+  <!-- Stage A: Basic + Soft-Pull consent -->
+  <div id="stageA" class="panel">
+    <div class="row row--2">
+      <label class="field"><span class="label">Full name</span><input id="full" autocomplete="name" required></label>
+      <label class="field"><span class="label">Email</span><input id="email" type="email" autocomplete="email" required></label>
+      <label class="field"><span class="label">Mobile</span><input id="mobile" inputmode="tel" autocomplete="tel" required></label>
+      <label class="field"><span class="label">ZIP</span><input id="zip" inputmode="numeric" maxlength="10" required></label>
+      <label class="field"><span class="label">Income (monthly)</span><input id="income" type="number" min="0" step="100" required></label>
+    </div>
+    <label class="field" style="display:flex;align-items:center;gap:8px">
+      <input id="softConsent" type="checkbox" required> I agree to a soft inquiry (pre-qualification)
+    </label>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">
+      <button id="startMfa" class="btn">Next → Verify phone</button>
+    </div>
   </div>
-  <label class="field" style="display:flex;align-items:center;gap:8px"><input id="consent" type="checkbox"> I agree to a soft inquiry</label>
-  <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">
-    <button id="next" class="btn">Preview protection →</button>
+
+  <!-- Stage A.1: MFA -->
+  <div id="stageMFA" class="panel" style="display:none">
+    <p>We sent a 6-digit code to <strong id="mfaPhone"></strong>. Enter it below to confirm it’s you.</p>
+    <label class="field"><span class="label">Verification code</span><input id="otp" inputmode="numeric" maxlength="6"></label>
+    <div style="display:flex;justify-content:space-between;gap:8px;margin-top:8px">
+      <button id="resend" class="btn btn--ghost">Resend code</button>
+      <div>
+        <button id="backA" class="btn btn--ghost">Back</button>
+        <button id="verify" class="btn">Continue →</button>
+      </div>
+    </div>
+    <p id="mfaMsg" class="sub"></p>
+  </div>
+
+  <!-- Stage B: Full application (revealed after MFA) -->
+  <div id="stageB" class="panel" style="display:none">
+    <h3>Applicant details</h3>
+    <div class="row row--2">
+      <label class="field"><span class="label">Street address</span><input id="addr"></label>
+      <label class="field"><span class="label">City</span><input id="city"></label>
+      <label class="field"><span class="label">State</span><input id="state" maxlength="2"></label>
+      <label class="field"><span class="label">ZIP</span><input id="zip2"></label>
+      <label class="field"><span class="label">Date of birth</span><input id="dob" type="date"></label>
+      <label class="field"><span class="label">SSN (last 4 ok for demo)</span><input id="ssn" type="password" maxlength="11"></label>
+      <label class="field"><span class="label">Driver’s license #</span><input id="dl"></label>
+      <label class="field"><span class="label">DL state</span><input id="dl_state" maxlength="2"></label>
+      <label class="field"><span class="label">Housing type</span>
+        <select id="housing"><option>Rent</option><option>Own</option><option>Other</option></select></label>
+      <label class="field"><span class="label">Monthly housing payment</span><input id="housing_payment" type="number" min="0" step="10"></label>
+      <label class="field"><span class="label">Employer</span><input id="employer"></label>
+      <label class="field"><span class="label">Job title</span><input id="title"></label>
+      <label class="field"><span class="label">Time at job (months)</span><input id="tenure" type="number" min="0"></label>
+    </div>
+    <label class="field" style="display:flex;align-items:center;gap:8px">
+      <input id="hardConsent" type="checkbox"> I authorize a hard inquiry and submission to lender(s)
+    </label>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">
+      <button id="submit" class="btn">Submit application</button>
+    </div>
   </div>
 </div>
+
 <script>
-const {save, post} = window.kiosk;
-document.getElementById('next').addEventListener('click', ()=>{
-  save('guided_credit',{
-    full:full.value, email:email.value, mobile:mobile.value, zip:zip.value, income:income.value, consent:consent.checked
-  });
-  post('credit:done');
+const {save, load, post, track} = window.kiosk;
+const BACKEND = (location.origin.includes('localhost') ? 'https://localhost:8443' : 'https://YOUR-API.DOMAIN');
+
+function qs(id){ return document.getElementById(id); }
+function show(id){ ['stageA','stageMFA','stageB'].forEach(x=>qs(x).style.display = (x===id?'block':'none')); }
+
+qs('startMfa').addEventListener('click', async ()=>{
+  const payload = {
+    full: full.value.trim(), email: email.value.trim(), mobile: mobile.value.trim(),
+    zip: zip.value.trim(), income: Number(income.value), consent: softConsent.checked
+  };
+  if(!payload.full || !payload.email || !payload.mobile || !payload.zip || !payload.income || !payload.consent){
+    return alert('Please complete all fields and consent to the soft inquiry.');
+  }
+  save('guided_credit_basic', payload);
+  try{
+    const r = await fetch(BACKEND+'/mfa/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ phone: payload.mobile })});
+    if(!r.ok) throw new Error('Failed to start verification');
+    qs('mfaPhone').textContent = payload.mobile;
+    show('stageMFA');
+  }catch(e){ alert('Could not send verification code. Please check the phone number and try again.'); }
+});
+
+qs('resend').addEventListener('click', ()=> qs('startMfa').click());
+qs('backA').addEventListener('click', ()=> show('stageA'));
+
+qs('verify').addEventListener('click', async ()=>{
+  const code = otp.value.trim();
+  if(code.length<4) return alert('Enter the code we sent to your phone.');
+  try{
+    const r = await fetch(BACKEND+'/mfa/verify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ phone: mfaPhone.textContent, code })});
+    const ok = r.ok && (await r.json()).verified;
+    if(!ok) { qs('mfaMsg').textContent='Incorrect code. Try again or resend.'; return; }
+    track('credit.mfa.verified');
+    show('stageB');
+  }catch(e){ qs('mfaMsg').textContent='Verification failed. Try again.'; }
+});
+
+qs('submit').addEventListener('click', async ()=>{
+  const basic = load('guided_credit_basic',{});
+  const payload = {
+    ...basic,
+    address:{ street: addr.value, city: city.value, state: state.value, zip: zip2.value || basic.zip },
+    dob: dob.value, ssn: ssn.value, dl: { number: dl.value, state: dl_state.value },
+    housing: { type: housing.value, payment: Number(housing_payment.value||0) },
+    employment: { employer: employer.value, title: title.value, months: Number(tenure.value||0) },
+    hardConsent: hardConsent.checked
+  };
+  if(!payload.hardConsent){ return alert('Please authorize the credit submission.'); }
+  try{
+    const r = await fetch(BACKEND+'/credit/submit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    if(!r.ok) throw new Error('Submit failed');
+    post('credit:done');
+  }catch(e){ alert('Submission failed. Please ask a representative for help.'); }
 });
 </script>
 </body></html>
-
