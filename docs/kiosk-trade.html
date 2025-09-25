@@ -31,12 +31,15 @@
       .row--2 { grid-template-columns: 1fr 1fr; }
     }
 
-    /* 3-up row for Wearable Items (centered) */
-    .row--3 { grid-template-columns: 1fr; justify-items:stretch; }
-    /* ↓ Lowered breakpoint so Tire / Brake / Other sit side-by-side on common laptop widths */
-    @media (min-width: 860px){
-      .row--3 { grid-template-columns: 1fr 1fr 1fr; }
+    /* Wearable Items row — auto-fit into up to 3 columns when space allows */
+    .row--3 {
+      display:grid;
+      gap:12px;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      justify-items: stretch;
+      align-items: start;
     }
+    .row--3 > .field { min-width: 0; } /* allow inputs to shrink nicely */
 
     /* Compact mileage field: visually ~10ch; JS enforces 8 digits */
     #miles { width: 10ch; }
@@ -411,7 +414,7 @@ async function decodeVIN(vin){
     if (row.Make)      makeEl.value = row.Make;
     if (row.Model)     modelEl.value = row.Model;
 
-    const tr = row.Trim || row.Series || "";
+    const tr = row.Trim or row.Series || "";
     if (tr) trimEl.value = tr;
 
     lastBodyClass = row.BodyClass || "";
