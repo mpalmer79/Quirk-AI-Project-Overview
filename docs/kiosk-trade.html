@@ -19,7 +19,7 @@
     .fieldset {
       border:1px solid #e5e7eb; border-radius:16px;
       padding:16px; background:#fff; margin:16px auto;
-      max-width: 980px;                 /* centered card width */
+      max-width: 980px;
     }
     .fieldset.narrow { max-width: 820px; }
     .fieldset.wide   { max-width: 980px; }
@@ -32,12 +32,29 @@
       .row--2 { grid-template-columns: 1fr 1fr; }
     }
 
-    /* ---------- Wearables section overrides ---------- */
-    /* Remove the grey border only on this card */
-    .fieldset.wearables { border:none; box-shadow:none; }
+    /* ---------- Tell-us section (custom grid + no border) ---------- */
+    .fieldset.about { border:none; box-shadow:none; background:transparent; padding-top:0; }
+    .about-grid { display:grid; gap:12px; grid-template-columns: 1fr; }
+    @media (min-width: 980px){
+      /* 3 fixed columns, centered within the page/card */
+      .about-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+        max-width: 980px;
+        margin: 0 auto;
+        align-items:start;
+      }
+      /* Explicit column placement (center column = mechanical/interior) */
+      .about__warnings  { grid-column: 1; }
+      .about__mech      { grid-column: 2; }
+      .about__cosmetic  { grid-column: 3; }
+      .about__mods      { grid-column: 1; }
+      .about__interior  { grid-column: 2; }
+      .about__smells    { grid-column: 3; }
+      .about__service   { grid-column: 1 / -1; }
+    }
 
-    /* Force a 3-column grid on laptops, 2 on tablets, 1 on phones.
-       !important beats any older rule coming from other CSS. */
+    /* ---------- Wearables section overrides ---------- */
+    .fieldset.wearables { border:none; box-shadow:none; }
     .fieldset.wearables .row--3 {
       display:grid;
       gap:12px;
@@ -55,9 +72,9 @@
         grid-template-columns: 1fr !important;
       }
     }
-    .fieldset.wearables .row--3 > .field { min-width: 0; } /* clean shrink */
+    .fieldset.wearables .row--3 > .field { min-width: 0; }
 
-    /* Compact mileage field: visually ~10ch; JS enforces 8 digits */
+    /* Compact mileage field */
     #miles { width: 10ch; }
 
     /* Visually-hidden helper */
@@ -180,53 +197,48 @@
     </label>
   </div>
 
-  <!-- Tell us about your Vehicle (centered/narrow) -->
+  <!-- Tell us about your Vehicle (centered; no border) -->
   <h3 class="card-title">Tell us about your Vehicle</h3>
-  <div class="fieldset narrow">
-    <!-- Row 1: Warnings (left) + Mechanical (right) -->
-    <div class="row row--2">
-      <label class="field">
+  <div class="fieldset narrow about">
+    <div class="about-grid">
+      <!-- Row 1 -->
+      <label class="field about__warnings">
         <span class="label">Any warning lights on dashboard?</span>
         <select id="warnings"><option>No</option><option>Yes</option></select>
       </label>
 
-      <label class="field">
+      <label class="field about__mech">
         <span class="label">Mechanical issues</span>
         <textarea id="mech" rows="3"></textarea>
       </label>
-    </div>
 
-    <!-- Row 2: Cosmetic (left) + Interior (right) -->
-    <div class="row row--2">
-      <label class="field">
+      <label class="field about__cosmetic">
         <span class="label">Cosmetic issues</span>
         <textarea id="cosmetic" rows="3"></textarea>
       </label>
 
-      <label class="field">
-        <span class="label">Interior clean and damage-free?</span>
-        <textarea id="interior" rows="2"></textarea>
-      </label>
-    </div>
-
-    <!-- Row 3: Mods (left) + Smells (right) -->
-    <div class="row row--2">
-      <label class="field">
+      <!-- Row 2 -->
+      <label class="field about__mods">
         <span class="label">Aftermarket parts or modifications?</span>
         <textarea id="mods" rows="2"></textarea>
       </label>
 
-      <label class="field">
+      <label class="field about__interior">
+        <span class="label">Interior clean and damage-free?</span>
+        <textarea id="interior" rows="2"></textarea>
+      </label>
+
+      <label class="field about__smells">
         <span class="label">Unusual smells?</span>
         <textarea id="smells" rows="2"></textarea>
       </label>
-    </div>
 
-    <!-- Row 4: Routine services (full width) -->
-    <label class="field">
-      <span class="label">Routine services up to date?</span>
-      <textarea id="service" rows="2"></textarea>
-    </label>
+      <!-- Row 3 (full width) -->
+      <label class="field about__service">
+        <span class="label">Routine services up to date?</span>
+        <textarea id="service" rows="2"></textarea>
+      </label>
+    </div>
   </div>
 
   <!-- Wearable Items Check (no border; 3-up grid) -->
@@ -351,7 +363,7 @@ function sendPayload(){
   return payload;
 }
 
-/* ---------------- years list (current year + 1 back to 1990) ---------------- */
+/* ---------------- years list ---------------- */
 (function fillYears(){
   const now = new Date();
   const max = now.getFullYear() + 1;
@@ -413,7 +425,7 @@ function recomputeSilent(){
     miles: milesEl.value,
     condition: condEl.value
   });
-  sendPayload(); // persist silently
+  sendPayload();
 }
 
 /* ---------------- VIN decoder (VPIC) ---------------- */
@@ -456,7 +468,7 @@ vinEl.addEventListener('input', (e)=>{
   tiresEl, brakesEl, wearEl
 ].forEach(el=> el.addEventListener('input', recomputeSilent));
 
-// Initial state from any stored payload
+// Initial state
 (function boot(){
   const prev = load('guided_trade', null);
   if (prev){
