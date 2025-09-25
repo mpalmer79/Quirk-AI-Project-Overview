@@ -32,6 +32,11 @@
       .row--2 { grid-template-columns: 1fr 1fr; }
     }
 
+    /* ---------- Universal label centering ---------- */
+    /* Make every .field stack its label above the control and center the label text */
+    .field { display:flex; flex-direction:column; align-items:stretch; }
+    .field .label { display:block; text-align:center; font-weight:600; }
+
     /* ---------- Tell-us section (custom grid + no border) ---------- */
     .fieldset.about { border:none; box-shadow:none; background:transparent; padding-top:0; }
     .about-grid { display:grid; gap:12px; grid-template-columns: 1fr; }
@@ -53,7 +58,7 @@
       .about__interior  { grid-column: 2; } /* center */
       .about__smells    { grid-column: 3; } /* right of interior */
 
-      /* Row 3 — Routine services (left), Tire (center), Brake (right) */
+      /* Row 3 — service (left), tire (center), brakes (right) */
       .about__service   { grid-column: 1; }
       .about__tire      { grid-column: 2; }
       .about__brakes    { grid-column: 3; }
@@ -64,10 +69,12 @@
 
     /* Wider, centered notes box */
     .wear-notes {
-      max-width: 820px;   /* nice wide text area */
-      margin: 8px auto 0; /* center horizontally */
+      max-width: 940px;            /* wider than the narrow card */
+      margin: 8px auto 0;          /* centered */
     }
-    .wear-notes textarea { min-height: 120px; }
+    .wear-notes textarea {
+      min-height: 140px;
+    }
 
     /* Compact mileage field */
     #miles { width: 10ch; }
@@ -262,7 +269,7 @@
     </div>
   </div>
 
-  <!-- (Removed the “Wearable Items Check” title and bordered card) -->
+  <!-- (No “Wearable Items Check” title/card) -->
 
   <div class="cta">
     <button id="next" class="btn">Ownership options →</button>
