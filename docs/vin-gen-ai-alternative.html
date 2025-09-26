@@ -45,10 +45,20 @@
 
     <!-- >>>>>> Agent Playground <<<<<< -->
     <section id="playground" class="section">
-      <div class="pillbar" aria-hidden="true">
-        <span class="pill">Agent Playground</span>
-        <span class="pill sub">Draft → Approve → Send</span>
+      <!-- pillbar row with the new right-aligned button -->
+      <div class="pillbar" aria-hidden="true"
+           style="display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;">
+        <div>
+          <span class="pill">Agent Playground</span>
+          <span class="pill sub">Draft → Approve → Send</span>
+        </div>
+        <a href="https://github.com/mpalmer79/quirk-ai-sidecar"
+           target="_blank" rel="noopener"
+           style="background:#000;color:#fff;text-decoration:none;padding:10px 14px;border-radius:9999px;font-weight:700;display:inline-block;">
+          View GitHub Demo of Chrome extension
+        </a>
       </div>
+
       <h2 class="sr-only">Agent Playground (Draft → Approve → Send)</h2>
       <p class="muted">Paste a lead, pick a model/trim, and generate a ready-to-send draft that always drives to two appointment options.</p>
 
