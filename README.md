@@ -146,5 +146,6 @@ CSV normalization
 
 ## 🏗️ Architecture
 
-![Quirk AI Architecture](quirk_ai_architecture.png)
+assets/quirk_ai_architecture.png
+
 
