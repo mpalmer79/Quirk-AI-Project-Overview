@@ -1,362 +1,175 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Smart Workplace Verification — Quirk AI</title>
-  <meta name="description" content="Quirk AI Smart Workplace Verification: camera coverage + biometric time-clock sync with compliance-first operations for dealerships." />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Smart Workplace Verification — Quirk AI</title>
+<meta name="description" content="Quirk AI Smart Workplace Verification: camera coverage + biometric time-clock sync with compliance-first operations for dealerships."/>
+<base href="/Quirk-AI-Project-Overview/"/>
+<link rel="stylesheet" href="assets/style.css"/>
 
-  <!-- Keep URLs resolving under the project site -->
-  <base href="/Quirk-AI-Project-Overview/">
-
-  <!-- Force LIGHT theme + sitewide styles (includes watermark logo behind content) -->
-  <meta name="color-scheme" content="light" />
-  <link rel="stylesheet" href="assets/style.css" />
-
-  <style>
-    /* ===== Page-scoped polish ===== */
-    .page-wrap   { max-width: 1100px; margin: 0 auto; padding: 24px 16px 56px; }
-    .lead        { margin: 18px 0 6px; color:#475569; font-size:1.05rem; }
-    .section     { margin: 18px 0 20px; }
-    .section-title { font-size: 1.35rem; font-weight: 800; color:#0f172a; margin: 0 0 8px; border-bottom: 3px solid #0b6e37; padding-bottom: 6px; }
-    .section-title.center { text-align: center; }
-
-    /* Pills row (match hero buttons on index) — CENTERED */
-    .pill-row {
-      margin-top: 12px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-    }
-    .btn {
-      display:inline-block;
-      padding:10px 14px;
-      border-radius:999px;
-      border:1px solid rgba(11,110,55,.22);
-      color:#0b6e37;
-      text-decoration:none;
-      font-weight:700;
-      background:#fff;
-      line-height:1;
-    }
-    .btn:hover{ text-decoration:none; transform:translateY(-1px); }
-    .btn.primary{ background:#0b6e37; color:#fff; border-color:#0b6e37; }
-
-    /* Cards + grid */
-    .grid { display:grid; gap:14px; grid-template-columns: repeat(12,1fr); }
-    .card { background:#fff; border:1px solid #e5e7eb; border-radius:14px; padding:14px; box-shadow:0 6px 16px rgba(2,6,23,.06); }
-    .col-12{ grid-column: span 12; }
-    .col-6 { grid-column: span 6; }
-    .col-4 { grid-column: span 4; }
-    .col-3 { grid-column: span 3; }
-    @media (max-width: 900px){ .col-6,.col-4,.col-3 { grid-column: span 12; } }
-
-    .card h3 { margin:0 0 6px; font-size:1.02rem; color:#0b6e37; font-weight:800; }
-    .muted { color:#475569; }
-
-    /* Center the green captions (h3) inside System Overview cards */
-    .grid .card h3 { text-align: center; }
-
-    /* Center text INSIDE the Intelligent Alert System cards only */
-    .alerts .card,
-    .alerts .card h3,
-    .alerts .card p { text-align: center; }
-
-    /* Center the single After-Hours card on desktop */
-    .alerts .after-hours {
-      grid-column: 4 / span 6;   /* centers across 6 of 12 columns */
-      justify-self: center;
-    }
-    @media (max-width: 900px){
-      .alerts .after-hours { grid-column: span 12; }
-    }
-
-    /* Spec table */
-    .table-wrap { overflow-x:auto; }
-    table { width:100%; border-collapse: collapse; background:#fff; border:1px solid #e5e7eb; border-radius:12px; }
-    th, td { padding:12px; border-bottom:1px solid #e5e7eb; text-align:left; }
-    th { width:240px; color:#0f172a; background:#f9fafb; }
-
-    /* Stat pills */
-    .stats { display:grid; grid-template-columns: repeat(12,1fr); gap:14px; }
-    .stat  { grid-column: span 3; background:#fff; border:1px solid #e5e7eb; border-radius:14px; padding:18px; text-align:center; box-shadow:0 6px 16px rgba(2,6,23,.06); }
-    .stat .num { font-size:1.6rem; font-weight:800; color:#0b6e37; }
-    .stat .label { margin-top:6px; color:#475569; font-size:.95rem; }
-    @media (max-width: 900px){ .stat{ grid-column: span 12; } }
-
-    /* CTA panel */
-    .cta { background: linear-gradient(0deg, rgba(11,110,55,.06), rgba(11,110,55,.06)), #fff;
-           border:1px solid #e5e7eb; border-radius:16px; padding:22px; text-align:left; }
-
-    /* ===== DOCX-like typography for the “Is it possible?” section ===== */
-    .docx-block { max-width: 820px; margin: 0 auto; }
-    .docx-title {
-      font-size: clamp(20px, 4.5vw, 24px);
-      font-weight: 800;
-      text-align: center;
-      color: #0f172a;
-      margin: 0 0 12px;
-    }
-    .docx-paragraph { color:#334155; line-height:1.65; margin: 0 0 12px; }
-    .docx-subhead   { font-weight: 800; color:#0f172a; margin: 14px 0 8px; }
-    .docx-list { margin: 0 0 12px 20px; color:#334155; }
-    .docx-questions { margin-top: 14px; border-top:1px dashed #e5e7eb; padding-top:12px; }
-    .small-note { font-size:.9rem; color:#475569; }
-    @media (max-width:640px){
-      .docx-block { padding: 0 2px; }
-    }
-
-    /* Make right "Project Library" match center title size (like Quirk Trade Tool) */
-    .topbar-menu { font-size: clamp(16px, 1.8vw, 20px); }
-    .topbar-title-link { color:#fff; text-decoration:none; font-weight:600; font-size:inherit; line-height:1; }
-    .topbar-title-link:hover{ text-decoration:underline; }
-  </style>
+<!-- Page-scoped, kept tiny -->
+<style>
+  .lead{margin:18px 0 6px;color:#475569;font-size:1.05rem}
+  .pill-row{margin:12px 0 0;display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+  .center-cards .card h3{text-align:center}
+  .alerts{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+  .alerts .after-hours{grid-column:1/-1;max-width:560px;justify-self:center}
+  .table-wrap{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;background:#fff;border:1px solid #e5e7eb;border-radius:12px}
+  th,td{padding:12px;border-bottom:1px solid #e5e7eb;text-align:left}
+  th{width:240px;color:#0f172a;background:#f9fafb}
+</style>
 </head>
 <body>
-  <div class="home-wrap">
-  <a class="home-btn" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
-</div>
 
-<style>
-  /* You can move this to assets/style.css if you prefer */
-  .home-header{
-    display:flex;
-    justify-content:center;   /* centers on all viewports, incl. mobile */
-    align-items:center;
-    padding:12px 0;
-  }
-  .home-btn{
-    display:inline-block;
-    background:#000;          /* black rectangle */
-    color:#fff;               /* white text */
-    text-decoration:none;
-    font-weight:700;
-    letter-spacing:.3px;
-    padding:10px 18px;
-    border-radius:8px;        /* remove if you want sharp corners */
-    line-height:1;
-  }
-  .home-btn:focus-visible{
-    outline:2px solid #fff;
-    outline-offset:2px;
-  }
-</style>
+<!-- Global HOME pill (uses styles from assets/style.css) -->
+<div class="home-wrap"><a class="home-btn" href="./">HOME</a></div>
 
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="home-link" href="./">HOME</a>
+    <div class="topbar-title">Smart Workplace Verification</div>
+    <nav class="topbar-menu" aria-label="Secondary Navigation">
+      <a href="project-library.html">Project Library</a>
+    </nav>
+  </div>
+</header>
 
-  <!-- ======= Top Navigation Bar (matches quirk-trade-tool.html) ======= -->
-  <header class="topbar">
-    <div class="topbar-inner">
-      <a class="home-link" href="./">HOME</a>
-      <div class="topbar-title">Smart Workplace Verification</div>
-      <nav class="topbar-menu" aria-label="Secondary Navigation">
-        <a class="topbar-title-link" href="./project-library.html">Project Library</a>
-      </nav>
+<main class="container" style="padding-top:16px;padding-bottom:56px">
+  <!-- Intro -->
+  <section class="section">
+    <p class="lead">
+      The Quirk AI Workplace Verification system integrates facial recognition with your biometric time clock to ensure
+      employees are present in appropriate areas during work hours. Built for dealership operations with a compliance-first architecture.
+      Camera feeds identify individuals against an employee photo database to verify presence, correlate with timecards, and monitor
+      movements by area and workstation.
+    </p>
+    <div class="pill-row" role="group" aria-label="Quick actions">
+      <a class="btn" href="smart-workplace-verification-demo.html">Click for demo</a>
+      <a class="btn" href="https://claude.ai/public/artifacts/8fa578b8-25ab-4f25-ad26-672a55774384" target="_blank" rel="noopener">See the code</a>
+      <a class="btn" href="#install">How to Install</a>
     </div>
-  </header>
+  </section>
 
-  <!-- ======= Page content ======= -->
-  <main class="page-wrap">
+  <!-- System Overview -->
+  <section class="section">
+    <h2 class="section-title" style="text-align:center">System Overview</h2>
+    <div class="feature-grid center-cards" aria-label="System overview highlights">
+      <a class="library-card" href="#">
+        <span class="title">100+ IP Cameras Network Capable</span>
+        <span class="meta">Coverage across entrances, sales areas, service, and showroom with area-based monitoring.</span>
+      </a>
+      <a class="library-card" href="#">
+        <span class="title">Biometric Integration</span>
+        <span class="meta">Sync with fingerprint time clocks to cross-reference attendance data.</span>
+      </a>
+      <a class="library-card" href="#">
+        <span class="title">Department-Based Access</span>
+        <span class="meta">Role-specific area permissions for Sales, Service, Management.</span>
+      </a>
+      <a class="library-card" href="#">
+        <span class="title">Automotive Compliance</span>
+        <span class="meta">30-day retention, admin audit trails, and industry-grade security.</span>
+      </a>
+    </div>
+  </section>
 
-    <section class="section">
-      <p class="lead">
-        The Quirk AI Workplace Verification system integrates facial recognition technology with your existing biometric
-        time clock to ensure employees are present in appropriate areas during work hours. It is designed specifically for
-        automotive dealership operations with a compliance-first architecture.
+  <!-- Technical Specifications -->
+  <section class="section">
+    <h2 class="section-title" style="text-align:center">Technical Specifications</h2>
+    <div class="table-wrap" role="region" aria-label="Specifications table">
+      <table>
+        <tbody>
+          <tr><th>Camera Coverage</th><td>100 IP cameras across dealership areas</td></tr>
+          <tr><th>Employee Capacity</th><td>150+ employees supported</td></tr>
+          <tr><th>Operating Hours</th><td>Mon–Thu 7AM–8PM, Fri–Sat 7AM–6PM, Sun 10AM–5PM (Sales)</td></tr>
+          <tr><th>Data Retention</th><td>30 days automatic cleanup</td></tr>
+          <tr><th>Platform</th><td>Windows-compatible with SQLite database</td></tr>
+          <tr><th>Integration</th><td>Biometric time clock sync capability</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
 
-        The camera network is connected to a central software platform that uses artificial intelligence to identify 
-        individuals in the video feed by comparing their facial features to a database of employee photos. Beyond simply 
-        verifying identities at a time clock, these systems can enable continuous tracking of employee movements within a 
-        building, monitor which areas employees enter, and record time spent at specific workstations or common areas.
-      </p>
-
-      <!-- Pills row (centered) -->
-      <div class="pill-row" role="group" aria-label="Quick actions">
-        <a class="btn" href="smart-workplace-verification-demo.html">Click for demo</a>
-        <a class="btn" href="https://claude.ai/public/artifacts/8fa578b8-25ab-4f25-ad26-672a55774384" target="_blank" rel="noopener">See the code</a>
-        <a class="btn" href="#install">How to Install</a>
+  <!-- Monitored Areas -->
+  <section class="section">
+    <h2 class="section-title" style="text-align:center">Monitored Areas</h2>
+    <div class="compliance-grid" aria-label="Monitored area counts">
+      <div class="compliance-item">
+        <p class="compliance-number">28</p><p class="compliance-label">Entrance Cameras</p>
       </div>
-    </section>
-
-    <!-- ===================== System Overview ===================== -->
-    <section class="section">
-      <h2 class="section-title center">System Overview</h2>
-
-      <div class="grid" aria-label="System overview highlights">
-        <div class="card col-4">
-          <h3>100+ IP Cameras Network Capable</h3>
-          <p class="muted">Comprehensive coverage across entrances, sales areas, service departments, and showroom with intelligent area-based monitoring.</p>
-        </div>
-
-        <div class="card col-4">
-          <h3>Biometric Integration</h3>
-          <p class="muted">Seamless sync with your existing fingerprint time-clock system to cross-reference attendance data.</p>
-        </div>
-
-        <div class="card col-4">
-          <h3>Department-Based Access</h3>
-          <p class="muted">Role-specific area permissions ensure Sales, Service, and Management staff are monitored appropriately.</p>
-        </div>
-
-        <div class="card col-6">
-          <h3>Automotive Compliance</h3>
-          <p class="muted">30-day data retention, admin audit trails, and industry-specific security protocols built-in.</p>
-        </div>
+      <div class="compliance-item">
+        <p class="compliance-number">4</p><p class="compliance-label">Sales Desk</p>
       </div>
-    </section>
-
-    <!-- ===================== Technical Specifications ===================== -->
-    <section class="section">
-      <h2 class="section-title center">Technical Specifications</h2>
-
-      <div class="table-wrap" role="region" aria-label="Specifications table">
-        <table>
-          <tbody>
-            <tr>
-              <th>Camera Coverage</th>
-              <td>100 IP cameras across dealership areas</td>
-            </tr>
-            <tr>
-              <th>Employee Capacity</th>
-              <td>150+ employees supported</td>
-            </tr>
-            <tr>
-              <th>Operating Hours</th>
-              <td>Mon-Thu: 7AM–8PM, Fri-Sat: 7AM–6PM, Sun: 10AM–5PM (Sales)</td>
-            </tr>
-            <tr>
-              <th>Data Retention</th>
-              <td>30 days automatic cleanup</td>
-            </tr>
-            <tr>
-              <th>Platform</th>
-              <td>Windows-compatible with SQLite database</td>
-            </tr>
-            <tr>
-              <th>Integration</th>
-              <td>Biometric time clock sync capability</td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="compliance-item">
+        <p class="compliance-number">8</p><p class="compliance-label">Showroom Areas</p>
       </div>
-    </section>
-
-    <!-- ===================== Monitored Areas ===================== -->
-    <section class="section">
-      <h2 class="section-title center">Monitored Areas</h2>
-
-      <div class="stats" aria-label="Monitored area counts">
-        <div class="stat">
-          <div class="num">28</div>
-          <div class="label">Entrance Cameras</div>
-        </div>
-        <div class="stat">
-          <div class="num">4</div>
-          <div class="label">Sales Desk</div>
-        </div>
-        <div class="stat">
-          <div class="num">8</div>
-          <div class="label">Showroom Areas</div>
-        </div>
-        <div class="stat">
-          <div class="num">4</div>
-          <div class="label">Service Departments</div>
-        </div>
+      <div class="compliance-item">
+        <p class="compliance-number">4</p><p class="compliance-label">Service Departments</p>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- ===================== Intelligent Alert System ===================== -->
-    <section class="section">
-      <h2 class="section-title center">Intelligent Alert System</h2>
-      <p class="muted" style="text-align:center;">Our if/then logic engine provides contextual alerts based on employee status, location, and time:</p>
+  <!-- Intelligent Alert System -->
+  <section class="section">
+    <h2 class="section-title" style="text-align:center">Intelligent Alert System</h2>
+    <p class="muted" style="text-align:center">If/then logic provides contextual alerts based on employee status, location, and time.</p>
+    <div class="alerts" aria-label="Alert types">
+      <div class="library-card"><span class="title">Verified Presence</span><span class="meta">Clocked in + detected in appropriate area → verification logged.</span></div>
+      <div class="library-card"><span class="title">Unauthorized Area</span><span class="meta">Department mismatch (e.g., Sales in Service) triggers alert.</span></div>
+      <div class="library-card"><span class="title">Time Clock Discrepancy</span><span class="meta">Present but not clocked in → potential time-theft alert.</span></div>
+      <div class="library-card after-hours"><span class="title">After-Hours Detection</span><span class="meta">Security alerts for unauthorized presence outside business hours.</span></div>
+    </div>
+  </section>
 
-      <div class="grid alerts" aria-label="Alert types">
-        <div class="card col-4">
-          <h3>Verified Presence</h3>
-          <p class="muted">Employee clocked in + detected in appropriate area = normal verification logged.</p>
-        </div>
-        <div class="card col-4">
-          <h3>Unauthorized Area</h3>
-          <p class="muted">Department mismatch alerts (e.g., Sales staff in Service area).</p>
-        </div>
-        <div class="card col-4">
-          <h3>Time Clock Discrepancy</h3>
-          <p class="muted">Employee present but not clocked in = potential time-theft alert.</p>
-        </div>
+  <!-- “Is it possible?” (DOCX-style block) -->
+  <section class="section" id="install" aria-labelledby="possible-title">
+    <div class="cta">
+      <div class="docx-block">
+        <h3 id="possible-title" class="docx-title">Is it possible?</h3>
 
-        <!-- Centered single card -->
-        <div class="card after-hours">
-          <h3>After-Hours Detection</h3>
-          <p class="muted">Security alerts for unauthorized after-hours presence.</p>
+        <p class="docx-paragraph"><strong>Facial recognition software that integrates with Paycom.</strong> Check employee activity while on-premises against their timecard. Are they still on site while clocked in? Let’s design an AI-powered approach.</p>
+
+        <p class="docx-paragraph">No current off-the-shelf product continuously checks activity vs. timecards in Paycom using facial recognition, but it’s technically feasible: vendors offer AI-powered time clocks and camera analytics that can integrate with HR platforms.</p>
+
+        <h4 class="docx-subhead">How a continuous monitoring system could work</h4>
+        <p class="docx-paragraph small-note">This is more invasive than a standard time clock and must be privacy- and law-first.</p>
+        <ul class="docx-list">
+          <li><strong>Surveillance hardware:</strong> AI cameras beyond entrances, covering key zones.</li>
+          <li><strong>Facial tracking:</strong> Match faces to a registered employee gallery in near-real time.</li>
+          <li><strong>Premise verification:</strong> Confirm on-site presence while clocked in; alert if absent or out-of-bounds.</li>
+          <li><strong>Activity cross-reference:</strong> Compare camera events with Paycom timecards (API) to flag discrepancies.</li>
+        </ul>
+
+        <h4 class="docx-subhead">Legal and ethical concerns</h4>
+        <p class="docx-paragraph">Continuous tracking heightens legal, ethical, and cultural risks.</p>
+        <ul class="docx-list">
+          <li><strong>Consent & notice:</strong> States like IL/TX/WA regulate biometrics (e.g., BIPA) → written notice & consent.</li>
+          <li><strong>Litigation risk:</strong> Class-action exposure over biometric privacy violations.</li>
+          <li><strong>Privacy & morale:</strong> Persistent monitoring can erode trust and chill the workplace.</li>
+          <li><strong>Bias:</strong> FR systems can misidentify women/people of color → discriminatory outcomes.</li>
+          <li><strong>Mission creep:</strong> Drift into productivity scoring without renewed consent.</li>
+        </ul>
+
+        <h4 class="docx-subhead">Paycom-friendly, lower-risk options</h4>
+        <p class="docx-paragraph">Alternatives that discourage time theft without constant facial tracking:</p>
+        <ul class="docx-list">
+          <li><strong>Microfence:</strong> Bluetooth beacons; app clock-ins only within zone.</li>
+          <li><strong>Geofencing:</strong> GPS boundary for clock-in/out via the app.</li>
+          <li><strong>App biometrics:</strong> Face/Touch ID to unlock the app (distinct from live surveillance).</li>
+        </ul>
+
+        <div class="docx-questions">
+          <p class="docx-paragraph"><strong>What other Paycom tools prevent time theft?</strong></p>
+          <p class="docx-paragraph"><strong>How does Microfence verify location while preserving privacy?</strong></p>
+          <p class="docx-paragraph"><strong>What non-FR options balance accountability and trust?</strong></p>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
+</main>
 
-    <!-- ===================== “Is it possible?” (DOCX-formatted panel) ===================== -->
-    <section class="section" id="install" aria-labelledby="possible-title">
-      <div class="cta">
-        <div class="docx-block">
-          <h3 id="possible-title" class="docx-title">Is it possible?</h3>
-
-          <p class="docx-paragraph">
-            <strong>Facial recognition software that integrates with Paycom.</strong> Check employee activity while they are
-            in the workplace against their timecard. Are they still on the premises while clocked in? Let’s create an AI-powered
-            solution for this.
-          </p>
-
-          <p class="docx-paragraph">
-            While no current software automatically and continuously checks employee activity against time cards using facial
-            recognition with Paycom, it is technologically possible to build such a system. There are third-party vendors that
-            offer AI-powered facial recognition time clocks and monitoring, and these can be integrated with HR platforms like
-            Paycom.
-          </p>
-
-          <h4 class="docx-subhead">How an AI-powered system for continuous monitoring would work</h4>
-          <p class="docx-paragraph small-note">A theoretical system with these capabilities would be more invasive than a simple
-            biometric time clock and would need to be built with special consideration for privacy and legality.</p>
-          <ul class="docx-list">
-            <li><strong>Surveillance hardware:</strong> Install AI-powered camera systems not just at entrances and exits, but throughout the workplace floor.</li>
-            <li><strong>Facial tracking:</strong> Continuously match faces with a database of pre-registered templates to track movements in real time.</li>
-            <li><strong>Premise verification:</strong> Confirm an employee is still on the premises while clocked in; trigger an alert if they leave a designated area or are lost by the system.</li>
-            <li><strong>Activity cross-reference:</strong> Compare AI tracking data with timecard information in Paycom (likely via API) to flag discrepancies such as off-premises while clocked in.</li>
-          </ul>
-
-          <h4 class="docx-subhead">Legal and ethical concerns</h4>
-          <p class="docx-paragraph">Building a system for continuous tracking raises far greater legal and ethical issues than a time clock.</p>
-          <ul class="docx-list">
-            <li><strong>Consent and notice:</strong> Several states (e.g., Illinois, Texas, Washington) regulate the collection of biometric information; Illinois’s BIPA is especially strict and requires prior written notice and consent.</li>
-            <li><strong>Increased litigation risk:</strong> Potential for large class-action lawsuits over biometric privacy violations, particularly in jurisdictions like Illinois.</li>
-            <li><strong>Privacy invasion and morale:</strong> Continuous facial recognition monitoring may erode trust and harm morale; it can have a chilling effect on the workforce.</li>
-            <li><strong>Bias and discrimination:</strong> Facial recognition algorithms can exhibit significant biases against people of color and women, leading to discriminatory outcomes and legal exposure.</li>
-            <li><strong>Mission creep:</strong> Technology might be expanded to track other metrics (e.g., engagement, time on task) without additional consent.</li>
-          </ul>
-
-          <h4 class="docx-subhead">Existing Paycom alternatives</h4>
-          <p class="docx-paragraph">Less intrusive, still robust time-tracking options that don’t rely on continuous facial recognition monitoring:</p>
-          <ul class="docx-list">
-            <li><strong>Microfence:</strong> Bluetooth beacons in workplace zones; employees can clock in/out in the Paycom app only within range, confirming on-site presence.</li>
-            <li><strong>Geofencing:</strong> GPS-based virtual boundary limits clock in/out to a designated area via the Paycom mobile app.</li>
-            <li><strong>App-based biometrics:</strong> Fingerprint or Face ID secures the app itself (separate from workplace monitoring).</li>
-          </ul>
-
-          <p class="docx-paragraph small-note"></p>
-
-          <div class="docx-questions">
-            <p class="docx-paragraph"><strong>What other Paycom time-tracking tools help prevent time theft?</strong></p>
-            <p class="docx-paragraph"><strong>How does Microfence ensure employee privacy while verifying location?</strong></p>
-            <p class="docx-paragraph"><strong>What are some less privacy-invasive alternatives to facial recognition for workforce management?</strong></p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- Footer -->
-  <footer class="container footer">
-    <p>&copy; 2025 Quirk AI — Smart Workplace Verification</p>
-  </footer>
+<footer class="footer"><small>© 2025 Quirk AI — Smart Workplace Verification</small></footer>
 </body>
 </html>
