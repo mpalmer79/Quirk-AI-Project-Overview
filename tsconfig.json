@@ -1,1 +1,33 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["DOM", "DOM.Iterable", "ES2021"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+
+    // 👇 THIS fixes the “Cannot use JSX unless the '--jsx' flag is provided.”
+    "jsx": "preserve",
+
+    // Path aliases used in your imports like @app/lib/..., @data/..., etc.
+    "baseUrl": ".",
+    "paths": {
+      "@app/*": ["app/*"],
+      "@components/*": ["app/components/*"],
+      "@data/*": ["data/*"]
+    },
+
+    // Helpful for editor & CI perf
+    "forceConsistentCasingInFileNames": true,
+    "incremental": true
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
+}
 
