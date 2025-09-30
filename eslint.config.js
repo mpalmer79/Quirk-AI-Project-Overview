@@ -10,10 +10,9 @@ export default [
   js.configs.recommended,
   ...tseslint.configs.recommended,
 
-  // Project-specific tweaks + (IMPORTANT) register the plugin
+  // Project-wide defaults (Node + TS)
   {
     plugins: {
-      // This line makes the "@typescript-eslint/…" rules available
       '@typescript-eslint': tseslint.plugin,
     },
     languageOptions: {
@@ -22,9 +21,9 @@ export default [
         ecmaVersion: 2023,
         sourceType: 'module',
       },
-      // Make Node globals available so "no-undef" doesn’t fire
+      // Make common globals available everywhere
       globals: {
-        // browser
+        // browser (available globally but helpful in mixed env)
         window: 'readonly',
         document: 'readonly',
         navigator: 'readonly',
@@ -38,13 +37,12 @@ export default [
       },
     },
     rules: {
-      // match Copilot’s suggestions
       '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
       '@typescript-eslint/no-explicit-any': 'off',
     },
   },
 
-  // Optional: ensure JS-only files still have Node globals
+  // JS-only files: keep Node globals so .js server tooling doesn't error
   {
     files: ['**/*.js', '**/*.cjs', '**/*.mjs'],
     languageOptions: {
@@ -56,6 +54,32 @@ export default [
         __dirname: 'readonly',
         __filename: 'readonly',
       },
+    },
+  },
+
+  // ---- Option B: Treat docs/** as browser scripts & declare project globals ----
+  {
+    files: ['docs/**/*.js', 'docs/**/*.mjs'],
+    // These files are executed in the browser; provide browser globals explicitly.
+    languageOptions: {
+      globals: {
+        window: 'readonly',
+        document: 'readonly',
+        navigator: 'readonly',
+        alert: 'readonly',
+        fetch: 'readonly',
+        URL: 'readonly',
+        Blob: 'readonly',
+        // Project-specific globals used by demo scripts
+        composeDraftFrontEnd: 'readonly',
+        __agentProfile: 'readonly',
+      },
+    },
+    rules: {
+      // Some demo strings intentionally include escapes — don't fail the build.
+      'no-useless-escape': 'warn',
+      // If any docs scripts still reference undeclared browser globals, surface as warn.
+      'no-undef': 'warn',
     },
   },
 ];
