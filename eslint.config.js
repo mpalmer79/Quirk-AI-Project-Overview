@@ -1,52 +1,59 @@
 // eslint.config.js (flat config)
+import js from "@eslint/js";
 import tseslint from "typescript-eslint";
 import globals from "globals";
 
-/**
- * CI-safe ESLint:
- * - Browser globals for app/ pages
- * - Node globals for server & config files (kiosk-api, orchestrator, *.config.*)
- * - Keep type-aware TS rules; make unused-vars a warning so CI doesn't fail on it
- */
 export default [
-  // Ignore build output and deps
-  { ignores: ["**/.next/**", "dist/**", "node_modules/**"] },
-
-  // Base TS rules
-  ...tseslint.configs.recommended,
-
-  // App/client code -> browser globals
+  // 1) Ignore everything we don't want to lint in CI
   {
-    files: ["**/*.{ts,tsx,js}"],
-    languageOptions: {
-      parserOptions: { project: "./tsconfig.json" },
-      globals: { ...globals.browser, ...globals.es2021 },
-    },
-    rules: {
-      // Don’t fail CI on harmless leftovers while you iterate
-      "@typescript-eslint/no-unused-vars": ["warn", { args: "after-used", ignoreRestSiblings: true }],
-    },
-  },
-
-  // Server & config code -> node globals
-  {
-    files: [
-      "kiosk-api/**/*.{js,ts}",
-      "orchestrator/**/*.{js,ts}",
-      "scripts/**/*.{js,ts}",
-      "**/*.config.{js,ts}",
+    ignores: [
+      "**/node_modules/**",
+      "**/.next/**",
+      "**/out/**",
+      "public/**",
+      "docs/**",
+      "kiosk-api/**",
+      "orchestrator/**",
+      "sandbox/**",
+      // build & config files we don't want to lint in this project
       "postcss.config.js",
-      "tailwind.config.{js,ts}",
-      "next.config.{js,ts,mjs,cjs}",
+      "tailwind.config.*",
+      "eslint.config.js",
     ],
+  },
+
+  // 2) Base JS rules (not really used because we ignore most JS, but harmless)
+  {
+    ...js.configs.recommended,
+    files: ["**/*.js"],
     languageOptions: {
-      globals: { ...globals.node, ...globals.es2021 },
-    },
-    rules: {
-      // In Node these are real globals; silence no-undef on them
-      "no-undef": "off",
-      // Let console logging through for servers/scripts
-      "no-console": "off",
+      globals: globals.node, // makes console, process, Buffer, module defined
     },
   },
+
+  // 3) TypeScript across your Next app only
+  ...tseslint.config(
+    {
+      files: ["app/**/*.{ts,tsx}", "types/**/*.d.ts"],
+      languageOptions: {
+        // IMPORTANT: no "project"; use the Project Service to avoid parser spam
+        parserOptions: {
+          projectService: true,
+          tsconfigRootDir: import.meta.dirname,
+        },
+      },
+      rules: {
+        // keep defaults; tweak only what is noisy for your codebase
+        "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }],
+      },
+    },
+
+    // 4) In declaration files, allow 'any' (or keep if you switch to unknown)
+    {
+      files: ["**/*.d.ts"],
+      rules: {
+        "@typescript-eslint/no-explicit-any": "off",
+      },
+    }
+  ),
 ];
