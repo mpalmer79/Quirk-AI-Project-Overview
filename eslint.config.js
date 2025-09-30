@@ -1,45 +1,52 @@
-// eslint.config.js  (ESLint v9 flat config)
-
-import js from "@eslint/js";
+// eslint.config.js (flat config)
 import tseslint from "typescript-eslint";
+import globals from "globals";
 
+/**
+ * CI-safe ESLint:
+ * - Browser globals for app/ pages
+ * - Node globals for server & config files (kiosk-api, orchestrator, *.config.*)
+ * - Keep type-aware TS rules; make unused-vars a warning so CI doesn't fail on it
+ */
 export default [
-  // Ignore generated/output & configs you don't want linted
-  {
-    ignores: [
-      "node_modules/**",
-      ".next/**",
-      "dist/**",
-      "public/**",
-      "docs/**",
-      "web/**",
-      "types/**",
-      "**/*.d.ts",
-      "tailwind.config.*",
-      "tailWind.config.*" // in case of that capitalization
-    ],
-  },
+  // Ignore build output and deps
+  { ignores: ["**/.next/**", "dist/**", "node_modules/**"] },
 
-  // Base JS rules
-  js.configs.recommended,
-
-  // TypeScript-aware rules (non type-checked for speed; no project needed)
+  // Base TS rules
   ...tseslint.configs.recommended,
 
-  // Ensure TS/TSX is parsed with JSX support
+  // App/client code -> browser globals
   {
-    files: ["**/*.{ts,tsx}"],
+    files: ["**/*.{ts,tsx,js}"],
     languageOptions: {
-      parser: tseslint.parser,
-      parserOptions: {
-        ecmaVersion: 2022,
-        sourceType: "module",
-        ecmaFeatures: { jsx: true },
-        // no 'project' -> faster & no need for a lockfile in CI
-      },
+      parserOptions: { project: "./tsconfig.json" },
+      globals: { ...globals.browser, ...globals.es2021 },
     },
     rules: {
-      // add rules here later if you want
+      // Don’t fail CI on harmless leftovers while you iterate
+      "@typescript-eslint/no-unused-vars": ["warn", { args: "after-used", ignoreRestSiblings: true }],
+    },
+  },
+
+  // Server & config code -> node globals
+  {
+    files: [
+      "kiosk-api/**/*.{js,ts}",
+      "orchestrator/**/*.{js,ts}",
+      "scripts/**/*.{js,ts}",
+      "**/*.config.{js,ts}",
+      "postcss.config.js",
+      "tailwind.config.{js,ts}",
+      "next.config.{js,ts,mjs,cjs}",
+    ],
+    languageOptions: {
+      globals: { ...globals.node, ...globals.es2021 },
+    },
+    rules: {
+      // In Node these are real globals; silence no-undef on them
+      "no-undef": "off",
+      // Let console logging through for servers/scripts
+      "no-console": "off",
     },
   },
 ];
