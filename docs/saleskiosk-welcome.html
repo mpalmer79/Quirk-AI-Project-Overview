@@ -286,6 +286,21 @@ function calcPayment(amount, aprPct, termMonths) {
 /* *** SWAPPED ORDER HERE: Trade-In before Payments *** */
 const STEPS = ['Welcome','Discovery','Vehicle Match','Trade-In','Payments','Credit Start','F&I Options','Review & Handoff'];
 
+/* ===================== PHONE HELPERS (added) ===================== */
+function phoneOnlyDigits(value) {
+  return (value || "").replace(/\D+/g, "");
+}
+function phoneFormatUS(digits) {
+  const d = digits.slice(0, 10); // cap at 10
+  if (d.length === 0) return "";
+  if (d.length < 4)  return `(${d}`;
+  if (d.length < 7)  return `(${d.slice(0,3)}) ${d.slice(3)}`;
+  return `(${d.slice(0,3)}) ${d.slice(3,6)}-${d.slice(6)}`;
+}
+function normalizeAndFormatPhone(value) {
+  return phoneFormatUS(phoneOnlyDigits(value));
+}
+
 /* ==================================== APP ==================================== */
 function App() {
   /* fresh start only on first tab/window open; refresh won't wipe */
@@ -538,22 +553,30 @@ function Welcome({ consent, setConsent, profile, setProfile, onValidatedNext, on
   const totalPages = Math.max(1, Math.ceil(results.length / perPage));
   const pageItems  = results.slice((page-1)*perPage, page*perPage);
 
-  /* --------- validation helpers --------- */
+  /* --------- validation (phone-only) --------- */
   const [errors, setErrors] = useState({ name:'', contact:'' });
-  const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const phoneDigits = s => (s||'').replace(/\D/g,'');
   function validate() {
     const newErr = { name:'', contact:'' };
     if (!profile.name.trim()) newErr.name = 'Please enter your name or company.';
-    const c = profile.contact.trim();
-    const ok = emailRe.test(c) || phoneDigits(c).length === 10;
-    if (!ok) newErr.contact = 'Enter a valid email or 10-digit phone.';
+    const digits = phoneOnlyDigits(profile.contact);
+    if (digits.length !== 10) newErr.contact = 'Enter a valid 10-digit mobile number.';
     setErrors(newErr);
     return !newErr.name && !newErr.contact;
   }
   function handleNext() {
     if (validate()) onValidatedNext();
   }
+
+  // Ensure any saved contact is formatted nicely on first mount
+  React.useEffect(() => {
+    if (profile?.contact) {
+      const formatted = normalizeAndFormatPhone(profile.contact);
+      if (formatted !== profile.contact) {
+        setProfile({ ...profile, contact: formatted });
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const guidedHref = "https://mpalmer79.github.io/Quirk-AI-Project-Overview/saleskiosk-guidedflow.html?utm_source=kiosk&utm_medium=welcome_banner&utm_campaign=guided_flow";
 
@@ -587,13 +610,31 @@ function Welcome({ consent, setConsent, profile, setProfile, onValidatedNext, on
 
         <div className="text-center">
           <label className="block mb-1">
-            <span className="block text-sm font-semibold text-slate-700 mb-1">Text or email to send your quote</span>
+            <span className="block text-sm font-semibold text-slate-700 mb-1">Text number to send your quote</span>
             <input
-              aria-label="Contact"
+              aria-label="Mobile number"
+              type="tel"
+              inputMode="numeric"
               className={`w-2/3 rounded-xl border p-3 focus:ring-2 ${errors.contact ? 'border-red-500 focus:ring-red-300' : 'focus:ring-emerald-300'}`}
-              placeholder="(555) 555-5555 or you@example.com"
+              placeholder="(555) 555-5555"
               value={profile.contact}
-              onChange={e=>setProfile({...profile, contact:e.target.value})}
+              onChange={(e) => {
+                const caretFromEnd = e.target.value.length - e.target.selectionStart;
+                const formatted = normalizeAndFormatPhone(e.target.value);
+                setProfile({ ...profile, contact: formatted });
+                requestAnimationFrame(() => {
+                  try {
+                    const el = e.target;
+                    const newPos = Math.max(0, formatted.length - caretFromEnd);
+                    el.setSelectionRange(newPos, newPos);
+                  } catch {}
+                });
+              }}
+              onPaste={(e) => {
+                e.preventDefault();
+                const text = (e.clipboardData || window.clipboardData).getData('text') || '';
+                setProfile({ ...profile, contact: normalizeAndFormatPhone(text) });
+              }}
               style={{backgroundColor:'#ecfdf5', color:'#0f172a'}}
             />
           </label>
