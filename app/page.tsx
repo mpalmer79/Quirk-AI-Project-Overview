@@ -1,6 +1,7 @@
-import LeadProcessor from './components/LeadQue'
-import InventoryPanel from './components/InventoryPanel'
-import ComposePanel from './components/ComposePanel'
+// app/page.tsx
+import LeadProcessor from './components/LeadQue';
+import InventoryPanel from './components/InventoryPanel';
+import ComposePanel from './components/ComposePanel';
 
 export default function HomePage() {
   return (
@@ -12,5 +13,5 @@ export default function HomePage() {
         <ComposePanel />
       </div>
     </div>
-  )
+  );
 }
