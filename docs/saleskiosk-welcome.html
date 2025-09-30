@@ -1,20 +1,20 @@
-<!doctype html> 
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Quirk AI Sales Kiosk</title>
 
-  <!-- Force light UI (Step 1) -->
-  <meta name="color-scheme" content="light" />
-  <meta name="theme-color" content="#ffffff" />
+  <!-- Force light UI -->
+  <meta name="color-scheme" content="light"/>
+  <meta name="theme-color" content="#ffffff"/>
 
-  <base href="/Quirk-AI-Project-Overview/">
+  <base href="/Quirk-AI-Project-Overview/"/>
 
-  <!-- Quirk global styles (for footer consistency across site) -->
-  <link rel="stylesheet" href="assets/style.css" />
+  <!-- Quirk global styles (footer, etc.) -->
+  <link rel="stylesheet" href="assets/style.css"/>
 
-  <!-- Tailwind (CDN) -->
+  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- React 18 + Babel (CDN) -->
   <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
@@ -23,63 +23,41 @@
 
   <style>
     :focus-visible { outline: 2px solid #34d399; outline-offset: 2px; }
-
-    /* --- Watermark background (showroom image) --- */
     body {
       background:
         linear-gradient(rgba(255,255,255,.58), rgba(255,255,255,.58)),
         url("assets/kiosk.png") center / cover fixed no-repeat !important;
       min-height: 100vh;
     }
-
-    /* --- Mobile/light-mode form control defaults --- */
-    input, select, textarea, button {
-      background: #ffffff !important;
-      color: #0f172a !important;
-      border-color: #e5e7eb !important;
-    }
-    select option { background:#ffffff; color:#0f172a; }
-    input::placeholder, textarea::placeholder { color: #94a3b8; }
-    /* iOS autofill */
-    input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill {
-      -webkit-text-fill-color: #0f172a !important;
-      transition: background-color 5000s ease-in-out 0s;
-    }
-    @supports (-webkit-touch-callout: none) {
-      :root { color-scheme: light; }
-      select, input, textarea { -webkit-appearance: none; }
-    }
+    input, select, textarea, button { background:#fff !important; color:#0f172a !important; border-color:#e5e7eb !important; }
+    select option { background:#fff; color:#0f172a; }
+    input::placeholder { color:#94a3b8; }
+    input:-webkit-autofill{ -webkit-text-fill-color:#0f172a !important; transition: background-color 5000s ease-in-out 0s; }
+    @supports (-webkit-touch-callout:none){ :root{ color-scheme:light; } select,input,textarea{ -webkit-appearance:none; } }
   </style>
 </head>
 
 <body class="bg-gradient-to-b from-emerald-50 to-slate-50 min-h-screen">
   <div id="root"></div>
 
-  <!-- Site-wide footer -->
-  <footer class="footer">
-    <small>© 2025 Quirk AI — Sales Kiosk</small>
-  </footer>
+  <footer class="footer"><small>© 2025 Quirk AI — Sales Kiosk</small></footer>
 
 <script type="text/babel">
 const { useMemo, useState, useEffect } = React;
 
-/* ========================= Analytics + Storage ========================= */
+/* ============== tiny analytics + storage helpers ============== */
 function track(event, data = {}) {
   try {
     const now = new Date().toISOString();
-    const row = { event, at: now, ...data };
-    const key = "analytics";
-    const arr = JSON.parse(localStorage.getItem(key) || "[]");
-    arr.push(row);
-    localStorage.setItem(key, JSON.stringify(arr));
+    const arr = JSON.parse(localStorage.getItem("analytics") || "[]");
+    arr.push({ event, at: now, ...data });
+    localStorage.setItem("analytics", JSON.stringify(arr));
   } catch {}
 }
 const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
 const load = (k, def) => { try { const v = JSON.parse(localStorage.getItem(k)); return (v ?? def); } catch { return def; } };
 
-/* ===============================
-   VEHICLE IMAGES
-=============================== */
+/* =============================== INVENTORY (demo) =============================== */
 const VEHICLE_IMAGES = {
   '2025_Chevrolet_Silverado 1500': 'assets/2025-silverado-1500.jpg',
   '2025_Chevrolet_Equinox':       'assets/2025-equinox.jpg',
@@ -89,113 +67,20 @@ const VEHICLE_IMAGES = {
   '2025_Chevrolet_Malibu':        'assets/2025-malibu.jpg',
   '2025_Chevrolet_Colorado':      'assets/2025-colorado.jpg',
   '2025_Chevrolet_Blazer':        'assets/2025-blazer.jpg',
-  '2025_Chevrolet_Tahoe':         'assets/2025-tahoe.jpg',
-  '2019_Toyota_Camry':            'assets/camry.jpg',
-  '2020_Honda_CR-V':               'assets/CRV.jpg',
-  '2021_Ford_F-150':               'assets/F150.webp',
-  '2022_Nissan_Altima':            'assets/altima.jpg',
+  '2025_Chevrolet_Tahoe':         'assets/2025-tahoe.jpg'
 };
 function getVehicleImage(year, make, model) {
   const key = `${year}_${make}_${model}`;
   return VEHICLE_IMAGES[key] || null;
 }
 
-/* =============================== PHOTOS =============================== */
-const PHOTO_ROOT = 'assets/kiosk-photos/';
-const MODEL_PHOTOS = {
-  Chevrolet: {
-    'Silverado 1500':'chevrolet-silverado-1500.jpg',
-    'Equinox':'chevrolet-equinox.jpg',
-    'Traverse':'chevrolet-traverse.jpg',
-    'Trax':'chevrolet-trax.jpg',
-    'Trailblazer':'chevrolet-trailblazer.jpg',
-    'Malibu':'chevrolet-malibu.jpg',
-    'Colorado':'chevrolet-colorado.jpg',
-    'Blazer':'chevrolet-blazer.jpg',
-    'Tahoe':'chevrolet-tahoe.jpg'
-  },
-  GMC: {
-    'Sierra 1500':'gmc-sierra-1500.jpg',
-    'Terrain':'gmc-terrain.jpg',
-    'Acadia':'gmc-acadia.jpg',
-    'Canyon':'gmc-canyon.jpg',
-    'Yukon':'gmc-yukon.jpg'
-  },
-  Buick: {
-    'Encore GX':'buick-encore-gx.jpg',
-    'Envision':'buick-envision.jpg',
-    'Envista':'buick-envista.jpg'
-  }
-};
-const MAKE_DEFAULT = { Chevrolet:'chevrolet-default.jpg', GMC:'gmc-default.jpg', Buick:'buick-default.jpg', Used:'used-default.jpg' };
-function photoFor(make, model) {
-  const file = (MODEL_PHOTOS[make] && MODEL_PHOTOS[make][model]) || MAKE_DEFAULT[make] || 'placeholder.jpg';
-  return `${PHOTO_ROOT}${file}`;
-}
-
-/* =========================== OBJECTION PLAYBOOK =========================== */
-const OBJECTION_LIB = {
-  price_high: {
-    triggers: ["price", "too high", "best price", "lower price"],
-    probe: "Totally fair. Are you aiming at a monthly target or out-the-door?",
-    evidence: "This {year} {make} {model} pencils at ${price} in today's market.",
-    resolve: "Two ways to hit your target: {term_alt} months gets ~${payment_alt}/mo, or {alt_vehicle} saves ~${price_save}.",
-  },
-  payment_high: {
-    triggers: ["payment", "$", "per month"],
-    probe: "What monthly target are you trying to hit?",
-    evidence: "At {term} months and {apr}% with ${down} down, it's ~${payment}/mo.",
-    resolve: "At {term_alt} months you're ~${payment_alt}/mo. Or add ${down_alt} down → ~${payment_with_down}/mo.",
-  },
-  trade_low: {
-    triggers: ["trade", "value", "lowball", "trade value"],
-    probe: "Can you share mileage and any packages/damage I should note?",
-    evidence: "Similar vehicles appraise between ${range_low} and ${range_high} before recon.",
-    resolve: "I can lock it with a quick photo set or a 10-minute drive-through appraisal.",
-  },
-};
-function renderPlay(obj, ctx) {
-  const fill = s => s?.replace(/\{(\w+)\}/g, (_, k) => (ctx[k] ?? ""));
-  return { probe: fill(obj.probe), evidence: fill(obj.evidence), resolve: fill(obj.resolve) };
-}
-function useObjection(triggerText, context) {
-  const [card, setCard] = React.useState(null);
-  React.useEffect(() => {
-    if (!triggerText) return;
-    const lower = triggerText.toLowerCase();
-    const key = Object.keys(OBJECTION_LIB).find(k =>
-      OBJECTION_LIB[k].triggers.some(t => lower.includes(t))
-    );
-    if (!key) return;
-    const msg = renderPlay(OBJECTION_LIB[key], context);
-    setCard({ key, ...msg });
-  }, [triggerText, context]);
-  return { card, dismiss: () => setCard(null) };
-}
-function ObjectionCard({ data, onClose, onProceed }) {
-  if (!data) return null;
-  return (
-    <div className="fixed bottom-4 right-4 z-50 max-w-md bg-white border border-slate-200 rounded-2xl shadow-xl p-4">
-      <div className="text-sm text-slate-700 space-y-2">
-        {data.probe && <p><strong>Quick question:</strong> {data.probe}</p>}
-        {data.evidence && <p>{data.evidence}</p>}
-        {data.resolve && <p><strong>Option:</strong> {data.resolve}</p>}
-        <div className="flex gap-2 pt-1">
-          <button className="px-3 py-2 rounded-xl border" onClick={onClose}>Dismiss</button>
-          {onProceed && <button className="px-3 py-2 rounded-xl bg-emerald-600 text-white" onClick={onProceed}>Proceed</button>}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* =========================== INVENTORY GENERATION =========================== */
 const MODEL_MAP = {
   Chevrolet:['Silverado 1500','Equinox','Traverse','Trax','Trailblazer','Malibu','Colorado','Blazer','Tahoe'],
   GMC:['Sierra 1500','Terrain','Acadia','Canyon','Yukon'],
   Buick:['Encore GX','Envision','Envista']
 };
 const COLORS = ['Black','White','Silver','Gray','Blue','Red','Green','Brown'];
+
 function basePrice(make, model) {
   const map = {
     Chevrolet: {
@@ -207,12 +92,7 @@ function basePrice(make, model) {
   };
   return (map[make] && map[make][model]) || 29990;
 }
-
-/* ***** FIXED: unique VIN generator ***** */
-function vinFor(prefix, idx) {
-  // Always produce a unique 17-char VIN: 3-char prefix + 14 zero-padded digits
-  return prefix + String(idx).padStart(14, '0');
-}
+function vinFor(prefix, idx) { return prefix + String(idx).padStart(14,'0'); }
 
 function generateNewVehicles() {
   const inv = [];
@@ -231,7 +111,6 @@ function generateNewVehicles() {
         price,
         miles: 12 + (i % 9),
         color,
-        photo: photoFor(make, model),
         features:['CarPlay/Android Auto','Backup Camera','Alloy Wheels','Keyless Entry']
       });
     }
@@ -239,44 +118,29 @@ function generateNewVehicles() {
   add('Chevrolet', 90, '1GC');
   add('GMC', 55, '1GT');
   add('Buick', 25, '1G4');
-  return inv; // 170
+  return inv;
 }
 function generateUsedVehicles(count=30){
-  const usedMakes = {
-    Toyota:['Camry','RAV4','Tacoma'],
-    Honda:['Civic','CR-V','Accord'],
-    Ford:['Escape','Edge','F-150'],
-    Nissan:['Altima','Rogue','Sentra'],
-    Tesla:['Model 3','Model Y'],
-    Subaru:['Outback','Forester'],
-    Hyundai:['Tucson','Santa Fe'],
-    Kia:['Sportage','Sorento'],
-    Volkswagen:['Tiguan','Jetta'],
-    Mazda:['CX-5','Mazda3']
-  };
-  const makes = Object.keys(usedMakes);
+  const makes = ['Toyota','Honda','Ford','Nissan','Tesla','Subaru','Hyundai','Kia','Volkswagen','Mazda'];
+  const models = ['Camry','CR-V','F-150','Altima','Model 3','Outback','Tucson','Sportage','Tiguan','CX-5'];
   const inv = [];
   for (let i=0;i<count;i++){
-    const make = makes[i % makes.length];
-    const models = usedMakes[make];
-    const model = models[i % models.length];
+    const make = makes[i%makes.length];
+    const model = models[i%models.length];
     const year = 2019 + (i % 6);
     const price = 17000 + (i % 14) * 1200;
     const miles = 18000 + (i % 25) * 3100;
     inv.push({
       vin: vinFor('2UX', i+5000),
-      stockType:'Used',
-      year, make, model,
+      stockType:'Used', year, make, model,
       trim:(['Base','S','SE','SEL','Premium'])[i%5],
       price, miles,
-      color: COLORS[(i+2) % COLORS.length],
-      photo: photoFor('Used','default'),
-      features:['CarPlay','Bluetooth','Alloys']
+      color: COLORS[(i+2)%COLORS.length]
     });
   }
-  return inv; // 30
+  return inv;
 }
-const INVENTORY = [...generateNewVehicles(), ...generateUsedVehicles(30)]; // 200 total
+const INVENTORY = [...generateNewVehicles(), ...generateUsedVehicles(30)];
 
 /* ================================ PAYMENT UTILS ================================ */
 function calcPayment(amount, aprPct, termMonths) {
@@ -285,59 +149,52 @@ function calcPayment(amount, aprPct, termMonths) {
   return (r * amount) / (1 - Math.pow(1 + r, -termMonths));
 }
 
-/* *** SWAPPED ORDER HERE: Trade-In before Payments *** */
-const STEPS = ['Welcome','Discovery','Vehicle Match','Trade-In','Payments','Credit Start','F&I Options','Review & Handoff'];
-
-/* ===================== PHONE HELPERS ===================== */
-function phoneOnlyDigits(value) {
-  return (value || "").replace(/\D+/g, "");
-}
-function phoneFormatUS(digits) {
-  const d = digits.slice(0, 10); // cap at 10
-  if (d.length === 0) return "";
-  if (d.length < 4)  return `(${d}`;
-  if (d.length < 7)  return `(${d.slice(0,3)}) ${d.slice(3)}`;
-  return `(${d.slice(0,3)}) ${d.slice(3,6)}-${d.slice(6)}`;
-}
-function normalizeAndFormatPhone(value) {
-  return phoneFormatUS(phoneOnlyDigits(value));
-}
+/* ======= Steps (Credit removed; handled by kiosk-credit.html) ======= */
+const STEPS = ['Welcome','Discovery','Vehicle Match','Trade-In','Payments','F&I Options','Review & Handoff'];
 
 /* ==================================== APP ==================================== */
 function App() {
-  /* fresh start only on first tab/window open; refresh won't wipe */
+  // single fresh session reset
   useEffect(() => {
     if (!sessionStorage.getItem('kiosk_session_started')) {
-      sessionStorage.setItem('kiosk_session_started', '1');
-      [
-        "kiosk_step","kiosk_consent","kiosk_profile","kiosk_selectedVin",
-        "kiosk_desk","kiosk_trade","kiosk_filters","kiosk_maxVisited"
-      ].forEach(k => { try { localStorage.removeItem(k); } catch {} });
-      // force welcome
-      setStep(0);
-      setMaxVisited(0);
+      sessionStorage.setItem('kiosk_session_started','1');
+      ["kiosk_step","kiosk_consent","kiosk_profile","kiosk_selectedVin","kiosk_desk","kiosk_trade","kiosk_filters","kiosk_maxVisited"]
+        .forEach(k => { try { localStorage.removeItem(k); } catch {} });
     }
   }, []);
 
-  const [step, setStep] = useState(load("kiosk_step", 0));
+  // step + visited
+  const params = new URLSearchParams(location.search);
+  const stepParam = params.get('step'); // e.g., "fandi" when returning from kiosk-credit
+  const initialStep = load("kiosk_step", 0);
 
-  /* allow clicking back to any visited step */
-  const [maxVisited, setMaxVisited] = useState(load("kiosk_maxVisited", step));
+  const [step, setStep] = useState(initialStep);
+  const [maxVisited, setMaxVisited] = useState(load("kiosk_maxVisited", initialStep));
+
+  // if we came back from credit, jump forward once
+  useEffect(() => {
+    if (stepParam === 'fandi') {
+      setStep(5); // F&I Options index after credit
+      setMaxVisited(m => Math.max(m, 5));
+      const url = new URL(location.href);
+      url.searchParams.delete('step');
+      history.replaceState({}, '', url.toString());
+    }
+  // run only on mount:
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(()=>save("kiosk_step", step), [step]);
   useEffect(()=>save("kiosk_maxVisited", maxVisited), [maxVisited]);
 
   const [consent, setConsent] = useState(load("kiosk_consent", { sms:false, email:false, privacy:false }));
-  const [profile, setProfile] = useState(load("kiosk_profile", {
-    name:'', contact:'', useCase:'Commute', bodyStyle:'Sedan', budget:400, timeline:'This week'
-  }));
+  const [profile, setProfile] = useState(load("kiosk_profile", { name:'', contact:'', useCase:'Commute', bodyStyle:'Sedan', budget:400, timeline:'This week' }));
   const [selectedVin, setSelectedVin] = useState(load("kiosk_selectedVin", null));
   const [desk, setDesk] = useState(load("kiosk_desk", { price:0, down:2000, apr:6.9, term:72, taxesFees:995, products:{vsc:false,gap:false,maint:false} }));
   const [trade, setTrade] = useState(load("kiosk_trade", { vin:'', miles:'', condition:'Average', rangeLow:0, rangeHigh:0 }));
-  const [objectionTrigger, setObjectionTrigger] = useState("");
 
-  /* ---- persist to localStorage ---- */
-  useEffect(()=>save("kiosk_step", step), [step]);
-  useEffect(()=>save("kiosk_profile", profile), [profile]);
   useEffect(()=>save("kiosk_consent", consent), [consent]);
+  useEffect(()=>save("kiosk_profile", profile), [profile]);
   useEffect(()=>save("kiosk_selectedVin", selectedVin), [selectedVin]);
   useEffect(()=>save("kiosk_desk", desk), [desk]);
   useEffect(()=>save("kiosk_trade", trade), [trade]);
@@ -352,27 +209,6 @@ function App() {
   }, [vehicle, desk.down, desk.taxesFees, productTotal, trade.rangeLow, trade.rangeHigh]);
   const monthly = useMemo(() => calcPayment(amountFinanced, desk.apr, desk.term), [amountFinanced, desk.apr, desk.term]);
 
-  const objectionContext = useMemo(() => ({
-    year:  (vehicle?.year ?? 2025),
-    make:  (vehicle?.make ?? ""),
-    model: (vehicle?.model ?? ""),
-    price: (vehicle ? vehicle.price : desk.price).toLocaleString(),
-    term: desk.term,
-    apr: desk.apr,
-    down: Number(desk.down).toLocaleString(),
-    payment: Math.round(monthly).toLocaleString(),
-    term_alt: desk.term === 72 ? 84 : 72,
-    payment_alt: Math.round(calcPayment(amountFinanced, desk.apr, desk.term === 72 ? 84 : 72)).toLocaleString(),
-    down_alt: 1000,
-    payment_with_down: Math.round(calcPayment(Math.max(amountFinanced-1000,0), desk.apr, desk.term)).toLocaleString(),
-    alt_vehicle: "similar unit with fewer options",
-    price_save: "1,500",
-    range_low: trade.rangeLow.toLocaleString(),
-    range_high: trade.rangeHigh.toLocaleString(),
-  }), [vehicle, desk, monthly, amountFinanced, trade]);
-
-  const { card, dismiss } = useObjection(objectionTrigger, objectionContext);
-
   function next(){
     setStep(s => {
       const n = Math.min(s+1, STEPS.length-1);
@@ -381,7 +217,7 @@ function App() {
     });
   }
   function back(){ setStep(s => Math.max(s-1, 0)); }
-  function go(i){ if (i <= maxVisited) setStep(i); } // allow jump-back only
+  function go(i){ if (i <= maxVisited) setStep(i); }
 
   function estimateTradeRange() {
     const base=12000;
@@ -391,21 +227,19 @@ function App() {
     const low=Math.max(500, base+adjMiles+cond-1500);
     const high=Math.max(low+500, base+adjMiles+cond+1500);
     setTrade(t => ({...t, rangeLow:Math.round(low), rangeHigh:Math.round(high)}));
-    if (low < 9000) setObjectionTrigger("trade value");
   }
   function selectVehicle(vin) {
     const v = INVENTORY.find(x => x.vin === vin);
     if (v) {
       setSelectedVin(v.vin);
       setDesk(d => ({...d, price: v.price}));
-      setStep(2); // stay in Vehicle Match (user must tap next)
+      setStep(2);
       setMaxVisited(m => Math.max(m, 2));
     }
   }
 
   return (
     <div className="relative w-full min-h-screen">
-      {/* decorative glows */}
       <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute -top-24 -left-24 h-72 w-72 rounded-full bg-emerald-300/30 blur-3xl"></div>
         <div className="absolute -bottom-24 -right-24 h-72 w-72 rounded-full bg-sky-300/20 blur-3xl"></div>
@@ -418,9 +252,9 @@ function App() {
           </h1>
         </header>
 
-        {/* CLICKABLE progress chips (back only) */}
+        {/* Progress (clickable back only) */}
         <nav aria-label="Progress" className="mb-5 sm:mb-7">
-          <ol className="grid grid-cols-4 sm:grid-cols-8 gap-2">
+          <ol className="grid grid-cols-4 sm:grid-cols-7 gap-2">
             {STEPS.map((label, i) => {
               const reachable = i <= maxVisited;
               const active = i <= step;
@@ -447,7 +281,7 @@ function App() {
             <Welcome
               consent={consent} setConsent={setConsent}
               profile={profile} setProfile={setProfile}
-              onValidatedNext={()=>{ track('welcome_next', {source:'next_button'}); setMaxVisited(m=>Math.max(m,1)); next(); }}
+              onValidatedNext={()=>{ track('welcome_next',{source:'next_button'}); setMaxVisited(m=>Math.max(m,1)); next(); }}
               onSelect={selectVehicle}
             />
           )}
@@ -455,10 +289,8 @@ function App() {
             <Discovery profile={profile} setProfile={setProfile} onNext={()=>{ track('discovery_next'); setMaxVisited(m=>Math.max(m,2)); next(); }} onBack={back} />
           )}
           {step===2 && (
-            <VehicleMatch selectedVin={selectedVin} onSelect={(vin)=>{ setSelectedVin(vin); track('vehicle_selected', {vin}); }} onBack={back} />
+            <VehicleMatch selectedVin={selectedVin} onSelect={(vin)=>{ setSelectedVin(vin); track('vehicle_selected',{vin}); }} onBack={back} />
           )}
-
-          {/* *** SWAPPED: Step 3 = Trade, Step 4 = Payments *** */}
           {step===3 && (
             <Trade
               trade={trade}
@@ -476,22 +308,21 @@ function App() {
               monthly={monthly}
               amountFinanced={amountFinanced}
               onBack={back}
-              onNext={()=>{ track('payments_next'); setMaxVisited(m=>Math.max(m,5)); next(); }}
-              onObjection={setObjectionTrigger}
+              onNext={()=>{
+                track('payments_next');
+                // Route to standalone credit page
+                window.location.href = 'kiosk-credit.html?from=kiosk';
+              }}
               budgetTarget={profile.budget}
             />
           )}
-
-          {step===5 && <CreditStart onBack={back} onNext={()=>{ track('credit_next'); setMaxVisited(m=>Math.max(m,6)); next(); }} />}
-          {step===6 && (
-            <FandI desk={desk} setDesk={setDesk} monthly={monthly} onBack={back} onNext={()=>{ track('fandi_next'); setMaxVisited(m=>Math.max(m,7)); next(); }} />
+          {step===5 && (
+            <FandI desk={desk} setDesk={setDesk} monthly={monthly} onBack={back} onNext={()=>{ track('fandi_next'); setMaxVisited(m=>Math.max(m,6)); next(); }} />
           )}
-          {step===7 && (
+          {step===6 && (
             <Review profile={profile} vehicle={vehicle} desk={desk} trade={trade} monthly={monthly} onBack={back} />
           )}
         </div>
-
-        <ObjectionCard data={card} onClose={dismiss} />
       </div>
     </div>
   );
@@ -519,25 +350,20 @@ function PrimaryButton(props){
   return <button {...props} className={cls} />;
 }
 
-/* ------------------------ Welcome + Browse (with validation) ------------------------ */
+/* ------------------------ Welcome (with phone mask) ------------------------ */
 function Welcome({ consent, setConsent, profile, setProfile, onValidatedNext, onSelect }) {
-  // default filters to "Any" for Stock Type → 200 vehicles
+  // filters default
   const initialFilters = React.useMemo(() => {
-    const stored = load("kiosk_filters", {
-      stockType: '', make: '', model: '', color: '', minPrice: '', maxPrice: ''
-    }) || {};
-    // Force Stock Type back to default "Any" on each fresh page load
-    return { ...stored, stockType: '' };
+    const stored = load("kiosk_filters", { stockType:'', make:'', model:'', color:'', minPrice:'', maxPrice:'' }) || {};
+    return { ...stored, stockType:'' };
   }, []);
-
   const [filters, setFilters] = useState(initialFilters);
   const [page, setPage] = useState(1);
   const perPage = 12;
-
-  useEffect(() => save("kiosk_filters", filters), [filters]);
+  useEffect(()=>save("kiosk_filters", filters), [filters]);
+  useEffect(()=>{ save("kiosk_filters", initialFilters); }, []); // ensure Any on fresh load
 
   const modelOptions = useMemo(() => filters.make ? MODEL_MAP[filters.make] : [], [filters.make]);
-  useEffect(() => { save("kiosk_filters", initialFilters); }, []);
 
   const results = useMemo(() => {
     const min = Number(filters.minPrice || 0);
@@ -551,31 +377,34 @@ function Welcome({ consent, setConsent, profile, setProfile, onValidatedNext, on
       return stockOK && makeOK && modelOK && colorOK && priceOK;
     });
   }, [filters]);
-
   const totalPages = Math.max(1, Math.ceil(results.length / perPage));
   const pageItems  = results.slice((page-1)*perPage, page*perPage);
 
-  /* --------- validation (phone-only) --------- */
+  // ---------- phone helpers ----------
+  const digits = (s) => (s||'').replace(/\D/g,'');
+  const formatPhone = (d) => {
+    const x = d.slice(0,10);
+    if (x.length === 0) return '';
+    if (x.length < 4) return `(${x}`;
+    if (x.length < 7) return `(${x.slice(0,3)}) ${x.slice(3)}`;
+    return `(${x.slice(0,3)}) ${x.slice(3,6)}-${x.slice(6)}`;
+  };
+  const onPhoneChange = (val) => {
+    const d = digits(val).slice(0,10);
+    setProfile(p => ({...p, contact: formatPhone(d)}));
+  };
+
+  // ---------- validation ----------
   const [errors, setErrors] = useState({ name:'', contact:'' });
   function validate() {
     const newErr = { name:'', contact:'' };
     if (!profile.name.trim()) newErr.name = 'Please enter your name or company.';
-    const digits = phoneOnlyDigits(profile.contact);
-    if (digits.length !== 10) newErr.contact = 'Enter a valid 10-digit mobile number.';
+    const d = digits(profile.contact);
+    if (d.length !== 10) newErr.contact = 'Enter a valid 10-digit phone.';
     setErrors(newErr);
     return !newErr.name && !newErr.contact;
   }
-  function handleNext() {
-    if (validate()) onValidatedNext();
-  }
-
-  // Ensure the contact field is blank on mount (prevents showing any old default)
-  React.useEffect(() => {
-    if (profile?.contact !== '') {
-      setProfile({ ...profile, contact: '' });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  function handleNext() { if (validate()) onValidatedNext(); }
 
   const guidedHref = "https://mpalmer79.github.io/Quirk-AI-Project-Overview/saleskiosk-guidedflow.html?utm_source=kiosk&utm_medium=welcome_banner&utm_campaign=guided_flow";
 
@@ -583,7 +412,6 @@ function Welcome({ consent, setConsent, profile, setProfile, onValidatedNext, on
     <div>
       <SectionTitle title="Welcome to Quirk Auto Dealers" subtitle="Start the guided flow or browse our inventory below." />
 
-      {/* Start Guided Flow Pill with UTM + tracking */}
       <div className="text-center mb-6">
         <a href={guidedHref}
            onClick={()=>track('guided_flow_link', {placement:'banner'})}
@@ -612,36 +440,18 @@ function Welcome({ consent, setConsent, profile, setProfile, onValidatedNext, on
             <span className="block text-sm font-semibold text-slate-700 mb-1">Phone Number</span>
             <input
               aria-label="Phone Number"
-              type="tel"
-              inputMode="numeric"
               className={`w-2/3 rounded-xl border p-3 focus:ring-2 ${errors.contact ? 'border-red-500 focus:ring-red-300' : 'focus:ring-emerald-300'}`}
               placeholder="Enter 10 digit phone number"
               value={profile.contact}
-              onChange={(e) => {
-                const caretFromEnd = e.target.value.length - e.target.selectionStart;
-                const formatted = normalizeAndFormatPhone(e.target.value);
-                setProfile({ ...profile, contact: formatted });
-                requestAnimationFrame(() => {
-                  try {
-                    const el = e.target;
-                    const newPos = Math.max(0, formatted.length - caretFromEnd);
-                    el.setSelectionRange(newPos, newPos);
-                  } catch {}
-                });
-              }}
-              onPaste={(e) => {
-                e.preventDefault();
-                const text = (e.clipboardData || window.clipboardData).getData('text') || '';
-                setProfile({ ...profile, contact: normalizeAndFormatPhone(text) });
-              }}
+              onChange={e=>onPhoneChange(e.target.value)}
               style={{backgroundColor:'#ecfdf5', color:'#0f172a'}}
+              inputMode="tel"
             />
           </label>
           {errors.contact && <div className="text-xs text-red-600 mt-1">{errors.contact}</div>}
         </div>
       </div>
 
-      {/* Consent & privacy (centered under name) */}
       <div className="mb-4 text-center">
         <details className="inline-block text-sm">
           <summary className="cursor-pointer text-slate-600 px-4 py-2 rounded-full border border-slate-300 bg-white/80">Consent & privacy</summary>
@@ -653,7 +463,6 @@ function Welcome({ consent, setConsent, profile, setProfile, onValidatedNext, on
         </details>
       </div>
 
-      {/* "Next" under contact (moves to Discovery on valid) */}
       <div className="mb-6 text-center">
         <button
           onClick={handleNext}
@@ -722,10 +531,7 @@ function Welcome({ consent, setConsent, profile, setProfile, onValidatedNext, on
                       alt={`${v.year} ${v.make} ${v.model}`}
                       className="w-full h-40 object-cover rounded-xl"
                       loading="lazy"
-                      onError={(e)=>{ 
-                        e.currentTarget.style.display = 'none';
-                        e.currentTarget.nextElementSibling.style.display = 'flex';
-                      }}
+                      onError={(e)=>{ e.currentTarget.style.display='none'; e.currentTarget.nextElementSibling.style.display='flex'; }}
                     />
                   ) : null}
                   <div className={`w-full h-40 bg-gradient-to-br from-slate-200 to-slate-300 rounded-xl flex items-center justify-center ${vehicleImage ? 'hidden' : ''}`}>
@@ -744,7 +550,6 @@ function Welcome({ consent, setConsent, profile, setProfile, onValidatedNext, on
           })}
         </div>
 
-        {/* Pagination */}
         <div className="mt-3 flex items-center justify-between">
           <button className="px-3 py-2 rounded-xl border bg-white disabled:opacity-50"
                   onClick={()=>setPage(p=>Math.max(1,p-1))} disabled={page<=1}>← Prev</button>
@@ -754,11 +559,10 @@ function Welcome({ consent, setConsent, profile, setProfile, onValidatedNext, on
         </div>
       </div>
 
-      {/* Secondary call-to-action with UTM + tracking */}
       <div className="mt-4 flex flex-wrap gap-3 justify-end">
         <a href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/saleskiosk-guidedflow.html?utm_source=kiosk&utm_medium=footer_button&utm_campaign=guided_flow"
            className="px-5 py-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-700 text-white font-semibold shadow hover:brightness-110 active:brightness-95"
-           onClick={()=>track('guided_flow_link', {placement:'footer_button'})}>
+           onClick={()=>track('guided_flow_link',{placement:'footer_button'})}>
           Switch to Guided Flow →
         </a>
       </div>
@@ -816,10 +620,7 @@ function VehicleMatch({ selectedVin, onSelect, onBack }) {
                     alt={`${v.year} ${v.make} ${v.model}`}
                     className="w-full h-44 object-cover rounded-xl"
                     loading="lazy"
-                    onError={(e)=>{ 
-                      e.currentTarget.style.display = 'none';
-                      e.currentTarget.nextElementSibling.style.display = 'flex';
-                    }}
+                    onError={(e)=>{ e.currentTarget.style.display='none'; e.currentTarget.nextElementSibling.style.display='flex'; }}
                   />
                 ) : null}
                 <div className={`w-full h-44 bg-gradient-to-br from-slate-200 to-slate-300 rounded-xl flex items-center justify-center ${vehicleImage ? 'hidden' : ''}`}>
@@ -845,12 +646,13 @@ function VehicleMatch({ selectedVin, onSelect, onBack }) {
   );
 }
 
-function Payments({ vehicle, desk, setDesk, monthly, amountFinanced, onBack, onNext, onObjection, budgetTarget }) {
+function Payments({ vehicle, desk, setDesk, monthly, amountFinanced, onBack, onNext, budgetTarget }) {
   useEffect(() => {
+    // nudge if over budget (soft)
     if (!budgetTarget) return;
     const overBy = monthly - Number(budgetTarget);
-    if (overBy > 50) onObjection && onObjection("payment too high");
-  }, [monthly, budgetTarget, onObjection]);
+    if (overBy > 50) track('payment_over_budget',{overBy});
+  }, [monthly, budgetTarget]);
 
   const price = vehicle ? vehicle.price : desk.price;
   return (
@@ -901,7 +703,7 @@ function Payments({ vehicle, desk, setDesk, monthly, amountFinanced, onBack, onN
       </div>
       <div className="mt-4 flex justify-between">
         <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={onBack}>← Back</button>
-        {/* UPDATED label since Payments now precedes Credit */}
+        {/* Now routes to standalone Credit page */}
         <PrimaryButton onClick={onNext}>Credit start →</PrimaryButton>
       </div>
     </div>
@@ -935,30 +737,7 @@ function Trade({ trade, setTrade, estimate, onBack, onNext }) {
       </div>
       <div className="mt-4 flex justify-between">
         <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={onBack}>← Back</button>
-        {/* UPDATED label since Trade now precedes Payments */}
         <PrimaryButton onClick={onNext}>Build payment →</PrimaryButton>
-      </div>
-    </div>
-  );
-}
-
-function CreditStart({ onBack, onNext }) {
-  return (
-    <div>
-      <SectionTitle title="Start your credit application" subtitle="Soft pull first. No impact to score until you consent to submit." />
-      <div className="grid md:grid-cols-3 gap-4">
-        <Field label="Full name"><input className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" /></Field>
-        <Field label="Email"><input className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" /></Field>
-        <Field label="Mobile"><input className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" /></Field>
-        <Field label="ZIP"><input className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" /></Field>
-        <Field label="Income (monthly)"><input className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" /></Field>
-        <Field label="Consent to soft pull">
-          <label className="flex items-center gap-2"><input type="checkbox" /> I agree to a soft inquiry</label>
-        </Field>
-      </div>
-      <div className="mt-4 flex justify-between">
-        <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={onBack}>← Back</button>
-        <PrimaryButton onClick={onNext}>Preview protection →</PrimaryButton>
       </div>
     </div>
   );
@@ -1011,7 +790,7 @@ function Review({ profile, vehicle, desk, trade, monthly, onBack }) {
           <div className="font-semibold mb-2">Your picks</div>
           <ul className="text-sm text-slate-700 space-y-1">
             <li><strong>Name:</strong> {profile.name || '—'}</li>
-            <li><strong>Contact:</strong> {profile.contact || '—'}</li>
+            <li><strong>Phone:</strong> {profile.contact || '—'}</li>
             <li><strong>Use:</strong> {profile.useCase} • <strong>Body style:</strong> {profile.bodyStyle}</li>
             <li><strong>Budget target:</strong> ${profile.budget}/mo</li>
             <li><strong>Vehicle:</strong> {vehicle ? `${vehicle.year} ${vehicle.make} ${vehicle.model}` : '—'}</li>
