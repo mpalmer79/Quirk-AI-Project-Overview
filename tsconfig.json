@@ -11,17 +11,14 @@
     "moduleResolution": "Bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-
     "jsx": "react-jsx",
     "types": ["node", "react", "react-dom"],
-
     "baseUrl": ".",
     "paths": {
       "@app/*": ["app/*"],
       "@components/*": ["app/components/*"],
       "@data/*": ["data/*"]
     },
-
     "forceConsistentCasingInFileNames": true,
     "incremental": true
   },
