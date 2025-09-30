@@ -1,59 +1,61 @@
-// eslint.config.js (flat config)
-import js from "@eslint/js";
-import tseslint from "typescript-eslint";
-import globals from "globals";
+// eslint.config.js (flat config for ESLint v9)
+import js from '@eslint/js';
+import tseslint from 'typescript-eslint';
 
 export default [
-  // 1) Ignore everything we don't want to lint in CI
-  {
-    ignores: [
-      "**/node_modules/**",
-      "**/.next/**",
-      "**/out/**",
-      "public/**",
-      "docs/**",
-      "kiosk-api/**",
-      "orchestrator/**",
-      "sandbox/**",
-      // build & config files we don't want to lint in this project
-      "postcss.config.js",
-      "tailwind.config.*",
-      "eslint.config.js",
-    ],
-  },
+  // Ignore build output and vendor folders
+  { ignores: ['.next/**', 'dist/**', 'out/**', 'node_modules/**'] },
 
-  // 2) Base JS rules (not really used because we ignore most JS, but harmless)
+  // Base JS & TS recommended configs
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
+
+  // Project-specific tweaks + (IMPORTANT) register the plugin
   {
-    ...js.configs.recommended,
-    files: ["**/*.js"],
+    plugins: {
+      // This line makes the "@typescript-eslint/…" rules available
+      '@typescript-eslint': tseslint.plugin,
+    },
     languageOptions: {
-      globals: globals.node, // makes console, process, Buffer, module defined
+      parser: tseslint.parser,
+      parserOptions: {
+        ecmaVersion: 2023,
+        sourceType: 'module',
+      },
+      // Make Node globals available so "no-undef" doesn’t fire
+      globals: {
+        // browser
+        window: 'readonly',
+        document: 'readonly',
+        navigator: 'readonly',
+        // node
+        console: 'readonly',
+        process: 'readonly',
+        Buffer: 'readonly',
+        module: 'readonly',
+        __dirname: 'readonly',
+        __filename: 'readonly',
+      },
+    },
+    rules: {
+      // match Copilot’s suggestions
+      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-explicit-any': 'off',
     },
   },
 
-  // 3) TypeScript across your Next app only
-  ...tseslint.config(
-    {
-      files: ["app/**/*.{ts,tsx}", "types/**/*.d.ts"],
-      languageOptions: {
-        // IMPORTANT: no "project"; use the Project Service to avoid parser spam
-        parserOptions: {
-          projectService: true,
-          tsconfigRootDir: import.meta.dirname,
-        },
-      },
-      rules: {
-        // keep defaults; tweak only what is noisy for your codebase
-        "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }],
+  // Optional: ensure JS-only files still have Node globals
+  {
+    files: ['**/*.js', '**/*.cjs', '**/*.mjs'],
+    languageOptions: {
+      globals: {
+        console: 'readonly',
+        process: 'readonly',
+        Buffer: 'readonly',
+        module: 'readonly',
+        __dirname: 'readonly',
+        __filename: 'readonly',
       },
     },
-
-    // 4) In declaration files, allow 'any' (or keep if you switch to unknown)
-    {
-      files: ["**/*.d.ts"],
-      rules: {
-        "@typescript-eslint/no-explicit-any": "off",
-      },
-    }
-  ),
+  },
 ];
