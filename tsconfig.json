@@ -12,10 +12,9 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
 
-    // 👇 THIS fixes the “Cannot use JSX unless the '--jsx' flag is provided.”
-    "jsx": "preserve",
+    "jsx": "react-jsx",
+    "types": ["node", "react", "react-dom"],
 
-    // Path aliases used in your imports like @app/lib/..., @data/..., etc.
     "baseUrl": ".",
     "paths": {
       "@app/*": ["app/*"],
@@ -23,11 +22,9 @@
       "@data/*": ["data/*"]
     },
 
-    // Helpful for editor & CI perf
     "forceConsistentCasingInFileNames": true,
     "incremental": true
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]
 }
-
