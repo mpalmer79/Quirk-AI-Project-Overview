@@ -12,21 +12,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        pkg:
-          - "."
-          - "orchestrator"
-          - "sandbox"
-          - "kiosk-api"
+        pkg: [".", "orchestrator", "sandbox", "kiosk-api"]
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # no cache => no lockfile required
       - name: Use Node 20
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          # no cache -> avoids lockfile requirement warnings/errors
 
       - name: Detect package.json
         id: detect
@@ -39,12 +35,7 @@ jobs:
 
       - name: Install deps
         if: steps.detect.outputs.present == 'true'
-        run: |
-          if [ -f package-lock.json ]; then
-            npm ci
-          else
-            npm install
-          fi
+        run: npm install
         working-directory: ${{ matrix.pkg }}
 
       - name: Typecheck
