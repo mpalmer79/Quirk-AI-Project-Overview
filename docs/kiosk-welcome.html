@@ -19,13 +19,13 @@
     <form id="welcomeForm" class="mt-2 grid gap-4">
       <div class="grid sm:grid-cols-2 gap-4">
         <label class="block">
-          <span class="block text-sm font-semibold text-slate-700 mb-1">Your name / company</span>
+          <span class="block text-center text-sm font-semibold text-slate-700 mb-1">Your name / company</span>
           <input id="name" type="text" class="w-full rounded-xl border p-3 bg-white"
                  placeholder="e.g., Quirk Auto" autocomplete="name">
         </label>
 
         <label class="block">
-          <span class="block text-sm font-semibold text-slate-700 mb-1">Let's keep in touch</span>
+          <span class="block text-center text-sm font-semibold text-slate-700 mb-1">Let's keep in touch</span>
           <input
             id="contact"
             type="text"
@@ -60,7 +60,6 @@ const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const onlyDigits = (value) => (value || '').replace(/\D+/g, '');
 
 function formatPhoneDigits(d) {
-  // d: digits only, up to 10
   const s = (d || '').slice(0, 10);
   const len = s.length;
   if (!len) return '';
@@ -68,47 +67,36 @@ function formatPhoneDigits(d) {
   if (len < 7) return `(${s.slice(0,3)}) ${s.slice(3)}`;
   return `(${s.slice(0,3)}) ${s.slice(3,6)}-${s.slice(6)}`;
 }
-
-function isLikelyEmail(val) {
-  // if it contains '@' or letters, treat as email input (no phone mask)
-  return /@|[a-z]/i.test(val);
-}
+function isLikelyEmail(val) { return /@|[a-z]/i.test(val); }
 
 /* --------- DO NOT PREFILL from storage: defaults are blank --------- */
-/* Seed from parent (optional) */
+/* Optional seed from parent */
 window.addEventListener('message', (e) => {
   const msg = e?.data || {};
   if (msg.type === 'welcome:init') {
     const p = msg.payload || {};
     if (typeof p.name === 'string') nameEl.value = p.name;
     if (typeof p.contact === 'string') {
-      // If digits → format as phone; else leave as provided (email)
       const d = onlyDigits(p.contact);
       contactEl.value = d ? formatPhoneDigits(d) : p.contact;
     }
   }
 });
 
-/* Live behavior: mask phones, never exceed 10 digits; leave emails alone */
+/* Live: mask phones; leave emails alone */
 contactEl.addEventListener('input', (e) => {
   const val = e.target.value;
-  if (isLikelyEmail(val)) return; // don't touch emails
-
+  if (isLikelyEmail(val)) return;
   const caretFromEnd = val.length - e.target.selectionStart;
   const formatted = formatPhoneDigits(onlyDigits(val));
   e.target.value = formatted;
   const newPos = Math.max(0, formatted.length - caretFromEnd);
   requestAnimationFrame(() => e.target.setSelectionRange(newPos, newPos));
 });
-
 contactEl.addEventListener('paste', (e) => {
   e.preventDefault();
   const text = (e.clipboardData || window.clipboardData).getData('text') || '';
-  if (isLikelyEmail(text)) {
-    contactEl.value = text.trim();
-  } else {
-    contactEl.value = formatPhoneDigits(onlyDigits(text));
-  }
+  contactEl.value = isLikelyEmail(text) ? text.trim() : formatPhoneDigits(onlyDigits(text));
 });
 
 /* Save and advance */
@@ -117,7 +105,6 @@ form.addEventListener('submit', (e) => {
   const nameRaw = (nameEl.value || '').trim();
   const contactRaw = (contactEl.value || '').trim();
 
-  // validate: require name + (email OR 10-digit phone)
   const asEmail = emailRe.test(contactRaw);
   const digits = onlyDigits(contactRaw);
   const asPhone = digits.length === 10;
@@ -135,7 +122,7 @@ form.addEventListener('submit', (e) => {
 
   const contactFormatted = asPhone ? formatPhoneDigits(digits) : contactRaw;
 
-  // Persist for downstream steps (but we never prefill on load anymore)
+  // Persist for downstream steps (we no longer prefill on load)
   const current = load('guided_profile', { name:'', contact:'', budget:400 });
   save('guided_profile', { ...current, name: nameRaw, contact: contactFormatted });
 
