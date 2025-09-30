@@ -15,24 +15,24 @@
   </style>
 </head>
 <body class="p-2">
-  <!-- No inner card title/subtitle, no inner border -->
   <div class="max-w-3xl mx-auto">
     <form id="welcomeForm" class="mt-2 grid gap-4">
       <div class="grid sm:grid-cols-2 gap-4">
         <label class="block">
           <span class="block text-sm font-semibold text-slate-700 mb-1">Your name / company</span>
-          <input id="name" type="text" class="w-full rounded-xl border p-3 bg-white" placeholder="e.g., Quirk Auto" autocomplete="name">
+          <input id="name" type="text" class="w-full rounded-xl border p-3 bg-white"
+                 placeholder="e.g., Quirk Auto" autocomplete="name">
         </label>
 
         <label class="block">
-          <span class="block text-sm font-semibold text-slate-700 mb-1">Text number to send your quote</span>
+          <span class="block text-sm font-semibold text-slate-700 mb-1">Let's keep in touch</span>
           <input
             id="contact"
-            type="tel"
-            inputmode="numeric"
+            type="text"
+            inputmode="text"
             class="w-full rounded-xl border p-3 bg-white"
-            placeholder="(555) 555-5555"
-            autocomplete="tel"
+            placeholder="10 digit phone or email address"
+            autocomplete="email"
             aria-describedby="contactHelp">
         </label>
       </div>
@@ -55,81 +55,92 @@ const nameEl    = $('name');
 const contactEl = $('contact');
 const form      = $('welcomeForm');
 
-/* ---------- phone formatting helpers ---------- */
-function onlyDigits(value) {
-  return (value || '').replace(/\D+/g, '');
-}
+/* ---------- email / phone helpers ---------- */
+const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const onlyDigits = (value) => (value || '').replace(/\D+/g, '');
 
-function formatPhone(d) {
-  // d should be digits only (max 10)
-  const len = d.length;
+function formatPhoneDigits(d) {
+  // d: digits only, up to 10
+  const s = (d || '').slice(0, 10);
+  const len = s.length;
   if (!len) return '';
-  if (len < 4) return `(${d}`;
-  if (len < 7) return `(${d.slice(0,3)}) ${d.slice(3)}`;
-  return `(${d.slice(0,3)}) ${d.slice(3,6)}-${d.slice(6)}`;
+  if (len < 4) return `(${s}`;
+  if (len < 7) return `(${s.slice(0,3)}) ${s.slice(3)}`;
+  return `(${s.slice(0,3)}) ${s.slice(3,6)}-${s.slice(6)}`;
 }
 
-function normalizeAndFormat(value) {
-  // Enforce max of 10 digits and return formatted
-  const digits = onlyDigits(value).slice(0, 10);
-  return formatPhone(digits);
+function isLikelyEmail(val) {
+  // if it contains '@' or letters, treat as email input (no phone mask)
+  return /@|[a-z]/i.test(val);
 }
 
-/* Seed from storage or from parent postMessage */
-function seed() {
-  const profile = load('guided_profile', { name:'', contact:'', budget:400 });
-  nameEl.value = profile.name || '';
-  // If something was saved previously, keep only digits and reformat nicely
-  contactEl.value = normalizeAndFormat(profile.contact || '');
-}
-seed();
-
+/* --------- DO NOT PREFILL from storage: defaults are blank --------- */
+/* Seed from parent (optional) */
 window.addEventListener('message', (e) => {
   const msg = e?.data || {};
   if (msg.type === 'welcome:init') {
     const p = msg.payload || {};
-    if (typeof p.name === 'string')    nameEl.value    = p.name;
-    if (typeof p.contact === 'string') contactEl.value = normalizeAndFormat(p.contact);
+    if (typeof p.name === 'string') nameEl.value = p.name;
+    if (typeof p.contact === 'string') {
+      // If digits → format as phone; else leave as provided (email)
+      const d = onlyDigits(p.contact);
+      contactEl.value = d ? formatPhoneDigits(d) : p.contact;
+    }
   }
 });
 
-/* Live enforce & format: limit to 10 digits and render as (XXX) XXX-XXXX */
+/* Live behavior: mask phones, never exceed 10 digits; leave emails alone */
 contactEl.addEventListener('input', (e) => {
-  const caretFromEnd = e.target.value.length - e.target.selectionStart;
-  const formatted = normalizeAndFormat(e.target.value);
-  e.target.value = formatted;
+  const val = e.target.value;
+  if (isLikelyEmail(val)) return; // don't touch emails
 
-  // Try to keep caret position natural while typing
+  const caretFromEnd = val.length - e.target.selectionStart;
+  const formatted = formatPhoneDigits(onlyDigits(val));
+  e.target.value = formatted;
   const newPos = Math.max(0, formatted.length - caretFromEnd);
   requestAnimationFrame(() => e.target.setSelectionRange(newPos, newPos));
 });
 
 contactEl.addEventListener('paste', (e) => {
   e.preventDefault();
-  const text = (e.clipboardData || window.clipboardData).getData('text');
-  contactEl.value = normalizeAndFormat(text);
+  const text = (e.clipboardData || window.clipboardData).getData('text') || '';
+  if (isLikelyEmail(text)) {
+    contactEl.value = text.trim();
+  } else {
+    contactEl.value = formatPhoneDigits(onlyDigits(text));
+  }
 });
 
 /* Save and advance */
 form.addEventListener('submit', (e) => {
   e.preventDefault();
-  const name = nameEl.value.trim();
-  const contactFormatted = normalizeAndFormat(contactEl.value);
-  const contactDigits = onlyDigits(contactFormatted);
+  const nameRaw = (nameEl.value || '').trim();
+  const contactRaw = (contactEl.value || '').trim();
 
-  // Optional hard guard: require exactly 10 digits to proceed
-  if (contactDigits.length !== 10) {
-    alert('Please enter a valid 10-digit phone number.');
+  // validate: require name + (email OR 10-digit phone)
+  const asEmail = emailRe.test(contactRaw);
+  const digits = onlyDigits(contactRaw);
+  const asPhone = digits.length === 10;
+
+  if (!nameRaw) {
+    alert('Please enter your name or company.');
+    nameEl.focus();
+    return;
+  }
+  if (!asEmail && !asPhone) {
+    alert('Enter a valid email address or a 10-digit phone number.');
     contactEl.focus();
     return;
   }
 
-  const current = load('guided_profile', { name:'', contact:'', budget:400 });
-  // Persist the formatted value (readable across steps)
-  save('guided_profile', { ...current, name, contact: contactFormatted });
+  const contactFormatted = asPhone ? formatPhoneDigits(digits) : contactRaw;
 
-  // tell parent to advance to Discovery
-  window.parent?.postMessage({ type:'welcome:done', payload:{ name, contact: contactFormatted } }, '*');
+  // Persist for downstream steps (but we never prefill on load anymore)
+  const current = load('guided_profile', { name:'', contact:'', budget:400 });
+  save('guided_profile', { ...current, name: nameRaw, contact: contactFormatted });
+
+  // Tell parent to advance
+  window.parent?.postMessage({ type:'welcome:done', payload:{ name: nameRaw, contact: contactFormatted } }, '*');
 });
 </script>
 </body>
