@@ -25,8 +25,15 @@
         </label>
 
         <label class="block">
-          <span class="block text-sm font-semibold text-slate-700 mb-1">Text or email to send your quote</span>
-          <input id="contact" type="text" class="w-full rounded-xl border p-3 bg-white" placeholder="(555) 555-5555 or you@example.com" autocomplete="email">
+          <span class="block text-sm font-semibold text-slate-700 mb-1">Text number to send your quote</span>
+          <input
+            id="contact"
+            type="tel"
+            inputmode="numeric"
+            class="w-full rounded-xl border p-3 bg-white"
+            placeholder="(555) 555-5555"
+            autocomplete="tel"
+            aria-describedby="contactHelp">
         </label>
       </div>
 
@@ -48,11 +55,32 @@ const nameEl    = $('name');
 const contactEl = $('contact');
 const form      = $('welcomeForm');
 
+/* ---------- phone formatting helpers ---------- */
+function onlyDigits(value) {
+  return (value || '').replace(/\D+/g, '');
+}
+
+function formatPhone(d) {
+  // d should be digits only (max 10)
+  const len = d.length;
+  if (!len) return '';
+  if (len < 4) return `(${d}`;
+  if (len < 7) return `(${d.slice(0,3)}) ${d.slice(3)}`;
+  return `(${d.slice(0,3)}) ${d.slice(3,6)}-${d.slice(6)}`;
+}
+
+function normalizeAndFormat(value) {
+  // Enforce max of 10 digits and return formatted
+  const digits = onlyDigits(value).slice(0, 10);
+  return formatPhone(digits);
+}
+
 /* Seed from storage or from parent postMessage */
 function seed() {
   const profile = load('guided_profile', { name:'', contact:'', budget:400 });
-  nameEl.value    = profile.name    || '';
-  contactEl.value = profile.contact || '';
+  nameEl.value = profile.name || '';
+  // If something was saved previously, keep only digits and reformat nicely
+  contactEl.value = normalizeAndFormat(profile.contact || '');
 }
 seed();
 
@@ -61,21 +89,47 @@ window.addEventListener('message', (e) => {
   if (msg.type === 'welcome:init') {
     const p = msg.payload || {};
     if (typeof p.name === 'string')    nameEl.value    = p.name;
-    if (typeof p.contact === 'string') contactEl.value = p.contact;
+    if (typeof p.contact === 'string') contactEl.value = normalizeAndFormat(p.contact);
   }
+});
+
+/* Live enforce & format: limit to 10 digits and render as (XXX) XXX-XXXX */
+contactEl.addEventListener('input', (e) => {
+  const caretFromEnd = e.target.value.length - e.target.selectionStart;
+  const formatted = normalizeAndFormat(e.target.value);
+  e.target.value = formatted;
+
+  // Try to keep caret position natural while typing
+  const newPos = Math.max(0, formatted.length - caretFromEnd);
+  requestAnimationFrame(() => e.target.setSelectionRange(newPos, newPos));
+});
+
+contactEl.addEventListener('paste', (e) => {
+  e.preventDefault();
+  const text = (e.clipboardData || window.clipboardData).getData('text');
+  contactEl.value = normalizeAndFormat(text);
 });
 
 /* Save and advance */
 form.addEventListener('submit', (e) => {
   e.preventDefault();
-  const name    = nameEl.value.trim();
-  const contact = contactEl.value.trim();
+  const name = nameEl.value.trim();
+  const contactFormatted = normalizeAndFormat(contactEl.value);
+  const contactDigits = onlyDigits(contactFormatted);
+
+  // Optional hard guard: require exactly 10 digits to proceed
+  if (contactDigits.length !== 10) {
+    alert('Please enter a valid 10-digit phone number.');
+    contactEl.focus();
+    return;
+  }
 
   const current = load('guided_profile', { name:'', contact:'', budget:400 });
-  save('guided_profile', { ...current, name, contact });
+  // Persist the formatted value (readable across steps)
+  save('guided_profile', { ...current, name, contact: contactFormatted });
 
   // tell parent to advance to Discovery
-  window.parent?.postMessage({ type:'welcome:done', payload:{ name, contact } }, '*');
+  window.parent?.postMessage({ type:'welcome:done', payload:{ name, contact: contactFormatted } }, '*');
 });
 </script>
 </body>
