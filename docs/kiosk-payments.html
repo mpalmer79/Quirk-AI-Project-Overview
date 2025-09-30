@@ -1,31 +1,29 @@
-<!doctype html>
-<html lang="en">
-<head>
+<!doctype html><html lang="en"><head>
 <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
 <base href="/Quirk-AI-Project-Overview/"><title>Kiosk • Payments</title>
 <link rel="stylesheet" href="assets/kiosk-shared.css">
 <script src="assets/kiosk-shared.js"></script>
 <style>
-  /* grid for the optional lease block */
-  .lease-grid{
-    display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;margin-top:12px
-  }
-  @media (max-width:1100px){ .lease-grid{ grid-template-columns:repeat(3,minmax(0,1fr)); } }
-  @media (max-width:720px){ .lease-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
-  @media (max-width:520px){ .lease-grid{ grid-template-columns:1fr; } }
-
-  .lease-field{display:block}
-  .lease-label{display:block;text-align:center;font-weight:600;color:#334155;margin-bottom:.35rem}
-  .lease-input{width:100%;border:1px solid #e5e7eb;border-radius:.75rem;padding:.65rem .8rem;background:#fff}
-  .lease-input:focus{outline:2px solid #10b981;outline-offset:2px}
-  .lease-row-title{margin-top:14px;font-weight:800;color:#065f46;text-align:center}
+  /* Layout helpers */
+  .lease{display:none;margin-top:12px}
+  .grid5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+  @media(max-width:1100px){.grid5{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:720px){.grid5{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:520px){.grid5{grid-template-columns:1fr}}
+  /* Field block: center header, center input, custom widths via CSS var */
+  .f{display:flex;flex-direction:column;align-items:center}
+  .lab{display:block;text-align:center;font-weight:600;color:#334155;margin-bottom:.35rem;white-space:nowrap}
+  .inp{border:1px solid #e5e7eb;border-radius:.75rem;padding:.55rem .7rem;background:#fff;text-align:left}
+  .inp:focus{outline:2px solid #10b981;outline-offset:2px}
+  /* Width tokens (approx match to label lengths) */
+  .w-10{width:10ch}.w-12{width:12ch}.w-14{width:14ch}.w-15{width:15ch}.w-16{width:16ch}
+  .w-18{width:18ch}.w-20{width:20ch}.w-22{width:22ch}
 </style>
-</head>
-<body>
+</head><body>
 <div class="kx">
-  <h2>Build your payment</h2>
-  <p class="sub">Taxes/fees estimated; lender approval required.</p>
+  <h2>Build your payment</h2><p class="sub">Taxes/fees estimated; lender approval required.</p>
 
+  <!-- Finance (kept) -->
   <div class="row row--2">
     <label class="field"><span class="label">Vehicle price ($)</span><input id="price" type="number"></label>
     <label class="field"><span class="label">Down payment ($)</span><input id="down" type="number"></label>
@@ -42,83 +40,51 @@
     <label style="display:flex;align-items:center;gap:8px;margin-top:6px"><input type="checkbox" id="maint"> Maintenance ($495)</label>
   </details>
 
-  <!-- Optional lease section (appears only if Discovery step saved 'Yes' for lease specials) -->
-  <div id="leaseBlock" class="panel" style="display:none;margin-top:10px">
-    <h3 class="lease-row-title">Lease Worksheet</h3>
+  <div class="note" id="summary" style="margin-top:8px"></div>
 
-    <div class="lease-grid">
+  <!-- Lease Worksheet -->
+  <div id="leaseBlock" class="lease">
+    <h3 style="text-align:center;margin:10px 0 6px">Lease Worksheet</h3>
+
+    <div class="grid5">
       <!-- Row 1 -->
-      <label class="lease-field">
-        <span class="lease-label">MSRP ($)</span>
-        <input id="msrp" class="lease-input currency" inputmode="decimal" placeholder="$0.00">
-      </label>
-      <label class="lease-field">
-        <span class="lease-label">Residual %</span>
-        <input id="residualPct" class="lease-input" type="number" step="0.1" placeholder="e.g., 50">
-      </label>
-      <label class="lease-field">
-        <span class="lease-label">APR (%)</span>
-        <input id="leaseApr" class="lease-input" type="number" step="0.01" placeholder="5.90">
-      </label>
-      <label class="lease-field">
-        <span class="lease-label">Term (months)</span>
-        <input id="leaseTerm" class="lease-input" type="number" step="1" placeholder="36">
-      </label>
-      <label class="lease-field">
-        <span class="lease-label">Sales Tax (decimal)</span>
-        <input id="taxRate" class="lease-input" type="number" step="0.0001" placeholder="0.0625">
-      </label>
+      <label class="f"><span class="lab">MSRP ($)</span><input id="msrp" class="inp money w-15" placeholder="$0.00"></label>
+      <label class="f"><span class="lab">Residual %</span><input id="resPct" class="inp pct w-12" placeholder="50.0%"></label>
+      <label class="f"><span class="lab">APR (%)</span><input id="leaseApr" class="inp pct w-12" placeholder="5.90%"></label>
+      <label class="f"><span class="lab">Initial Cap Cost (Selling Price)</span><input id="capInit" class="inp money w-22" placeholder="$0.00"></label>
+      <label class="f"><span class="lab">Term (months)</span><input id="leaseTerm" class="inp num w-14" placeholder="36"></label>
 
       <!-- Row 2 -->
-      <label class="lease-field">
-        <span class="lease-label">Initial Cap Cost (Selling Price)</span>
-        <input id="capCost" class="lease-input currency" inputmode="decimal" placeholder="$0.00">
-      </label>
-      <label class="lease-field">
-        <span class="lease-label">Cap Reduction / DAS</span>
-        <input id="capReduction" class="lease-input currency" inputmode="decimal" placeholder="$0.00">
-      </label>
-      <label class="lease-field">
-        <span class="lease-label">Title &amp; Registration</span>
-        <input id="titleReg" class="lease-input currency" inputmode="decimal" placeholder="$499.00">
-      </label>
-      <label class="lease-field">
-        <span class="lease-label">Lender Acquisition</span>
-        <input id="acqFee" class="lease-input currency" inputmode="decimal" placeholder="$795.00">
-      </label>
-      <label class="lease-field">
-        <span class="lease-label">Doc / Dealer Fees</span>
-        <input id="docFee" class="lease-input currency" inputmode="decimal" placeholder="$0.00">
-      </label>
+      <label class="f"><span class="lab">Initial Investment</span><input id="das" class="inp money w-18" placeholder="$1,000.00"></label>
+      <label class="f"><span class="lab">Title & Registration</span><input id="titleReg" class="inp money w-18" placeholder="$499.00"></label>
+      <label class="f"><span class="lab">Lender Acquisition</span><input id="acq" class="inp money w-18" placeholder="$795.00"></label>
+      <label class="f"><span class="lab">Documentation Fee</span><input id="docFee" class="inp money w-18" placeholder="$499.00"></label>
+      <label class="f"><span class="lab">Sales Tax (decimal)</span><input id="taxPct" class="inp pct w-18" placeholder="0.0625"></label>
 
       <!-- Row 3 -->
-      <label class="lease-field">
-        <span class="lease-label">Residual Value ($)</span>
-        <input id="residualValue" class="lease-input" readonly>
+      <label class="f"><span class="lab">Residual Value ($)</span><input id="resVal" class="inp money w-18" placeholder="$0.00" readonly></label>
+      <label class="f"><span class="lab">Miles per Year</span><input id="miles" class="inp miles w-18" placeholder="12,000"></label>
+      <label class="f"><span class="lab">Trade Allowance ($)</span><input id="tradeAllow" class="inp money w-18" placeholder="$0.00"></label>
+      <label class="f"><span class="lab">Loan Payoff ($)</span><input id="loanPayoff" class="inp money w-18" placeholder="$0.00"></label>
+      <label class="f"><span class="lab">Trade-In Credit ($)</span><input id="tradeCredit" class="inp money w-18" placeholder="$0.00" readonly></label>
+
+      <!-- Row 4 -->
+      <label class="f"><span class="lab">Adjusted Cap Cost</span><input id="capAdj" class="inp money w-18" placeholder="$0.00" readonly></label>
+      <div></div><div></div><div></div><div></div>
+
+      <!-- Bottom: Monthly Payment centered -->
+      <div></div><div></div>
+      <label class="f" style="justify-self:center">
+        <span class="lab">Monthly Payment</span>
+        <input id="monthlyPay" class="inp money w-18" placeholder="$0.00" readonly>
       </label>
-      <label class="lease-field">
-        <span class="lease-label">Miles per Year</span>
-        <input id="milesPerYear" class="lease-input" inputmode="numeric" placeholder="12,000">
-      </label>
-      <label class="lease-field">
-        <span class="lease-label">Adjusted Cap Cost</span>
-        <input id="adjustedCap" class="lease-input" readonly>
-      </label>
-      <label class="lease-field">
-        <span class="lease-label">Trade-In Credit ($)</span>
-        <input id="tradeCredit" class="lease-input currency" inputmode="decimal" placeholder="$0.00">
-      </label>
-      <label class="lease-field">
-        <span class="lease-label">Rebates / Incentives ($)</span>
-        <input id="rebates" class="lease-input currency" inputmode="decimal" placeholder="$0.00">
-      </label>
+      <div></div><div></div>
     </div>
 
-    <div class="note" id="leaseSummary" style="margin-top:10px"></div>
+    <div class="note" id="leaseSummary" style="margin-top:10px;text-align:center"></div>
   </div>
 
-  <div class="note" id="summary" style="margin-top:8px"></div>
-  <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">
+  <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
     <button id="next" class="btn">Start credit →</button>
   </div>
 </div>
@@ -126,179 +92,109 @@
 <script>
 const {save, load, post} = window.kiosk;
 
-/* ---------- helpers: currency + numbers ---------- */
-function toNumber(v){ return Number(String(v||0).replace(/[^\d.-]/g,'')) || 0; }
-function fmtCurrency(n){ const x = Number(n||0); return x.toLocaleString(undefined,{style:'currency',currency:'USD'}); }
-function fmtIntWithSep(n){ const x = parseInt(String(n).replace(/[^\d-]/g,''),10)||0; return x.toLocaleString(); }
+/* ---------- tiny helpers ---------- */
+const $ = id => document.getElementById(id);
+const moneyRe=/[^\d-]/g, pctRe=/[^0-9.\-]/g;
+const toCents=v=>Math.round((Number(String(v).replace(moneyRe,'')||0))/100);
+function fmtMoneyFromCents(c){return((c||0)/100).toLocaleString(undefined,{style:'currency',currency:'USD'});}
+function fmtMoneyInput(el){const raw=String(el.value||'').replace(moneyRe,'');if(!raw){el.value='';return 0;}const c=toCents(raw);el.value=fmtMoneyFromCents(c);return c;}
+function readMoney(el){return toCents(String(el.value||'').replace(moneyRe,''));}
+function fmtPctInput(el){const n=Number(String(el.value||'').replace(pctRe,''));if(isNaN(n)){el.value='';return 0;}el.value=n.toFixed(2);return n;}
+function readPct(el){const n=Number(String(el.value||'').replace(pctRe,''));return isNaN(n)?0:n;}
+function readInt(el){const n=parseInt(String(el.value||'').replace(/[^\d-]/g,''),10);return isNaN(n)?0:n;}
+function fmtMiles(el){const n=readInt(el);el.value=n?n.toLocaleString():"";return n;}
+const mfFromApr=apr=>apr/2400;
 
-/* ---------- finance section (existing) ---------- */
-const els = {
-  price:document.getElementById('price'), down:document.getElementById('down'),
-  fees:document.getElementById('fees'), apr:document.getElementById('apr'), term:document.getElementById('term'),
-  vsc:document.getElementById('vsc'), gap:document.getElementById('gap'), maint:document.getElementById('maint'),
-  summary:document.getElementById('summary')
-};
-function calcPayment(amount, aprPct, termMonths){ const r=aprPct/100/12; return r===0? amount/termMonths : (r*amount)/(1-Math.pow(1+r,-termMonths)); }
-function render(){
-  const d = load('guided_desk',{price:0,down:2000,apr:6.9,term:72,taxesFees:995,products:{vsc:false,gap:false,maint:false}});
-  d.price = Number(els.price.value||d.price); d.down = Number(els.down.value||d.down);
-  d.taxesFees = Number(els.fees.value||d.taxesFees); d.apr = Number(els.apr.value||d.apr); d.term = Number(els.term.value||d.term);
-  d.products = { vsc: els.vsc.checked, gap: els.gap.checked, maint: els.maint.checked };
-  const productTotal = (d.products.vsc?1895:0)+(d.products.gap?795:0)+(d.products.maint?495:0);
-  const trade = load('guided_trade',{}) || {};
-  const tradeAvg = ((trade.rangeLow||0) + (trade.rangeHigh||0))/2 || 0;
-  const amount = Math.max(d.price + d.taxesFees + productTotal - d.down - tradeAvg, 0);
-  const monthly = calcPayment(amount, d.apr, d.term);
-  els.summary.innerHTML = `Amount financed: <strong>${fmtCurrency(amount)}</strong> &nbsp; • &nbsp; Est. monthly: <strong>${fmtCurrency(Math.round(monthly))}</strong>`;
-  save('guided_desk', d);
+/* ---------- finance (existing) ---------- */
+const finEls={price:$('price'),down:$('down'),fees:$('fees'),apr:$('apr'),term:$('term'),
+vsc:$('vsc'),gap:$('gap'),maint:$('maint'),summary:$('summary')};
+function calcPayment(amount,aprPct,term){const r=aprPct/100/12;return r===0?amount/term:(r*amount)/(1-Math.pow(1+r,-term));}
+function renderFinance(){
+  const d=load('guided_desk',{price:0,down:2000,apr:5.9,term:72,taxesFees:995,products:{vsc:false,gap:false,maint:false}});
+  d.price=Number(finEls.price.value||d.price);
+  d.down=Number(finEls.down.value||d.down);
+  d.taxesFees=Number(finEls.fees.value||d.taxesFees);
+  d.apr=Number(finEls.apr.value||d.apr);
+  d.term=Number(finEls.term.value||d.term);
+  d.products={vsc:finEls.vsc.checked,gap:finEls.gap.checked,maint:finEls.maint.checked};
+  const productTotal=(d.products.vsc?1895:0)+(d.products.gap?795:0)+(d.products.maint?495:0);
+  const trade=load('guided_trade',{});const mid=((trade.rangeLow||0)+(trade.rangeHigh||0))/2||0;
+  const amount=Math.max(d.price+d.taxesFees+productTotal-d.down-mid,0);
+  const monthly=calcPayment(amount,d.apr,d.term);
+  finEls.summary.innerHTML=`Amount financed: <strong>$${amount.toLocaleString()}</strong> • Est. monthly: <strong>$${monthly.toFixed(0)}</strong>`;
+  save('guided_desk',d);
 }
-function hydrate(){
-  const d = load('guided_desk',{price:0,down:2000,apr:6.9,term:72,taxesFees:995,products:{vsc:false,gap:false,maint:false}});
-  ['price','down','fees','apr','term'].forEach(k=> els[k].value = d[k]);
-  els.vsc.checked=d.products.vsc; els.gap.checked=d.products.gap; els.maint.checked=d.products.maint; render();
-}
-['price','down','fees','apr','term','vsc','gap','maint'].forEach(k=> els[k].addEventListener('input', render));
+['price','down','fees','apr','term','vsc','gap','maint'].forEach(k=>finEls[k]?.addEventListener('input',renderFinance));
 
-/* ---------- lease section (shows only if needs.leaseSpecials === 'Yes') ---------- */
-const leaseBlock = document.getElementById('leaseBlock');
-const L = {
-  msrp:       document.getElementById('msrp'),
-  residualPct:document.getElementById('residualPct'),
-  leaseApr:   document.getElementById('leaseApr'),
-  leaseTerm:  document.getElementById('leaseTerm'),
-  taxRate:    document.getElementById('taxRate'),
-
-  capCost:    document.getElementById('capCost'),
-  capReduction:document.getElementById('capReduction'),
-  titleReg:   document.getElementById('titleReg'),
-  acqFee:     document.getElementById('acqFee'),
-  docFee:     document.getElementById('docFee'),
-
-  residualValue:document.getElementById('residualValue'),
-  milesPerYear: document.getElementById('milesPerYear'),
-  adjustedCap:  document.getElementById('adjustedCap'),
-  tradeCredit:  document.getElementById('tradeCredit'),
-  rebates:      document.getElementById('rebates'),
-
-  summary:      document.getElementById('leaseSummary')
+/* ---------- lease widgets ---------- */
+const L={
+  block:$('leaseBlock'), out:$('leaseSummary'), msrp:$('msrp'), resPct:$('resPct'), leaseApr:$('leaseApr'), leaseTerm:$('leaseTerm'),
+  capInit:$('capInit'), titleReg:$('titleReg'), acq:$('acq'), docFee:$('docFee'),
+  das:$('das'), taxPct:$('taxPct'), resVal:$('resVal'), miles:$('miles'),
+  tradeAllow:$('tradeAllow'), loanPayoff:$('loanPayoff'), tradeCredit:$('tradeCredit'),
+  capAdj:$('capAdj'), monthlyPay:$('monthlyPay')
 };
 
-/* default seeds */
-function seedLeaseDefaults(){
-  if(!L.leaseApr.value)     L.leaseApr.value   = 5.90;      // APR default
-  if(!L.leaseTerm.value)    L.leaseTerm.value  = 36;
-  if(!L.taxRate.value)      L.taxRate.value    = 0.0625;
-  if(!L.titleReg.value)     L.titleReg.value   = '$499.00';
-  if(!L.acqFee.value)       L.acqFee.value     = '$795.00';
-  if(!L.milesPerYear.value) L.milesPerYear.value = '12,000';
+function computeLease(){
+  // defaults + formatting
+  const msrpC=fmtMoneyInput(L.msrp);
+  const resP =L.resPct.value?fmtPctInput(L.resPct):fmtPctInput(L.resPct=(L.resPct.value='50',L.resPct)); // default 50
+  const aprP =L.leaseApr.value?fmtPctInput(L.leaseApr):(L.leaseApr.value='5.90',5.90);
+  const term =L.leaseTerm.value?readInt(L.leaseTerm):(L.leaseTerm.value='36',36);
+
+  const capInitC=fmtMoneyInput(L.capInit);
+  const titleC  =L.titleReg.value?fmtMoneyInput(L.titleReg):(L.titleReg.value='$499.00',49900);
+  const acqC    =L.acq.value?fmtMoneyInput(L.acq):(L.acq.value='$795.00',79500);
+  const docC    =L.docFee.value?fmtMoneyInput(L.docFee):(L.docFee.value='$499.00',49900);
+
+  const dasC    =L.das.value?fmtMoneyInput(L.das):(L.das.value='$1,000.00',100000);
+  const taxDec  =L.taxPct.value?readPct(L.taxPct):0;
+
+  const miles   =L.miles.value?fmtMiles(L.miles):(L.miles.value='12,000',12000);
+  const allowC  =fmtMoneyInput(L.tradeAllow);
+  const payoffC =fmtMoneyInput(L.loanPayoff);
+  const tradeCredC = allowC - payoffC;           // negative equity shows as negative
+  L.tradeCredit.value = fmtMoneyFromCents(tradeCredC);
+
+  // Derived
+  const resValC = Math.round(msrpC*(resP/100));  L.resVal.value = fmtMoneyFromCents(resValC);
+
+  // Adjusted Cap Cost = Initial Cap + Acquisition + Title (per your spec)
+  const capAdjC = capInitC + acqC + titleC;      L.capAdj.value = fmtMoneyFromCents(capAdjC);
+
+  // Payment math
+  const mf = mfFromApr(aprP);
+  const dep = (capAdjC - resValC) / term / 100;
+  const fin = ((capAdjC + resValC) * mf) / 100;
+  const base = dep + fin;                         // pre-tax
+  const tax  = base * taxDec;                     // monthly tax from decimal
+  let monthly = base + tax;
+
+  if (dasC>0){ monthly = Math.max(0, monthly - ((dasC/100)/term)); }
+
+  L.monthlyPay.value = fmtMoneyFromCents(Math.round(monthly*100));
+  L.out.innerHTML = `Adj. Cap: <strong>${fmtMoneyFromCents(capAdjC)}</strong> • Residual: <strong>${fmtMoneyFromCents(resValC)}</strong>`;
 }
 
-/* currency masking on blur */
-function maskCurrency(el){
-  const n = toNumber(el.value);
-  el.value = fmtCurrency(n);
-}
-function unmaskToDigits(el){ return toNumber(el.value); }
-
-/* compute lease payment using APR → MF */
-function computeLeasePayment(p){
-  const msrp          = toNumber(p.msrp);
-  const residualPct   = Number(p.residualPct)||0; // %
-  const capCost       = toNumber(p.capCost);
-  const capReduction  = toNumber(p.capReduction);
-  const titleReg      = toNumber(p.titleReg);
-  const acqFee        = toNumber(p.acqFee);
-  const docFee        = toNumber(p.docFee);
-  const tradeCredit   = toNumber(p.tradeCredit); // can be negative (negative equity)
-  const rebates       = toNumber(p.rebates);
-  const term          = Math.max(1, Number(p.term)||36);
-  const taxRate       = Number(p.taxRate)||0;
-
-  // APR → Money Factor (industry convention)
-  const aprPct = Number(p.apr)||0;
-  const mf = aprPct/2400;
-
-  // Residual ($)
-  const residual = msrp * (residualPct/100);
-
-  // Adjusted Cap Cost (displayed field) = Initial Cap + Acq + Title&Reg
-  const adjustedCap = capCost + acqFee + titleReg;
-
-  // Cap used for calc (adjusted - reductions/credits)
-  const capForCalc = adjustedCap - capReduction - rebates - tradeCredit + docFee;
-
-  // Base monthly (pre-tax)
-  const depreciation = (capForCalc - residual) / term;
-  const rent         = (capForCalc + residual) * mf;
-  const base         = depreciation + rent;
-
-  // With tax
-  const monthly = base * (1 + taxRate);
-
-  return { base, monthly, residual, adjustedCap, capForCalc };
-}
-
-/* wire up field behaviors */
-function recalcLease(){
-  // keep residual value live
-  const residualVal = toNumber(L.msrp.value) * ((Number(L.residualPct.value)||0)/100);
-  L.residualValue.value = fmtCurrency(residualVal);
-
-  // adjusted cap = capCost + acq + titleReg
-  const adj = toNumber(L.capCost.value) + toNumber(L.acqFee.value) + toNumber(L.titleReg.value);
-  L.adjustedCap.value = fmtCurrency(adj);
-
-  const res = computeLeasePayment({
-    msrp: L.msrp.value,
-    residualPct: L.residualPct.value,
-    capCost: L.capCost.value,
-    capReduction: L.capReduction.value,
-    titleReg: L.titleReg.value,
-    acqFee: L.acqFee.value,
-    docFee: L.docFee.value,
-    tradeCredit: L.tradeCredit.value,
-    rebates: L.rebates.value,
-    term: L.leaseTerm.value,
-    taxRate: L.taxRate.value,
-    apr: L.leaseApr.value
-  });
-
-  L.summary.innerHTML =
-    `Base (pre-tax): <strong>${fmtCurrency(res.base)}</strong> &nbsp;•&nbsp; ` +
-    `With tax: <strong>${fmtCurrency(res.monthly)}</strong>`;
-}
-
-/* mask currency on blur; recalc on input */
 [
-  L.msrp, L.capCost, L.capReduction, L.titleReg, L.acqFee, L.docFee,
-  L.tradeCredit, L.rebates
-].forEach(el=>{
-  el.addEventListener('blur', ()=>{ maskCurrency(el); recalcLease(); });
-  el.addEventListener('input', ()=>{ recalcLease(); });
-});
+ 'msrp','resPct','leaseApr','leaseTerm','capInit','titleReg','acq','docFee','das','taxPct',
+ 'miles','tradeAllow','loanPayoff'
+].forEach(id=>L[id].addEventListener('input',computeLease));
 
-/* numeric pretty-print for miles per year */
-L.milesPerYear.addEventListener('blur', ()=>{ L.milesPerYear.value = fmtIntWithSep(L.milesPerYear.value); });
-L.milesPerYear.addEventListener('input', recalcLease);
+/* ---------- boot ---------- */
+function boot(){
+  // hydrate finance
+  const d=load('guided_desk',{price:0,down:2000,apr:5.9,term:72,taxesFees:995,products:{vsc:false,gap:false,maint:false}});
+  finEls.price.value=d.price; finEls.down.value=d.down; finEls.fees.value=d.taxesFees; finEls.apr.value=d.apr; finEls.term.value=d.term;
+  finEls.vsc&&(finEls.vsc.checked=d.products.vsc); finEls.gap&&(finEls.gap.checked=d.products.gap); finEls.maint&&(finEls.maint.checked=d.products.maint);
+  renderFinance();
 
-/* simple numeric inputs */
-[ L.residualPct, L.leaseApr, L.leaseTerm, L.taxRate ].forEach(el=>{
-  el.addEventListener('input', recalcLease);
-});
-
-/* show/hide lease section based on discovery */
-function maybeShowLease(){
-  const needs = load('guided_needs', {}) || {};
-  const show = (String(needs.leaseSpecials||'').toLowerCase() === 'yes');
-  leaseBlock.style.display = show ? 'block' : 'none';
-  if(show){ seedLeaseDefaults(); recalcLease(); }
+  // show lease only if Discovery selected Yes
+  const needs=load('guided_needs',{}); if((needs.leaseSpecials||'').toLowerCase()==='yes'){ L.block.style.display='block'; computeLease(); }
 }
+boot();
 
-/* boot everything */
-document.getElementById('next').addEventListener('click', ()=>{ render(); post('payments:done'); });
-hydrate();
-maybeShowLease();
-render();
+/* ---------- nav ---------- */
+$('next').addEventListener('click',()=>{renderFinance();computeLease();post('payments:done');});
 </script>
-</body>
-</html>
+</body></html>
