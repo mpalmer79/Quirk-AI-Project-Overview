@@ -1,9 +1,10 @@
-// Minimal ESLint v9 "flat config" so CI stops failing.
-// Add rules/plugins later if you want real linting.
+// eslint.config.js  (ESLint v9 flat config)
 
-/// <reference types="eslint" />
+import js from "@eslint/js";
+import tseslint from "typescript-eslint";
 
 export default [
+  // Ignore generated/output & configs you don't want linted
   {
     ignores: [
       "node_modules/**",
@@ -11,16 +12,34 @@ export default [
       "dist/**",
       "public/**",
       "docs/**",
-      "web/**"
+      "web/**",
+      "types/**",
+      "**/*.d.ts",
+      "tailwind.config.*",
+      "tailWind.config.*" // in case of that capitalization
     ],
   },
+
+  // Base JS rules
+  js.configs.recommended,
+
+  // TypeScript-aware rules (non type-checked for speed; no project needed)
+  ...tseslint.configs.recommended,
+
+  // Ensure TS/TSX is parsed with JSX support
   {
-    files: ["**/*.{js,jsx,ts,tsx}"],
+    files: ["**/*.{ts,tsx}"],
     languageOptions: {
-      ecmaVersion: 2022,
-      sourceType: "module",
+      parser: tseslint.parser,
+      parserOptions: {
+        ecmaVersion: 2022,
+        sourceType: "module",
+        ecmaFeatures: { jsx: true },
+        // no 'project' -> faster & no need for a lockfile in CI
+      },
     },
-    plugins: {},
-    rules: {},
+    rules: {
+      // add rules here later if you want
+    },
   },
 ];
