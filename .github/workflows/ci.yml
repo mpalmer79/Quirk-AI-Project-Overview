@@ -26,20 +26,42 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
+          # no cache -> avoids lockfile requirement warnings/errors
 
-      - name: Install
-        run: npm install
+      - name: Detect package.json
+        id: detect
+        run: |
+          if [ -f "${{ matrix.pkg }}/package.json" ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install deps
+        if: steps.detect.outputs.present == 'true'
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
         working-directory: ${{ matrix.pkg }}
 
       - name: Typecheck
+        if: steps.detect.outputs.present == 'true'
         run: npm run typecheck --if-present
         working-directory: ${{ matrix.pkg }}
 
       - name: Lint
+        if: steps.detect.outputs.present == 'true'
         run: npm run lint --if-present
         working-directory: ${{ matrix.pkg }}
 
       - name: Build
+        if: steps.detect.outputs.present == 'true'
         run: npm run build --if-present
         working-directory: ${{ matrix.pkg }}
+
+      - name: Skip note (no package.json)
+        if: steps.detect.outputs.present != 'true'
+        run: echo "Skipping ${{ matrix.pkg }} (no package.json)"
