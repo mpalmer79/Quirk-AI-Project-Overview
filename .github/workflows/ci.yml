@@ -18,7 +18,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # no cache => no lockfile required
+      # No cache -> no lockfile required
       - name: Use Node 20
         uses: actions/setup-node@v4
         with:
