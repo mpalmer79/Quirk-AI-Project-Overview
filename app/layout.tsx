@@ -1,7 +1,6 @@
 // app/layout.tsx
 import type { ReactNode } from 'react';
-// If you don't have a globals.css, delete the next line.
-import './globals.css';
+import './styles/globals.css'; // <-- note styles/
 
 export const metadata = {
   title: 'Quirk AI',
@@ -15,4 +14,3 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     </html>
   );
 }
-
