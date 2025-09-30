@@ -1,476 +1,147 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Quirk AI</title>
-
-  <!-- Force browser/UI to render in light mode -->
-  <meta name="color-scheme" content="light">
-
-  <!-- Tell the browser all relative links live under this GitHub Pages project -->
-  <base href="/Quirk-AI-Project-Overview/">
-
-  <!-- Site stylesheet -->
-  <link rel="stylesheet" href="assets/style.css" />
-
-  <!-- Page-scoped polish only for the home page -->
-  <style>
-    /* ===== Topbar (reuse global styles) ===== */
-    .topbar-title { letter-spacing: .2px; }
-
-    /* ===== Hero ===== */
-    .hero {
-      margin: 18px auto 12px;
-    }
-    .hero .container {
-      display: grid;
-      grid-template-columns: 160px 1fr;
-      gap: 20px;
-      align-items: center;
-    }
-    .hero-logo-box {
-      border: 1px solid #e5e7eb;
-      background: #fff;
-      border-radius: 14px;
-      padding: 12px;
-      display: grid;
-      place-items: center;
-    }
-    .hero-logo-box img { width: 120px; height: auto; object-fit: contain; }
-
-    .hero h1 {
-      margin: 2px 0 6px;
-      font-size: clamp(1.6rem, 3vw, 2.2rem);
-      line-height: 1.2;
-      color: #0f172a;
-      font-weight: 800;
-    }
-    .hero p {
-      margin: 0;
-      color: #475569;
-      font-size: 1.05rem;
-    }
-    .hero-actions {
-      margin-top: 12px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    /* ===== Buttons (page-scoped) ===== */
-    .btn {
-      display: inline-block;
-      padding: 10px 14px;
-      border-radius: 999px;
-      font-weight: 700;
-      text-decoration: none;
-      line-height: 1;
-      border: 1px solid rgba(11,110,55,.22);
-      transition: transform .06s ease, box-shadow .12s ease;
-      white-space: nowrap;
-      background: #fff;
-      color: #0b6e37;
-    }
-    .btn:hover { transform: translateY(-1px); text-decoration: none; }
-    .btn-primary {
-      background: #0b6e37;
-      color: #fff;
-      border-color: #0b6e37;
-    }
-    .btn-soft {
-      background: rgba(11,110,55,.08);
-      color: #0b6e37;
-    }
-
-    /* ===== Project grid ===== */
-    .projects-wrap { max-width: 1100px; margin: 10px auto 36px; padding: 0 16px; }
-    .projects-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 16px;
-    }
-    @media (min-width: 980px) { .projects-grid { grid-template-columns: 1fr 1fr; } }
-
-    .project-item {
-      background: #fff;
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      padding: 18px;
-      box-shadow: 0 6px 16px rgba(2,6,23,.06);
-    }
-    .project-name {
-      margin: 0 0 6px;
-      font-size: 1.2rem;
-      font-weight: 800;
-      color: #0f172a;
-    }
-    .green-title { color:#0b6e37; font-weight:800; }
-
-    /* Center the project headers within each card */
-    .project-item .project-name { text-align: center; }
-    .project-item .project-name a { display: inline-block; }
-
-    .project-lead {
-      color: #475569;
-      margin: 0 0 10px;
-      font-size: .98rem;
-    }
-
-    .project-details { display: grid; gap: 8px; }
-    .project-detail { display: grid; grid-template-columns: 140px 1fr; gap: 10px; }
-    .detail-label { font-weight: 600; color: #0f172a; }
-    .detail-value { color: #111; }
-
-    /* Center the Status badge (first detail row) */
-    .project-item .project-details .project-detail:first-child {
-      grid-template-columns: 1fr !important;
-      align-items: center;
-    }
-    .project-item .project-details .project-detail:first-child .detail-label {
-      display: none;
-    }
-    .project-item .project-details .project-detail:first-child .detail-value {
-      justify-self: center;
-      text-align: center;
-      width: 100%;
-    }
-
-    /* Status badges */
-    .badge {
-      display: inline-block;
-      padding: 4px 10px;
-      line-height: 1;
-      border-radius: 999px;
-      font-size: .85rem;
-      font-weight: 700;
-      border: 1px solid;
-    }
-    .status-live       { color:#065f46; background:#ecfdf5; border-color:#a7f3d0; }
-    .status-dev        { color:#1d4ed8; background:#eff6ff; border-color:#bfdbfe; }
-    .status-planning   { color:#6d28d9; background:#f5f3ff; border-color:#ddd6fe; }
-
-    .project-actions { margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap; }
-
-    /* Footer */
-    footer.footer small { color:#667085; }
-  </style>
-</head>
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="color-scheme" content="light">
+<title>Quirk AI</title><base href="/Quirk-AI-Project-Overview/"><link rel="stylesheet" href="assets/style.css">
+<style>
+.topbar-title{letter-spacing:.2px}
+.hero{margin:18px auto 12px}.hero .container{display:grid;grid-template-columns:160px 1fr;gap:20px;align-items:center}
+.hero-logo-box{border:1px solid #e5e7eb;background:#fff;border-radius:14px;padding:12px;display:grid;place-items:center}
+.hero-logo-box img{width:120px;height:auto;object-fit:contain}
+.hero h1{margin:2px 0 6px;font-size:clamp(1.6rem,3vw,2.2rem);line-height:1.2;color:#0f172a;font-weight:800}
+.hero p{margin:0;color:#475569;font-size:1.05rem}
+.hero-actions{margin-top:12px;display:flex;flex-wrap:wrap;gap:10px}
+.btn{display:inline-block;padding:10px 14px;border-radius:999px;font-weight:700;text-decoration:none;line-height:1;border:1px solid rgba(11,110,55,.22);transition:transform .06s,box-shadow .12s;white-space:nowrap;background:#fff;color:#0b6e37}
+.btn:hover{transform:translateY(-1px);text-decoration:none}.btn-primary{background:#0b6e37;color:#fff;border-color:#0b6e37}.btn-soft{background:rgba(11,110,55,.08);color:#0b6e37}
+.projects-wrap{max-width:1100px;margin:10px auto 36px;padding:0 16px}
+.projects-grid{display:grid;grid-template-columns:1fr;gap:16px}@media(min-width:980px){.projects-grid{grid-template-columns:1fr 1fr}}
+.project-item{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:18px;box-shadow:0 6px 16px rgba(2,6,23,.06)}
+.project-name{margin:0 0 6px;font-size:1.2rem;font-weight:800;color:#0f172a;text-align:center}.project-name a{display:inline-block}
+.green-title{color:#0b6e37;font-weight:800}
+.project-lead{color:#475569;margin:0 0 10px;font-size:.98rem}
+.project-details{display:grid;gap:8px}.project-detail{display:grid;grid-template-columns:140px 1fr;gap:10px}
+.detail-label{font-weight:600;color:#0f172a}.detail-value{color:#111}
+.project-item .project-details .project-detail:first-child{grid-template-columns:1fr!important;align-items:center}
+.project-item .project-details .project-detail:first-child .detail-label{display:none}
+.project-item .project-details .project-detail:first-child .detail-value{justify-self:center;text-align:center;width:100%}
+.badge{display:inline-block;padding:4px 10px;line-height:1;border-radius:999px;font-size:.85rem;font-weight:700;border:1px solid}
+.status-live{color:#065f46;background:#ecfdf5;border-color:#a7f3d0}
+.status-dev{color:#1d4ed8;background:#eff6ff;border-color:#bfdbfe}
+.status-planning{color:#6d28d9;background:#f5f3ff;border-color:#ddd6fe}
+.project-actions{margin-top:12px;display:flex;gap:10px;flex-wrap:wrap}
+footer.footer small{color:#667085}
+</style></head>
 <body class="homepage">
+<header class="topbar" role="banner"><div class="topbar-inner">
+  <a class="home-link" href="./">HOME</a><div class="topbar-title">Quirk AI</div>
+  <nav class="topbar-menu" aria-label="Primary"><a href="project-library.html">Project Library</a></nav>
+</div></header>
 
-  <!-- Top bar for fast navigation -->
-  <header class="topbar" role="banner">
-    <div class="topbar-inner">
-      <a class="home-link" href="./">HOME</a>
-      <div class="topbar-title">Quirk AI</div>
-      <nav class="topbar-menu" aria-label="Primary">
-        <a href="project-library.html">Project Library</a>
-      </nav>
+<section class="hero"><div class="container">
+  <div class="hero-logo-box" aria-hidden="true"><img src="assets/quirk-ai-logo.png" alt="Quirk AI logo"></div>
+  <div>
+    <h1>Quirk AI Initiatives</h1>
+    <p>Live tools and in-flight projects that are AI driven to improve efficiency across all departments for Quirk Auto Dealerships</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="project-library.html">Open Project Library</a>
+      <a class="btn btn-primary" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/saleskiosk-welcome.html" target="_blank" rel="noopener">Launch AI Sales Kiosk</a>
+      <a class="btn btn-primary" href="quirk-ai-voice.html" target="_blank" rel="noopener">AI Voice Agents</a>
+      <a class="btn btn-primary" href="quirk-ai-marketing.html">Quirk AI Marketing</a>
+      <a class="btn btn-primary" href="https://mpalmer79.github.io/quirk-closedai/" target="_blank" rel="noopener">Closed AI</a>
     </div>
-  </header>
+  </div>
+</div></section>
 
-  <!-- Hero -->
-  <section class="hero">
-    <div class="container">
-      <div class="hero-logo-box" aria-hidden="true">
-        <img src="assets/quirk-ai-logo.png" alt="Quirk AI logo">
-      </div>
-      <div>
-        <h1>Quirk AI Initiatives</h1>
-        <p>Live tools and in-flight projects that are AI driven to improve efficiency across all departments for Quirk Auto Dealerships</p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="project-library.html">Open Project Library</a>
-          <a class="btn btn-primary" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/saleskiosk-welcome.html" target="_blank" rel="noopener">Launch AI Sales Kiosk</a>
-          <a class="btn btn-primary" href="quirk-ai-voice.html" target="_blank" rel="noopener">AI Voice Agents</a>
-          <!-- Swapped order: Marketing first, then Closed AI -->
-          <a class="btn btn-primary" href="quirk-ai-marketing.html">Quirk AI Marketing</a>
-          <a class="btn btn-primary" href="https://mpalmer79.github.io/quirk-closedai/" target="_blank" rel="noopener">Closed AI</a>
-        </div>
-      </div>
+<main class="projects-wrap" id="projects"><div class="projects-grid">
+  <article class="project-item"><h2 class="project-name"><a href="quirk-trade-tool.html">Quirk Trade Tool</a></h2>
+    <p class="project-lead">Capture trade details quickly and route to appraisal with fewer touches.</p>
+    <div class="project-details">
+      <div class="project-detail"><span class="detail-label">Status:</span><span class="detail-value"><span class="badge status-live">Live</span></span></div>
+      <div class="project-detail"><span class="detail-label">Est. Annual Impact:</span><span class="detail-value">Replaces Voga bill.</span></div>
+      <div class="project-detail"><span class="detail-label">Notes:</span><span class="detail-value">Customer + employee flows; final polish complete.</span></div>
+    </div><div class="project-actions"><a class="btn" href="quirk-trade-tool.html">Open</a></div>
+  </article>
+
+  <article class="project-item"><h2 class="project-name"><a href="qaa.html">Quincy Auto Auction</a></h2>
+    <p class="project-lead">AI-powered efficiency for title processing, inspections, pricing, bidding, logistics, and bidder experience.</p>
+    <div class="project-details">
+      <div class="project-detail"><span class="detail-label">Status:</span><span class="detail-value"><span class="badge status-planning">Planning</span></span></div>
+      <div class="project-detail"><span class="detail-label">Est. Annual Impact:</span><span class="detail-value"></span></div>
+      <div class="project-detail"><span class="detail-label">Notes:</span><span class="detail-value"></span></div>
+    </div><div class="project-actions"><a class="btn" href="qaa.html">Open</a></div>
+  </article>
+
+  <article class="project-item"><h2 class="project-name"><a href="vin-solutions-alternative.html" target="_blank" rel="noopener">VIN Solutions Alternative</a></h2>
+    <p class="project-lead">Enterprise CRM comparison with an appointment-first, AI-assisted lens.</p>
+    <div class="project-details">
+      <div class="project-detail"><span class="detail-label">Status:</span><span class="detail-value"><span class="badge status-planning">Planning</span></span></div>
+      <div class="project-detail"><span class="detail-label">Est. Annual Impact:</span><span class="detail-value">VIN bill for 18 stores.</span></div>
+      <div class="project-detail"><span class="detail-label">Notes:</span><span class="detail-value">Comparison reporting of enterprise CRM platforms with AI efficiency gains.</span></div>
+    </div><div class="project-actions"><a class="btn" href="vin-solutions-alternative.html" target="_blank" rel="noopener">Open</a></div>
+  </article>
+
+  <article class="project-item"><h2 class="project-name"><a href="vin-gen-ai-alternative.html" target="_blank" rel="noopener">VIN Gen AI Alternative</a></h2>
+    <p class="project-lead">AI overlay to compose replies, inject inventory/incentives, and push appointments.Includes GitHub Chrome extension project</p>
+    <div class="project-details">
+      <div class="project-detail"><span class="detail-label">Status:</span><span class="detail-value"><span class="badge status-live">Near Launch</span></span></div>
+      <div class="project-detail"><span class="detail-label">Est. Annual Savings:</span><span class="detail-value">$383,600/year.</span></div>
+      <div class="project-detail"><span class="detail-label">Notes:</span><span class="detail-value">Requires Chrome rollout and quick training for 18 stores.</span></div>
+    </div><div class="project-actions"><a class="btn" href="vin-gen-ai-alternative.html" target="_blank" rel="noopener">Open</a></div>
+  </article>
+
+  <article class="project-item"><h2 class="project-name"><a href="quirk-ai-marketing.html">Quirk AI Marketing</a></h2>
+    <p class="project-lead">AI driven campaigns for successful Enterprise level marketing solutions</p>
+    <div class="project-details">
+      <div class="project-detail"><span class="detail-label">Status:</span><span class="detail-value"><span class="badge status-dev">In Development</span></span></div>
+      <div class="project-detail"><span class="detail-label">Est. Annual Impact:</span><span class="detail-value">&nbsp;</span></div>
+      <div class="project-detail"><span class="detail-label">Notes:</span><span class="detail-value">Central hub for brand-consistent campaigns, resources, and AI tools across Chevrolet, Buick GMC, Kia, and Volkswagen.<br>NH-ready calendars and templates with required disclaimers to launch faster across social, email, web, and ads.</span></div>
+    </div><div class="project-actions"><a class="btn" href="quirk-ai-marketing.html">Open</a></div>
+  </article>
+
+  <article class="project-item"><h2 class="project-name"><a href="quirk-ai-voice.html" target="_blank" rel="noopener">AI Voice Agents (NUMA Replacement)</a></h2>
+    <p class="project-lead">Real conversations that schedule, ticket, quote trades, and hand off safely.</p>
+    <div class="project-details">
+      <div class="project-detail"><span class="detail-label">Status:</span><span class="detail-value"><span class="badge status-dev">In Development</span></span></div>
+      <div class="project-detail"><span class="detail-label">Est. Annual Savings:</span><span class="detail-value">$380,000/yr (minus ~ $32K API)</span></div>
+      <div class="project-detail"><span class="detail-label">Notes:</span><span class="detail-value">12-week path to launch; higher-quality agent and strong guardrails.</span></div>
     </div>
-  </section>
+    <div class="project-actions"><a class="btn" href="quirk-ai-voice.html" target="_blank" rel="noopener">Open</a><a class="btn btn-soft" href="quirk-ai-voice-sales.html" target="_blank" rel="noopener">Sales Calls page</a></div>
+  </article>
 
-  <!-- Projects -->
-  <main class="projects-wrap" id="projects">
-    <div class="projects-grid">
+  <article class="project-item"><h2 class="project-name"><a class="green-title" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/quirk-ai-voice-sales.html" target="_blank" rel="noopener">Quirk AI Voice</a></h2>
+    <p class="project-lead">NUMA captures voicemails; Quirk AI Voice handles real customer conversations in real time — books service, logs leads, quotes trades, checks parts orders, and escalates to a person when it should.</p>
+    <div class="project-details">
+      <div class="project-detail"><span class="detail-label">Status:</span><span class="detail-value"><span class="badge status-dev">In Development</span></span></div>
+      <div class="project-detail"><span class="detail-label">Est. Annual Savings:</span><span class="detail-value">&nbsp;</span></div>
+      <div class="project-detail"><span class="detail-label">Notes:</span><span class="detail-value">&nbsp;</span></div>
+    </div><div class="project-actions"><a class="btn" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/quirk-ai-voice-sales.html" target="_blank" rel="noopener">Open</a></div>
+  </article>
 
-      <!-- Row 1 - Left: Quirk Trade Tool (unchanged except open same tab) -->
-      <article class="project-item">
-        <h2 class="project-name">
-          <a href="quirk-trade-tool.html">Quirk Trade Tool</a>
-        </h2>
-        <p class="project-lead">Capture trade details quickly and route to appraisal with fewer touches.</p>
-        <div class="project-details">
-          <div class="project-detail">
-            <span class="detail-label">Status:</span>
-            <span class="detail-value"><span class="badge status-live">Live</span></span>
-          </div>
-          <div class="project-detail">
-            <span class="detail-label">Est. Annual Impact:</span>
-            <span class="detail-value">Replaces Voga bill.</span>
-          </div>
-          <div class="project-detail">
-            <span class="detail-label">Notes:</span>
-            <span class="detail-value">Customer + employee flows; final polish complete.</span>
-          </div>
-        </div>
-        <div class="project-actions">
-          <a class="btn" href="quirk-trade-tool.html">Open</a>
-        </div>
-      </article>
+  <article class="project-item"><h2 class="project-name"><a class="green-title" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/dealership-intelligence.html">Smart Workplace Verification</a></h2>
+    <p class="project-lead">From biometric attendance systems to intelligent employee tracking, Quirk AI integrates the latest advancements in artificial intelligence, machine learning, and facial recognition to provide real-time insights and complete control over your workforce.</p>
+    <div class="project-details">
+      <div class="project-detail"><span class="detail-label">Status:</span><span class="detail-value"><span class="badge status-dev">Feasability Assessment</span></span></div>
+      <div class="project-detail"><span class="detail-label">Est. Annual Savings:</span><span class="detail-value">                    </span></div>
+      <div class="project-detail"><span class="detail-label">Notes:</span><span class="detail-value">Biometric time-clock sync and area-based camera verification to validate on-site presence and spot timecard mismatches.<br>Compliance-first design with encrypted data, 30-day retention, role-based access, and audit-ready event logs.</span></div>
+    </div><div class="project-actions"><a class="btn" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/dealership-intelligence.html">Open</a></div>
+  </article>
 
-      <!-- Row 1 - Right: NEW — Quincy Auto Auction (replaces VIN Solutions Alternative) -->
-      <article class="project-item">
-        <h2 class="project-name">
-          <a href="qaa.html">Quincy Auto Auction</a>
-        </h2>
-        <p class="project-lead">AI-powered efficiency for title processing, inspections, pricing, bidding, logistics, and bidder experience.</p>
-        <div class="project-details">
-          <div class="project-detail">
-            <span class="detail-label">Status:</span>
-            <span class="detail-value"><span class="badge status-planning">Planning</span></span>
-          </div>
-          <div class="project-detail">
-            <span class="detail-label">Est. Annual Impact:</span>
-            <span class="detail-value"></span>
-          </div>
-          <div class="project-detail">
-            <span class="detail-label">Notes:</span>
-            <span class="detail-value"></span>
-          </div>
-        </div>
-        <div class="project-actions">
-          <a class="btn" href="qaa.html">Open</a>
-        </div>
-      </article>
+  <article class="project-item"><h2 class="project-name"><a class="green-title" href="service.html">Quirk AI for Service</a></h2>
+    <p class="project-lead">Quirk AI for Service will modernize dealership service operations by enhancing both customer and advisor experiences with in-house AI innovation. The project aims to deliver mobile-first tools that streamline check-ins, approvals, and communication for faster, smarter service interactions.</p>
+    <div class="project-details">
+      <div class="project-detail"><span class="detail-label">Status:</span><span class="detail-value"><span class="badge status-dev">In Development</span></span></div>
+      <div class="project-detail"><span class="detail-label">Est. Annual Savings:</span><span class="detail-value">&nbsp;</span></div>
+      <div class="project-detail"><span class="detail-label">Notes:</span><span class="detail-value">I used <a href="https://createanything.com/" target="_blank" rel="noopener">createanything.com</a> under the free version to create a mockup example for the Chevy service app.</span></div>
+    </div><div class="project-actions"><a class="btn" href="service.html" title="Open">Open</a></div>
+  </article>
 
-      <!-- Row 2 - Left: VIN Solutions Alternative (moved from Row 1 Right) -->
-      <article class="project-item">
-        <h2 class="project-name">
-          <a href="vin-solutions-alternative.html" target="_blank" rel="noopener">VIN Solutions Alternative</a>
-        </h2>
-        <p class="project-lead">Enterprise CRM comparison with an appointment-first, AI-assisted lens.</p>
-        <div class="project-details">
-          <div class="project-detail">
-            <span class="detail-label">Status:</span>
-            <span class="detail-value"><span class="badge status-planning">Planning</span></span>
-          </div>
-          <div class="project-detail">
-            <span class="detail-label">Est. Annual Impact:</span>
-            <span class="detail-value">VIN bill for 18 stores.</span>
-          </div>
-          <div class="project-detail">
-            <span class="detail-label">Notes:</span>
-            <span class="detail-value">Comparison reporting of enterprise CRM platforms with AI efficiency gains.</span>
-          </div>
-        </div>
-        <div class="project-actions">
-          <a class="btn" href="vin-solutions-alternative.html" target="_blank" rel="noopener">Open</a>
-        </div>
-      </article>
+  <article class="project-item"><h2 class="project-name"><a class="green-title" href="parts.html">Quirk AI for Parts</a></h2>
+    <p class="project-lead">Quirk AI for Parts focuses on retail and wholesale efficiency—automating parts quotes, routing online inquiries, syncing DMS inventory and pricing, and streamlining pick tickets, will-call, and delivery coordination. The goal is to reduce phone time, improve fill rate, and increase counter throughput while keeping customers updated by SMS/email.</p>
+    <div class="project-details">
+      <div class="project-detail"><span class="detail-label">Status:</span><span class="detail-value"><span class="badge status-dev">In Development</span></span></div>
+      <div class="project-detail"><span class="detail-label">Est. Annual Savings:</span><span class="detail-value">&nbsp;</span></div>
+      <div class="project-detail"><span class="detail-label">Notes:</span><span class="detail-value">&nbsp;</span></div>
+    </div><div class="project-actions"><a class="btn" href="parts.html" title="Open">Open</a></div>
+  </article>
+</div></main>
 
-      <!-- Row 2 - Right: VIN Gen AI Alternative (moved from Row 2 Left) -->
-      <article class="project-item">
-        <h2 class="project-name">
-          <a href="vin-gen-ai-alternative.html" target="_blank" rel="noopener">VIN Gen AI Alternative</a>
-        </h2>
-        <p class="project-lead">AI overlay to compose replies, inject inventory/incentives, and push appointments.Includes GitHub Chrome extension project</p>
-        <div class="project-details">
-          <div class="project-detail">
-            <span class="detail-label">Status:</span>
-            <span class="detail-value"><span class="badge status-live">Near Launch</span></span>
-          </div>
-          <div class="project-detail">
-            <span class="detail-label">Est. Annual Savings:</span>
-            <span class="detail-value">$383,600/year.</span>
-          </div>
-          <div class="project-detail">
-            <span class="detail-label">Notes:</span>
-            <span class="detail-value">Requires Chrome rollout and quick training for 18 stores.</span>
-          </div>
-        </div>
-        <div class="project-actions">
-          <a class="btn" href="vin-gen-ai-alternative.html" target="_blank" rel="noopener">Open</a>
-        </div>
-      </article>
-
-      <!-- Row 3 - Left: Quirk AI Marketing (moved from Row 2 Right) -->
-      <article class="project-item">
-        <h2 class="project-name">
-          <a href="quirk-ai-marketing.html">Quirk AI Marketing</a>
-        </h2>
-        <p class="project-lead">AI driven campaigns for successful Enterprise level marketing solutions</p>
-        <div class="project-details">
-          <div class="project-detail">
-            <span class="detail-label">Status:</span>
-            <span class="detail-value"><span class="badge status-dev">In Development</span></span>
-          </div>
-          <div class="project-detail">
-            <span class="detail-label">Est. Annual Impact:</span>
-            <span class="detail-value">&nbsp;</span>
-          </div>
-          <div class="project-detail">
-            <span class="detail-label">Notes:</span>
-            <span class="detail-value">Central hub for brand-consistent campaigns, resources, and AI tools across Chevrolet, Buick GMC, Kia, and Volkswagen.<br>NH-ready calendars and templates with required disclaimers to launch faster across social, email, web, and ads.</span>
-          </div>
-        </div>
-        <div class="project-actions">
-          <a class="btn" href="quirk-ai-marketing.html">Open</a>
-        </div>
-      </article>
-
-      <!-- Row 3 - Right: AI Voice Agents (NUMA Replacement) (moved from Row 3 Left) -->
-      <article class="project-item">
-        <h2 class="project-name">
-          <a href="quirk-ai-voice.html" target="_blank" rel="noopener">AI Voice Agents (NUMA Replacement)</a>
-        </h2>
-        <p class="project-lead">Real conversations that schedule, ticket, quote trades, and hand off safely.</p>
-        <div class="project-details">
-          <div class="project-detail">
-            <span class="detail-label">Status:</span>
-            <span class="detail-value"><span class="badge status-dev">In Development</span></span>
-          </div>
-          <div class="project-detail">
-            <span class="detail-label">Est. Annual Savings:</span>
-            <span class="detail-value">$380,000/yr (minus ~ $32K API)</span>
-          </div>
-          <div class="project-detail">
-            <span class="detail-label">Notes:</span>
-            <span class="detail-value">12-week path to launch; higher-quality agent and strong guardrails.</span>
-          </div>
-        </div>
-        <div class="project-actions">
-          <a class="btn" href="quirk-ai-voice.html" target="_blank" rel="noopener">Open</a>
-          <a class="btn btn-soft" href="quirk-ai-voice-sales.html" target="_blank" rel="noopener">Sales Calls page</a>
-        </div>
-      </article>
-
-      <!-- Row 4 - Left: Quirk AI Voice (moved from Row 3 Right) -->
-      <article class="project-item">
-        <h2 class="project-name">
-          <a class="green-title" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/quirk-ai-voice-sales.html" target="_blank" rel="noopener">
-            Quirk AI Voice
-          </a>
-        </h2>
-        <p class="project-lead">
-          NUMA captures voicemails; Quirk AI Voice handles real customer conversations in real time — books service,
-          logs leads, quotes trades, checks parts orders, and escalates to a person when it should.
-        </p>
-        <div class="project-details">
-          <div class="project-detail">
-            <span class="detail-label">Status:</span>
-            <span class="detail-value"><span class="badge status-dev">In Development</span></span>
-          </div>
-          <div class="project-detail">
-            <span class="detail-label">Est. Annual Savings:</span>
-            <span class="detail-value">&nbsp;</span>
-          </div>
-          <div class="project-detail">
-            <span class="detail-label">Notes:</span>
-            <span class="detail-value">&nbsp;</span>
-          </div>
-        </div>
-        <div class="project-actions">
-          <a class="btn" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/quirk-ai-voice-sales.html" target="_blank" rel="noopener">Open</a>
-        </div>
-      </article>
-
-      <!-- Row 4 - Right: Smart Workplace Verification (moved from Row 4 Left) -->
-      <article class="project-item">
-        <h2 class="project-name">
-          <a class="green-title" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/dealership-intelligence.html">
-            Smart Workplace Verification
-          </a>
-        </h2>
-        <p class="project-lead">
-          From biometric attendance systems to intelligent employee tracking, Quirk AI integrates the latest advancements in artificial intelligence, machine learning, and facial recognition to provide real-time insights and complete control over your workforce.
-        </p>
-        <div class="project-details">
-          <div class="project-detail">
-            <span class="detail-label">Status:</span>
-            <span class="detail-value"><span class="badge status-dev">Feasability Assessment</span></span>
-          </div>
-          <div class="project-detail">
-            <span class="detail-label">Est. Annual Savings:</span>
-            <span class="detail-value">                    </span>
-          </div>
-          <div class="project-detail">
-            <span class="detail-label">Notes:</span>
-            <span class="detail-value">Biometric time-clock sync and area-based camera verification to validate on-site presence and spot timecard mismatches.<br>Compliance-first design with encrypted data, 30-day retention, role-based access, and audit-ready event logs.</span>
-          </div>
-        </div>
-        <div class="project-actions">
-          <a class="btn" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/dealership-intelligence.html">Open</a>
-        </div>
-      </article>
-
-      <!-- Row 5 - Left: Quirk AI for Service (moved from Row 4 Right) -->
-      <article class="project-item">
-        <h2 class="project-name">
-          <a class="green-title" href="service.html">
-            Quirk AI for Service
-          </a>
-        </h2>
-        <p class="project-lead">
-          Quirk AI for Service will modernize dealership service operations by enhancing both customer and advisor experiences with in-house AI innovation.
-          The project aims to deliver mobile-first tools that streamline check-ins, approvals, and communication for faster, smarter service interactions.
-        </p>
-        <div class="project-details">
-          <div class="project-detail">
-            <span class="detail-label">Status:</span>
-            <span class="detail-value"><span class="badge status-dev">In Development</span></span>
-          </div>
-          <div class="project-detail">
-            <span class="detail-label">Est. Annual Savings:</span>
-            <span class="detail-value">&nbsp;</span>
-          </div>
-          <div class="project-detail">
-            <span class="detail-label">Notes:</span>
-            <span class="detail-value">I used <a href="https://createanything.com/" target="_blank" rel="noopener">createanything.com</a> under the free version to create a mockup example for the Chevy service app.</span>
-          </div>
-        </div>
-        <div class="project-actions">
-          <a class="btn" href="service.html" title="Open">Open</a>
-        </div>
-      </article>
-
-      <!-- Row 5 - Right: Quirk AI for Parts (moved to the previously blank slot) -->
-      <article class="project-item">
-        <h2 class="project-name">
-          <a class="green-title" href="parts.html">
-            Quirk AI for Parts
-          </a>
-        </h2>
-        <p class="project-lead">
-          Quirk AI for Parts focuses on retail and wholesale efficiency—automating parts quotes, routing online inquiries,
-          syncing DMS inventory and pricing, and streamlining pick tickets, will-call, and delivery coordination. The goal
-          is to reduce phone time, improve fill rate, and increase counter throughput while keeping customers updated by SMS/email.
-        </p>
-        <div class="project-details">
-          <div class="project-detail">
-            <span class="detail-label">Status:</span>
-            <span class="detail-value"><span class="badge status-dev">In Development</span></span>
-          </div>
-          <div class="project-detail">
-            <span class="detail-label">Est. Annual Savings:</span>
-            <span class="detail-value">&nbsp;</span>
-          </div>
-          <div class="project-detail">
-            <span class="detail-label">Notes:</span>
-            <span class="detail-value">&nbsp;</span>
-          </div>
-        </div>
-        <div class="project-actions">
-          <a class="btn" href="parts.html" title="Open">Open</a>
-        </div>
-      </article>
-
-    </div>
-  </main>
-
-  <!-- Global footer (uses styles from assets/style.css) -->
-  <footer class="footer">
-    <small>© 2025 Quirk AI — Project Overview</small>
-  </footer>
-</body class="homepage">
-</html>
+<footer class="footer"><small>© 2025 Quirk AI — Project Overview</small></footer>
+</body></html>
