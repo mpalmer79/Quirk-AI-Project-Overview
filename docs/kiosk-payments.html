@@ -1,54 +1,53 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<base href="/Quirk-AI-Project-Overview/">
-<title>Kiosk • Payments</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <base href="/Quirk-AI-Project-Overview/">
+  <title>Kiosk • Payments</title>
 
-<link rel="stylesheet" href="assets/kiosk-shared.css">
-<script src="assets/kiosk-shared.js"></script>
+  <link rel="stylesheet" href="assets/kiosk-shared.css">
+  <script src="assets/kiosk-shared.js"></script>
 
-<style>
-  /* Lease grid: 3 columns, labels centered, boxes full-width */
-  .lease-grid {
-    margin-top: 18px;
-    display: none;                 /* hidden by default; JS toggles */
-    width: 100%;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 24px;                     /* breathing room between columns */
-  }
-  .lease-grid.show { display: grid; }
-
-  .lease-cell .label {
-    display: block;
-    text-align: center;            /* center the field description */
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #334155;
-    margin-bottom: 6px;
-  }
-
-  /* Reuse the kiosk input look so all fields match */
-  .lease-cell .box {
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    background: #fff;
-    height: 40px;                  /* “rectangle box” look */
-    width: 100%;
-  }
-
-  /* Keep cards’ internal alignment feeling right on large screens */
-  @media (min-width: 1024px) {
-    .lease-grid { gap: 32px; }
-  }
-</style>
+  <style>
+    /* Lease grid: 3 rows × 5 columns */
+    .lease-grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 640px) {
+      .lease-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (min-width: 1024px) {
+      .lease-grid { grid-template-columns: repeat(5, 1fr); }
+    }
+    .lease-cell .label {
+      display:block;
+      text-align:center;
+      font-weight:600;
+      color:#334155;
+      margin-bottom:6px;
+    }
+    .lease-note {
+      margin-top:6px;
+      color:#475569;
+      font-size:.95rem;
+      text-align:center;
+    }
+    .readonly {
+      background:#f8fafc;
+      pointer-events:none;
+      opacity:.9;
+    }
+  </style>
 </head>
 <body>
 <div class="kx">
   <h2>Build your payment</h2>
   <p class="sub">Taxes/fees estimated; lender approval required.</p>
 
+  <!-- Finance (loan) inputs -->
   <div class="row row--2">
     <label class="field">
       <span class="label">Vehicle price ($)</span>
@@ -92,139 +91,309 @@
     </label>
   </details>
 
-  <!-- Lease specials placeholders (3 columns × 3 rows) -->
-  <div id="leaseGrid" class="lease-grid">
-    <!-- Row 1 -->
-    <div class="lease-cell">
-      <span class="label">Placeholder</span>
-      <div class="box"></div>
-    </div>
-    <div class="lease-cell">
-      <span class="label">Placeholder</span>
-      <div class="box"></div>
-    </div>
-    <div class="lease-cell">
-      <span class="label">Placeholder</span>
-      <div class="box"></div>
-    </div>
-    <!-- Row 2 -->
-    <div class="lease-cell">
-      <span class="label">Placeholder</span>
-      <div class="box"></div>
-    </div>
-    <div class="lease-cell">
-      <span class="label">Placeholder</span>
-      <div class="box"></div>
-    </div>
-    <div class="lease-cell">
-      <span class="label">Placeholder</span>
-      <div class="box"></div>
-    </div>
-    <!-- Row 3 -->
-    <div class="lease-cell">
-      <span class="label">Placeholder</span>
-      <div class="box"></div>
-    </div>
-    <div class="lease-cell">
-      <span class="label">Placeholder</span>
-      <div class="box"></div>
-    </div>
-    <div class="lease-cell">
-      <span class="label">Placeholder</span>
-      <div class="box"></div>
-    </div>
-  </div>
-
   <div class="note" id="summary" style="margin-top:8px"></div>
 
-  <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">
+  <!-- ===================== LEASE (shown only when leaseSpecials === 'Yes') ===================== -->
+  <div id="leaseBlock" class="panel" style="display:none; margin-top:16px;">
+    <h3 style="text-align:center; color:#065f46; font-weight:800; margin-bottom:8px;">Lease Special Builder</h3>
+    <p class="sub" style="text-align:center;margin-bottom:12px">Shown because you selected “Yes” for lease specials.</p>
+
+    <!-- 3 rows × 5 columns of fields. Labels centered per your request. -->
+    <div class="lease-grid">
+      <!-- Row 1 -->
+      <label class="field lease-cell">
+        <span class="label">MSRP</span>
+        <input id="lease_msrp" class="input currency" type="text" placeholder="$0.00">
+      </label>
+
+      <label class="field lease-cell">
+        <span class="label">Residual %</span>
+        <input id="lease_residual_pct" class="input" type="number" step="0.01" placeholder="e.g., 50">
+      </label>
+
+      <label class="field lease-cell">
+        <span class="label">Money Factor</span>
+        <input id="lease_mf" class="input" type="number" step="0.00001" placeholder="e.g., 0.00125">
+      </label>
+
+      <label class="field lease-cell">
+        <span class="label">Term (months)</span>
+        <input id="lease_term" class="input" type="number" placeholder="e.g., 36">
+      </label>
+
+      <label class="field lease-cell">
+        <span class="label">Sales Tax (decimal)</span>
+        <input id="lease_tax" class="input" type="number" step="0.0001" placeholder="e.g., 0.0625">
+      </label>
+
+      <!-- Row 2 -->
+      <label class="field lease-cell">
+        <span class="label">Initial Cap Cost (Selling Price)</span>
+        <input id="lease_cap" class="input currency" type="text" placeholder="$0.00">
+      </label>
+
+      <label class="field lease-cell">
+        <span class="label">Cap Reduction / DAS</span>
+        <input id="lease_reduction" class="input currency" type="text" placeholder="$0.00">
+      </label>
+
+      <label class="field lease-cell">
+        <span class="label">Rolled-in Fees</span>
+        <input id="lease_rolled_fees" class="input currency" type="text" placeholder="$0.00">
+      </label>
+
+      <label class="field lease-cell">
+        <span class="label">Acquisition Fee</span>
+        <input id="lease_acq" class="input currency" type="text" placeholder="$0.00">
+      </label>
+
+      <label class="field lease-cell">
+        <span class="label">Doc / Dealer Fees</span>
+        <input id="lease_doc" class="input currency" type="text" placeholder="$0.00">
+      </label>
+
+      <!-- Row 3 -->
+      <label class="field lease-cell">
+        <span class="label">Residual Value ($)</span>
+        <input id="lease_residual_amt" class="input readonly" type="text" placeholder="$0.00" readonly>
+      </label>
+
+      <label class="field lease-cell">
+        <span class="label">Miles per Year</span>
+        <input id="lease_miles" class="input" type="number" placeholder="e.g., 12000">
+      </label>
+
+      <label class="field lease-cell">
+        <span class="label">Disposition Fee</span>
+        <input id="lease_dispo" class="input currency" type="text" placeholder="$0.00">
+      </label>
+
+      <label class="field lease-cell">
+        <span class="label">Trade-In Credit</span>
+        <input id="lease_trade_credit" class="input currency" type="text" placeholder="$0.00">
+      </label>
+
+      <label class="field lease-cell">
+        <span class="label">Rebates / Incentives</span>
+        <input id="lease_rebate" class="input currency" type="text" placeholder="$0.00">
+      </label>
+    </div>
+
+    <div id="leaseSummary" class="lease-note">Monthly lease: —</div>
+  </div>
+  <!-- ===================== /LEASE ===================== -->
+
+  <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
     <button id="next" class="btn">Start credit →</button>
   </div>
 </div>
 
 <script>
+/* ------- shared helpers from kiosk-shared.js -------- */
 const { save, load, post } = window.kiosk;
 
+/* ---------------- Finance (loan) ---------------- */
 const els = {
-  price: document.getElementById('price'),
-  down: document.getElementById('down'),
-  fees: document.getElementById('fees'),
-  apr: document.getElementById('apr'),
-  term: document.getElementById('term'),
-  vsc: document.getElementById('vsc'),
-  gap: document.getElementById('gap'),
-  maint: document.getElementById('maint'),
-  summary: document.getElementById('summary'),
-  leaseGrid: document.getElementById('leaseGrid')
+  price:document.getElementById('price'),
+  down:document.getElementById('down'),
+  fees:document.getElementById('fees'),
+  apr:document.getElementById('apr'),
+  term:document.getElementById('term'),
+  vsc:document.getElementById('vsc'),
+  gap:document.getElementById('gap'),
+  maint:document.getElementById('maint'),
+  summary:document.getElementById('summary'),
+
+  leaseBlock:document.getElementById('leaseBlock'),
+  leaseSummary:document.getElementById('leaseSummary')
 };
 
-function calcPayment(amount, aprPct, termMonths) {
-  const r = aprPct / 100 / 12;
-  return r === 0 ? amount / termMonths : (r * amount) / (1 - Math.pow(1 + r, -termMonths));
+function calcPayment(amount, aprPct, termMonths){
+  const r = aprPct/100/12;
+  return r===0 ? amount/termMonths : (r*amount)/(1-Math.pow(1+r,-termMonths));
 }
 
-function render() {
-  const d = load('guided_desk', {
-    price: 0, down: 2000, apr: 6.9, term: 72, taxesFees: 995,
-    products: { vsc: false, gap: false, maint: false }
+function renderFinance(){
+  const d = load('guided_desk',{
+    price:0, down:2000, apr:6.9, term:72, taxesFees:995,
+    products:{vsc:false,gap:false,maint:false}
   });
-
-  d.price = Number(els.price.value || d.price);
-  d.down = Number(els.down.value || d.down);
-  d.taxesFees = Number(els.fees.value || d.taxesFees);
-  d.apr = Number(els.apr.value || d.apr);
-  d.term = Number(els.term.value || d.term);
-
-  d.products = {
-    vsc: els.vsc.checked,
-    gap: els.gap.checked,
-    maint: els.maint.checked
-  };
+  d.price = Number(els.price.value||d.price);
+  d.down = Number(els.down.value||d.down);
+  d.taxesFees = Number(els.fees.value||d.taxesFees);
+  d.apr = Number(els.apr.value||d.apr);
+  d.term = Number(els.term.value||d.term);
+  d.products = { vsc: els.vsc.checked, gap: els.gap.checked, maint: els.maint.checked };
 
   const productTotal =
-    (d.products.vsc ? 1895 : 0) +
-    (d.products.gap ? 795 : 0) +
-    (d.products.maint ? 495 : 0);
+    (d.products.vsc?1895:0) + (d.products.gap?795:0) + (d.products.maint?495:0);
 
-  // Include a simple average of trade range if present
   const trade = load('guided_trade', {});
-  const avgTrade =
-    ((trade.rangeLow || 0) + (trade.rangeHigh || 0)) / (trade.rangeLow || trade.rangeHigh ? 2 : 1);
+  const avgTrade = ((trade.rangeLow||0) + (trade.rangeHigh||0)) / 2 || 0;
 
-  const amount = Math.max(d.price + d.taxesFees + productTotal - d.down - (avgTrade || 0), 0);
+  const amount = Math.max(d.price + d.taxesFees + productTotal - d.down - avgTrade, 0);
   const monthly = calcPayment(amount, d.apr, d.term);
 
   els.summary.innerHTML =
-    `Amount financed: <strong>$${amount.toLocaleString()}</strong>` +
-    ` &nbsp; • &nbsp; Est. monthly: <strong>$${monthly.toFixed(0)}</strong>`;
+    `Amount financed: <strong>$${amount.toLocaleString()}</strong> &nbsp; • &nbsp; ` +
+    `Est. monthly: <strong>$${Math.round(monthly).toLocaleString()}</strong>`;
 
   save('guided_desk', d);
 }
 
-function hydrate() {
-  const d = load('guided_desk', {
-    price: 0, down: 2000, apr: 6.9, term: 72, taxesFees: 995,
-    products: { vsc: false, gap: false, maint: false }
-  });
+['price','down','fees','apr','term','vsc','gap','maint']
+  .forEach(id => document.getElementById(id).addEventListener('input', renderFinance));
 
-  ['price', 'down', 'fees', 'apr', 'term'].forEach(k => els[k].value = d[k]);
-  els.vsc.checked = d.products.vsc;
-  els.gap.checked = d.products.gap;
-  els.maint.checked = d.products.maint;
+/* ---------------- Lease helpers ---------------- */
 
-  // Show/hide the lease placeholder grid based on Discovery answer
-  const needs = load('guided_needs', {});
-  const showLeaseGrid = (needs && needs.leaseSpecials === 'Yes');
-  els.leaseGrid.classList.toggle('show', !!showLeaseGrid);
-
-  render();
+/** Currency formatter: on blur, any digits like "2255577" -> $22,555.77 */
+function formatCurrencyInput(el){
+  const raw = String(el.value||'');
+  const digits = raw.replace(/\D+/g,'');
+  if(!digits){
+    el.value = '';
+    el.dataset.value = '0';
+    return;
+  }
+  const value = Number(digits)/100;          // cents -> dollars
+  el.dataset.value = String(value);          // keep numeric dollars for math
+  el.value = value.toLocaleString('en-US',{style:'currency', currency:'USD'});
+}
+function readCurrency(el){
+  const stored = Number(el.dataset.value || 0);
+  if (stored) return stored;
+  const val = String(el.value||'').replace(/[^0-9.]/g,'');
+  return Number(val||0);
+}
+function setCurrency(el, dollars){
+  const v = Number(dollars||0);
+  el.dataset.value = String(v);
+  el.value = v ? v.toLocaleString('en-US',{style:'currency', currency:'USD'}) : '';
 }
 
-['price','down','fees','apr','term','vsc','gap','maint']
-  .forEach(k => els[k].addEventListener('input', render));
+function aprToMoneyFactor(aprPct){ return Number(aprPct||0)/2400; }
+
+/** Core lease math */
+function computeLeasePayment(p){
+  const msrp         = Number(p.msrp || 0);
+  const residualPct  = Number(p.residualPct || 0)/100;
+  const capCost      = Number(p.capCost || 0);
+  const capReduction = Number(p.capReduction || 0);
+  const rolledFees   = Number(p.rolledFees || 0);
+  const acq          = Number(p.acq || 0);
+  const doc          = Number(p.doc || 0);
+  const rebate       = Number(p.rebate || 0);
+  const tradeCredit  = Number(p.tradeCredit || 0);
+  const term         = Math.max(1, Number(p.termMonths || 1));
+  const taxRate      = Number(p.salesTaxRate || 0);
+
+  const mf = p.moneyFactor!=null && p.moneyFactor!==''
+    ? Number(p.moneyFactor)
+    : aprToMoneyFactor(p.aprPct || 0);
+
+  const residual     = msrp * residualPct;
+  const adjCapCost   = capCost - capReduction + rolledFees + acq + doc - rebate - tradeCredit;
+
+  const depreciation = (adjCapCost - residual) / term;
+  const rent         = (adjCapCost + residual) * mf;
+
+  const base         = depreciation + rent;
+  const monthly      = base * (1 + taxRate);
+
+  return { monthly, base, residual, adjCapCost, depreciation, rent };
+}
+
+/* Lease DOM refs */
+const L = {
+  block: document.getElementById('leaseBlock'),
+  summary: document.getElementById('leaseSummary'),
+
+  msrp: document.getElementById('lease_msrp'),
+  residualPct: document.getElementById('lease_residual_pct'),
+  residualAmt: document.getElementById('lease_residual_amt'),
+
+  mf: document.getElementById('lease_mf'),
+  term: document.getElementById('lease_term'),
+  tax: document.getElementById('lease_tax'),
+
+  cap: document.getElementById('lease_cap'),
+  reduction: document.getElementById('lease_reduction'),
+  rolledFees: document.getElementById('lease_rolled_fees'),
+  acq: document.getElementById('lease_acq'),
+  doc: document.getElementById('lease_doc'),
+
+  miles: document.getElementById('lease_miles'),
+  dispo: document.getElementById('lease_dispo'),
+  tradeCredit: document.getElementById('lease_trade_credit'),
+  rebate: document.getElementById('lease_rebate')
+};
+
+function renderLease(){
+  if (L.block.style.display === 'none') return;
+
+  // auto-calc Residual $ = MSRP × Residual %
+  const msrp = readCurrency(L.msrp);
+  const resPct = Number(L.residualPct.value||0);
+  const resAmt = (msrp * (resPct/100));
+  setCurrency(L.residualAmt, resAmt);
+
+  const quote = computeLeasePayment({
+    msrp,
+    residualPct: resPct,
+    capCost: readCurrency(L.cap),
+    capReduction: readCurrency(L.reduction),
+    rolledFees: readCurrency(L.rolledFees),
+    acq: readCurrency(L.acq),
+    doc: readCurrency(L.doc),
+    rebate: readCurrency(L.rebate),
+    tradeCredit: readCurrency(L.tradeCredit),
+    termMonths: L.term.value,
+    moneyFactor: L.mf.value,
+    salesTaxRate: L.tax.value
+  });
+
+  const m = isFinite(quote.monthly) ? quote.monthly : 0;
+  L.summary.textContent = `Monthly lease: ${m.toLocaleString('en-US',{style:'currency', currency:'USD'})}`;
+}
+
+/* wire currency behavior for all currency inputs */
+[ L.msrp,L.cap,L.reduction,L.rolledFees,L.acq,L.doc,L.dispo,L.tradeCredit,L.rebate ]
+  .forEach(el => {
+    el.addEventListener('blur', () => { formatCurrencyInput(el); renderLease(); });
+    el.addEventListener('focus', () => el.select());
+  });
+
+/* other lease inputs trigger recompute */
+[ L.residualPct,L.mf,L.term,L.tax,L.miles ]
+  .forEach(el => el.addEventListener('input', renderLease));
+
+/* ---------------- Boot ---------------- */
+function hydrate(){
+  // set finance defaults and render
+  const d = load('guided_desk',{
+    price:0, down:2000, apr:6.9, term:72, taxesFees:995,
+    products:{vsc:false,gap:false,maint:false}
+  });
+  ['price','down','fees','apr','term'].forEach(k => els[k].value = d[k]);
+  els.vsc.checked=d.products.vsc; els.gap.checked=d.products.gap; els.maint.checked=d.products.maint;
+  renderFinance();
+
+  // decide if lease panel should show
+  const needs = load('guided_needs', {});
+  const showLease = (String(needs.leaseSpecials||'').toLowerCase() === 'yes');
+  els.leaseBlock.style.display = showLease ? 'block' : 'none';
+
+  if (showLease) {
+    // initialize some niceties
+    L.term.value = L.term.value || 36;
+    L.tax.value = L.tax.value || 0;
+    renderLease();
+  }
+}
 
 document.getElementById('next').addEventListener('click', () => {
-  render();
+  renderFinance();
+  renderLease();
   post('payments:done');
 });
 
