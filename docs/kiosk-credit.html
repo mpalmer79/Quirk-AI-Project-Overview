@@ -1,26 +1,64 @@
-<!doctype html><html lang="en"><head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<base href="/Quirk-AI-Project-Overview/"><title>Kiosk • Credit Start</title>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<base href="/Quirk-AI-Project-Overview/">
+<title>Kiosk • Credit Start</title>
+
 <link rel="stylesheet" href="assets/kiosk-shared.css">
 <script src="assets/kiosk-shared.js"></script>
-</head><body>
+<style>
+  /* Minor guard if shared CSS missing */
+  body { background:
+    linear-gradient(rgba(255,255,255,.58), rgba(255,255,255,.58)),
+    url("assets/kiosk.png") center / cover fixed no-repeat !important;
+    min-height:100vh; }
+</style>
+</head>
+<body>
 <div class="kx">
-  <h2>Start your credit application</h2>
-  <p class="sub">Soft pull first. No impact to score until you consent to submit.</p>
+  <div class="kx__header">
+    <h2>Start your credit application</h2>
+    <p class="sub">Soft pull first. No impact to score until you consent to submit.</p>
+  </div>
 
   <!-- Stage A: Basic + Soft-Pull consent -->
   <div id="stageA" class="panel">
     <div class="row row--2">
-      <label class="field"><span class="label">Full name</span><input id="full" autocomplete="name" required></label>
-      <label class="field"><span class="label">Email</span><input id="email" type="email" autocomplete="email" required></label>
-      <label class="field"><span class="label">Mobile</span><input id="mobile" inputmode="tel" autocomplete="tel" required></label>
-      <label class="field"><span class="label">ZIP</span><input id="zip" inputmode="numeric" maxlength="10" required></label>
-      <label class="field"><span class="label">Income (monthly)</span><input id="income" type="number" min="0" step="100" required></label>
+      <label class="field">
+        <span class="label">Full name</span>
+        <input id="full" autocomplete="name" required>
+      </label>
+
+      <label class="field">
+        <span class="label">Email</span>
+        <input id="email" type="email" autocomplete="email" required>
+      </label>
+
+      <label class="field">
+        <span class="label">Mobile</span>
+        <input id="mobile" inputmode="tel" autocomplete="tel" placeholder="Enter 10 digit phone number" required>
+      </label>
+
+      <label class="field">
+        <span class="label">ZIP</span>
+        <input id="zip" inputmode="numeric" maxlength="10" required>
+      </label>
+
+      <label class="field">
+        <span class="label">Income (monthly)</span>
+        <input id="income" type="number" min="0" step="100" required>
+      </label>
     </div>
+
     <label class="field" style="display:flex;align-items:center;gap:8px">
-      <input id="softConsent" type="checkbox" required> I agree to a soft inquiry (pre-qualification)
+      <input id="softConsent" type="checkbox" required>
+      I agree to a soft inquiry (pre-qualification)
     </label>
-    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">
+
+    <div style="display:flex;justify-content:space-between;gap:8px;margin-top:8px">
+      <a class="btn btn--ghost" href="saleskiosk-welcome.html">← Back to Kiosk</a>
       <button id="startMfa" class="btn">Next → Verify phone</button>
     </div>
   </div>
@@ -28,7 +66,12 @@
   <!-- Stage A.1: MFA -->
   <div id="stageMFA" class="panel" style="display:none">
     <p>We sent a 6-digit code to <strong id="mfaPhone"></strong>. Enter it below to confirm it’s you.</p>
-    <label class="field"><span class="label">Verification code</span><input id="otp" inputmode="numeric" maxlength="6"></label>
+
+    <label class="field">
+      <span class="label">Verification code</span>
+      <input id="otp" inputmode="numeric" maxlength="6" placeholder="123456">
+    </label>
+
     <div style="display:flex;justify-content:space-between;gap:8px;margin-top:8px">
       <button id="resend" class="btn btn--ghost">Resend code</button>
       <div>
@@ -36,12 +79,14 @@
         <button id="verify" class="btn">Continue →</button>
       </div>
     </div>
+
     <p id="mfaMsg" class="sub"></p>
   </div>
 
   <!-- Stage B: Full application (revealed after MFA) -->
   <div id="stageB" class="panel" style="display:none">
     <h3>Applicant details</h3>
+
     <div class="row row--2">
       <label class="field"><span class="label">Street address</span><input id="addr"></label>
       <label class="field"><span class="label">City</span><input id="city"></label>
@@ -51,77 +96,180 @@
       <label class="field"><span class="label">SSN (last 4 ok for demo)</span><input id="ssn" type="password" maxlength="11"></label>
       <label class="field"><span class="label">Driver’s license #</span><input id="dl"></label>
       <label class="field"><span class="label">DL state</span><input id="dl_state" maxlength="2"></label>
-      <label class="field"><span class="label">Housing type</span>
-        <select id="housing"><option>Rent</option><option>Own</option><option>Other</option></select></label>
+
+      <label class="field">
+        <span class="label">Housing type</span>
+        <select id="housing">
+          <option>Rent</option><option>Own</option><option>Other</option>
+        </select>
+      </label>
+
       <label class="field"><span class="label">Monthly housing payment</span><input id="housing_payment" type="number" min="0" step="10"></label>
       <label class="field"><span class="label">Employer</span><input id="employer"></label>
       <label class="field"><span class="label">Job title</span><input id="title"></label>
       <label class="field"><span class="label">Time at job (months)</span><input id="tenure" type="number" min="0"></label>
     </div>
+
     <label class="field" style="display:flex;align-items:center;gap:8px">
-      <input id="hardConsent" type="checkbox"> I authorize a hard inquiry and submission to lender(s)
+      <input id="hardConsent" type="checkbox">
+      I authorize a hard inquiry and submission to lender(s)
     </label>
-    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">
+
+    <div style="display:flex;justify-content:space-between;gap:8px;margin-top:8px">
+      <a class="btn btn--ghost" href="saleskiosk-welcome.html">← Back to Kiosk</a>
       <button id="submit" class="btn">Submit application</button>
     </div>
   </div>
 </div>
 
 <script>
-const {save, load, post, track} = window.kiosk;
+/* -------- shared helpers (with graceful fallback if kiosk-shared.js missing) -------- */
+const kiosk = window.kiosk || {
+  save: (k,v)=>{ try{ localStorage.setItem(k, JSON.stringify(v)); }catch{} },
+  load: (k,def)=>{ try{ const v=JSON.parse(localStorage.getItem(k)); return (v ?? def);}catch{ return def; } },
+  post: ()=>{}, track: ()=>{}
+};
+const { save, load, post, track } = kiosk;
+
+/* -------- config -------- */
 const BACKEND = (location.origin.includes('localhost') ? 'https://localhost:8443' : 'https://YOUR-API.DOMAIN');
+const DEMO_MODE = BACKEND.includes('YOUR-API.DOMAIN'); // no real backend -> simulate
 
-function qs(id){ return document.getElementById(id); }
-function show(id){ ['stageA','stageMFA','stageB'].forEach(x=>qs(x).style.display = (x===id?'block':'none')); }
+/* -------- dom helpers -------- */
+const qs = (id)=>document.getElementById(id);
+const show = (id)=>['stageA','stageMFA','stageB'].forEach(x=>qs(x).style.display = (x===id?'block':'none'));
 
-qs('startMfa').addEventListener('click', async ()=>{
-  const payload = {
-    full: full.value.trim(), email: email.value.trim(), mobile: mobile.value.trim(),
-    zip: zip.value.trim(), income: Number(income.value), consent: softConsent.checked
-  };
-  if(!payload.full || !payload.email || !payload.mobile || !payload.zip || !payload.income || !payload.consent){
-    return alert('Please complete all fields and consent to the soft inquiry.');
+/* -------- phone mask -------- */
+const onlyDigits = v => (v||'').replace(/\D+/g,'');
+const fmtPhone = d => {
+  const x = (d||'').slice(0,10);
+  if (!x) return '';
+  if (x.length < 4) return `(${x}`;
+  if (x.length < 7) return `(${x.slice(0,3)}) ${x.slice(3)}`;
+  return `(${x.slice(0,3)}) ${x.slice(3,6)}-${x.slice(6)}`;
+};
+function normalizePhoneInput(el) {
+  const caretFromEnd = el.value.length - el.selectionStart;
+  el.value = fmtPhone(onlyDigits(el.value));
+  const newPos = Math.max(0, el.value.length - caretFromEnd);
+  requestAnimationFrame(()=> el.setSelectionRange(newPos,newPos));
+}
+
+/* -------- seed from kiosk profile if available -------- */
+(function seed(){
+  const p = load('kiosk_profile', { name:'', contact:'' });
+  if (p?.name)  qs('full').value = p.name;
+  if (p?.contact){
+    const d = onlyDigits(p.contact);
+    if (d) qs('mobile').value = fmtPhone(d);
   }
-  save('guided_credit_basic', payload);
-  try{
-    const r = await fetch(BACKEND+'/mfa/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ phone: payload.mobile })});
-    if(!r.ok) throw new Error('Failed to start verification');
-    qs('mfaPhone').textContent = payload.mobile;
-    show('stageMFA');
-  }catch(e){ alert('Could not send verification code. Please check the phone number and try again.'); }
+})();
+
+/* live mask */
+qs('mobile').addEventListener('input', e=> normalizePhoneInput(e.target));
+qs('mobile').addEventListener('paste', e=>{
+  e.preventDefault();
+  const t = (e.clipboardData||window.clipboardData).getData('text');
+  qs('mobile').value = fmtPhone(onlyDigits(t));
 });
 
+/* -------- MFA start -------- */
+qs('startMfa').addEventListener('click', async ()=>{
+  const payload = {
+    full: qs('full').value.trim(),
+    email: qs('email').value.trim(),
+    mobile: fmtPhone(onlyDigits(qs('mobile').value)),
+    zip: qs('zip').value.trim(),
+    income: Number(qs('income').value),
+    consent: qs('softConsent').checked
+  };
+
+  const phoneDigits = onlyDigits(payload.mobile);
+  if(!payload.full || !payload.email || phoneDigits.length!==10 || !payload.zip || !payload.income || !payload.consent){
+    return alert('Please complete all fields with a valid 10-digit mobile number and consent to the soft inquiry.');
+  }
+
+  // persist basics for later
+  save('guided_credit_basic', payload);
+
+  try{
+    if (!DEMO_MODE) {
+      const r = await fetch(BACKEND+'/mfa/start', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ phone: payload.mobile })
+      });
+      if(!r.ok) throw new Error('Failed to start verification');
+    }
+    qs('mfaPhone').textContent = payload.mobile;
+    show('stageMFA');
+  }catch(e){
+    alert('Could not send verification code. Please check the phone number and try again.');
+  }
+});
+
+/* resend/back */
 qs('resend').addEventListener('click', ()=> qs('startMfa').click());
 qs('backA').addEventListener('click', ()=> show('stageA'));
 
+/* -------- MFA verify -------- */
 qs('verify').addEventListener('click', async ()=>{
-  const code = otp.value.trim();
-  if(code.length<4) return alert('Enter the code we sent to your phone.');
+  const code = qs('otp').value.trim();
+  if (code.length < 4) return alert('Enter the code we sent to your phone.');
+
   try{
-    const r = await fetch(BACKEND+'/mfa/verify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ phone: mfaPhone.textContent, code })});
-    const ok = r.ok && (await r.json()).verified;
+    let ok = true;
+    if (!DEMO_MODE) {
+      const r = await fetch(BACKEND+'/mfa/verify', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ phone: qs('mfaPhone').textContent, code })
+      });
+      ok = r.ok && (await r.json()).verified;
+    }
     if(!ok) { qs('mfaMsg').textContent='Incorrect code. Try again or resend.'; return; }
     track('credit.mfa.verified');
     show('stageB');
-  }catch(e){ qs('mfaMsg').textContent='Verification failed. Try again.'; }
+  }catch(e){
+    qs('mfaMsg').textContent='Verification failed. Try again.';
+  }
 });
 
+/* -------- Final submit -------- */
 qs('submit').addEventListener('click', async ()=>{
-  const basic = load('guided_credit_basic',{});
+  const basic = load('guided_credit_basic', {});
   const payload = {
     ...basic,
-    address:{ street: addr.value, city: city.value, state: state.value, zip: zip2.value || basic.zip },
-    dob: dob.value, ssn: ssn.value, dl: { number: dl.value, state: dl_state.value },
-    housing: { type: housing.value, payment: Number(housing_payment.value||0) },
-    employment: { employer: employer.value, title: title.value, months: Number(tenure.value||0) },
-    hardConsent: hardConsent.checked
+    address:{ street: qs('addr').value, city: qs('city').value, state: qs('state').value, zip: qs('zip2').value || basic.zip },
+    dob: qs('dob').value,
+    ssn: qs('ssn').value,
+    dl: { number: qs('dl').value, state: qs('dl_state').value },
+    housing: { type: qs('housing').value, payment: Number(qs('housing_payment').value||0) },
+    employment: { employer: qs('employer').value, title: qs('title').value, months: Number(qs('tenure').value||0) },
+    hardConsent: qs('hardConsent').checked
   };
   if(!payload.hardConsent){ return alert('Please authorize the credit submission.'); }
+
   try{
-    const r = await fetch(BACKEND+'/credit/submit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-    if(!r.ok) throw new Error('Submit failed');
-    post('credit:done');
-  }catch(e){ alert('Submission failed. Please ask a representative for help.'); }
+    if (!DEMO_MODE) {
+      const r = await fetch(BACKEND+'/credit/submit', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify(payload)
+      });
+      if(!r.ok) throw new Error('Submit failed');
+    }
+    track('credit.submit.ok');
+
+    // Optional: update kiosk profile name/phone if user edited
+    const prof = load('kiosk_profile', { name:'', contact:'' });
+    save('kiosk_profile', { ...prof, name: basic.full || prof.name, contact: basic.mobile || prof.contact });
+
+    // Return to the Sales Kiosk at F&I step
+    window.location.href = 'saleskiosk-welcome.html?step=fandi';
+    // (If you want to also notify a parent frame, keep this for integrated setups)
+    try { post('credit:done'); } catch {}
+  }catch(e){
+    alert('Submission failed. Please ask a representative for help.');
+  }
 });
 </script>
-</body></html>
+</body>
+</html>
