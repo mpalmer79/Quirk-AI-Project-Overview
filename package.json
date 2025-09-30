@@ -1,9 +1,7 @@
 {
   "name": "quirk-genai-sandbox",
   "private": true,
-  "engines": {
-    "node": ">=20"
-  },
+  "engines": { "node": ">=20" },
   "scripts": {
     "dev": "next dev -p 3000",
     "build": "next build",
