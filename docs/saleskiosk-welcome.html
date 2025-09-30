@@ -77,7 +77,9 @@ function track(event, data = {}) {
 const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
 const load = (k, def) => { try { const v = JSON.parse(localStorage.getItem(k)); return (v ?? def); } catch { return def; } };
 
-/* =============================== VEHICLE IMAGES =============================== */
+/* ===============================
+   VEHICLE IMAGES
+=============================== */
 const VEHICLE_IMAGES = {
   '2025_Chevrolet_Silverado 1500': 'assets/2025-silverado-1500.jpg',
   '2025_Chevrolet_Equinox':       'assets/2025-equinox.jpg',
@@ -286,7 +288,7 @@ function calcPayment(amount, aprPct, termMonths) {
 /* *** SWAPPED ORDER HERE: Trade-In before Payments *** */
 const STEPS = ['Welcome','Discovery','Vehicle Match','Trade-In','Payments','Credit Start','F&I Options','Review & Handoff'];
 
-/* ===================== PHONE HELPERS (added) ===================== */
+/* ===================== PHONE HELPERS ===================== */
 function phoneOnlyDigits(value) {
   return (value || "").replace(/\D+/g, "");
 }
@@ -567,13 +569,10 @@ function Welcome({ consent, setConsent, profile, setProfile, onValidatedNext, on
     if (validate()) onValidatedNext();
   }
 
-  // Ensure any saved contact is formatted nicely on first mount
+  // Ensure the contact field is blank on mount (prevents showing any old default)
   React.useEffect(() => {
-    if (profile?.contact) {
-      const formatted = normalizeAndFormatPhone(profile.contact);
-      if (formatted !== profile.contact) {
-        setProfile({ ...profile, contact: formatted });
-      }
+    if (profile?.contact !== '') {
+      setProfile({ ...profile, contact: '' });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -610,13 +609,13 @@ function Welcome({ consent, setConsent, profile, setProfile, onValidatedNext, on
 
         <div className="text-center">
           <label className="block mb-1">
-            <span className="block text-sm font-semibold text-slate-700 mb-1">Text number to send your quote</span>
+            <span className="block text-sm font-semibold text-slate-700 mb-1">Phone Number</span>
             <input
-              aria-label="Mobile number"
+              aria-label="Phone Number"
               type="tel"
               inputMode="numeric"
               className={`w-2/3 rounded-xl border p-3 focus:ring-2 ${errors.contact ? 'border-red-500 focus:ring-red-300' : 'focus:ring-emerald-300'}`}
-              placeholder="(555) 555-5555"
+              placeholder="Enter 10 digit phone number"
               value={profile.contact}
               onChange={(e) => {
                 const caretFromEnd = e.target.value.length - e.target.selectionStart;
