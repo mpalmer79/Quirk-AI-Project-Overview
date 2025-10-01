@@ -1,41 +1,34 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Quirk AI — Sales Kiosk (Guided Flow)</title>
-
-  <!-- Force light UI -->
   <meta name="color-scheme" content="light"/>
   <meta name="theme-color" content="#ffffff"/>
-
-  <!-- Site base -->
   <base href="/Quirk-AI-Project-Overview/"/>
 
-  <!-- Global site styles (footer etc.) -->
+  <!-- Global + Kiosk CSS -->
   <link rel="stylesheet" href="assets/style.css"/>
+  <link rel="stylesheet" href="assets/saleskiosk.css?v=1"/>
 
-  <!-- Tailwind (CDN) -->
+  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
-    :focus-visible { outline: 2px solid #34d399; outline-offset: 2px; }
+    :focus-visible { outline:2px solid #34d399; outline-offset:2px; }
     body {
       background:
-        linear-gradient(rgba(255,255,255,.50), rgba(255,255,255,.50)),
-        url("assets/kiosk.png") center / cover fixed no-repeat !important;
-      min-height: 100vh;
-    }
-    @supports (-webkit-touch-callout:none){
-      :root { color-scheme: light; }
-      select, input, textarea { -webkit-appearance: none; }
+        linear-gradient(rgba(255,255,255,.5), rgba(255,255,255,.5)),
+        url("assets/kiosk.png") center/cover fixed no-repeat !important;
+      min-height:100vh;
     }
     iframe { display:block; width:100%; border:0; }
+    @supports(-webkit-touch-callout:none){ :root{color-scheme:light} select,input,textarea{-webkit-appearance:none} }
   </style>
 </head>
-<body class="bg-gradient-to-b from-emerald-50 to-slate-50 min-h-screen">
+<body class="sales-kiosk bg-gradient-to-b from-emerald-50 to-slate-50 min-h-screen">
   <div class="relative w-full min-h-screen">
-    <!-- decorative glows -->
     <div aria-hidden class="pointer-events-none absolute inset-0 overflow-hidden">
       <div class="absolute -top-24 -left-24 h-72 w-72 rounded-full bg-emerald-300/30 blur-3xl"></div>
       <div class="absolute -bottom-24 -right-24 h-72 w-72 rounded-full bg-sky-300/20 blur-3xl"></div>
@@ -46,12 +39,10 @@
         <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-emerald-900">Quirk AI Sales Kiosk</h1>
       </header>
 
-      <!-- Progress chips -->
       <nav aria-label="Progress" class="mb-5 sm:mb-7">
         <ol id="progress" class="grid grid-cols-4 sm:grid-cols-8 gap-2"></ol>
       </nav>
 
-      <!-- Step container -->
       <div class="bg-white/90 backdrop-blur rounded-2xl shadow-2xl border border-slate-200 p-4 sm:p-6">
         <div id="stepHeader" class="mb-4">
           <h2 id="stepTitle" class="text-xl sm:text-2xl font-bold text-emerald-800 text-center"></h2>
@@ -65,32 +56,29 @@
   </div>
 
 <script>
-/* ========= tiny storage + analytics (kept minimal) ========= */
 function track(event, data = {}) {
   try {
     const now = new Date().toISOString();
-    const row = { event, at: now, ...data };
     const key = "guidedflow_analytics";
     const arr = JSON.parse(localStorage.getItem(key) || "[]");
-    arr.push(row);
+    arr.push({ event, at: now, ...data });
     localStorage.setItem(key, JSON.stringify(arr));
   } catch {}
 }
-const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
-const load = (k, def) => { try { const v = JSON.parse(localStorage.getItem(k)); return (v ?? def); } catch { return def; } };
+const save = (k,v)=>{ try{ localStorage.setItem(k, JSON.stringify(v)); }catch{} };
+const load = (k,def)=>{ try{ const v = JSON.parse(localStorage.getItem(k)); return (v ?? def); }catch{ return def; } };
 
-const ORIGIN = window.location.origin; // secure postMessage target
+const ORIGIN = window.location.origin;
 
-/* ========= steps config ========= */
 const STEPS = [
-  { label: 'Welcome',          url: 'kiosk-welcome.html',  height: 460, subtitle: "We’ll guide you through a few quick steps.", showHeader: true },
-  { label: 'Discovery',        url: 'kiosk-discovery.html',height: 640, subtitle: "Tell us about your monthly budget.", showHeader: false },
-  { label: 'Vehicle Match',    url: 'kiosk-vehicle.html',  height: 720, subtitle: "Pick one to continue.", showHeader: true },
-  { label: 'Trade-In',         url: 'kiosk-trade.html',    height: 620, subtitle: "Enter your VIN/miles; we’ll pre-value it.", showHeader: true },
-  { label: 'Payments',         url: 'kiosk-payments.html', height: 720, subtitle: "Taxes/fees estimated; lender approval required.", showHeader: true },
-  { label: 'Credit Start',     url: 'kiosk-credit.html',   height: 520, subtitle: "Soft pull first. No impact to score until you consent to submit.", showHeader: true },
-  { label: "F&I Options",      url: 'kiosk-fandi.html',    height: 420, subtitle: "Add options and see the impact instantly.", showHeader: true },
-  { label: 'Review & Handoff', url: 'kiosk-review.html',   height: 520, subtitle: "We’ll prep your buyer’s order and hand you off.", showHeader: true }
+  { label:'Welcome',          url:'kiosk-welcome.html',  height:460, subtitle:"We’ll guide you through a few quick steps.", showHeader:true },
+  { label:'Discovery',        url:'kiosk-discovery.html',height:640, subtitle:"Tell us about your monthly budget.", showHeader:false },
+  { label:'Vehicle Match',    url:'kiosk-vehicle.html',  height:720, subtitle:"Pick one to continue.", showHeader:true },
+  { label:'Trade-In',         url:'kiosk-trade.html',    height:620, subtitle:"Enter your VIN/miles; we’ll pre-value it.", showHeader:true },
+  { label:'Payments',         url:'kiosk-payments.html', height:720, subtitle:"Taxes/fees estimated; lender approval required.", showHeader:true },
+  { label:'Credit Start',     url:'kiosk-credit.html',   height:520, subtitle:"Soft pull first. No impact to score until you consent to submit.", showHeader:true },
+  { label:"F&I Options",      url:'kiosk-fandi.html',    height:420, subtitle:"Add options and see the impact instantly.", showHeader:true },
+  { label:'Review & Handoff', url:'kiosk-review.html',   height:520, subtitle:"We’ll prep your buyer’s order and hand you off.", showHeader:true }
 ];
 
 const stage = document.getElementById('stage');
@@ -102,29 +90,26 @@ const stepSubtitle = document.getElementById('stepSubtitle');
 let step = load("guided_step", 0);
 let maxVisited = load("guided_maxVisited", step);
 
-/* ========= render progress ========= */
 function renderProgress(){
   progress.innerHTML = '';
-  STEPS.forEach((s, i) => {
+  STEPS.forEach((s,i)=>{
     const reachable = i <= maxVisited;
     const active = i <= step;
     const li = document.createElement('li');
     li.innerHTML = `
       <button class="w-full flex items-center gap-2 p-1 rounded-full border border-slate-200
-                     ${active ? 'bg-emerald-600 text-white' : 'bg-white/70 text-slate-600'}
-                     ${!reachable ? 'opacity-60 cursor-not-allowed' : ''}"
-              ${!reachable ? 'disabled' : ''}>
+                     ${active?'bg-emerald-600 text-white':'bg-white/70 text-slate-600'}
+                     ${!reachable?'opacity-60 cursor-not-allowed':''}"
+              ${!reachable?'disabled':''}>
         <span class="inline-flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold
-                     ${active ? 'bg-white/20' : 'bg-slate-200 text-slate-700'}">${i+1}</span>
+                     ${active?'bg-white/20':'bg-slate-200 text-slate-700'}">${i+1}</span>
         <span class="hidden sm:block text-xs font-semibold truncate pr-1">${s.label}</span>
       </button>`;
-    const btn = li.querySelector('button');
-    btn.addEventListener('click', () => { if (i <= maxVisited) go(i); });
+    li.querySelector('button').addEventListener('click',()=>{ if(i<=maxVisited) go(i); });
     progress.appendChild(li);
   });
 }
 
-/* ========= load a step ========= */
 function loadStep(i){
   step = Math.max(0, Math.min(i, STEPS.length-1));
   maxVisited = Math.max(maxVisited, step);
@@ -132,11 +117,8 @@ function loadStep(i){
   save("guided_maxVisited", maxVisited);
 
   const cfg = STEPS[step];
-
-  if (cfg.showHeader === false) {
-    stepHeader.style.display = 'none';
-  } else {
-    stepHeader.style.display = '';
+  stepHeader.style.display = (cfg.showHeader === false) ? 'none' : '';
+  if (cfg.showHeader !== false) {
     stepTitle.textContent = cfg.label;
     stepSubtitle.textContent = cfg.subtitle || '';
   }
@@ -163,76 +145,50 @@ function loadStep(i){
 }
 function go(i){ loadStep(i); }
 
-/* ========= clamp iframe height from child ========= */
 function applyChildHeight(h){
-  const desired = Math.max(520, Number(h)||0);          // content height request
-  const maxView = Math.max(420, window.innerHeight - 120); // keep within viewport with breathing room
-  const target  = Math.min(desired + 16, maxView);      // +16px padding, clamped
-  stage.style.height    = target + 'px';
+  const desired = Math.max(520, Number(h)||0);
+  const maxView = Math.max(420, window.innerHeight - 120);
+  const target  = Math.min(desired + 16, maxView);
+  stage.style.height = target + 'px';
   stage.style.minHeight = target + 'px';
-  stage.style.overflow  = 'hidden';
+  stage.style.overflow = 'hidden';
 }
 
-/* ========= message bridge ========= */
-window.addEventListener('message', (e) => {
-  if (e.origin !== ORIGIN) return;
+window.addEventListener('message',(e)=>{
+  if(e.origin !== ORIGIN) return;
+  const { type, payload } = e.data || {};
+  if(!type) return;
 
-  const data = e?.data || {};
-  if (!data || typeof data !== 'object') return;
-  const { type, payload } = data;
-
-  if (type && type.endsWith(':height')) {
-    applyChildHeight(payload?.height);
-    return;
-  }
+  if (type.endsWith(':height')) { applyChildHeight(payload?.height); return; }
 
   if (type === 'welcome:done') {
     const p = load("guided_profile", { name:'', contact:'', budget:400 });
-    const merged = { ...p, ...(payload || {}) };
-    save("guided_profile", merged);
-    track('guided_welcome_next');
-    go(1);
-    return;
+    save("guided_profile", { ...p, ...(payload||{}) });
+    track('guided_welcome_next'); go(1); return;
   }
 
   if (type === 'discovery:update') {
     const p = load("guided_profile", { name:'', contact:'', budget:400 });
-    save("guided_profile", { ...p, budget: Number(payload?.budget ?? p.budget) });
-    return;
+    save("guided_profile", { ...p, budget:Number(payload?.budget ?? p.budget) }); return;
   }
-  if (type === 'discovery:height' && step === 1) {
-    applyChildHeight(payload?.height);
-    return;
-  }
-  if (type === 'discovery:done') {
-    track('guided_discovery_next');
-    go(2);
-    return;
-  }
+  if (type === 'discovery:height' && step === 1) { applyChildHeight(payload?.height); return; }
+  if (type === 'discovery:done') { track('guided_discovery_next'); go(2); return; }
   if (type === 'discovery:back') { go(0); return; }
 
   if (type === 'vehicle:done') { go(3); return; }
-
   if (type === 'trade:update') { return; }
   if (type === 'trade:done') { go(4); return; }
-
   if (type === 'payments:done') { go(5); return; }
-
   if (type === 'credit:done') { go(6); return; }
-
   if (type === 'fandi:done') { go(7); return; }
 });
 
-/* ========= init ========= */
 (function init(){
-  if (!sessionStorage.getItem('guided_session_started')) {
-    sessionStorage.setItem('guided_session_started', '1');
-    [
-      "guided_step","guided_consent","guided_profile","guided_selectedVin",
-      "guided_desk","guided_trade","guided_maxVisited"
-    ].forEach(k => { try { localStorage.removeItem(k); } catch {} });
-    step = 0;
-    maxVisited = 0;
+  if(!sessionStorage.getItem('guided_session_started')){
+    sessionStorage.setItem('guided_session_started','1');
+    ["guided_step","guided_consent","guided_profile","guided_selectedVin","guided_desk","guided_trade","guided_maxVisited"]
+      .forEach(k=>{ try{ localStorage.removeItem(k); }catch{} });
+    step = 0; maxVisited = 0;
   }
   loadStep(load("guided_step", 0));
 })();
