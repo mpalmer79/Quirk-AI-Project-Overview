@@ -1,11 +1,15 @@
-<!doctype html><html lang="en"><head>
+<!doctype html>
+<html lang="en">
+<head>
 <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
 <base href="/Quirk-AI-Project-Overview/"><title>Kiosk • Review</title>
 <link rel="stylesheet" href="assets/kiosk-shared.css">
 <script src="assets/kiosk-shared.js"></script>
-</head><body>
+</head>
+<body>
 <div class="kx">
-  <h2>Review & handoff</h2><p class="sub">We’ll prep your buyer’s order and connect you to a manager or F&I.</p>
+  <h2>Review & handoff</h2>
+  <p class="sub">We’ll prep your buyer’s order and connect you to a manager or F&I.</p>
   <div id="summary" class="note"></div>
   <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;margin-top:8px">
     <button class="btn btn--ghost" onclick="alert('Manager notified (demo).')">Raise hand for manager</button>
@@ -13,15 +17,26 @@
     <button class="btn">I'm ready now</button>
   </div>
 </div>
+
 <script>
-const {load} = window.kiosk;
+/* prefer guided_* keys; fall back to kiosk_* so both flows work */
+const get = (k, def) => { try { const v = JSON.parse(localStorage.getItem(k)); return (v ?? def); } catch { return def; } };
+const loadPref = (name, def) => {
+  const g = get('guided_' + name, undefined);
+  if (g !== undefined) return g;
+  return get('kiosk_' + name, def);
+};
 function fmt(v){ return (v==null || v==='') ? '—' : v; }
+
 (function render(){
-  const p = load('guided_profile',{});
-  const t = load('guided_trade',{});
-  const d = load('guided_desk',{price:0,down:0,apr:0,term:0,taxesFees:0,products:{}});
-  const tradeText = t.rangeLow ? `$${t.rangeLow.toLocaleString()}–$${t.rangeHigh.toLocaleString()}` : '—';
-  const products = ['vsc','gap','maint'].filter(k=>d.products?.[k]).map(k=>({vsc:'VSC',gap:'GAP',maint:'Maint'})[k]).join(', ') || '—';
+  const p = loadPref('profile', {});
+  const t = loadPref('trade', {});
+  const d = loadPref('desk', { price:0, down:0, apr:0, term:0, taxesFees:0, products:{} });
+
+  const tradeText = t.rangeLow ? `$${(t.rangeLow||0).toLocaleString()}–$${(t.rangeHigh||0).toLocaleString()}` : '—';
+  const products   = ['vsc','gap','maint'].filter(k => d.products?.[k])
+                     .map(k => ({vsc:'VSC',gap:'GAP',maint:'Maint'})[k]).join(', ') || '—';
+
   document.getElementById('summary').innerHTML = `
     <div><strong>Name:</strong> ${fmt(p.name)} &nbsp; • &nbsp; <strong>Contact:</strong> ${fmt(p.contact)}</div>
     <div style="margin-top:4px"><strong>Vehicle price:</strong> $${(d.price||0).toLocaleString()} &nbsp; • &nbsp; <strong>Down:</strong> $${(d.down||0).toLocaleString()}</div>
@@ -29,5 +44,5 @@ function fmt(v){ return (v==null || v==='') ? '—' : v; }
     <div style="margin-top:4px"><strong>Trade range:</strong> ${tradeText} &nbsp; • &nbsp; <strong>Products:</strong> ${products}</div>`;
 })();
 </script>
-</body></html>
-
+</body>
+</html>
