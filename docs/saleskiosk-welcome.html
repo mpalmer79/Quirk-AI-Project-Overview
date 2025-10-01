@@ -9,184 +9,70 @@
   <base href="/Quirk-AI-Project-Overview/"/>
 
   <link rel="stylesheet" href="assets/style.css"/>
-  <link rel="stylesheet" href="assets/saleskiosk.css?v=1"/>
+  <link rel="stylesheet" href="assets/saleskiosk.css?v=2"/>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
-  <style>
-    :focus-visible { outline:2px solid #34d399; outline-offset:2px; }
-    body {
-      background: linear-gradient(rgba(255,255,255,.58),rgba(255,255,255,.58)),
-                  url("assets/kiosk.png") center/cover fixed no-repeat !important;
-      min-height:100vh;
-    }
-    input,select,textarea,button{background:#fff!important;color:#0f172a!important;border-color:#e5e7eb!important}
-    select option{background:#fff;color:#0f172a}
-    input::placeholder{color:#94a3b8}
-    input:-webkit-autofill{-webkit-text-fill-color:#0f172a!important;transition:background-color 5000s ease-in-out 0s}
-    @supports(-webkit-touch-callout:none){:root{color-scheme:light}select,input,textarea{-webkit-appearance:none}}
-  </style>
+  <style>:focus-visible{outline:2px solid #34d399;outline-offset:2px}</style>
 </head>
-
 <body class="sales-kiosk bg-gradient-to-b from-emerald-50 to-slate-50 min-h-screen">
   <div id="root"></div>
   <footer class="footer"><small>© 2025 Quirk AI — Sales Kiosk</small></footer>
 
 <script type="text/babel">
-const { useMemo, useState, useEffect } = React;
+const {useMemo,useState,useEffect} = React;
 
-function track(event, data = {}) {
-  try {
-    const now = new Date().toISOString();
-    const arr = JSON.parse(localStorage.getItem("analytics") || "[]");
-    arr.push({ event, at: now, ...data });
-    localStorage.setItem("analytics", JSON.stringify(arr));
-  } catch {}
-}
-const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
-const load = (k, def) => { try { const v = JSON.parse(localStorage.getItem(k)); return (v ?? def); } catch { return def; } };
+/* storage + analytics */
+const track=(e,d={})=>{try{const a=JSON.parse(localStorage.getItem("analytics")||"[]");a.push({event:e,at:new Date().toISOString(),...d});localStorage.setItem("analytics",JSON.stringify(a))}catch{}};
+const save=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}};
+const load=(k,def)=>{try{const v=JSON.parse(localStorage.getItem(k));return(v??def)}catch{return def}};
 
-const VEHICLE_IMAGES = {
-  '2025_Chevrolet_Silverado 1500':'assets/2025-silverado-1500.jpg',
-  '2025_Chevrolet_Equinox':'assets/2025-equinox.jpg',
-  '2025_Chevrolet_Traverse':'assets/2025-traverse.jpg',
-  '2025_Chevrolet_Trax':'assets/2025-trax.jpg',
-  '2025_Chevrolet_Trailblazer':'assets/2025-trailblazer.jpg',
-  '2025_Chevrolet_Malibu':'assets/2025-malibu.jpg',
-  '2025_Chevrolet_Colorado':'assets/2025-colorado.jpg',
-  '2025_Chevrolet_Blazer':'assets/2025-blazer.jpg',
-  '2025_Chevrolet_Tahoe':'assets/2025-tahoe.jpg'
-};
-function getVehicleImage(year, make, model){ const k = `${year}_${make}_${model}`; return VEHICLE_IMAGES[k] || null; }
+/* mock inventory */
+const MODEL_MAP={Chevrolet:['Silverado 1500','Equinox','Traverse','Trax','Trailblazer','Malibu','Colorado','Blazer','Tahoe'],GMC:['Sierra 1500','Terrain','Acadia','Canyon','Yukon'],Buick:['Encore GX','Envision','Envista']};
+const COLORS=['Black','White','Silver','Gray','Blue','Red','Green','Brown'];
+const VEHICLE_IMAGES={'2025_Chevrolet_Silverado 1500':'assets/2025-silverado-1500.jpg','2025_Chevrolet_Equinox':'assets/2025-equinox.jpg','2025_Chevrolet_Traverse':'assets/2025-traverse.jpg','2025_Chevrolet_Trax':'assets/2025-trax.jpg','2025_Chevrolet_Trailblazer':'assets/2025-trailblazer.jpg','2025_Chevrolet_Malibu':'assets/2025-malibu.jpg','2025_Chevrolet_Colorado':'assets/2025-colorado.jpg','2025_Chevrolet_Blazer':'assets/2025-blazer.jpg','2025_Chevrolet_Tahoe':'assets/2025-tahoe.jpg'};
+const getVehicleImage=(y,m,mo)=>VEHICLE_IMAGES[`${y}_${m}_${mo}`]||null;
+const basePrice=(mk,md)=>({Chevrolet:{Trax:21990,Trailblazer:24990,Malibu:24990,Equinox:28990,Blazer:34990,Traverse:36990,Colorado:33990,'Silverado 1500':38990,Tahoe:58990},GMC:{Terrain:30990,Acadia:36990,Canyon:35990,'Sierra 1500':41990,Yukon:64990},Buick:{Envista:23990,'Encore GX':27990,Envision:33990}}[mk]?.[md]||29990);
+const vinFor=(p,i)=>p+String(i).padStart(14,'0');
+function genNew(){const inv=[];const add=(mk,cnt,p)=>{const ms=MODEL_MAP[mk];for(let i=0;i<cnt;i++){const m=ms[i%ms.length],color=COLORS[i%COLORS.length],price=basePrice(mk,m)+(i%7)*750;inv.push({vin:vinFor(p,i+1000),stockType:'New',year:2025,make:mk,model:m,trim:(['LS','LT','LTZ','RS','Denali','Preferred','Avenir'])[i%7],price,miles:12+(i%9),color,features:['CarPlay/Android Auto','Backup Camera','Alloy Wheels','Keyless Entry']})}};add('Chevrolet',90,'1GC');add('GMC',55,'1GT');add('Buick',25,'1G4');return inv}
+function genUsed(n=30){const makes=['Toyota','Honda','Ford','Nissan','Tesla','Subaru','Hyundai','Kia','Volkswagen','Mazda'],models=['Camry','CR-V','F-150','Altima','Model 3','Outback','Tucson','Sportage','Tiguan','CX-5'];const inv=[];for(let i=0;i<n;i++){inv.push({vin:vinFor('2UX',i+5000),stockType:'Used',year:2019+(i%6),make:makes[i%makes.length],model:models[i%models.length],trim:(['Base','S','SE','SEL','Premium'])[i%5],price:17000+(i%14)*1200,miles:18000+(i%25)*3100,color:COLORS[(i+2)%COLORS.length]})}return inv}
+const INVENTORY=[...genNew(),...genUsed()];
+const calcPayment=(amt,apr,term)=>{const r=apr/100/12;return r===0?amt/term:(r*amt)/(1-Math.pow(1+r,-term))};
+const STEPS=['Welcome','Discovery','Vehicle Match','Trade-In','Payments','F&I Options','Review & Handoff'];
 
-const MODEL_MAP = {
-  Chevrolet:['Silverado 1500','Equinox','Traverse','Trax','Trailblazer','Malibu','Colorado','Blazer','Tahoe'],
-  GMC:['Sierra 1500','Terrain','Acadia','Canyon','Yukon'],
-  Buick:['Encore GX','Envision','Envista']
-};
-const COLORS = ['Black','White','Silver','Gray','Blue','Red','Green','Brown'];
+/* UI atoms */
+const SectionTitle=({title,subtitle})=>(<div className="mb-4"><h2 className="text-xl sm:text-2xl font-bold text-emerald-800 text-center">{title}</h2>{subtitle&&<p className="text-center text-slate-600 mt-1">{subtitle}</p>}</div>);
+const Field=({label,children})=>(<label className="block mb-3"><span className="block text-sm font-semibold text-slate-700 mb-1">{label}</span>{children}</label>);
+const PrimaryButton=(p)=>{const c=(p.className||"")+" px-5 py-3 rounded-2xl bg-emerald-600 text-white font-semibold shadow hover:brightness-110 active:brightness-95";return <button {...p} className={c}/>};
 
-function basePrice(make, model){
-  const map = {
-    Chevrolet:{'Trax':21990,'Trailblazer':24990,'Malibu':24990,'Equinox':28990,'Blazer':34990,'Traverse':36990,'Colorado':33990,'Silverado 1500':38990,'Tahoe':58990},
-    GMC:{'Terrain':30990,'Acadia':36990,'Canyon':35990,'Sierra 1500':41990,'Yukon':64990},
-    Buick:{'Envista':23990,'Encore GX':27990,'Envision':33990}
-  };
-  return (map[make] && map[make][model]) || 29990;
-}
-function vinFor(pfx, idx){ return pfx + String(idx).padStart(14,'0'); }
-
-function generateNewVehicles(){
-  const inv = [];
-  const add = (make, count, pfx) => {
-    const models = MODEL_MAP[make];
-    for (let i=0;i<count;i++){
-      const model = models[i%models.length];
-      const color = COLORS[i%COLORS.length];
-      const price = basePrice(make, model) + (i%7)*750;
-      inv.push({
-        vin: vinFor(pfx, i+1000),
-        stockType:'New', year:2025, make, model,
-        trim:(['LS','LT','LTZ','RS','Denali','Preferred','Avenir'])[i%7],
-        price, miles:12+(i%9), color,
-        features:['CarPlay/Android Auto','Backup Camera','Alloy Wheels','Keyless Entry']
-      });
-    }
-  };
-  add('Chevrolet',90,'1GC'); add('GMC',55,'1GT'); add('Buick',25,'1G4');
-  return inv;
-}
-function generateUsedVehicles(n=30){
-  const makes = ['Toyota','Honda','Ford','Nissan','Tesla','Subaru','Hyundai','Kia','Volkswagen','Mazda'];
-  const models = ['Camry','CR-V','F-150','Altima','Model 3','Outback','Tucson','Sportage','Tiguan','CX-5'];
-  const inv = [];
-  for(let i=0;i<n;i++){
-    inv.push({
-      vin: vinFor('2UX', i+5000),
-      stockType:'Used', year:2019+(i%6),
-      make:makes[i%makes.length], model:models[i%models.length],
-      trim:(['Base','S','SE','SEL','Premium'])[i%5],
-      price:17000+(i%14)*1200, miles:18000+(i%25)*3100,
-      color: COLORS[(i+2)%COLORS.length]
-    });
-  }
-  return inv;
-}
-const INVENTORY = [...generateNewVehicles(), ...generateUsedVehicles(30)];
-
-function calcPayment(amount, aprPct, termMonths){
-  const r = aprPct/100/12;
-  if(r===0) return amount/termMonths;
-  return (r*amount)/(1-Math.pow(1+r,-termMonths));
-}
-
-const STEPS = ['Welcome','Discovery','Vehicle Match','Trade-In','Payments','F&I Options','Review & Handoff'];
-
+/* app */
 function App(){
-  useEffect(()=>{
-    if(!sessionStorage.getItem('kiosk_session_started')){
-      sessionStorage.setItem('kiosk_session_started','1');
-      ["kiosk_step","kiosk_consent","kiosk_profile","kiosk_selectedVin","kiosk_desk","kiosk_trade","kiosk_filters","kiosk_maxVisited"].forEach(k=>{try{localStorage.removeItem(k)}catch{}});
-    }
-  },[]);
-  const params = new URLSearchParams(location.search);
-  const stepParam = params.get('step');
-  const initialStep = load("kiosk_step", 0);
+  useEffect(()=>{if(!sessionStorage.getItem('kiosk_session_started')){sessionStorage.setItem('kiosk_session_started','1');["kiosk_step","kiosk_consent","kiosk_profile","kiosk_selectedVin","kiosk_desk","kiosk_trade","kiosk_filters","kiosk_maxVisited"].forEach(k=>{try{localStorage.removeItem(k)}catch{}})}},[]);
+  const stepParam=new URLSearchParams(location.search).get('step');
+  const [step,setStep]=useState(load("kiosk_step",0));
+  const [maxVisited,setMaxVisited]=useState(load("kiosk_maxVisited",0));
+  useEffect(()=>{if(stepParam==='fandi'){setStep(5);setMaxVisited(m=>Math.max(m,5));const u=new URL(location.href);u.searchParams.delete('step');history.replaceState({},'',u.toString())}},[]);
+  useEffect(()=>save("kiosk_step",step),[step]); useEffect(()=>save("kiosk_maxVisited",maxVisited),[maxVisited]);
 
-  const [step,setStep] = useState(initialStep);
-  const [maxVisited,setMaxVisited] = useState(load("kiosk_maxVisited", initialStep));
+  const [consent,setConsent]=useState(load("kiosk_consent",{sms:false,email:false,privacy:false}));
+  const [profile,setProfile]=useState(load("kiosk_profile",{name:'',contact:'',useCase:'Commute',bodyStyle:'Sedan',budget:400,timeline:'This week'}));
+  const [selectedVin,setSelectedVin]=useState(load("kiosk_selectedVin",null));
+  const [desk,setDesk]=useState(load("kiosk_desk",{price:0,down:2000,apr:6.9,term:72,taxesFees:995,products:{vsc:false,gap:false,maint:false}}));
+  const [trade,setTrade]=useState(load("kiosk_trade",{vin:'',miles:'',condition:'Average',rangeLow:0,rangeHigh:0}));
+  useEffect(()=>save("kiosk_consent",consent),[consent]); useEffect(()=>save("kiosk_profile",profile),[profile]); useEffect(()=>save("kiosk_selectedVin",selectedVin),[selectedVin]); useEffect(()=>save("kiosk_desk",desk),[desk]); useEffect(()=>save("kiosk_trade",trade),[trade]);
 
-  useEffect(()=>{
-    if(stepParam==='fandi'){
-      setStep(5); setMaxVisited(m=>Math.max(m,5));
-      const url = new URL(location.href); url.searchParams.delete('step'); history.replaceState({},'',url.toString());
-    }
-  },[]);
+  const vehicle=useMemo(()=>INVENTORY.find(v=>v.vin===selectedVin)||null,[selectedVin]);
+  const productTotal=useMemo(()=> (desk.products.vsc?1895:0)+(desk.products.gap?795:0)+(desk.products.maint?495:0),[desk.products]);
+  const amountFinanced=useMemo(()=>{const price=vehicle?vehicle.price:desk.price;const tradeMid=(trade.rangeLow+trade.rangeHigh)/2||0;return Math.max(price+desk.taxesFees+productTotal-Number(desk.down||0)-tradeMid,0)},[vehicle,desk.down,desk.taxesFees,productTotal,trade.rangeLow,trade.rangeHigh]);
+  const monthly=useMemo(()=>calcPayment(amountFinanced,desk.apr,desk.term),[amountFinanced,desk.apr,desk.term]);
 
-  useEffect(()=>save("kiosk_step",step),[step]);
-  useEffect(()=>save("kiosk_maxVisited",maxVisited),[maxVisited]);
-
-  const [consent,setConsent] = useState(load("kiosk_consent",{sms:false,email:false,privacy:false}));
-  const [profile,setProfile] = useState(load("kiosk_profile",{name:'',contact:'',useCase:'Commute',bodyStyle:'Sedan',budget:400,timeline:'This week'}));
-  const [selectedVin,setSelectedVin] = useState(load("kiosk_selectedVin",null));
-  const [desk,setDesk] = useState(load("kiosk_desk",{price:0,down:2000,apr:6.9,term:72,taxesFees:995,products:{vsc:false,gap:false,maint:false}}));
-  const [trade,setTrade] = useState(load("kiosk_trade",{vin:'',miles:'',condition:'Average',rangeLow:0,rangeHigh:0}));
-
-  useEffect(()=>save("kiosk_consent",consent),[consent]);
-  useEffect(()=>save("kiosk_profile",profile),[profile]);
-  useEffect(()=>save("kiosk_selectedVin",selectedVin),[selectedVin]);
-  useEffect(()=>save("kiosk_desk",desk),[desk]);
-  useEffect(()=>save("kiosk_trade",trade),[trade]);
-
-  const vehicle = useMemo(()=>INVENTORY.find(v=>v.vin===selectedVin)||null,[selectedVin]);
-  const productTotal = useMemo(()=> (desk.products.vsc?1895:0)+(desk.products.gap?795:0)+(desk.products.maint?495:0),[desk.products]);
-  const amountFinanced = useMemo(()=>{
-    const price = vehicle ? vehicle.price : desk.price;
-    const tradeMid = (trade.rangeLow + trade.rangeHigh)/2 || 0;
-    const gross = price + desk.taxesFees + productTotal - Number(desk.down||0) - tradeMid;
-    return Math.max(gross,0);
-  },[vehicle,desk.down,desk.taxesFees,productTotal,trade.rangeLow,trade.rangeHigh]);
-  const monthly = useMemo(()=>calcPayment(amountFinanced,desk.apr,desk.term),[amountFinanced,desk.apr,desk.term]);
-
-  function next(){ setStep(s=>{ const n=Math.min(s+1,STEPS.length-1); setMaxVisited(m=>Math.max(m,n)); return n; }); }
-  function back(){ setStep(s=>Math.max(s-1,0)); }
-  function go(i){ if(i<=maxVisited) setStep(i); }
-
-  function estimateTradeRange(){
-    const base=12000, miles=parseInt(trade.miles||'0',10);
-    const adjMiles=Math.max(0,(60000-miles)*0.05);
-    const cond=trade.condition==='Great'?1500:(trade.condition==='Rough'?-1500:0);
-    const low=Math.max(500,base+adjMiles+cond-1500);
-    const high=Math.max(low+500,base+adjMiles+cond+1500);
-    setTrade(t=>({...t,rangeLow:Math.round(low),rangeHigh:Math.round(high)}));
-  }
-  function selectVehicle(vin){
-    const v = INVENTORY.find(x=>x.vin===vin);
-    if(v){ setSelectedVin(v.vin); setDesk(d=>({...d,price:v.price})); setStep(2); setMaxVisited(m=>Math.max(m,2)); }
-  }
+  const next=()=>setStep(s=>{const n=Math.min(s+1,STEPS.length-1);setMaxVisited(m=>Math.max(m,n));return n});
+  const back=()=>setStep(s=>Math.max(s-1,0));
+  const go=i=>{if(i<=maxVisited)setStep(i)};
+  const estimate=()=>{const miles=parseInt(trade.miles||'0',10);const adj=Math.max(0,(60000-miles)*0.05);const cond=trade.condition==='Great'?1500:(trade.condition==='Rough'?-1500:0);const low=Math.max(500,12000+adj+cond-1500),high=Math.max(low+500,12000+adj+cond+1500);setTrade(t=>({...t,rangeLow:Math.round(low),rangeHigh:Math.round(high)}))};
+  const selectVin=(vin)=>{const v=INVENTORY.find(x=>x.vin===vin);if(v){setSelectedVin(v.vin);setDesk(d=>({...d,price:v.price}));setStep(2);setMaxVisited(m=>Math.max(m,2))}};
 
   return (
     <div className="relative w-full min-h-screen">
@@ -202,482 +88,257 @@ function App(){
 
         <nav aria-label="Progress" className="mb-5 sm:mb-7">
           <ol className="grid grid-cols-4 sm:grid-cols-7 gap-2">
-            {STEPS.map((label,i)=>{
-              const reachable = i<=maxVisited, active = i<=step;
-              const cls = active?'bg-emerald-600 text-white':'bg-white/70 text-slate-600 border';
-              const numberCls = active?'bg-white/20':'bg-slate-200 text-slate-700';
-              return (
-                <li key={i}>
-                  <button
-                    className={`w-full flex items-center gap-2 p-1 rounded-full border border-slate-200 ${cls} ${!reachable?'opacity-60 cursor-not-allowed':''}`}
-                    onClick={()=>reachable&&go(i)} aria-disabled={!reachable}>
-                    <span className={`inline-flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold ${numberCls}`}>{i+1}</span>
-                    <span className="hidden sm:block text-xs font-semibold truncate pr-1">{label}</span>
-                  </button>
-                </li>
-              );
-            })}
+            {STEPS.map((label,i)=>{const reachable=i<=maxVisited,active=i<=step;return(
+              <li key={i}>
+                <button className={`w-full flex items-center gap-2 p-1 rounded-full border border-slate-200 ${active?'bg-emerald-600 text-white':'bg-white/70 text-slate-600'} ${!reachable?'opacity-60 cursor-not-allowed':''}`} onClick={()=>reachable&&go(i)} aria-disabled={!reachable}>
+                  <span className={`inline-flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold ${active?'bg-white/20':'bg-slate-200 text-slate-700'}`}>{i+1}</span>
+                  <span className="hidden sm:block text-xs font-semibold truncate pr-1">{label}</span>
+                </button>
+              </li>)})}
           </ol>
         </nav>
 
         <div className="bg-white/90 backdrop-blur rounded-2xl shadow-2xl border border-slate-200 p-4 sm:p-6">
-          {step===0 && (
-            <Welcome
-              consent={consent} setConsent={setConsent}
-              profile={profile} setProfile={setProfile}
-              onValidatedNext={()=>{track('welcome_next',{source:'next_button'}); setMaxVisited(m=>Math.max(m,1)); next();}}
-              onSelect={selectVehicle}
-            />
-          )}
-          {step===1 && (<Discovery profile={profile} setProfile={setProfile} onNext={()=>{track('discovery_next'); setMaxVisited(m=>Math.max(m,2)); next();}} onBack={back} />)}
-          {step===2 && (<VehicleMatch selectedVin={selectedVin} onSelect={(vin)=>{setSelectedVin(vin); track('vehicle_selected',{vin});}} onBack={back} />)}
-          {step===3 && (<Trade trade={trade} setTrade={setTrade} estimate={estimateTradeRange} onBack={back} onNext={()=>{track('trade_next'); setMaxVisited(m=>Math.max(m,4)); next();}} />)}
-          {step===4 && (
-            <Payments
-              vehicle={vehicle} desk={desk} setDesk={setDesk}
-              monthly={monthly} amountFinanced={amountFinanced}
-              onBack={back}
-              onNext={()=>{track('payments_next'); window.location.href='kiosk-credit.html?from=kiosk';}}
-              budgetTarget={profile.budget}
-            />
-          )}
-          {step===5 && (<FandI desk={desk} setDesk={setDesk} monthly={monthly} onBack={back} onNext={()=>{track('fandi_next'); setMaxVisited(m=>Math.max(m,6)); next();}} />)}
-          {step===6 && (<Review profile={profile} vehicle={vehicle} desk={desk} trade={trade} monthly={monthly} onBack={back} />)}
+          {step===0 && <Welcome consent={consent} setConsent={setConsent} profile={profile} setProfile={setProfile} onValidatedNext={()=>{track('welcome_next');setMaxVisited(m=>Math.max(m,1));next()}} onSelect={selectVin} />}
+          {step===1 && <Discovery profile={profile} setProfile={setProfile} onNext={()=>{track('discovery_next');setMaxVisited(m=>Math.max(m,2));next()}} onBack={back} />}
+          {step===2 && <VehicleMatch selectedVin={selectedVin} onSelect={(vin)=>{setSelectedVin(vin);track('vehicle_selected',{vin})}} onBack={back} />}
+          {step===3 && <Trade trade={trade} setTrade={setTrade} estimate={estimate} onBack={back} onNext={()=>{track('trade_next');setMaxVisited(m=>Math.max(m,4));next()}} />}
+          {step===4 && <Payments vehicle={vehicle} desk={desk} setDesk={setDesk} monthly={monthly} amountFinanced={amountFinanced} onBack={back} onNext={()=>{track('payments_next');location.href='kiosk-credit.html?from=kiosk'}} budgetTarget={profile.budget} />}
+          {step===5 && <FandI desk={desk} setDesk={setDesk} monthly={monthly} onBack={back} onNext={()=>{track('fandi_next');setMaxVisited(m=>Math.max(m,6));next()}} />}
+          {step===6 && <Review profile={profile} vehicle={vehicle} desk={desk} trade={trade} monthly={monthly} onBack={back} />}
         </div>
       </div>
     </div>
   );
 }
 
-function SectionTitle({ title, subtitle }){
-  return (
-    <div className="mb-4">
-      <h2 className="text-xl sm:text-2xl font-bold text-emerald-800 text-center">{title}</h2>
-      {subtitle && <p className="text-center text-slate-600 mt-1">{subtitle}</p>}
+/* views */
+function Welcome({consent,setConsent,profile,setProfile,onValidatedNext,onSelect}){
+  const initialFilters=React.useMemo(()=>({...load("kiosk_filters",{stockType:'',make:'',model:'',color:'',minPrice:'',maxPrice:''}),stockType:''}),[]);
+  const [filters,setFilters]=useState(initialFilters); const [page,setPage]=useState(1); const perPage=12;
+  useEffect(()=>save("kiosk_filters",filters),[filters]); useEffect(()=>{save("kiosk_filters",initialFilters)},[]);
+  const modelOptions=useMemo(()=>filters.make?MODEL_MAP[filters.make]:[],[filters.make]);
+  const results=useMemo(()=>{const min=Number(filters.minPrice||0),max=Number(filters.maxPrice||999999);return INVENTORY.filter(v=>{const st=!filters.stockType||v.stockType.toLowerCase()===filters.stockType.toLowerCase();const mk=!filters.make||v.make===filters.make;const md=!filters.model||v.model===filters.model;const co=!filters.color||v.color===filters.color;const pr=v.price>=min&&v.price<=max;return st&&mk&&md&&co&&pr})},[filters]);
+  const totalPages=Math.max(1,Math.ceil(results.length/perPage)); const pageItems=results.slice((page-1)*perPage,page*perPage);
+
+  const digits=s=>(s||'').replace(/\D/g,''); const fmt=d=>{const x=d.slice(0,10);if(!x)return'';if(x.length<4)return`(${x}`;if(x.length<7)return`(${x.slice(0,3)}) ${x.slice(3)}`;return`(${x.slice(0,3)}) ${x.slice(3,6)}-${x.slice(6)}`};
+  const onPhoneChange=v=>setProfile(p=>({...p,contact:fmt(digits(v).slice(0,10))}));
+
+  const [err,setErr]=useState({name:'',contact:''});
+  const validate=()=>{const e={name:'',contact:''}; if(!profile.name.trim()) e.name='Enter your name or company.'; if(digits(profile.contact).length!==10) e.contact='Enter a valid 10-digit phone.'; setErr(e); return !e.name&&!e.contact};
+  const handleNext=()=>{if(validate()) onValidatedNext()};
+  const guidedHref="saleskiosk-guidedflow.html?utm_source=kiosk&utm_medium=welcome_banner&utm_campaign=guided_flow";
+
+  return (<div>
+    <SectionTitle title="Welcome to Quirk Auto Dealers" subtitle="Start the guided flow or browse our inventory below."/>
+    <div className="text-center mb-6">
+      <a href={guidedHref} onClick={()=>track('guided_flow_link',{placement:'banner'})} className="inline-block px-6 py-3 rounded-full bg-emerald-600 text-white font-semibold shadow hover:brightness-110 active:brightness-95">Start Guided Flow</a>
     </div>
-  );
+
+    <div className="grid sm:grid-cols-2 gap-4 mb-2">
+      <div className="text-center">
+        <label className="block mb-1">
+          <span className="block text-sm font-semibold text-slate-700 mb-1">Your Name or Company Name</span>
+          <input aria-label="Your name" className={`w-2/3 rounded-xl border p-3 focus:ring-2 ${err.name?'border-red-500 focus:ring-red-300':'focus:ring-emerald-300'}`} value={profile.name} onChange={e=>setProfile({...profile,name:e.target.value})} style={{backgroundColor:'#ecfdf5',color:'#0f172a'}}/>
+        </label>
+        {err.name&&<div className="text-xs text-red-600 mt-1">{err.name}</div>}
+      </div>
+      <div className="text-center">
+        <label className="block mb-1">
+          <span className="block text-sm font-semibold text-slate-700 mb-1">Phone Number</span>
+          <input aria-label="Phone Number" className={`w-2/3 rounded-xl border p-3 focus:ring-2 ${err.contact?'border-red-500 focus:ring-red-300':'focus:ring-emerald-300'}`} placeholder="Enter 10 digit phone number" value={profile.contact} onChange={e=>onPhoneChange(e.target.value)} style={{backgroundColor:'#ecfdf5',color:'#0f172a'}} inputMode="tel"/>
+        </label>
+        {err.contact&&<div className="text-xs text-red-600 mt-1">{err.contact}</div>}
+      </div>
+    </div>
+
+    <div className="mb-4 text-center">
+      <details className="inline-block text-sm">
+        <summary className="cursor-pointer text-slate-600 px-4 py-2 rounded-full border border-slate-300 bg-white/80">Consent & privacy</summary>
+        <div className="grid sm:grid-cols-3 gap-3 mt-3 text-slate-700 bg-white/90 p-4 rounded-xl border border-slate-200">
+          <label className="flex items-center gap-2"><input type="checkbox" checked={consent.sms} onChange={e=>setConsent({...consent,sms:e.target.checked})}/> SMS updates</label>
+          <label className="flex items-center gap-2"><input type="checkbox" checked={consent.email} onChange={e=>setConsent({...consent,email:e.target.checked})}/> Email updates</label>
+          <label className="flex items-center gap-2"><input type="checkbox" checked={consent.privacy} onChange={e=>setConsent({...consent,privacy:e.target.checked})}/> I agree to privacy policy</label>
+        </div>
+      </details>
+    </div>
+
+    <div className="mb-6 text-center">
+      <button onClick={handleNext} className="px-6 py-3 rounded-full bg-emerald-600 text-white font-semibold shadow hover:brightness-110 active:brightness-95">Next</button>
+    </div>
+
+    <div className="rounded-2xl border border-slate-200 p-4 bg-white/80">
+      <h3 className="text-lg font-bold text-emerald-800 mb-2 text-center">Browse Inventory</h3>
+      <div className="grid md:grid-cols-6 gap-3">
+        <Field label="Stock Type"><select className="w-full rounded-xl border p-3" value={filters.stockType} onChange={e=>{setFilters({...filters,stockType:e.target.value});setPage(1)}}><option value="">Any</option><option>New</option><option>Used</option></select></Field>
+        <Field label="Make"><select className="w-full rounded-xl border p-3" value={filters.make} onChange={e=>{setFilters(f=>({...f,make:e.target.value,model:''}));setPage(1)}}><option value="">Any</option><option>Chevrolet</option><option>GMC</option><option>Buick</option></select></Field>
+        <Field label="Model"><select className="w-full rounded-xl border p-3" value={filters.model} onChange={e=>{setFilters({...filters,model:e.target.value});setPage(1)}} disabled={!filters.make}><option value="">{filters.make?'Any':'Choose make first'}</option>{modelOptions.map(m=><option key={m}>{m}</option>)}</select></Field>
+        <Field label="Color"><select className="w-full rounded-xl border p-3" value={filters.color} onChange={e=>{setFilters({...filters,color:e.target.value});setPage(1)}}><option value="">Any</option>{COLORS.map(c=><option key={c}>{c}</option>)}</select></Field>
+        <Field label="Min Price ($)"><input type="number" className="w-full rounded-xl border p-3" value={filters.minPrice} onChange={e=>{setFilters({...filters,minPrice:e.target.value});setPage(1)}}/></Field>
+        <Field label="Max Price ($)"><input type="number" className="w-full rounded-xl border p-3" value={filters.maxPrice} onChange={e=>{setFilters({...filters,maxPrice:e.target.value});setPage(1)}}/></Field>
+      </div>
+
+      <div className="mt-3 text-sm text-slate-600">{results.length.toLocaleString()} vehicles found</div>
+
+      <div className="mt-3 grid md:grid-cols-3 gap-4">
+        {pageItems.map((v,i)=>{const img=getVehicleImage(v.year,v.make,v.model);return(
+          <button key={`vehicle-${i}-${v.vin.slice(-6)}`} onClick={()=>onSelect(v.vin)} className="group text-left rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition p-3 bg-white">
+            <div className="relative">
+              {img?<img src={img} alt={`${v.year} ${v.make} ${v.model}`} className="w-full h-40 object-cover rounded-xl" loading="lazy" onError={e=>{e.currentTarget.style.display='none';e.currentTarget.nextElementSibling.style.display='flex'}}/>:null}
+              <div className={`w-full h-40 bg-gradient-to-br from-slate-200 to-slate-300 rounded-xl flex items-center justify-center ${img?'hidden':''}`}>
+                <div className="text-center text-slate-600"><div className="text-sm font-semibold">{v.make}</div><div className="text-xs">{v.model}</div></div>
+              </div>
+              <span className="absolute bottom-2 left-2 text-xs px-2 py-1 rounded-full bg-black/60 text-white">{v.stockType}</span>
+            </div>
+            <div className="mt-2 font-semibold">{v.year} {v.make} {v.model}</div>
+            <div className="text-emerald-700 font-extrabold text-lg">${v.price.toLocaleString()}</div>
+            <div className="text-xs text-slate-600">{v.color} • {v.trim}</div>
+          </button>)}
+        )}
+      </div>
+
+      <div className="mt-3 flex items-center justify-between">
+        <button className="px-3 py-2 rounded-xl border bg-white disabled:opacity-50" onClick={()=>setPage(p=>Math.max(1,p-1))} disabled={page<=1}>← Prev</button>
+        <div className="text-sm text-slate-600">Page {page} / {totalPages}</div>
+        <button className="px-3 py-2 rounded-xl border bg-white disabled:opacity-50" onClick={()=>setPage(p=>Math.min(totalPages,p+1))} disabled={page>=totalPages}>Next →</button>
+      </div>
+    </div>
+
+    <div className="mt-4 flex flex-wrap gap-3 justify-end">
+      <a href="saleskiosk-guidedflow.html?utm_source=kiosk&utm_medium=footer_button&utm_campaign=guided_flow" className="px-5 py-3 rounded-2xl bg-emerald-600 text-white font-semibold shadow hover:brightness-110 active:brightness-95" onClick={()=>track('guided_flow_link',{placement:'footer_button'})}>Switch to Guided Flow →</a>
+    </div>
+  </div>);
 }
-function Field({ label, children }){
-  return (
-    <label className="block mb-3">
-      <span className="block text-sm font-semibold text-slate-700 mb-1">{label}</span>
-      {children}
-    </label>
-  );
-}
-function PrimaryButton(props){
-  const cls = (props.className||"")+" px-5 py-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-700 text-white font-semibold shadow hover:brightness-110 active:brightness-95";
-  return <button {...props} className={cls} />;
-}
 
-function Welcome({ consent, setConsent, profile, setProfile, onValidatedNext, onSelect }){
-  const initialFilters = React.useMemo(()=>{ const stored = load("kiosk_filters",{stockType:'',make:'',model:'',color:'',minPrice:'',maxPrice:''})||{}; return {...stored,stockType:''}; },[]);
-  const [filters,setFilters] = useState(initialFilters);
-  const [page,setPage] = useState(1);
-  const perPage = 12;
-  useEffect(()=>save("kiosk_filters",filters),[filters]);
-  useEffect(()=>{save("kiosk_filters",initialFilters);},[]);
+function Discovery({profile,setProfile,onNext,onBack}){return(<div>
+  <SectionTitle title="Tell us what you need" subtitle="A few quick choices so we can tailor the match."/>
+  <div className="grid sm:grid-cols-2 gap-4">
+    <Field label="Primary use"><select className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={profile.useCase} onChange={e=>setProfile({...profile,useCase:e.target.value})}>{['Commute','Family','Adventure','Business'].map(x=><option key={x}>{x}</option>)}</select></Field>
+    <Field label="Preferred body style"><select className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={profile.bodyStyle} onChange={e=>setProfile({...profile,bodyStyle:e.target.value})}>{['Sedan','SUV','Truck','EV'].map(x=><option key={x}>{x}</option>)}</select></Field>
+    <Field label="Monthly budget target"><input type="number" className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={profile.budget} onChange={e=>setProfile({...profile,budget:Number(e.target.value)})}/></Field>
+    <Field label="Timeline"><select className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={profile.timeline} onChange={e=>setProfile({...profile,timeline:e.target.value})}>{['Today','This week','This month','Just researching'].map(x=><option key={x}>{x}</option>)}</select></Field>
+  </div>
+  <div className="mt-4 flex justify-between"><button className="px-4 py-2 rounded-xl border bg-white/80" onClick={onBack}>← Back</button><PrimaryButton onClick={onNext}>See matches →</PrimaryButton></div>
+</div>)}
 
-  const modelOptions = useMemo(()=> filters.make ? MODEL_MAP[filters.make] : [],[filters.make]);
+function VehicleMatch({selectedVin,onSelect,onBack}){const picks=INVENTORY.slice(0,9);return(<div>
+  <SectionTitle title="Best matches" subtitle="Tap a vehicle to continue."/>
+  <div className="grid md:grid-cols-3 gap-4">
+    {picks.map((v,i)=>{const img=getVehicleImage(v.year,v.make,v.model);return(
+      <button key={`match-${i}-${v.vin.slice(-6)}`} className={`group text-left rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition p-3 bg-white/90 ${selectedVin===v.vin?'ring-4 ring-emerald-300':''}`} onClick={()=>onSelect(v.vin)}>
+        <div className="relative">
+          {img?<img src={img} alt={`${v.year} ${v.make} ${v.model}`} className="w-full h-44 object-cover rounded-xl" loading="lazy" onError={e=>{e.currentTarget.style.display='none';e.currentTarget.nextElementSibling.style.display='flex'}}/>:null}
+          <div className={`w-full h-44 bg-gradient-to-br from-slate-200 to-slate-300 rounded-xl flex items-center justify-center ${img?'hidden':''}`}><div className="text-center text-slate-600"><div className="text-sm font-semibold">{v.make}</div><div className="text-xs">{v.model}</div></div></div>
+          <span className="absolute bottom-2 left-2 text-xs px-2 py-1 rounded-full bg-black/60 text-white">{v.miles.toLocaleString()} mi</span>
+        </div>
+        <div className="mt-2 font-semibold">{v.year} {v.make} {v.model}</div>
+        <div className="text-emerald-700 font-extrabold text-lg">${v.price.toLocaleString()}</div>
+        <div className="text-xs text-slate-600">{v.color} • {v.trim}</div>
+      </button>)})}
+  </div>
+  <div className="mt-4 flex justify-between"><button className="px-4 py-2 rounded-xl border bg-white/80" onClick={onBack}>← Back</button><span className="text-sm text-slate-500">Choose a vehicle to continue</span></div>
+</div>)}
 
-  const results = useMemo(()=>{
-    const min = Number(filters.minPrice||0), max = Number(filters.maxPrice||999999);
-    return INVENTORY.filter(v=>{
-      const stockOK=!filters.stockType||v.stockType.toLowerCase()===filters.stockType.toLowerCase();
-      const makeOK=!filters.make||v.make===filters.make;
-      const modelOK=!filters.model||v.model===filters.model;
-      const colorOK=!filters.color||v.color===filters.color;
-      const priceOK=v.price>=min&&v.price<=max;
-      return stockOK&&makeOK&&modelOK&&colorOK&&priceOK;
-    });
-  },[filters]);
-  const totalPages = Math.max(1,Math.ceil(results.length/perPage));
-  const pageItems = results.slice((page-1)*perPage, page*perPage);
-
-  const digits = s => (s||'').replace(/\D/g,'');
-  const formatPhone = d => { const x=d.slice(0,10); if(!x) return ''; if(x.length<4) return `(${x}`; if(x.length<7) return `(${x.slice(0,3)}) ${x.slice(3)}`; return `(${x.slice(0,3)}) ${x.slice(3,6)}-${x.slice(6)}`; };
-  const onPhoneChange = val => { const d = digits(val).slice(0,10); setProfile(p=>({...p,contact:formatPhone(d)})); };
-
-  const [errors,setErrors] = useState({name:'',contact:''});
-  function validate(){
-    const e = {name:'',contact:''};
-    if(!profile.name.trim()) e.name='Please enter your name or company.';
-    const d = digits(profile.contact);
-    if(d.length!==10) e.contact='Enter a valid 10-digit phone.';
-    setErrors(e); return !e.name && !e.contact;
-  }
-  function handleNext(){ if(validate()) onValidatedNext(); }
-
-  const guidedHref = "https://mpalmer79.github.io/Quirk-AI-Project-Overview/saleskiosk-guidedflow.html?utm_source=kiosk&utm_medium=welcome_banner&utm_campaign=guided_flow";
-
-  return (
+function Payments({vehicle,desk,setDesk,monthly,amountFinanced,onBack,onNext,budgetTarget}){useEffect(()=>{const over=monthly-Number(budgetTarget||0);if(over>50)track('payment_over_budget',{overBy:over})},[monthly,budgetTarget]);const price=vehicle?vehicle.price:desk.price;return(<div>
+  <SectionTitle title="Build your payment" subtitle="Deterministic calculator; real taxes/fees plug in here."/>
+  <div className="grid md:grid-cols-2 gap-6">
     <div>
-      <SectionTitle title="Welcome to Quirk Auto Dealers" subtitle="Start the guided flow or browse our inventory below." />
-      <div className="text-center mb-6">
-        <a href={guidedHref} onClick={()=>track('guided_flow_link',{placement:'banner'})}
-           className="inline-block px-6 py-3 rounded-full bg-gradient-to-r from-emerald-600 to-emerald-700 text-white font-semibold shadow hover:brightness-110 active:brightness-95">
-          Start Guided Flow
-        </a>
-      </div>
-
-      <div className="grid sm:grid-cols-2 gap-4 mb-2">
-        <div className="text-center">
-          <label className="block mb-1">
-            <span className="block text-sm font-semibold text-slate-700 mb-1">Your Name or Company Name</span>
-            <input aria-label="Your name"
-              className={`w-2/3 rounded-xl border p-3 focus:ring-2 ${errors.name?'border-red-500 focus:ring-red-300':'focus:ring-emerald-300'}`}
-              value={profile.name} onChange={e=>setProfile({...profile,name:e.target.value})}
-              style={{backgroundColor:'#ecfdf5',color:'#0f172a'}} />
-          </label>
-          {errors.name && <div className="text-xs text-red-600 mt-1">{errors.name}</div>}
+      <div className="rounded-xl border p-4 bg-white/90">
+        <div className="text-sm text-slate-600 mb-2">Vehicle price</div>
+        <div className="text-2xl font-bold">${price?.toLocaleString?.()??'—'}</div>
+        <div className="grid grid-cols-2 gap-3 mt-4">
+          <Field label="Down payment"><input type="number" className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={desk.down} onChange={e=>setDesk({...desk,down:Number(e.target.value)})}/></Field>
+          <Field label="Taxes & fees (est.)"><input type="number" className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={desk.taxesFees} onChange={e=>setDesk({...desk,taxesFees:Number(e.target.value)})}/></Field>
+          <Field label="APR %"><input type="number" className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={desk.apr} step="0.1" onChange={e=>setDesk({...desk,apr:Number(e.target.value)})}/></Field>
+          <Field label="Term (months)"><select className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={desk.term} onChange={e=>setDesk({...desk,term:Number(e.target.value)})}>{[36,48,60,72,84].map(n=><option key={n} value={n}>{n}</option>)}</select></Field>
         </div>
-
-        <div className="text-center">
-          <label className="block mb-1">
-            <span className="block text-sm font-semibold text-slate-700 mb-1">Phone Number</span>
-            <input aria-label="Phone Number"
-              className={`w-2/3 rounded-xl border p-3 focus:ring-2 ${errors.contact?'border-red-500 focus:ring-red-300':'focus:ring-emerald-300'}`}
-              placeholder="Enter 10 digit phone number" value={profile.contact}
-              onChange={e=>onPhoneChange(e.target.value)} style={{backgroundColor:'#ecfdf5',color:'#0f172a'}} inputMode="tel" />
-          </label>
-          {errors.contact && <div className="text-xs text-red-600 mt-1">{errors.contact}</div>}
-        </div>
-      </div>
-
-      <div className="mb-4 text-center">
-        <details className="inline-block text-sm">
-          <summary className="cursor-pointer text-slate-600 px-4 py-2 rounded-full border border-slate-300 bg-white/80">Consent & privacy</summary>
-          <div className="grid sm:grid-cols-3 gap-3 mt-3 text-slate-700 bg-white/90 p-4 rounded-xl border border-slate-200">
-            <label className="flex items-center gap-2"><input type="checkbox" checked={consent.sms} onChange={e=>setConsent({...consent,sms:e.target.checked})}/> SMS updates</label>
-            <label className="flex items-center gap-2"><input type="checkbox" checked={consent.email} onChange={e=>setConsent({...consent,email:e.target.checked})}/> Email updates</label>
-            <label className="flex items-center gap-2"><input type="checkbox" checked={consent.privacy} onChange={e=>setConsent({...consent,privacy:e.target.checked})}/> I agree to privacy policy</label>
+        <details className="mt-2">
+          <summary className="text-slate-600 cursor-pointer">Products</summary>
+          <div className="grid sm:grid-cols-3 gap-3 mt-2 text-slate-700">
+            <label className="flex items-center gap-2"><input type="checkbox" checked={desk.products.vsc} onChange={e=>setDesk({...desk,products:{...desk.products,vsc:e.target.checked}})}/> VSC ($1,895)</label>
+            <label className="flex items-center gap-2"><input type="checkbox" checked={desk.products.gap} onChange={e=>setDesk({...desk,products:{...desk.products,gap:e.target.checked}})}/> GAP ($795)</label>
+            <label className="flex items-center gap-2"><input type="checkbox" checked={desk.products.maint} onChange={e=>setDesk({...desk,products:{...desk.products,maint:e.target.checked}})}/> Maintenance ($495)</label>
           </div>
         </details>
       </div>
-
-      <div className="mb-6 text-center">
-        <button onClick={handleNext}
-          className="px-6 py-3 rounded-full bg-emerald-600 text-white font-semibold shadow hover:brightness-110 active:brightness-95">
-          Next
-        </button>
-      </div>
-
-      <div className="rounded-2xl border border-slate-200 p-4 bg-white/80">
-        <h3 className="text-lg font-bold text-emerald-800 mb-2 text-center">Browse Inventory</h3>
-        <div className="grid md:grid-cols-6 gap-3">
-          <Field label="Stock Type">
-            <select className="w-full rounded-xl border p-3" value={filters.stockType}
-                    onChange={e=>{setFilters({...filters,stockType:e.target.value}); setPage(1);}}>
-              <option value="">Any</option><option value="New">New</option><option value="Used">Used</option>
-            </select>
-          </Field>
-          <Field label="Make">
-            <select className="w-full rounded-xl border p-3" value={filters.make}
-                    onChange={e=>{setFilters(f=>({...f,make:e.target.value,model:''})); setPage(1);}}>
-              <option value="">Any</option><option>Chevrolet</option><option>GMC</option><option>Buick</option>
-            </select>
-          </Field>
-          <Field label="Model">
-            <select className="w-full rounded-xl border p-3" value={filters.model}
-                    onChange={e=>{setFilters({...filters,model:e.target.value}); setPage(1);}} disabled={!filters.make}>
-              <option value="">{filters.make?'Any':'Choose make first'}</option>
-              {modelOptions.map(m=><option key={m}>{m}</option>)}
-            </select>
-          </Field>
-          <Field label="Color">
-            <select className="w-full rounded-xl border p-3" value={filters.color}
-                    onChange={e=>{setFilters({...filters,color:e.target.value}); setPage(1);}}>
-              <option value="">Any</option>
-              {COLORS.map(c=><option key={c}>{c}</option>)}
-            </select>
-          </Field>
-          <Field label="Min Price ($)">
-            <input type="number" className="w-full rounded-xl border p-3" value={filters.minPrice}
-                   onChange={e=>{setFilters({...filters,minPrice:e.target.value}); setPage(1);}}/>
-          </Field>
-          <Field label="Max Price ($)">
-            <input type="number" className="w-full rounded-xl border p-3" value={filters.maxPrice}
-                   onChange={e=>{setFilters({...filters,maxPrice:e.target.value}); setPage(1);}}/>
-          </Field>
-        </div>
-
-        <div className="mt-3 text-sm text-slate-600">{results.length.toLocaleString()} vehicles found</div>
-
-        <div className="mt-3 grid md:grid-cols-3 gap-4">
-          {pageItems.map((v, i) => {
-            const vehicleImage = getVehicleImage(v.year, v.make, v.model);
-            return (
-              <button key={`vehicle-${i}-${v.vin.slice(-6)}`} onClick={()=>onSelect(v.vin)}
-                      className="group text-left rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition p-3 bg-white">
-                <div className="relative">
-                  {vehicleImage ? (
-                    <img src={vehicleImage} alt={`${v.year} ${v.make} ${v.model}`}
-                         className="w-full h-40 object-cover rounded-xl" loading="lazy"
-                         onError={(e)=>{e.currentTarget.style.display='none'; e.currentTarget.nextElementSibling.style.display='flex';}} />
-                  ) : null}
-                  <div className={`w-full h-40 bg-gradient-to-br from-slate-200 to-slate-300 rounded-xl flex items-center justify-center ${vehicleImage?'hidden':''}`}>
-                    <div className="text-center text-slate-600">
-                      <div className="text-sm font-semibold">{v.make}</div>
-                      <div className="text-xs">{v.model}</div>
-                    </div>
-                  </div>
-                  <span className="absolute bottom-2 left-2 text-xs px-2 py-1 rounded-full bg-black/60 text-white">{v.stockType}</span>
-                </div>
-                <div className="mt-2 font-semibold">{v.year} {v.make} {v.model}</div>
-                <div className="text-emerald-700 font-extrabold text-lg">${v.price.toLocaleString()}</div>
-                <div className="text-xs text-slate-600">{v.color} • {v.trim}</div>
-              </button>
-            );
-          })}
-        </div>
-
-        <div className="mt-3 flex items-center justify-between">
-          <button className="px-3 py-2 rounded-xl border bg-white disabled:opacity-50"
-                  onClick={()=>setPage(p=>Math.max(1,p-1))} disabled={page<=1}>← Prev</button>
-          <div className="text-sm text-slate-600">Page {page} / {totalPages}</div>
-          <button className="px-3 py-2 rounded-xl border bg-white disabled:opacity-50"
-                  onClick={()=>setPage(p=>Math.min(totalPages,p+1))} disabled={page>=totalPages}>Next →</button>
-        </div>
-      </div>
-
-      <div className="mt-4 flex flex-wrap gap-3 justify-end">
-        <a href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/saleskiosk-guidedflow.html?utm_source=kiosk&utm_medium=footer_button&utm_campaign=guided_flow"
-           className="px-5 py-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-700 text-white font-semibold shadow hover:brightness-110 active:brightness-95"
-           onClick={()=>track('guided_flow_link',{placement:'footer_button'})}>
-          Switch to Guided Flow →
-        </a>
-      </div>
     </div>
-  );
-}
-
-function Discovery({ profile, setProfile, onNext, onBack }){
-  return (
-    <div>
-      <SectionTitle title="Tell us what you need" subtitle="A few quick choices so we can tailor the match." />
-      <div className="grid sm:grid-cols-2 gap-4">
-        <Field label="Primary use">
-          <select className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={profile.useCase} onChange={e=>setProfile({...profile,useCase:e.target.value})}>
-            {['Commute','Family','Adventure','Business'].map(x=><option key={x}>{x}</option>)}
-          </select>
-        </Field>
-        <Field label="Preferred body style">
-          <select className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={profile.bodyStyle} onChange={e=>setProfile({...profile,bodyStyle:e.target.value})}>
-            {['Sedan','SUV','Truck','EV'].map(x=><option key={x}>{x}</option>)}
-          </select>
-        </Field>
-        <Field label="Monthly budget target">
-          <input type="number" className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={profile.budget} onChange={e=>setProfile({...profile,budget:Number(e.target.value)})}/>
-        </Field>
-        <Field label="Timeline">
-          <select className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={profile.timeline} onChange={e=>setProfile({...profile,timeline:e.target.value})}>
-            {['Today','This week','This month','Just researching'].map(x=><option key={x}>{x}</option>)}
-          </select>
-        </Field>
+    <div className="rounded-2xl border p-4 bg-emerald-50/80">
+      <div className="text-sm text-emerald-700">Estimated monthly</div>
+      <div className="text-4xl font-extrabold text-emerald-800">${monthly.toFixed(0)}</div>
+      <div className="text-sm text-slate-600 mt-2">Amount financed: ${amountFinanced.toLocaleString()}</div>
+      <div className="mt-3 flex flex-wrap gap-2 text-xs text-slate-700">
+        <span className="px-2 py-1 rounded-full bg-white border">APR {desk.apr}%</span>
+        <span className="px-2 py-1 rounded-full bg-white border">{desk.term} mos</span>
+        <span className="px-2 py-1 rounded-full bg-white border">Down ${Number(desk.down).toLocaleString()}</span>
       </div>
-      <div className="mt-4 flex justify-between">
-        <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={onBack}>← Back</button>
-        <PrimaryButton onClick={onNext}>See matches →</PrimaryButton>
-      </div>
+      <p className="text-xs text-slate-500 mt-2">Estimates only; subject to lender approval, credit tier, LTV, and program rules.</p>
     </div>
-  );
-}
+  </div>
+  <div className="mt-4 flex justify-between"><button className="px-4 py-2 rounded-xl border bg-white/80" onClick={onBack}>← Back</button><PrimaryButton onClick={onNext}>Credit start →</PrimaryButton></div>
+</div>)}
 
-function VehicleMatch({ selectedVin, onSelect, onBack }){
-  const picks = INVENTORY.slice(0,9);
-  return (
-    <div>
-      <SectionTitle title="Best matches" subtitle="Tap a vehicle to continue." />
-      <div className="grid md:grid-cols-3 gap-4">
-        {picks.map((v,i)=>{
-          const vehicleImage = getVehicleImage(v.year,v.make,v.model);
-          return (
-            <button key={`match-${i}-${v.vin.slice(-6)}`} className={`group text-left rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition p-3 bg-white/90 ${selectedVin===v.vin?'ring-4 ring-emerald-300':''}`} onClick={()=>onSelect(v.vin)}>
-              <div className="relative">
-                {vehicleImage ? (
-                  <img src={vehicleImage} alt={`${v.year} ${v.make} ${v.model}`}
-                       className="w-full h-44 object-cover rounded-xl" loading="lazy"
-                       onError={(e)=>{e.currentTarget.style.display='none'; e.currentTarget.nextElementSibling.style.display='flex';}}/>
-                ) : null}
-                <div className={`w-full h-44 bg-gradient-to-br from-slate-200 to-slate-300 rounded-xl flex items-center justify-center ${vehicleImage?'hidden':''}`}>
-                  <div className="text-center text-slate-600">
-                    <div className="text-sm font-semibold">{v.make}</div>
-                    <div className="text-xs">{v.model}</div>
-                  </div>
-                </div>
-                <span className="absolute bottom-2 left-2 text-xs px-2 py-1 rounded-full bg-black/60 text-white">{v.miles.toLocaleString()} mi</span>
-              </div>
-              <div className="mt-2 font-semibold">{v.year} {v.make} {v.model}</div>
-              <div className="text-emerald-700 font-extrabold text-lg">${v.price.toLocaleString()}</div>
-              <div className="text-xs text-slate-600">{v.color} • {v.trim}</div>
-            </button>
-          );
-        })}
-      </div>
-      <div className="mt-4 flex justify-between">
-        <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={onBack}>← Back</button>
-        <span className="text-sm text-slate-500">Choose a vehicle to continue</span>
-      </div>
+function Trade({trade,setTrade,estimate,onBack,onNext}){return(<div>
+  <SectionTitle title="Trade-in pre-valuation" subtitle="Get a market-based range. Final number after in-person inspection."/>
+  <div className="grid md:grid-cols-3 gap-4">
+    <Field label="VIN"><input className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={trade.vin} onChange={e=>setTrade({...trade,vin:e.target.value})} placeholder="Scan or type VIN"/></Field>
+    <Field label="Mileage"><input className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={trade.miles} onChange={e=>setTrade({...trade,miles:e.target.value})} placeholder="e.g., 45,500"/></Field>
+    <Field label="Condition"><select className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={trade.condition} onChange={e=>setTrade({...trade,condition:e.target.value})}>{['Great','Average','Rough'].map(x=><option key={x}>{x}</option>)}</select></Field>
+  </div>
+  <div className="mt-2 flex gap-2">
+    <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={estimate}>Estimate range</button>
+    {trade.rangeLow>0&&<div className="px-4 py-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800">Estimated range: ${trade.rangeLow.toLocaleString()} – ${trade.rangeHigh.toLocaleString()}</div>}
+  </div>
+  <div className="mt-4 flex justify-between"><button className="px-4 py-2 rounded-xl border bg-white/80" onClick={onBack}>← Back</button><PrimaryButton onClick={onNext}>Build payment →</PrimaryButton></div>
+</div>)}
+
+function FandI({desk,setDesk,monthly,onBack,onNext}){return(<div>
+  <SectionTitle title="Protect your purchase" subtitle="Add options and see the impact instantly."/>
+  <div className="grid sm:grid-cols-3 gap-4">
+    <label className="rounded-2xl border p-4 flex items-start gap-3 bg-white/90"><input type="checkbox" checked={desk.products.vsc} onChange={e=>setDesk({...desk,products:{...desk.products,vsc:e.target.checked}})}/><div><div className="font-semibold">Vehicle Service Contract</div><div className="text-sm text-slate-600">+ $1,895</div></div></label>
+    <label className="rounded-2xl border p-4 flex items-start gap-3 bg-white/90"><input type="checkbox" checked={desk.products.gap} onChange={e=>setDesk({...desk,products:{...desk.products,gap:e.target.checked}})}/><div><div className="font-semibold">GAP</div><div className="text-sm text-slate-600">+ $795</div></div></label>
+    <label className="rounded-2xl border p-4 flex items-start gap-3 bg-white/90"><input type="checkbox" checked={desk.products.maint} onChange={e=>setDesk({...desk,products:{...desk.products,maint:e.target.checked}})}/><div><div className="font-semibold">Maintenance</div><div className="text-sm text-slate-600">+ $495</div></div></label>
+  </div>
+  <div className="mt-3 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800">Current estimated payment: <strong>${monthly.toFixed(0)}</strong></div>
+  <div className="mt-4 flex justify-between"><button className="px-4 py-2 rounded-xl border bg-white/80" onClick={onBack}>← Back</button><PrimaryButton onClick={onNext}>Review & handoff →</PrimaryButton></div>
+</div>)}
+
+function Review({profile,vehicle,desk,trade,monthly,onBack}){return(<div>
+  <SectionTitle title="Review & handoff" subtitle="We'll prep your buyer's order and connect you to a manager or F&I."/>
+  <div className="grid md:grid-cols-2 gap-4">
+    <div className="rounded-2xl border p-4 bg-white/90">
+      <div className="font-semibold mb-2">Your picks</div>
+      <ul className="text-sm text-slate-700 space-y-1">
+        <li><strong>Name:</strong> {profile.name||'—'}</li>
+        <li><strong>Phone:</strong> {profile.contact||'—'}</li>
+        <li><strong>Use:</strong> {profile.useCase} • <strong>Body style:</strong> {profile.bodyStyle}</li>
+        <li><strong>Budget target:</strong> ${profile.budget}/mo</li>
+        <li><strong>Vehicle:</strong> {vehicle?`${vehicle.year} ${vehicle.make} ${vehicle.model}`:'—'}</li>
+        <li><strong>Trade range:</strong> {trade.rangeLow?`${trade.rangeLow.toLocaleString()}–${trade.rangeHigh.toLocaleString()}`:'—'}</li>
+      </ul>
     </div>
-  );
-}
-
-function Payments({ vehicle, desk, setDesk, monthly, amountFinanced, onBack, onNext, budgetTarget }){
-  useEffect(()=>{ if(!budgetTarget) return; const over=monthly-Number(budgetTarget); if(over>50) track('payment_over_budget',{overBy:over}); },[monthly,budgetTarget]);
-  const price = vehicle ? vehicle.price : desk.price;
-  return (
-    <div>
-      <SectionTitle title="Build your payment" subtitle="Deterministic calculator; real taxes/fees plug in here." />
-      <div className="grid md:grid-cols-2 gap-6">
-        <div>
-          <div className="rounded-xl border p-4 bg-white/90">
-            <div className="text-sm text-slate-600 mb-2">Vehicle price</div>
-            <div className="text-2xl font-bold">${price?.toLocaleString?.() ?? '—'}</div>
-            <div className="grid grid-cols-2 gap-3 mt-4">
-              <Field label="Down payment">
-                <input type="number" className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={desk.down} onChange={e=>setDesk({...desk,down:Number(e.target.value)})} />
-              </Field>
-              <Field label="Taxes & fees (est.)">
-                <input type="number" className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={desk.taxesFees} onChange={e=>setDesk({...desk,taxesFees:Number(e.target.value)})} />
-              </Field>
-              <Field label="APR %">
-                <input type="number" className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={desk.apr} step="0.1" onChange={e=>setDesk({...desk,apr:Number(e.target.value)})} />
-              </Field>
-              <Field label="Term (months)">
-                <select className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={desk.term} onChange={e=>setDesk({...desk,term:Number(e.target.value)})}>
-                  {[36,48,60,72,84].map(n=><option key={n} value={n}>{n}</option>)}
-                </select>
-              </Field>
-            </div>
-            <details className="mt-2">
-              <summary className="text-slate-600 cursor-pointer">Products</summary>
-              <div className="grid sm:grid-cols-3 gap-3 mt-2 text-slate-700">
-                <label className="flex items-center gap-2"><input type="checkbox" checked={desk.products.vsc} onChange={e=>setDesk({...desk,products:{...desk.products,vsc:e.target.checked}})} /> VSC ($1,895)</label>
-                <label className="flex items-center gap-2"><input type="checkbox" checked={desk.products.gap} onChange={e=>setDesk({...desk,products:{...desk.products,gap:e.target.checked}})} /> GAP ($795)</label>
-                <label className="flex items-center gap-2"><input type="checkbox" checked={desk.products.maint} onChange={e=>setDesk({...desk,products:{...desk.products,maint:e.target.checked}})} /> Maintenance ($495)</label>
-              </div>
-            </details>
-          </div>
-        </div>
-        <div className="rounded-2xl border p-4 bg-emerald-50/80">
-          <div className="text-sm text-emerald-700">Estimated monthly</div>
-          <div className="text-4xl font-extrabold text-emerald-800">${monthly.toFixed(0)}</div>
-          <div className="text-sm text-slate-600 mt-2">Amount financed: ${amountFinanced.toLocaleString()}</div>
-          <div className="mt-3 flex flex-wrap gap-2 text-xs text-slate-700">
-            <span className="px-2 py-1 rounded-full bg-white border">APR {desk.apr}%</span>
-            <span className="px-2 py-1 rounded-full bg-white border">{desk.term} mos</span>
-            <span className="px-2 py-1 rounded-full bg-white border">Down ${Number(desk.down).toLocaleString()}</span>
-          </div>
-          <p className="text-xs text-slate-500 mt-2">Estimates only; subject to lender approval, credit tier, LTV, and program rules. Your final payment may vary.</p>
-        </div>
-      </div>
-      <div className="mt-4 flex justify-between">
-        <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={onBack}>← Back</button>
-        <PrimaryButton onClick={onNext}>Credit start →</PrimaryButton>
-      </div>
+    <div className="rounded-2xl border p-4 bg-white/90">
+      <div className="font-semibold mb-2">Deal preview</div>
+      <ul className="text-sm text-slate-700 space-y-1">
+        <li><strong>Est. monthly:</strong> ${monthly.toFixed(0)}</li>
+        <li><strong>Down:</strong> ${Number(desk.down).toLocaleString()}</li>
+        <li><strong>APR/Term:</strong> {desk.apr}% • {desk.term} mos</li>
+        <li><strong>Taxes & fees:</strong> ${desk.taxesFees.toLocaleString()}</li>
+        <li><strong>Products:</strong> {(desk.products.vsc?'VSC ':'')+(desk.products.gap?'GAP ':'')+(desk.products.maint?'Maint':'')||'—'}</li>
+      </ul>
+      <p className="text-xs text-slate-500 mt-2">Draft for review. Final numbers subject to inspection and lender approval.</p>
     </div>
-  );
-}
-
-function Trade({ trade, setTrade, estimate, onBack, onNext }){
-  return (
-    <div>
-      <SectionTitle title="Trade-in pre-valuation" subtitle="Get a market-based range. Final number after in-person inspection." />
-      <div className="grid md:grid-cols-3 gap-4">
-        <Field label="VIN"><input className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={trade.vin} onChange={e=>setTrade({...trade,vin:e.target.value})} placeholder="Scan or type VIN" /></Field>
-        <Field label="Mileage"><input className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={trade.miles} onChange={e=>setTrade({...trade,miles:e.target.value})} placeholder="e.g., 45,500" /></Field>
-        <Field label="Condition">
-          <select className="w-full rounded-xl border p-3 focus:ring-2 focus:ring-emerald-300" value={trade.condition} onChange={e=>setTrade({...trade,condition:e.target.value})}>
-            {['Great','Average','Rough'].map(x=><option key={x}>{x}</option>)}
-          </select>
-        </Field>
-      </div>
-      <div className="mt-2 flex gap-2">
-        <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={estimate}>Estimate range</button>
-        {trade.rangeLow>0 && (
-          <div className="px-4 py-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800">
-            Estimated range: ${trade.rangeLow.toLocaleString()} – ${trade.rangeHigh.toLocaleString()}
-          </div>
-        )}
-      </div>
-      <div className="mt-4 flex justify-between">
-        <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={onBack}>← Back</button>
-        <PrimaryButton onClick={onNext}>Build payment →</PrimaryButton>
-      </div>
+  </div>
+  <div className="mt-4 flex flex-wrap gap-3 justify-between">
+    <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={onBack}>← Back</button>
+    <div className="flex gap-2">
+      <button className="px-4 py-2 rounded-xl border bg-white/90">Raise hand for manager</button>
+      <PrimaryButton>Text me this summary</PrimaryButton>
+      <button className="px-4 py-2 rounded-2xl bg-emerald-700 text-white font-semibold">I'm ready now</button>
     </div>
-  );
-}
+  </div>
+</div>)}
 
-function FandI({ desk, setDesk, monthly, onBack, onNext }){
-  return (
-    <div>
-      <SectionTitle title="Protect your purchase" subtitle="Add options and see the impact instantly." />
-      <div className="grid sm:grid-cols-3 gap-4">
-        <label className="rounded-2xl border p-4 flex items-start gap-3 bg-white/90">
-          <input type="checkbox" checked={desk.products.vsc} onChange={e=>setDesk({...desk,products:{...desk.products,vsc:e.target.checked}})} />
-          <div><div className="font-semibold">Vehicle Service Contract</div><div className="text-sm text-slate-600">Covers major repairs beyond factory warranty. +$1,895</div></div>
-        </label>
-        <label className="rounded-2xl border p-4 flex items-start gap-3 bg-white/90">
-          <input type="checkbox" checked={desk.products.gap} onChange={e=>setDesk({...desk,products:{...desk.products,gap:e.target.checked}})} />
-          <div><div className="font-semibold">GAP</div><div className="text-sm text-slate-600">Protects against total loss payoff gap. +$795</div></div>
-        </label>
-        <label className="rounded-2xl border p-4 flex items-start gap-3 bg-white/90">
-          <input type="checkbox" checked={desk.products.maint} onChange={e=>setDesk({...desk,products:{...desk.products,maint:e.target.checked}})} />
-          <div><div className="font-semibold">Maintenance</div><div className="text-sm text-slate-600">Prepaid maintenance services. +$495</div></div>
-        </label>
-      </div>
-      <div className="mt-3 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800">
-        Current estimated payment: <strong>${monthly.toFixed(0)}</strong>
-      </div>
-      <div className="mt-4 flex justify-between">
-        <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={onBack}>← Back</button>
-        <PrimaryButton onClick={onNext}>Review & handoff →</PrimaryButton>
-      </div>
-    </div>
-  );
-}
-
-function Review({ profile, vehicle, desk, trade, monthly, onBack }){
-  return (
-    <div>
-      <SectionTitle title="Review & handoff" subtitle="We'll prep your buyer's order and connect you to a manager or F&I." />
-      <div className="grid md:grid-cols-2 gap-4">
-        <div className="rounded-2xl border p-4 bg-white/90">
-          <div className="font-semibold mb-2">Your picks</div>
-          <ul className="text-sm text-slate-700 space-y-1">
-            <li><strong>Name:</strong> {profile.name || '—'}</li>
-            <li><strong>Phone:</strong> {profile.contact || '—'}</li>
-            <li><strong>Use:</strong> {profile.useCase} • <strong>Body style:</strong> {profile.bodyStyle}</li>
-            <li><strong>Budget target:</strong> ${profile.budget}/mo</li>
-            <li><strong>Vehicle:</strong> {vehicle ? `${vehicle.year} ${vehicle.make} ${vehicle.model}` : '—'}</li>
-            <li><strong>Trade range:</strong> {trade.rangeLow ? `${trade.rangeLow.toLocaleString()}–${trade.rangeHigh.toLocaleString()}` : '—'}</li>
-          </ul>
-        </div>
-        <div className="rounded-2xl border p-4 bg-white/90">
-          <div className="font-semibold mb-2">Deal preview</div>
-          <ul className="text-sm text-slate-700 space-y-1">
-            <li><strong>Est. monthly:</strong> ${monthly.toFixed(0)}</li>
-            <li><strong>Down:</strong> ${Number(desk.down).toLocaleString()}</li>
-            <li><strong>APR/Term:</strong> {desk.apr}% • {desk.term} mos</li>
-            <li><strong>Taxes & fees:</strong> ${desk.taxesFees.toLocaleString()}</li>
-            <li><strong>Products:</strong> {(desk.products.vsc?'VSC ':'')+(desk.products.gap?'GAP ':'')+(desk.products.maint?'Maint':'') || '—'}</li>
-          </ul>
-          <p className="text-xs text-slate-500 mt-2">This is a draft for review, not a binding offer. Final numbers subject to inspection and lender approval.</p>
-        </div>
-      </div>
-      <div className="mt-4 flex flex-wrap gap-3 justify-between">
-        <button className="px-4 py-2 rounded-xl border bg-white/80" onClick={onBack}>← Back</button>
-        <div className="flex gap-2">
-          <button className="px-4 py-2 rounded-xl border bg-white/90">Raise hand for manager</button>
-          <PrimaryButton>Text me this summary</PrimaryButton>
-          <button className="px-4 py-2 rounded-2xl bg-emerald-700 text-white font-semibold">I'm ready now</button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
 </script>
 </body>
 </html>
