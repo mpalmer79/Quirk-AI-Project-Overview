@@ -1,0 +1,60 @@
+/* =========================================================
+   Quirk AI — Sales Kiosk Styles
+   Scope: kiosk-only rules extracted from assets/style.css
+   + surgical centering fix for the green "Continue" button
+   Load order: after assets/style.css
+   ========================================================= */
+
+/* --- Kiosk inputs: force light controls --- */
+.kiosk input,
+.kiosk select,
+.kiosk textarea,
+.kiosk button {
+  background: #fff !important;
+  color: #0f172a !important;
+  border-color: #e5e7eb !important;
+}
+.kiosk select option { background: #fff; color: #0f172a; }
+.kiosk input,
+.kiosk select,
+.kiosk textarea { -webkit-appearance: none; appearance: none; }
+.kiosk input:-webkit-autofill,
+.kiosk textarea:-webkit-autofill,
+.kiosk select:-webkit-autofill {
+  -webkit-text-fill-color: #0f172a !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* --- Kiosk watermark opt-in --- */
+body.kiosk-bg { position: relative; }
+body.kiosk-bg::before{
+  content:"";
+  position:fixed; inset:0;
+  background:linear-gradient(rgba(255,255,255,.5),rgba(255,255,255,.5)),url("kiosk.png") center/cover no-repeat;
+  opacity:var(--kiosk-watermark-opacity);
+  pointer-events:none; z-index:0;
+}
+body.kiosk-bg > * { position:relative; z-index:1; }
+
+/* --- Sales Kiosk: action row & Continue button centering (mobile + desktop) --- */
+/* Targets the flex row wrapping the submit button on the welcome screen */
+#welcomeForm > div.flex { justify-content: center !important; }
+
+/* If actions rows/classes exist, center them too */
+.kiosk .kiosk-card .actions,
+.kiosk .kiosk-card .action-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Ensure the button itself isn’t fighting floats and centers nicely */
+.kiosk .kiosk-card .btn-continue,
+.kiosk button.kiosk-continue {
+  float: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 24px;
+}
