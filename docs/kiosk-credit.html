@@ -4,252 +4,257 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <base href="/Quirk-AI-Project-Overview/">
-<title>Kiosk • Credit Application</title>
+<title>Quirk AI Sales Kiosk • Credit Application</title>
 
+<!-- Shared chrome (works even if files are missing) -->
 <link rel="stylesheet" href="assets/kiosk-shared.css">
 <script src="assets/kiosk-shared.js"></script>
 
+<!-- Tailwind for quick utility (optional, safe if cached elsewhere) -->
+<script src="https://cdn.tailwindcss.com"></script>
+
 <style>
-  /* Fallback watermark + light UI (if shared CSS is missing) */
+  :focus-visible{outline:2px solid #34d399;outline-offset:2px}
   body{
     background:
-      linear-gradient(rgba(255,255,255,.58), rgba(255,255,255,.58)),
-      url("assets/kiosk.png") center/cover fixed no-repeat !important;
+      linear-gradient(rgba(255,255,255,.58),rgba(255,255,255,.58)),
+      url("assets/kiosk.png") center/cover fixed no-repeat!important;
     min-height:100vh;
   }
-  /* Centered labels above inputs; input width matches label text width */
-  .form { display:grid; gap:16px; }
-  .grid-2 { display:grid; grid-template-columns: repeat(2,minmax(240px,1fr)); gap:16px; }
-  .grid-3 { display:grid; grid-template-columns: repeat(3,minmax(180px,1fr)); gap:16px; }
-  .field { display:flex; flex-direction:column; align-items:center; text-align:center; }
-  .label { font-weight:600; color:#334155; margin-bottom:6px; }
-  .field input, .field select {
-    border:1px solid #e5e7eb; border-radius:12px; padding:10px 12px; background:#fff; color:#0f172a;
-    width:fit-content; max-width:100%;
-  }
-  .hint { font-size:.8rem; color:#64748b; text-align:center; }
-  .section { margin-top:12px; padding-top:12px; border-top:1px dashed #e2e8f0; }
-  .btn-row { display:flex; justify-content:center; margin-top:16px; }
-  .btn { background:#059669; color:#fff; border:0; padding:12px 18px; border-radius:999px; font-weight:600; }
-  .btn:focus-visible { outline:2px solid #34d399; outline-offset:2px; }
-  .back { color:#0f172a; padding:10px 14px; border-radius:12px; border:1px solid #e5e7eb; background:#fff; }
-  @supports(-webkit-touch-callout:none){ :root{color-scheme:light} select,input,textarea{-webkit-appearance:none} }
+  /* page chrome */
+  .chrome{max-width:1100px;margin:0 auto;padding:24px 16px}
+  .card{background:rgba(255,255,255,.9);backdrop-filter:blur(6px);
+        border:1px solid #e2e8f0;border-radius:16px;box-shadow:0 25px 50px -12px rgba(0,0,0,.25)}
+  .chips button{border:1px solid #d1d5db;border-radius:9999px;padding:4px 8px;font-size:12px;
+                display:flex;align-items:center;gap:6px;background:#ffffffb3}
+  .chips .active{background:#059669;color:#fff;border-color:#059669}
+  .chips .dot{display:inline-flex;align-items:center;justify-content:center;
+              width:20px;height:20px;border-radius:9999px;font-weight:700}
+  /* form layout */
+  .stack{display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:14px}
+  .label{font-weight:600;color:#0f172a;text-align:center}
+  .input{width:260px;border:1px solid #cbd5e1;border-radius:12px;padding:10px 12px;background:#fff}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media (max-width:720px){.row{grid-template-columns:1fr}}
+  .hint{font-size:12px;color:#64748b;text-align:center}
+  .divider{border-top:1px dashed #cbd5e1;margin:18px 0}
+  .btn{background:linear-gradient(90deg,#059669,#047857);color:#fff;border:none;
+       padding:12px 18px;border-radius:9999px;font-weight:700;box-shadow:0 8px 20px rgba(16,185,129,.3)}
+  .btn-ghost{border:1px solid #cbd5e1;background:#fff;border-radius:10px;padding:10px 14px}
+  /* ssn masking look */
+  input[type="password"].ssn{letter-spacing:.08em}
 </style>
 </head>
 <body>
-  <div class="kx">
-    <div class="kx__header">
-      <h2>Credit Application</h2>
+  <div class="relative">
+    <div aria-hidden class="pointer-events-none absolute inset-0 overflow-hidden">
+      <div class="absolute -top-24 -left-24 h-72 w-72 rounded-full bg-emerald-300/30 blur-3xl"></div>
+      <div class="absolute -bottom-24 -right-24 h-72 w-72 rounded-full bg-sky-300/20 blur-3xl"></div>
     </div>
 
-    <form id="creditForm" class="panel form" novalidate>
-      <!-- APPLICANT -->
-      <div class="grid-2">
-        <div class="field">
-          <span class="label">Applicant — First name</span>
-          <input id="a_first" autocomplete="given-name">
-        </div>
-        <div class="field">
-          <span class="label">Applicant — Last name</span>
-          <input id="a_last" autocomplete="family-name">
-        </div>
-      </div>
+    <div class="chrome relative">
+      <!-- header -->
+      <header class="text-center mb-4">
+        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-emerald-900">Quirk AI Sales Kiosk</h1>
+      </header>
 
-      <div class="grid-3">
-        <div class="field">
-          <span class="label">Date of birth</span>
-          <input id="a_dob" type="date" inputmode="none">
-        </div>
-        <div class="field">
-          <span class="label">SSN</span>
-          <input id="a_ssn" inputmode="numeric" maxlength="11" placeholder="123-45-6789">
-          <div class="hint">We’ll mask this automatically</div>
-        </div>
-        <div class="field">
-          <span class="label">Email</span>
-          <input id="a_email" type="email" autocomplete="email">
-        </div>
-      </div>
+      <!-- progress chips -->
+      <nav aria-label="Progress" class="mb-5">
+        <ol class="chips grid grid-cols-4 sm:grid-cols-8 gap-2">
+          <!-- 1..8 steps; mark <= current (Credit) as active -->
+          <script>
+            (function(){
+              const steps=['Welcome','Discovery','Vehicle Match','Trade-In','Payments','Credit Start','F&I Options','Review & Handoff'];
+              const here=5; // 0-index → Credit
+              const ol=document.currentScript.parentElement;
+              steps.forEach((label,i)=>{
+                const li=document.createElement('li');
+                li.innerHTML=
+                  `<button class="${i<=here?'active':''}">
+                     <span class="dot ${i<=here?'bg-white/20':''}">${i+1}</span>
+                     <span class="hidden sm:inline font-semibold">${label}</span>
+                   </button>`;
+                ol.appendChild(li);
+              });
+            })();
+          </script>
+        </ol>
+      </nav>
 
-      <div class="grid-3">
-        <div class="field">
-          <span class="label">Mobile</span>
-          <input id="a_mobile" inputmode="tel" autocomplete="tel">
+      <!-- library card -->
+      <div class="card p-4 sm:p-6">
+        <div class="mb-2 text-center">
+          <h2 class="text-xl sm:text-2xl font-bold text-emerald-800">Credit Application</h2>
         </div>
-        <div class="field">
-          <span class="label">ZIP</span>
-          <input id="a_zip" inputmode="numeric" maxlength="10" autocomplete="postal-code">
-        </div>
-        <div class="field">
-          <span class="label">Monthly income ($)</span>
-          <input id="a_income" type="number" min="0" step="100">
-        </div>
-      </div>
 
-      <div class="grid-2">
-        <div class="field">
-          <span class="label">Employer</span>
-          <input id="a_employer" autocomplete="organization">
-        </div>
-        <div class="field">
-          <span class="label">Job title</span>
-          <input id="a_title" autocomplete="organization-title">
-        </div>
-      </div>
-
-      <!-- CO-APPLICANT -->
-      <div class="section">
-        <div class="hint" style="margin-bottom:8px">Add a co-applicant (optional)</div>
-        <div class="grid-2">
-          <div class="field">
-            <span class="label">Co-Applicant — First name</span>
-            <input id="c_first" autocomplete="given-name">
+        <!-- FORM -->
+        <div id="app">
+          <!-- Applicant -->
+          <div class="row">
+            <div>
+              <label class="stack">
+                <span class="label">Applicant — First name</span>
+                <input id="a_first" class="input" autocomplete="given-name">
+              </label>
+            </div>
+            <div>
+              <label class="stack">
+                <span class="label">Applicant — Last name</span>
+                <input id="a_last" class="input" autocomplete="family-name">
+              </label>
+            </div>
           </div>
-          <div class="field">
-            <span class="label">Co-Applicant — Last name</span>
-            <input id="c_last" autocomplete="family-name">
+
+          <div class="row">
+            <label class="stack">
+              <span class="label">Date of birth</span>
+              <input id="a_dob" class="input" type="date" placeholder="mm/dd/yyyy">
+            </label>
+            <label class="stack">
+              <span class="label">SSN</span>
+              <input id="a_ssn" class="input ssn" type="password" inputmode="numeric" maxlength="11" placeholder="123-45-6789">
+              <span class="hint">We’ll mask this automatically</span>
+            </label>
+          </div>
+
+          <div class="row">
+            <label class="stack">
+              <span class="label">Mobile</span>
+              <input id="a_phone" class="input" inputmode="tel" placeholder="(555) 555-1212">
+            </label>
+            <label class="stack">
+              <span class="label">Email</span>
+              <input id="a_email" class="input" type="email" autocomplete="email">
+            </label>
+          </div>
+
+          <div class="row">
+            <label class="stack">
+              <span class="label">Employer</span>
+              <input id="a_employer" class="input">
+            </label>
+            <label class="stack">
+              <span class="label">Job title</span>
+              <input id="a_title" class="input">
+            </label>
+          </div>
+
+          <div class="row">
+            <label class="stack">
+              <span class="label">ZIP</span>
+              <input id="a_zip" class="input" inputmode="numeric" maxlength="10">
+            </label>
+            <label class="stack">
+              <span class="label">Monthly income ($)</span>
+              <input id="a_income" class="input" type="number" min="0" step="100">
+            </label>
+          </div>
+
+          <div class="divider"></div>
+          <div class="hint mb-2">Add a co-applicant (optional)</div>
+
+          <!-- Co-Applicant -->
+          <div class="row">
+            <label class="stack">
+              <span class="label">Co-Applicant — First name</span>
+              <input id="c_first" class="input" autocomplete="given-name">
+            </label>
+            <label class="stack">
+              <span class="label">Co-Applicant — Last name</span>
+              <input id="c_last" class="input" autocomplete="family-name">
+            </label>
+          </div>
+
+          <div class="row">
+            <label class="stack">
+              <span class="label">Date of birth</span>
+              <input id="c_dob" class="input" type="date" placeholder="mm/dd/yyyy">
+            </label>
+            <label class="stack">
+              <span class="label">SSN</span>
+              <input id="c_ssn" class="input ssn" type="password" inputmode="numeric" maxlength="11" placeholder="123-45-6789">
+              <span class="hint">We’ll mask this automatically</span>
+            </label>
+          </div>
+
+          <!-- Actions -->
+          <div class="mt-3 flex flex-col items-center gap-3">
+            <button id="next" class="btn">Let’s make sure it’s you →</button>
+            <a class="btn-ghost" href="saleskiosk-welcome.html">← Back to Kiosk</a>
           </div>
         </div>
-
-        <div class="grid-3">
-          <div class="field">
-            <span class="label">Date of birth</span>
-            <input id="c_dob" type="date">
-          </div>
-          <div class="field">
-            <span class="label">SSN</span>
-            <input id="c_ssn" inputmode="numeric" maxlength="11" placeholder="123-45-6789">
-            <div class="hint">We’ll mask this automatically</div>
-          </div>
-          <div class="field">
-            <span class="label">Monthly income ($)</span>
-            <input id="c_income" type="number" min="0" step="100">
-          </div>
-        </div>
       </div>
-
-      <div class="btn-row">
-        <button class="btn" id="next">Let’s make sure it’s you →</button>
-      </div>
-
-      <div class="btn-row">
-        <a class="back" href="saleskiosk-welcome.html">← Back to Kiosk</a>
-      </div>
-    </form>
+    </div>
   </div>
 
 <script>
-/* ---------- helpers (fallback if kiosk-shared.js is absent) ---------- */
-const kiosk = window.kiosk || {
+/* helpers (use shared if present) */
+const K = window.kiosk || {
   save:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}},
-  load:(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k)); return (v ?? d)}catch{return d}},
+  load:(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return(v??d)}catch{return d}},
   track:()=>{}, post:()=>{}
 };
-const { save, load, track, post } = kiosk;
+const onlyDigits = v => (v||'').replace(/\D+/g,'');
+const fmtPhone = d => { const x=d.slice(0,10); if(!x) return ''; if(x.length<4) return `(${x}`; if(x.length<7) return `(${x.slice(0,3)}) ${x.slice(3)}`; return `(${x.slice(0,3)}) ${x.slice(3,6)}-${x.slice(6)}`; };
+const maskSSNOnBlur = (el)=>{ const d=onlyDigits(el.value); if(!d){el.value='';return;} const m=(d.length<=4?d:('•••-••-'+d.slice(-4))); el.dataset._raw=d; el.value=m; el.type='password'; };
+const allowEditSSN = (el)=>{ el.type='text'; const raw=el.dataset._raw||onlyDigits(el.value); el.value=raw; el.setSelectionRange(el.value.length,el.value.length); };
 
-/* ---------- make input width match its label text length ---------- */
-function matchInputToLabelWidth(){
-  document.querySelectorAll('.field').forEach(f=>{
-    const label = f.querySelector('.label');
-    const inp = f.querySelector('input,select');
-    if(!label || !inp) return;
-    const ch = Math.max(12, label.textContent.trim().length + 4); // padding
-    inp.style.width = ch + 'ch';
-  });
-}
-matchInputToLabelWidth();
-window.addEventListener('resize', matchInputToLabelWidth);
-
-/* ---------- phone formatting ---------- */
-const onlyDigits = v=> (v||'').replace(/\D+/g,'');
-const fmtPhone = d=>{
-  const x = (d||'').slice(0,10);
-  if(!x) return '';
-  if(x.length<4) return `(${x}`;
-  if(x.length<7) return `(${x.slice(0,3)}) ${x.slice(3)}`;
-  return `(${x.slice(0,3)}) ${x.slice(3,6)}-${x.slice(6)}`;
-};
-const aMobile = document.getElementById('a_mobile');
-aMobile.addEventListener('input', e=>{
-  const caret = e.target.value.length - e.target.selectionStart;
-  e.target.value = fmtPhone(onlyDigits(e.target.value));
-  const pos = Math.max(0, e.target.value.length - caret);
-  requestAnimationFrame(()=> e.target.setSelectionRange(pos,pos));
-});
-
-/* ---------- SSN masking: mask immediately on blur; keep editable ---------- */
-function attachSSNMask(id){
-  const el = document.getElementById(id);
-  let raw = '';
-  el.addEventListener('input', ()=>{
-    // allow typed dashes; normalize to ###-##-####
-    raw = onlyDigits(el.value).slice(0,9);
-    const p = [raw.slice(0,3), raw.slice(3,5), raw.slice(5)].filter(Boolean);
-    el.dataset.raw = raw;
-    el.value = p.join(raw.length>5?'-':'-');
-  });
-  el.addEventListener('blur', ()=>{
-    // show as password bullets but keep raw in data attr
-    if (el.dataset.raw && el.dataset.raw.length >= 4) {
-      el.type = 'password';
-    }
-  });
-  el.addEventListener('focus', ()=>{
-    // keep masked while editing
-    el.type = 'password';
-  });
-}
-attachSSNMask('a_ssn');
-attachSSNMask('c_ssn');
-
-/* ---------- validation rules ----------
-   IF First + Last provided for Applicant -> DOB & SSN REQUIRED.
-   IF First + Last provided for Co-Applicant -> DOB & SSN REQUIRED.
---------------------------------------------------------------------------- */
-function need(a,b){ return (a.value.trim() && b.value.trim()); }
-function requiredIfNamesPresent(){
-  const aReq = need(a_first, a_last);
-  const cReq = need(c_first, c_last);
-  a_dob.required = aReq; a_ssn.required = aReq;
-  c_dob.required = cReq; c_ssn.required = cReq;
-}
-['a_first','a_last','c_first','c_last'].forEach(id=>{
-  document.getElementById(id).addEventListener('input', requiredIfNamesPresent);
-});
-requiredIfNamesPresent();
-
-/* ---------- submit / next ---------- */
-document.getElementById('next').addEventListener('click', (e)=>{
-  e.preventDefault();
-
-  requiredIfNamesPresent();
-  const form = document.getElementById('creditForm');
-  if (!form.checkValidity()) {
-    form.reportValidity();
-    return;
+function needDOBandSSN(first,last,dob,ssn){
+  const hasNames = first.value.trim() && last.value.trim();
+  if (hasNames){
+    dob.required = true; ssn.required = true;
+  } else {
+    dob.required = false; ssn.required = false;
   }
+}
 
-  // Persist essentials for later steps
-  const payload = {
-    applicant:{
-      first:a_first.value.trim(), last:a_last.value.trim(),
-      dob:a_dob.value, ssn:document.getElementById('a_ssn').dataset.raw || '',
-      email:a_email.value.trim(), mobile:a_mobile.value.trim(),
-      zip:a_zip.value.trim(), income:Number(a_income.value||0),
-      employer:a_employer.value.trim(), title:a_title.value.trim()
-    },
-    coapplicant:{
-      first:c_first.value.trim(), last:c_last.value.trim(),
-      dob:c_dob.value, ssn:document.getElementById('c_ssn').dataset.raw || '',
-      income:Number(c_income.value||0)
-    }
-  };
-  save('guided_credit_app', payload);
-
-  // proceed to MFA step (same page flow you already had)
-  window.location.href = 'kiosk-verify-phone.html'; // if you keep MFA on its own page
-  // Or, if you keep MFA inline, replace with: post('credit:done')
-});
+function wire(){
+  const ids = ['a_first','a_last','a_dob','a_ssn','a_phone','a_email','a_employer','a_title','a_zip','a_income',
+               'c_first','c_last','c_dob','c_ssn'];
+  const el = Object.fromEntries(ids.map(id=>[id, document.getElementById(id)]));
+  // phone mask
+  el.a_phone.addEventListener('input', e=>{
+    const caretFromEnd = e.target.value.length - e.target.selectionStart;
+    e.target.value = fmtPhone(onlyDigits(e.target.value));
+    const pos = Math.max(0, e.target.value.length - caretFromEnd);
+    requestAnimationFrame(()=> e.target.setSelectionRange(pos,pos));
+  });
+  // ssn mask + editable
+  [el.a_ssn, el.c_ssn].forEach(inpt=>{
+    inpt.addEventListener('blur', ()=>maskSSNOnBlur(inpt));
+    inpt.addEventListener('focus', ()=>allowEditSSN(inpt));
+  });
+  // conditional required when both names present
+  ['input','change','blur'].forEach(evt=>{
+    el.a_first.addEventListener(evt, ()=>needDOBandSSN(el.a_first,el.a_last,el.a_dob,el.a_ssn));
+    el.a_last .addEventListener(evt, ()=>needDOBandSSN(el.a_first,el.a_last,el.a_dob,el.a_ssn));
+    el.c_first.addEventListener(evt, ()=>needDOBandSSN(el.c_first,el.c_last,el.c_dob,el.c_ssn));
+    el.c_last .addEventListener(evt, ()=>needDOBandSSN(el.c_first,el.c_last,el.c_dob,el.c_ssn));
+  });
+  // seed from kiosk profile (optional)
+  const p = K.load('kiosk_profile',{name:'',contact:''});
+  if(p?.contact){ el.a_phone.value = fmtPhone(onlyDigits(p.contact)); }
+  // Next -> verify
+  document.getElementById('next').addEventListener('click', ()=>{
+    // basic store & go to MFA stage if you later split screens
+    const payload = {
+      a:{ first:el.a_first.value,last:el.a_last.value,dob:el.a_dob.value,ssn:el.a_ssn.dataset._raw||onlyDigits(el.a_ssn.value),
+          phone:el.a_phone.value,email:el.a_email.value,employer:el.a_employer.value,title:el.a_title.value,zip:el.a_zip.value,
+          income:Number(el.a_income.value||0) },
+      c:{ first:el.c_first.value,last:el.c_last.value,dob:el.c_dob.value,ssn:el.c_ssn.dataset._raw||onlyDigits(el.c_ssn.value) }
+    };
+    // validate conditional rules quickly
+    const mustA = (payload.a.first && payload.a.last) ? (!payload.a.dob || !payload.a.ssn) : false;
+    const mustC = (payload.c.first && payload.c.last) ? (!payload.c.dob || !payload.c.ssn) : false;
+    if(mustA || mustC){ alert('DOB and SSN are required when both first and last name are entered.'); return; }
+    K.save('guided_credit_basic', payload);
+    K.track('credit.start.next');
+    // If this page is inside guidedflow iframe, notify parent; otherwise push to MFA segment you’ll add later
+    try{ K.post('credit:done'); }catch{}
+    alert('Demo: proceed to phone verification.');
+  });
+}
+document.addEventListener('DOMContentLoaded', wire);
 </script>
 </body>
 </html>
