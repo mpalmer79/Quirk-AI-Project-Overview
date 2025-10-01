@@ -1,47 +1,150 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<base href="/Quirk-AI-Project-Overview/"><title>Kiosk • Review</title>
-<link rel="stylesheet" href="assets/kiosk-shared.css">
-<script src="assets/kiosk-shared.js"></script>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Quirk AI Sales Kiosk • Review & Handoff</title>
+
+  <!-- Force light UI + base -->
+  <meta name="color-scheme" content="light"/>
+  <meta name="theme-color" content="#ffffff"/>
+  <base href="/Quirk-AI-Project-Overview/"/>
+
+  <!-- Global styles (footer, tokens) + kiosk tweaks if you have it -->
+  <link rel="stylesheet" href="assets/style.css"/>
+  <link rel="stylesheet" href="assets/saleskiosk.css?v=1"/>
+
+  <!-- Tailwind (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    :focus-visible { outline:2px solid #34d399; outline-offset:2px; }
+    /* showroom watermark */
+    body{
+      background:
+        linear-gradient(rgba(255,255,255,.50),rgba(255,255,255,.50)),
+        url("assets/kiosk.png") center/cover fixed no-repeat !important;
+      min-height:100vh;
+    }
+    @supports(-webkit-touch-callout:none){
+      :root{ color-scheme:light }
+      select,input,textarea{ -webkit-appearance:none }
+    }
+    /* step chip hover */
+    .stepchip:hover{ filter:brightness(1.03) }
+  </style>
 </head>
-<body>
-<div class="kx">
-  <h2>Review & handoff</h2>
-  <p class="sub">We’ll prep your buyer’s order and connect you to a manager or F&I.</p>
-  <div id="summary" class="note"></div>
-  <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;margin-top:8px">
-    <button class="btn btn--ghost" onclick="alert('Manager notified (demo).')">Raise hand for manager</button>
-    <button class="btn btn--ghost" onclick="alert('Summary texted (demo).')">Text me this summary</button>
-    <button class="btn">I'm ready now</button>
+<body class="bg-gradient-to-b from-emerald-50 to-slate-50 min-h-screen">
+  <div class="relative w-full min-h-screen">
+    <!-- decorative glows -->
+    <div aria-hidden class="pointer-events-none absolute inset-0 overflow-hidden">
+      <div class="absolute -top-24 -left-24 h-72 w-72 rounded-full bg-emerald-300/30 blur-3xl"></div>
+      <div class="absolute -bottom-24 -right-24 h-72 w-72 rounded-full bg-sky-300/20 blur-3xl"></div>
+    </div>
+
+    <div class="max-w-6xl mx-auto px-4 sm:px-8 py-6 sm:py-10 relative">
+      <!-- header -->
+      <header class="mb-4 sm:mb-6 text-center">
+        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-emerald-900">Quirk AI Sales Kiosk</h1>
+      </header>
+
+      <!-- 8 green step chips -->
+      <nav aria-label="Progress" class="mb-5 sm:mb-7">
+        <ol id="steps" class="grid grid-cols-4 sm:grid-cols-8 gap-2"></ol>
+      </nav>
+
+      <!-- card -->
+      <div class="bg-white/90 backdrop-blur rounded-2xl shadow-2xl border border-slate-200 p-4 sm:p-6">
+        <div class="mb-4">
+          <h2 class="text-xl sm:text-2xl font-bold text-emerald-800 text-center">Review & Handoff</h2>
+          <p class="text-center text-slate-600 mt-1">We’ll prep your buyer’s order and connect you to a manager or F&I.</p>
+        </div>
+
+        <!-- summary -->
+        <div id="summary" class="rounded-2xl border p-4 bg-white/90 text-sm text-slate-700"></div>
+
+        <!-- actions -->
+        <div class="mt-4 flex flex-wrap gap-3 justify-end">
+          <button class="px-4 py-2 rounded-xl border bg-white/90 stepchip" onclick="alert('Manager notified (demo).')">Raise hand for manager</button>
+          <button class="px-4 py-2 rounded-xl border bg-white/90 stepchip" onclick="alert('Summary texted (demo).')">Text me this summary</button>
+          <button class="px-5 py-3 rounded-2xl bg-emerald-700 text-white font-semibold shadow stepchip">I'm ready now</button>
+        </div>
+      </div>
+
+      <!-- footer -->
+      <footer class="footer mt-6"><small>© 2025 Quirk AI — Sales Kiosk</small></footer>
+    </div>
   </div>
-</div>
 
 <script>
-/* prefer guided_* keys; fall back to kiosk_* so both flows work */
-const get = (k, def) => { try { const v = JSON.parse(localStorage.getItem(k)); return (v ?? def); } catch { return def; } };
-const loadPref = (name, def) => {
-  const g = get('guided_' + name, undefined);
-  if (g !== undefined) return g;
-  return get('kiosk_' + name, def);
-};
+/* ---- tiny storage helpers (same keys as guided flow) ---- */
+const load = (k, def) => { try { const v = JSON.parse(localStorage.getItem(k)); return (v ?? def); } catch { return def; } };
+
+/* ---- render steps (8 chips) with links to standalone pages ---- */
+const STEPS = [
+  { label:'Welcome',       href:'kiosk-welcome.html'   },
+  { label:'Discovery',     href:'kiosk-discovery.html' },
+  { label:'Vehicle Match', href:'kiosk-vehicle.html'   },
+  { label:'Trade-In',      href:'kiosk-trade.html'     },
+  { label:'Payments',      href:'kiosk-payments.html'  },
+  { label:'Credit Start',  href:'kiosk-credit.html'    },
+  { label:"F&I Options",   href:'kiosk-fandi.html'     },
+  { label:'Review & Handoff', href:'kiosk-review.html' }
+];
+const ACTIVE_INDEX = 7; // this page
+
+(function renderSteps(){
+  const wrap = document.getElementById('steps');
+  wrap.innerHTML = '';
+  STEPS.forEach((s,i)=>{
+    const active = i <= ACTIVE_INDEX;
+    const chip = document.createElement('li');
+    chip.innerHTML = `
+      <a href="${s.href}" class="stepchip w-full flex items-center gap-2 p-1 rounded-full border border-slate-200
+        ${active ? 'bg-emerald-600 text-white' : 'bg-white/70 text-slate-600'}">
+        <span class="inline-flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold
+          ${active ? 'bg-white/20' : 'bg-slate-200 text-slate-700'}">${i+1}</span>
+        <span class="hidden sm:block text-xs font-semibold truncate pr-1">${s.label}</span>
+      </a>`;
+    wrap.appendChild(chip);
+  });
+})();
+
+/* ---- render summary from saved state ---- */
 function fmt(v){ return (v==null || v==='') ? '—' : v; }
+(function renderSummary(){
+  const p = load('guided_profile', { name:'', contact:'' });
+  const t = load('guided_trade',   { rangeLow:0, rangeHigh:0 });
+  const d = load('guided_desk',    { price:0, down:0, apr:0, term:0, taxesFees:0, products:{} });
 
-(function render(){
-  const p = loadPref('profile', {});
-  const t = loadPref('trade', {});
-  const d = loadPref('desk', { price:0, down:0, apr:0, term:0, taxesFees:0, products:{} });
-
-  const tradeText = t.rangeLow ? `$${(t.rangeLow||0).toLocaleString()}–$${(t.rangeHigh||0).toLocaleString()}` : '—';
-  const products   = ['vsc','gap','maint'].filter(k => d.products?.[k])
-                     .map(k => ({vsc:'VSC',gap:'GAP',maint:'Maint'})[k]).join(', ') || '—';
+  const tradeText = t.rangeLow ? `$${t.rangeLow.toLocaleString()}–$${t.rangeHigh.toLocaleString()}` : '—';
+  const products = ['vsc','gap','maint']
+    .filter(k => d.products?.[k])
+    .map(k => ({vsc:'VSC', gap:'GAP', maint:'Maint'})[k])
+    .join(', ') || '—';
 
   document.getElementById('summary').innerHTML = `
-    <div><strong>Name:</strong> ${fmt(p.name)} &nbsp; • &nbsp; <strong>Contact:</strong> ${fmt(p.contact)}</div>
-    <div style="margin-top:4px"><strong>Vehicle price:</strong> $${(d.price||0).toLocaleString()} &nbsp; • &nbsp; <strong>Down:</strong> $${(d.down||0).toLocaleString()}</div>
-    <div style="margin-top:4px"><strong>APR/Term:</strong> ${fmt(d.apr)}% • ${fmt(d.term)} mos &nbsp; • &nbsp; <strong>Taxes & fees:</strong> $${(d.taxesFees||0).toLocaleString()}</div>
-    <div style="margin-top:4px"><strong>Trade range:</strong> ${tradeText} &nbsp; • &nbsp; <strong>Products:</strong> ${products}</div>`;
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="rounded-2xl border p-4 bg-white/90">
+        <div class="font-semibold mb-2">Your picks</div>
+        <ul class="space-y-1">
+          <li><strong>Name:</strong> ${fmt(p.name)}</li>
+          <li><strong>Contact:</strong> ${fmt(p.contact)}</li>
+          <li><strong>Trade range:</strong> ${tradeText}</li>
+        </ul>
+      </div>
+      <div class="rounded-2xl border p-4 bg-white/90">
+        <div class="font-semibold mb-2">Deal preview</div>
+        <ul class="space-y-1">
+          <li><strong>Vehicle price:</strong> $${(d.price||0).toLocaleString()}</li>
+          <li><strong>Down:</strong> $${(d.down||0).toLocaleString()}</li>
+          <li><strong>APR/Term:</strong> ${fmt(d.apr)}% • ${fmt(d.term)} mos</li>
+          <li><strong>Taxes & fees:</strong> $${(d.taxesFees||0).toLocaleString()}</li>
+          <li><strong>Products:</strong> ${products}</li>
+        </ul>
+        <p class="text-xs text-slate-500 mt-2">This is a draft for review, not a binding offer. Final numbers subject to inspection and lender approval.</p>
+      </div>
+    </div>`;
 })();
 </script>
 </body>
