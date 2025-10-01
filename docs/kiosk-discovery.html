@@ -13,84 +13,62 @@
     :focus-visible { outline: 2px solid #34d399; outline-offset: 2px; }
     body { background: transparent; }
 
-    /* No inner scrollbars; let page grow */
+    /* Let content grow; avoid inner scrollbars */
     html, body { height: auto; overflow: visible !important; }
     #discoveryShell, #discoveryCard, #discoveryCard .card-body {
-      max-height: none !important;
-      overflow: visible !important;
+      max-height: none !important; overflow: visible !important;
     }
 
-    /* Inputs */
+    /* Form labels + inputs */
     .field-label{
-      display:block;
-      font-size:.875rem;
-      font-weight:600;
-      color:#334155;
-      margin-bottom:.25rem;
-      text-align:center;  /* center field descriptions */
+      display:block; font-size:.875rem; font-weight:600; color:#334155;
+      margin-bottom:.25rem; text-align:center;
     }
     .field-input{
-      border:1px solid #e5e7eb;
-      border-radius:.75rem;
-      padding:.75rem;
-      background:#fff;
-      display:block;              /* let margin:auto center the control */
-      margin-left:auto;
-      margin-right:auto;
+      display:block; margin-left:auto; margin-right:auto;
+      border:1px solid #e5e7eb; border-radius:.75rem; padding:.75rem; background:#fff;
     }
-    .field-input:focus{outline:2px solid #10b981;outline-offset:2px}
-    .field-input.w-full{width:100%}
+    .field-input:focus{ outline:2px solid #10b981; outline-offset:2px }
+    .field-input.w-full{ width:100% }
 
-    /* Compact widths */
-    .w-model     { width: 34ch !important; }
-    .w-cab       { width: 20ch !important; }
-    .w-use       { width: 28ch !important; }
-    .w-towing    { width: 22ch !important; }
-    .w-seating   { width: 8ch  !important; }
-    .w-fuel      { width: 12ch !important; }
-    .w-invest    { width: 25ch !important; }
-    .w-budget    { width: 18ch !important; }
-    .w-lease     { width: 16ch !important; }
-    .w-payoff    { width: 22ch !important; }
-    .w-condition { width: 40ch !important; }
+    /* Select color rules: only the placeholder is gray, options are black */
+    select.field-input { color:#0f172a; }                          /* slate-900 */
+    select.field-input:required:invalid { color:#94a3b8; }         /* slate-400 when placeholder showing */
+    select.field-input option { color:#0f172a; }                   /* dropdown options = black */
+    select.field-input option[disabled][value=""] { color:#94a3b8; } /* placeholder in list = gray */
+    /* If you prefer to hide placeholder from the open list, uncomment: */
+    /* select.field-input option[disabled][value=""] { display:none; } */
+
+    /* Compact “ch” widths keep desktop tidy but still center on mobile */
+    .w-model{width:34ch!important}.w-cab{width:20ch!important}.w-use{width:28ch!important}
+    .w-towing{width:22ch!important}.w-seating{width:8ch!important}.w-fuel{width:12ch!important}
+    .w-invest{width:25ch!important}.w-budget{width:18ch!important}.w-lease{width:16ch!important}
+    .w-payoff{width:22ch!important}.w-condition{width:40ch!important}
 
     input[type="number"]::-webkit-outer-spin-button,
-    input[type="number"]::-webkit-inner-spin-button{ -webkit-appearance: none; margin: 0; }
-    input[type="number"]{ -moz-appearance: textfield; }
+    input[type="number"]::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0 }
+    input[type="number"]{ -moz-appearance:textfield }
 
-    /* First row (Silverado cab logic) */
+    /* Top row toggles cab select for Silverado */
     #firstRow{
-      display:grid;
-      grid-template-columns: 1fr;
-      justify-content:center;
-      gap:1rem;
-      align-items:end;
-      place-items:center; /* center label + input */
+      display:grid; grid-template-columns:1fr; gap:1rem; align-items:end; place-items:center;
     }
-    #firstRow.two-cols{
-      grid-template-columns: auto auto;
-      justify-content:center;
-      align-items:end;
-      place-items:center;
-    }
+    #firstRow.two-cols{ grid-template-columns:auto auto }
 
-    /* Section title */
     .section-title{
-      text-align:center;color:#065f46;font-weight:800;
-      font-size:1.25rem;margin-top:1.25rem;margin-bottom:.25rem;
-      border:0 !important;
+      text-align:center; color:#065f46; font-weight:800;
+      font-size:1.25rem; margin-top:1.25rem; margin-bottom:.25rem; border:0!important;
     }
-    .section-title::before, .section-title::after{ content:none !important; display:none !important; }
+    .section-title::before,.section-title::after{content:none!important;display:none!important}
+    .subtle{color:#64748b}
 
-    .subtle { color:#64748b }
+    /* Currency adorners */
+    .currency{padding-left:2.75rem!important}
+    .currency.tight{padding-left:2.25rem!important}
+    .dollar{position:absolute; left:.55rem; top:50%; transform:translateY(-50%); color:#64748b; user-select:none;}
+    .currency-slim{padding-left:1.45rem!important}
 
-    /* --- Currency padding --- */
-    .currency       { padding-left: 2.75rem !important; }
-    .currency.tight { padding-left: 2.25rem !important; }
-    .dollar{position:absolute;left:.55rem;top:50%;transform:translateY(-50%);color:#64748b;user-select:none;}
-    .currency-slim{padding-left:1.45rem !important;}
-
-    .cta { display:flex; justify-content:center; }
+    .cta{display:flex; justify-content:center}
   </style>
 </head>
 <body class="p-2">
@@ -98,12 +76,10 @@
     <div id="discoveryCard" class="rounded-2xl border border-slate-200 shadow bg-white/95 p-4 sm:p-6">
       <h2 class="text-center text-xl sm:text-2xl font-bold text-emerald-800">Discovery</h2>
 
-      <!-- Desktop helper text; Mobile headline -->
+      <!-- Desktop copy vs. mobile headline -->
       <p class="text-center text-slate-600 mt-1">
         <span class="hidden sm:inline">Answer a few questions so we can match the right vehicle.</span>
-        <span class="block sm:hidden font-medium">
-          Let’s find the<br/>right vehicle
-        </span>
+        <span class="block sm:hidden font-medium">Let’s find the<br>right vehicle</span>
       </p>
 
       <!-- Screen-reader live region for dynamic changes -->
@@ -111,13 +87,13 @@
 
       <!-- FORM -->
       <form id="discForm" class="mt-5 grid gap-5" novalidate>
-        <!-- Row 1: Vehicle (center by default). Cab shows to the right only for Silverado -->
+        <!-- Row 1: Vehicle (center). Cab shows for Silverado only -->
         <div id="firstRow">
           <label id="modelWrap" class="block w-full text-center">
             <span class="field-label">Vehicle you’re interested in</span>
-            <select id="model" class="field-input w-model text-slate-400">
-              <!-- Placeholder first; becomes gray until changed -->
+            <select id="model" class="field-input w-model" required>
               <option value="" selected disabled>Select from drop down menu</option>
+              <!-- real options are injected by JS -->
             </select>
           </label>
 
@@ -132,7 +108,7 @@
           </label>
         </div>
 
-        <!-- Row 2: Primary use + Tow -->
+        <!-- Row 2 -->
         <div class="grid md:grid-cols-2 gap-4 place-items-center md:place-items-start">
           <label class="block w-full text-center">
             <span class="field-label">Primary use</span>
@@ -157,7 +133,7 @@
           </label>
         </div>
 
-        <!-- Row 3: Seating + Fuel -->
+        <!-- Row 3 -->
         <div class="grid md:grid-cols-2 gap-4 place-items-center md:place-items-start">
           <label class="block w-full text-center">
             <span class="field-label">Preferred seating</span>
@@ -181,54 +157,49 @@
           </label>
         </div>
 
-        <!-- Row 4: Investment + Budget + Lease specials -->
+        <!-- Row 4 -->
         <div class="grid md:grid-cols-3 gap-4 place-items-center md:place-items-start">
           <label class="block w-full text-center">
             <span class="field-label">Initial investment (approx)</span>
             <div class="relative">
               <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 select-none">$</span>
-              <input id="downPayment" type="text"
-                     class="field-input currency w-invest placeholder-slate-400"
-                     inputmode="decimal" pattern="^\d+(\.\d{1,2})?$"
-                     title="Enter dollars and cents (e.g., 1500 or 1500.50)"
-                     placeholder="20% down recommended"/>
+              <input id="downPayment" type="text" class="field-input currency w-invest"
+                     inputmode="decimal" placeholder="20% down recommended"
+                     title="Enter dollars and cents (e.g., 1500 or 1500.50)"/>
             </div>
           </label>
 
-          <!-- Center: Monthly budget -->
           <label class="block w-full text-center">
             <span class="field-label">What is your monthly budget?</span>
             <div class="relative">
               <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 select-none">$</span>
-              <input id="budget" type="text"
-                     class="field-input currency tight w-budget placeholder-slate-400"
-                     inputmode="decimal" pattern="^\d+(\.\d{1,2})?$"
-                     title="Enter dollars and cents (e.g., 650 or 650.00)"
-                     placeholder="650.00"/>
+              <input id="budget" type="text" class="field-input currency tight w-budget"
+                     inputmode="decimal" placeholder="650.00"
+                     title="Enter dollars and cents (e.g., 650 or 650.00)"/>
             </div>
           </label>
 
-          <!-- Right: Show me lease specials -->
           <label class="block w-full text-center">
             <span class="field-label">Show me lease specials</span>
-            <select id="leaseSpecials" class="field-input w-lease text-slate-400" required>
+            <select id="leaseSpecials" class="field-input w-lease" required>
               <option value="" disabled selected>Yes</option>
               <option value="Yes">Yes</option>
               <option value="No">No</option>
             </select>
           </label>
-        </div> <!-- /Row 4 -->
+        </div>
 
         <!-- Vehicle you’re replacing -->
         <h3 class="section-title">Vehicle you’re replacing</h3>
         <p class="text-center subtle -mt-2">Tell us about the vehicle you’re trading in.</p>
 
-        <!-- Row 5: Year / Make / Model / Estimated payoff -->
+        <!-- Row 5 -->
         <div class="grid md:grid-cols-4 gap-4 place-items-center md:place-items-start">
           <label class="block w-full text-center">
             <span class="field-label">Year</span>
-            <select id="tradeYear" class="field-input w-full text-slate-400" required>
+            <select id="tradeYear" class="field-input w-full" required>
               <option value="" selected disabled>Select Year</option>
+              <!-- years injected -->
             </select>
           </label>
 
@@ -246,23 +217,18 @@
             <span class="field-label">Estimated payoff</span>
             <div class="relative">
               <span class="dollar">$</span>
-              <input
-                id="payoff"
-                type="text"
-                class="field-input w-payoff currency-slim placeholder-slate-400"
-                inputmode="decimal" pattern="^\d+(\.\d{1,2})?$"
-                title="Enter dollars and cents (e.g., 12000 or 12000.00)"
-                placeholder="0.00"
-              />
+              <input id="payoff" type="text" class="field-input w-payoff currency-slim"
+                     inputmode="decimal" placeholder="0.00"
+                     title="Enter dollars and cents (e.g., 12000 or 12000.00)"/>
             </div>
           </label>
-        </div> <!-- /Row 5 -->
+        </div>
 
         <!-- Row 6 -->
         <div class="grid md:grid-cols-4 gap-4 place-items-center md:place-items-start">
           <label class="block w-full text-center">
             <span class="field-label">Vehicle condition</span>
-            <select id="vehicleCondition" class="field-input w-full text-slate-400" required>
+            <select id="vehicleCondition" class="field-input w-full" required>
               <option value="" disabled selected>Grade your vehicle</option>
               <option value="5">Grade 5 – Vehicle in excellent condition.</option>
               <option value="4">Grade 4 – Vehicle is better than average.</option>
@@ -277,8 +243,7 @@
             <span class="field-label">Current mileage</span>
             <input id="miles" type="text" maxlength="8" class="field-input w-full"
                    inputmode="numeric" pattern="^\d{1,7}$"
-                   title="Digits only, up to 7 (e.g., 45200)"
-                   placeholder="Enter miles"/>
+                   title="Digits only, up to 7 (e.g., 45200)" placeholder="Enter miles"/>
           </label>
 
           <div class="hidden md:block"></div>
@@ -287,63 +252,46 @@
             <span class="field-label">Who are you financed with?</span>
             <input id="financedWith" type="text" class="field-input w-payoff" placeholder="e.g., GM Financial"/>
           </label>
-        </div> <!-- /Row 6 -->
+        </div>
 
         <!-- Actions -->
         <div class="cta pt-2">
           <button type="button" id="backBtn" class="px-4 py-2 rounded-xl border bg-white/90 mr-3">← Back</button>
-          <button type="submit" class="px-5 py-3 rounded-2xl bg-emerald-600 text-white font-semibold shadow hover:brightness-110">
-            Pick a vehicle
-          </button>
+          <button type="submit" class="px-5 py-3 rounded-2xl bg-emerald-600 text-white font-semibold shadow hover:brightness-110">Pick a vehicle</button>
         </div>
       </form>
     </div>
   </div>
 
 <script>
-/* ---------------- helpers ---------------- */
+/* Kiosk Discovery — collect needs, persist, notify parent */
+
 const $ = (id) => document.getElementById(id);
 const saveLocal = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
 const loadLocal = (k, d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } };
 const TARGET_ORIGIN = window.location.origin;
 
-function formatMoney(val){
-  const n = Number(val || 0);
-  return n.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
-}
-function parseMoney(str){
-  return Number(String(str || "0").replace(/[^\d.]/g,'') || 0);
-}
-function debounce(fn, ms){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), ms); }; }
+/* Currency helpers */
+const parseMoney = (s) => Number(String(s||"").replace(/[^\d.]/g,"") || 0);
+const fmtMoney   = (n) => Number(n||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+const attachCurrency = (el, blankOkay=false) => {
+  el.addEventListener('blur', () => {
+    const raw = String(el.value||"").replace(/[^\d.]/g,"");
+    el.value = (raw || !blankOkay) ? fmtMoney(parseMoney(el.value)) : "";
+    persist();
+  });
+  el.addEventListener('input', persistDebounced);
+};
 
-/* ---------------- elements ---------------- */
-const firstRow  = $('firstRow');
-const modelEl   = $('model');
-const cabWrap   = $('cabWrap');
-const cabEl     = $('cab');
+/* Elements */
+const firstRow=$('firstRow'), modelEl=$('model'), cabWrap=$('cabWrap'), cabEl=$('cab');
+const useEl=$('use'), towingEl=$('towing'), seatingEl=$('seating'), fuelEl=$('fuel');
+const downEl=$('downPayment'), budgetEl=$('budget'), leaseEl=$('leaseSpecials');
+const tradeYear=$('tradeYear'), tradeMake=$('tradeMake'), tradeModel=$('tradeModel');
+const payoffEl=$('payoff'), financedWithEl=$('financedWith'), milesEl=$('miles'), vehicleConditionEl=$('vehicleCondition');
+const form=$('discForm'), backBtn=$('backBtn'), live=$('live');
 
-const useEl     = $('use');
-const towingEl  = $('towing');
-const seatingEl = $('seating');
-const fuelEl    = $('fuel');
-
-const downEl    = $('downPayment');
-const budgetEl  = $('budget');
-const leaseEl   = $('leaseSpecials');
-
-const tradeYear = $('tradeYear');
-const tradeMake = $('tradeMake');
-const tradeModel= $('tradeModel');
-const payoffEl  = $('payoff');
-const financedWithEl = $('financedWith');
-const milesEl   = $('miles');
-const vehicleConditionEl = $('vehicleCondition');
-
-const form      = $('discForm');
-const backBtn   = $('backBtn');
-const live      = $('live');
-
-/* ------------- data ------------- */
+/* Data */
 const RAW_MODELS = [
   'Blazer','Colorado','Corvette E-Ray','Corvette Stingray','Equinox',
   'Express Cargo 2500','Express Cargo 3500','Express Cutaway 3500',
@@ -352,174 +300,110 @@ const RAW_MODELS = [
   'Silverado 4500 HD','Silverado 5500 HD','Silverado 6500 HD','Silverado EV',
   'Suburban','Tahoe','Trailblazer','Traverse','Trax'
 ];
-function customSort(a,b){
-  const weight = (name) => name.startsWith('Corvette') ? 0 : (name === 'Trax' ? 2 : 1);
-  const wa = weight(a), wb = weight(b);
-  if (wa !== wb) return wa - wb;
-  return a.localeCompare(b);
-}
+const customSort = (a,b) => {
+  const w = (n) => n.startsWith('Corvette') ? 0 : (n==='Trax'?2:1);
+  return w(a)===w(b) ? a.localeCompare(b) : w(a)-w(b);
+};
 
-/* ------------- init lists (JSON with fallback) ------------- */
+/* Build model list with placeholder first; do NOT auto-restore last pick */
 async function fillModels(){
-  let list = [];
-  try {
-    const res = await fetch('assets/models.json', { cache: 'no-store' });
-    if (!res.ok) throw 0;
-    const arr = await res.json();
-    if (Array.isArray(arr) && arr.length) list = arr;
-  } catch {}
-  if (!list.length) list = RAW_MODELS;
-
-  list = [...list].sort(customSort);
-
-  // Insert placeholder first; do NOT auto-select a previous value.
-  const opts = [`<option value="" selected disabled>Select from drop down menu</option>`]
-    .concat(list.map(m => `<option>${m}</option>`));
-  modelEl.innerHTML = opts.join('');
-  tintSelect(modelEl); // keep gray until user chooses
+  let list=[];
+  try{
+    const r=await fetch('assets/models.json',{cache:'no-store'});
+    if(r.ok){ const a=await r.json(); if(Array.isArray(a)&&a.length) list=a; }
+  }catch{}
+  if(!list.length) list=RAW_MODELS;
+  list=[...list].sort(customSort);
+  modelEl.insertAdjacentHTML('beforeend', list.map(m=>`<option>${m}</option>`).join(''));
 }
+
+/* Years list */
 function fillYears(){
-  const thisYear = new Date().getFullYear();
-  const start = 1990;
-  const opts = [`<option value="" selected disabled>Select Year</option>`];
-  for(let y=thisYear; y>=start; y--) opts.push(`<option>${y}</option>`);
-  tradeYear.innerHTML = opts.join('');
+  const thisYear=new Date().getFullYear();
+  const opts=[]; for(let y=thisYear;y>=1990;y--) opts.push(`<option>${y}</option>`);
+  tradeYear.insertAdjacentHTML('beforeend', opts.join(''));
 }
 
-/* ------------- Silverado layout toggle + a11y announce ------------- */
-function isSilverado(model){ return /^Silverado\s(1500|2500|3500)/.test(model || ''); }
+/* Silverado-only cab control */
+const isSilverado = (m) => /^Silverado\s(1500|2500|3500)/.test(m||'');
 function updateCabVisibility(){
-  const showCab = isSilverado(modelEl.value);
-  cabWrap.classList.toggle('hidden', !showCab);
-  firstRow.classList.toggle('two-cols', showCab);
-  if (live) {
-    live.textContent = showCab
-      ? 'Cab style options are now available for Silverado.'
-      : 'Cab style options hidden for non-Silverado models.';
-  }
+  const show=isSilverado(modelEl.value);
+  cabWrap.classList.toggle('hidden', !show);
+  firstRow.classList.toggle('two-cols', show);
+  if(live) live.textContent = show ? 'Cab style options are now available for Silverado.' : 'Cab style options hidden for non-Silverado models.';
 }
 
-/* ------------- fresh defaults ------------- */
-function setFreshDefaults(){
-  budgetEl.value = "";
-  payoffEl.value = "";
-  downEl.value   = "";
-  milesEl.value  = "";
-  leaseEl.value  = "";
-}
-
-/* ------------- (save shopper’s selection) ------------- */
+/* Optional: normalize model family and persist interest (without auto-restore) */
 function normalizeModel(label){
-  if (!label) return '';
-  const L = String(label).trim().toLowerCase();
-  if (L.includes('corvette')) return 'Corvette'; // E-Ray, Stingray → Corvette
+  if(!label) return '';
+  const L=String(label).trim().toLowerCase();
+  if(L.includes('corvette')) return 'Corvette';
   return String(label).trim();
 }
 function persistInterestModel(){
-  const raw  = String(modelEl.value || '').trim();
-  if (!raw) return; // don’t persist placeholder
-  const norm = normalizeModel(raw);
+  const raw=String(modelEl.value||'').trim();
+  if(!raw) return; // ignore placeholder
+  const norm=normalizeModel(raw);
   saveLocal('guided_interest_raw', raw);
   saveLocal('guided_interest_model', norm);
+  // reflect in guided_needs as well
   const needs = loadLocal('guided_needs', {});
   saveLocal('guided_needs', { ...needs, model: raw });
 }
 
-/* ------------- persistence of the whole form ------------- */
+/* Clear user-entered numeric fields on fresh load */
+function setFreshDefaults(){
+  budgetEl.value=""; payoffEl.value=""; downEl.value=""; milesEl.value=""; leaseEl.value="";
+}
+
+/* Persist the whole form */
 function persist(){
   const modelVal = modelEl.value || null;
   const data = {
-    model: modelVal,
-    cab: cabEl.value,
-    use: useEl.value,
-    towing: towingEl.value,
-    seating: seatingEl.value,
-    fuel: fuelEl.value,
-    downPayment: parseMoney(downEl.value),
-    budget: parseMoney(budgetEl.value),
+    model: modelVal, cab: cabEl.value, use: useEl.value, towing: towingEl.value,
+    seating: seatingEl.value, fuel: fuelEl.value,
+    downPayment: parseMoney(downEl.value), budget: parseMoney(budgetEl.value),
     leaseSpecials: leaseEl.value,
-    tradeYear: tradeYear.value || null,
-    tradeMake: tradeMake.value || null,
-    tradeModel: tradeModel.value || null,
+    tradeYear: tradeYear.value || null, tradeMake: tradeMake.value || null, tradeModel: tradeModel.value || null,
     payoff: parseMoney(payoffEl.value),
     financedWith: financedWithEl.value || "",
     miles: milesEl.value ? Number(String(milesEl.value).replace(/[^\d]/g,'')) : null,
     vehicleCondition: vehicleConditionEl.value
   };
   saveLocal('guided_needs', data);
-  // Only report model if chosen
-  window.parent?.postMessage(
-    { type: 'discovery:update', payload: { budget: data.budget, model: modelVal } },
-    TARGET_ORIGIN
-  );
+  window.parent?.postMessage({ type:'discovery:update', payload:{ budget:data.budget, model:modelVal } }, TARGET_ORIGIN);
 }
-const persistDebounced = debounce(persist, 120);
+const debounce = (fn,ms)=>{ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a),ms); } };
+const persistDebounced = debounce(persist,120);
 
-/* ------------- currency behavior ------------- */
-function attachCurrency(el, {blankOkay=false}={}){
-  el.addEventListener('blur', () => {
-    const raw = String(el.value || '').replace(/[^\d.]/g,'');
-    if (raw || !blankOkay) {
-      el.value = formatMoney(parseMoney(el.value));
-    } else {
-      el.value = '';
-    }
-    persist();
-  });
-  el.addEventListener('input', () => { persistDebounced(); });
-}
-attachCurrency(downEl,   {blankOkay:true});
-attachCurrency(budgetEl, {blankOkay:true});
-attachCurrency(payoffEl, {blankOkay:true});
+/* Events */
+modelEl.addEventListener('change', ()=>{ updateCabVisibility(); persistInterestModel(); persist(); });
+[cabEl,useEl,towingEl,seatingEl,fuelEl,tradeYear,tradeMake,tradeModel,milesEl,financedWithEl,leaseEl,vehicleConditionEl]
+  .forEach(el=>el.addEventListener('input', persistDebounced));
 
-/* ------------- placeholder tint for selects ------------- */
-function tintSelect(sel){ sel.classList.toggle('text-slate-400', !sel.value); }
-leaseEl.addEventListener('change', () => tintSelect(leaseEl));
-vehicleConditionEl.addEventListener('change', () => tintSelect(vehicleConditionEl));
-tradeYear.addEventListener('change', () => tintSelect(tradeYear));
-modelEl.addEventListener('change', () => { tintSelect(modelEl); updateCabVisibility(); persistInterestModel(); persist(); });
+backBtn.addEventListener('click', ()=> window.parent?.postMessage({type:'discovery:back'}, TARGET_ORIGIN));
+form.addEventListener('submit', (e)=>{ e.preventDefault(); persistInterestModel(); persist(); window.parent?.postMessage({type:'discovery:done'}, TARGET_ORIGIN); });
 
-/* ------------- events ------------- */
-[ cabEl, useEl, towingEl, seatingEl, fuelEl, tradeYear, tradeMake, tradeModel,
-  milesEl, financedWithEl, leaseEl, vehicleConditionEl ]
-  .forEach(el => el.addEventListener('input', persistDebounced));
+/* Currency fields */
+attachCurrency(downEl,true);
+attachCurrency(budgetEl,true);
+attachCurrency(payoffEl,true);
 
-backBtn.addEventListener('click', () => {
-  window.parent?.postMessage({ type: 'discovery:back' }, TARGET_ORIGIN);
-});
-form.addEventListener('submit', (e) => {
-  e.preventDefault();
-  persistInterestModel();
-  persist();
-  window.parent?.postMessage({ type: 'discovery:done' }, TARGET_ORIGIN);
-});
-
-/* ------------- auto-report height to parent ------------- */
+/* Height reporting to parent */
 function sendHeight(){
-  const h = document.documentElement.scrollHeight;
-  window.parent?.postMessage({ type: 'discovery:height', payload: { height: h } }, TARGET_ORIGIN);
+  const h=document.documentElement.scrollHeight;
+  window.parent?.postMessage({ type:'discovery:height', payload:{height:h} }, TARGET_ORIGIN);
 }
 window.addEventListener('load', sendHeight);
-if ('ResizeObserver' in window) {
-  new ResizeObserver(sendHeight).observe(document.documentElement);
-} else {
-  setInterval(sendHeight, 500);
-}
+('ResizeObserver' in window) ? new ResizeObserver(sendHeight).observe(document.documentElement) : setInterval(sendHeight, 500);
 
-/* ------------- boot ------------- */
-(async () => {
+/* Boot */
+(async()=>{
   await fillModels();
-
-  // Do NOT restore a prior model here – default stays on placeholder.
   updateCabVisibility();
   fillYears();
-  setFreshDefaults();
-  tintSelect(leaseEl);
-  tintSelect(vehicleConditionEl);
-  tintSelect(tradeYear);
-
-  // seed normalized/needs on first load (without forcing a model)
-  persist();
+  setFreshDefaults();     // keep fields blank on fresh load
+  persist();              // seed storage with current defaults
   sendHeight();
 })();
 </script>
