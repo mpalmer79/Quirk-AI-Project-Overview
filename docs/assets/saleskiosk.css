@@ -58,3 +58,35 @@ body.kiosk-bg > * { position:relative; z-index:1; }
   justify-content: center;
   margin-top: 24px;
 }
+/* --- Center the green Continue button inside card (mobile + desktop) --- */
+
+/* 1) If the welcome form wraps the button in a flex row, force center */
+.sales-kiosk #welcomeForm .flex {
+  justify-content: center !important;
+}
+
+/* 2) Center any submit button within kiosk cards or library cards */
+.sales-kiosk .kiosk-card button[type="submit"],
+.sales-kiosk .library-card button[type="submit"],
+.sales-kiosk button.btn-continue,
+.sales-kiosk a.btn-continue {
+  display: block;          /* enables margin auto centering */
+  margin: 24px auto 0;     /* top spacing + center horizontally */
+  float: none;             /* neutralize any legacy float */
+}
+
+/* 3) If there’s an explicit actions row, ensure it centers and spans full width on desktop */
+.sales-kiosk .kiosk-card .actions,
+.sales-kiosk .kiosk-card .action-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+@media (min-width: 900px) {
+  .sales-kiosk .kiosk-card .actions,
+  .sales-kiosk .kiosk-card .action-row {
+    /* if actions live inside a grid card, allow them to span across columns */
+    grid-column: 1 / -1;
+  }
+}
