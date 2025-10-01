@@ -1,3 +1,4 @@
+// orchestrator/index.js
 import express from "express";
 import fs from "fs";
 import path from "path";
@@ -10,42 +11,49 @@ const __dirname = path.dirname(__filename);
 const app = express();
 app.use(express.json());
 
-// --- Config (adjust as needed)
+// Config
 const SANDBOX_PATH = path.join(__dirname, "..", "sandbox", "inventory.json");
-const DEFAULT_SLOTS = ["6:15 PM", "10:30 AM"]; // mirrors your library style
+const DEFAULT_SLOTS = ["6:15 PM", "10:30 AM"];
 
-// --- Helpers
-function loadInventory() {
-  const raw = fs.readFileSync(SANDBOX_PATH, "utf-8");
-  return JSON.parse(raw);
+// -------- Inventory (cached, safe) --------
+let INVENTORY_CACHE = [];
+let INVENTORY_MTIME = 0;
+
+function loadInventorySafe() {
+  try {
+    const stat = fs.statSync(SANDBOX_PATH);
+    if (stat.mtimeMs !== INVENTORY_MTIME) {
+      INVENTORY_CACHE = JSON.parse(fs.readFileSync(SANDBOX_PATH, "utf-8") || "[]");
+      INVENTORY_MTIME = stat.mtimeMs;
+    }
+  } catch {
+    INVENTORY_CACHE = [];
+  }
+  return INVENTORY_CACHE;
 }
 
+// -------- Helpers --------
 function pickVehicle(inv, query) {
-  // very simple matcher — improve later
   if (!query) return inv[0];
-  const q = query.toLowerCase();
+  const q = String(query).toLowerCase();
   const exact = inv.find(v =>
     `${v.year} ${v.make} ${v.model}`.toLowerCase().includes(q) ||
-    v.model.toLowerCase().includes(q) ||
-    (v.trim && v.trim.toLowerCase().includes(q)) ||
-    (v.stock_number && v.stock_number.toLowerCase() === q) ||
-    (v.vin && v.vin.toLowerCase() === q)
+    v.model?.toLowerCase().includes(q) ||
+    v.trim?.toLowerCase().includes(q) ||
+    v.stock_number?.toLowerCase() === q ||
+    v.vin?.toLowerCase() === q
   );
   return exact || inv[0];
 }
 
 function stockCount(inv, model) {
   if (!model) return inv.length;
-  return inv.filter(v => v.model.toLowerCase() === model.toLowerCase() &&
-                         v.status !== "sold").length;
+  return inv.filter(v => v.model?.toLowerCase() === model.toLowerCase() && v.status !== "sold").length;
 }
 
-function formatModelTrim(v) {
-  return `${v.year} ${v.make} ${v.model}${v.trim ? " " + v.trim : ""}`;
-}
+const fmtModelTrim = v => `${v.year} ${v.make} ${v.model}${v.trim ? " " + v.trim : ""}`;
 
 function incentiveLine(v, incentives) {
-  // placeholder logic — if none, omit per your one-pager SLA
   if (!incentives) return "";
   const parts = [];
   if (incentives.cash_rebate) parts.push(`$${incentives.cash_rebate} cash back`);
@@ -53,32 +61,24 @@ function incentiveLine(v, incentives) {
   return parts.length ? `Right now there’s ${parts.join(" + ")}.` : "";
 }
 
-function render(template, vars) {
-  return template.replace(/\[\[(.+?)\]\]/g, (_, key) => (vars[key] ?? "").toString());
-}
+const render = (tpl, vars) => tpl.replace(/\[\[(.+?)\]\]/g, (_, k) => (vars[k] ?? "").toString());
 
-// --- Routes
-
-// Health
+// -------- Routes --------
 app.get("/health", (_, res) => res.json({ ok: true }));
 
 /**
  * POST /respond
- * Body:
- * {
- *   "intent": "new_internet_lead" | "best_price",
- *   "query": "Traverse" | "stock num" | "vin",
- *   "lead": {"name":"Sarah","email":"..."},
- *   "agent": {"name":"Alex","store":"Quirk Nashua"},
- *   "incentives": {"cash_rebate":1500, "apr":2.9}
- * }
+ * Body: { intent, query, lead, agent, incentives }
  */
 app.post("/respond", (req, res) => {
   try {
     const { intent = "new_internet_lead", query = "", lead = {}, agent = {}, incentives = null } = req.body || {};
-    const inv = loadInventory();
+
+    const inv = loadInventorySafe();
+    if (!inv.length) return res.status(503).json({ error: "Inventory unavailable" });
+
     const vehicle = pickVehicle(inv, query);
-    const count = stockCount(inv, vehicle.model);
+    const count = stockCount(inv, vehicle?.model);
 
     const [slot1, slot2] = DEFAULT_SLOTS;
 
@@ -86,7 +86,7 @@ app.post("/respond", (req, res) => {
       name: lead.name || "there",
       agent: agent.name || "Your BDC Team",
       store: agent.store || "Quirk",
-      model_trim: formatModelTrim(vehicle),
+      model_trim: fmtModelTrim(vehicle),
       stock_count: count,
       primary_photo: vehicle.photo_url_primary || "",
       vin: vehicle.vin,
@@ -94,26 +94,23 @@ app.post("/respond", (req, res) => {
       price: vehicle.price,
       msrp: vehicle.msrp,
       slot1, slot2,
-      incentive_line: incentiveLine(vehicle, incentives)
+      incentive_line: incentiveLine(vehicle, incentives),
     };
 
     const tpl = templates[intent] || templates["new_internet_lead"];
     const email = render(tpl.email, vars).trim();
     const sms = render(tpl.sms, vars).trim();
 
-    // Minimal activity payload you can later push to VIN
-    const activity = {
-      lead_id: lead.id || null,
-      note_html: `<p>${email.replace(/\n/g, "<br/>")}</p>`,
-      suggested_times: [slot1, slot2]
-    };
-
     res.json({
       intent,
       vehicle,
       email,
       sms,
-      activity
+      activity: {
+        lead_id: lead.id || null,
+        note_html: `<p>${email.replace(/\n/g, "<br/>")}</p>`,
+        suggested_times: [slot1, slot2],
+      },
     });
   } catch (e) {
     console.error(e);
@@ -121,6 +118,6 @@ app.post("/respond", (req, res) => {
   }
 });
 
-// --- Start
+// -------- Start --------
 const PORT = process.env.PORT || 3030;
 app.listen(PORT, () => console.log(`Orchestrator listening on :${PORT}`));
