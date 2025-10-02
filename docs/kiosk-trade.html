@@ -17,7 +17,7 @@
   .field{display:flex;flex-direction:column;align-items:center}
   .label{text-align:center;font-weight:600}
 
-  /* Center + specific widths */
+  /* Center + specific widths (ch = roughly “character” widths) */
   #vin{width:20ch;margin:0 auto;text-transform:uppercase}
   #miles{width:14ch;margin:0 auto}
   #cond{width:16ch;margin:0 auto}
@@ -34,12 +34,27 @@
   #title{width:25ch;margin:0 auto}
 
   #owners{width:4ch;margin:0 auto}
-  #accident{width:5ch;margin:0 auto}
+
+  /* Accident select: keep ~5ch visible even on mobile by adding space for arrow/padding */
+  #accident{
+    width:calc(5ch + 1.25rem);   /* target ~5ch + room for arrow */
+    min-width:6.5ch;             /* hard floor so text never gets clipped */
+    margin:0 auto;
+    text-align:center;
+    padding-inline:.35rem;       /* tighter so text stays visible */
+    color:#0f172a;
+    -webkit-appearance:menulist; /* use native control to avoid hidden text */
+    appearance:menulist;
+    background:#fff;
+  }
+  @media (max-width: 420px){
+    #accident{ width:calc(5ch + 1.5rem); }
+  }
 
   /* Placeholder gray for Title Status until valid selection */
   .sel:invalid{ color:#94a3b8; }                /* slate-400 */
-  .sel option{ color:#0f172a; }                 /* black/slate-900 for dropdown options */
-  .sel option[disabled]{ color:#94a3b8; }       /* placeholder in list if visible */
+  .sel option{ color:#0f172a; }                 /* dropdown options in black */
+  .sel option[disabled]{ color:#94a3b8; }
 
   .sr-only{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0,0,0,0)}
   .about-grid{display:grid;gap:12px;grid-template-columns:1fr}@media(min-width:980px){.about-grid{grid-template-columns:repeat(3,1fr);max-width:980px;margin:0 auto}}
@@ -66,7 +81,9 @@
     <div class="row row--2">
       <label class="field">
         <span class="label">Condition</span>
-        <select id="cond"><option>Average</option><option>Good</option><option>Excellent</option><option>Rough</option></select>
+        <select id="cond">
+          <option>Average</option><option>Good</option><option>Excellent</option><option>Rough</option>
+        </select>
       </label>
       <div aria-hidden="true"></div>
     </div>
@@ -102,7 +119,8 @@
 
     <div class="row row--2">
       <label class="field"><span class="label">Number of Owners (estimate OK)</span><input id="owners" type="number" min="0" max="20"></label>
-      <label class="field"><span class="label">Has the vehicle ever been in an accident?</span>
+      <label class="field">
+        <span class="label">Has the vehicle ever been in an accident?</span>
         <select id="accident"><option>No</option><option>Yes</option></select>
       </label>
     </div>
@@ -134,6 +152,7 @@
 <script>
   const {save,load,post,track}=window.kiosk;
   const $=id=>document.getElementById(id);
+
   const vinEl=$("vin"),milesEl=$("miles"),condEl=$("cond"),yearEl=$("year"),makeEl=$("make"),modelEl=$("model"),
         trimEl=$("trim"),extEl=$("extColor"),intEl=$("intColor"),keysEl=$("keys"),titleEl=$("title"),
         ownersEl=$("owners"),accidentEl=$("accident"),accidentRepairEl=$("accidentRepair"),
@@ -146,7 +165,7 @@
   const clampVIN=v=>String(v||"").toUpperCase().replace(/[IOQ]/g,"").replace(/[^A-Z0-9]/g,"").slice(0,17);
 
   const send=()=>{
-    const titleVal = titleEl.value || ""; // keep placeholder semantics if not chosen
+    const titleVal = titleEl.value || "";
     const p={vin:vinEl.value||"",miles:milesEl.value||"",condition:condEl.value,year:yearEl.value||"",make:makeEl.value||"",
       model:modelEl.value||"",trim:trimEl.value||"",exterior:extEl.value||"",interior:intEl.value||"",keys:keysEl.value||"",
       title:titleVal,owners:ownersEl.value||"",accident:accidentEl.value||"",accidentRepair:accidentRepairEl.value||"",
@@ -184,8 +203,13 @@
     }catch(_){}
   }
 
+  // VIN & inputs
   vinEl.addEventListener("input",e=>{const n=clampVIN(e.target.value); if(n!==e.target.value) e.target.value=n; if(n.length===17) decode(n); send();});
-  [milesEl,condEl,yearEl,makeEl,modelEl,trimEl,extEl,intEl,keysEl,titleEl,ownersEl,accidentEl,accidentRepairEl,warningsEl,mechEl,cosmeticEl,interiorEl,modsEl,smellsEl,serviceEl,tiresEl,brakesEl,wearEl].forEach(el=>el.addEventListener("input",recompute));
+  // Listen to both input and change for robust select behavior on mobile
+  const onInputs=[milesEl,makeEl,modelEl,trimEl,extEl,intEl,keysEl,ownersEl,accidentRepairEl,mechEl,cosmeticEl,interiorEl,modsEl,smellsEl,serviceEl,wearEl];
+  onInputs.forEach(el=>el.addEventListener("input",recompute));
+  const onSelects=[condEl,yearEl,titleEl,accidentEl,warningsEl,tiresEl,brakesEl];
+  onSelects.forEach(el=>{el.addEventListener("input",recompute); el.addEventListener("change",recompute);});
 
   (()=>{
     const s=load("guided_trade",null);
@@ -193,8 +217,7 @@
       vinEl.value=s.vin||""; milesEl.value=s.miles||""; condEl.value=s.condition||"Average";
       yearEl.value=s.year||""; makeEl.value=s.make||""; modelEl.value=s.model||""; trimEl.value=s.trim||"";
       extEl.value=s.exterior||""; intEl.value=s.interior||""; keysEl.value=s.keys||"";
-      titleEl.value=s.title||""; /* keep placeholder if not chosen */
-      ownersEl.value=s.owners||""; accidentEl.value=s.accident||"No"; accidentRepairEl.value=s.accidentRepair||"";
+      titleEl.value=s.title||""; ownersEl.value=s.owners||""; accidentEl.value=s.accident||"No"; accidentRepairEl.value=s.accidentRepair||"";
       warningsEl.value=s.warnings||"No"; mechEl.value=s.mech||""; cosmeticEl.value=s.cosmetic||"";
       interiorEl.value=s.interiorNotes||""; modsEl.value=s.mods||""; smellsEl.value=s.smells||"";
       serviceEl.value=s.service||""; tiresEl.value=s.tires||"New"; brakesEl.value=s.brakes||"New";
