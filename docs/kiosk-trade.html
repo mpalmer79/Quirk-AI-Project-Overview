@@ -1,52 +1,168 @@
-<!doctype html><html lang="en"><head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<base href="/Quirk-AI-Project-Overview/"><title>Kiosk • Trade-In</title>
-<link rel="stylesheet" href="assets/kiosk-shared.css"><script src="assets/kiosk-shared.js"></script>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<base href="/Quirk-AI-Project-Overview/">
+<title>Kiosk • Trade-In</title>
+<link rel="stylesheet" href="assets/kiosk-shared.css">
+<script src="assets/kiosk-shared.js"></script>
 <style>
-html,body{height:auto;overflow:visible!important}.kx{overflow:visible;padding-bottom:24px;max-width:1100px;margin:0 auto}
-.card-title{text-align:center;margin:6px 0 14px;color:#0f766e;font-weight:800;font-size:1.25rem}
-.fieldset{border:1px solid #e5e7eb;border-radius:16px;padding:16px;background:#fff;margin:16px auto;max-width:980px}
-.fieldset.narrow{max-width:820px}.fieldset.wide{max-width:980px}.row{display:grid;gap:12px}
-.row--2{grid-template-columns:1fr}@media(min-width:860px){.row--2{grid-template-columns:1fr 1fr}}
-.field{display:flex;flex-direction:column;align-items:stretch}.field .label{text-align:center;font-weight:600}
-.fieldset.about{border:none;box-shadow:none;background:0;padding-top:0}
-.about-grid{display:grid;gap:12px;grid-template-columns:1fr}@media(min-width:980px){
-.about-grid{grid-template-columns:1fr 1fr 1fr;max-width:980px;margin:0 auto;align-items:start}
-.about__warnings{grid-column:1}.about__mech{grid-column:2}.about__cosmetic{grid-column:3}
-.about__mods{grid-column:1}.about__interior{grid-column:2}.about__smells{grid-column:3}
-.about__service{grid-column:1}.about__tire{grid-column:2}.about__brakes{grid-column:3}
-.about__wearnotes{grid-column:1/-1}}
-.wear-notes{max-width:940px;margin:8px auto 0}.wear-notes textarea{min-height:140px}
-#miles{width:10ch}.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-.cta{display:flex;gap:8px;justify-content:center}@media(min-width:980px){.cta{max-width:980px;margin:8px auto 24px}}
-</style></head><body>
-<div class="kx"><h2>Trade-In</h2>
-<h3 class="card-title">Vehicle Details</h3>
-<div class="fieldset wide">
-<div class="row row--2"><label class="field"><span class="label">VIN</span><input id="vin" maxlength="17" placeholder="Enter 17 digit VIN" aria-describedby="vinHint"><small id="vinHint" class="sr-only">VIN auto-capitalizes; letters I, O, Q are invalid.</small></label>
-<label class="field"><span class="label">Current Mileage</span><input id="miles" type="number" min="0" step="1" inputmode="numeric" placeholder="e.g., 45,000"></label></div>
-<div class="row row--2"><label class="field"><span class="label">Condition</span><select id="cond"><option>Average</option><option>Good</option><option>Excellent</option><option>Rough</option></select></label><div class="field" aria-hidden="true"></div></div>
-<div class="row row--2"><label class="field"><span class="label">Year</span><select id="year"></select></label><label class="field"><span class="label">Make</span><input id="make" placeholder="e.g., Chevrolet"></label></div>
-<div class="row row--2"><label class="field"><span class="label">Model</span><input id="model" placeholder="e.g., Equinox"></label><label class="field"><span class="label">Trim Level (if known)</span><input id="trim" placeholder="e.g., LT, Premier"></label></div>
-<div class="row row--2"><label class="field"><span class="label">Exterior Color</span><input id="extColor"></label><label class="field"><span class="label">Interior Color</span><input id="intColor"></label></div>
-<div class="row row--2"><label class="field"><span class="label">Number of Keys Included</span><input id="keys" type="number" min="0" max="10"></label><label class="field"><span class="label">Title Status</span><select id="title"><option>Clean / I have Title</option><option>Lien</option><option>Rebuilt</option><option>Salvage</option></select></label></div>
-<div class="row row--2"><label class="field"><span class="label">Number of Owners (estimate OK)</span><input id="owners" type="number" min="0" max="20"></label><label class="field"><span class="label">Has the vehicle ever been in an accident?</span><select id="accident"><option>No</option><option>Yes</option></select></label></div>
-<label class="field"><span class="label">If yes, was it professionally repaired?</span><textarea id="accidentRepair" rows="3" placeholder="Yes / No / Details"></textarea></label>
+  html,body{height:auto;overflow:visible!important}
+  .kx{max-width:1100px;margin:0 auto 24px}
+  .card-title{text-align:center;margin:6px 0 14px;color:#0f766e;font:800 1.25rem/1.2 system-ui}
+  .fieldset{max-width:980px;margin:16px auto;padding:16px;border:1px solid #e5e7eb;border-radius:16px;background:#fff}
+  .fieldset.about{border:none;background:transparent;padding-top:0}
+  .row{display:grid;gap:12px}.row--2{grid-template-columns:1fr}@media(min-width:860px){.row--2{grid-template-columns:1fr 1fr}}
+  .field{display:flex;flex-direction:column}.label{text-align:center;font-weight:600}
+  #vin{width:20ch;margin:0 auto;text-transform:uppercase}
+  #miles{width:14ch;margin:0 auto}
+  #cond{width:16ch;margin:0 auto}
+  .sr-only{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0,0,0,0)}
+  .about-grid{display:grid;gap:12px;grid-template-columns:1fr}@media(min-width:980px){.about-grid{grid-template-columns:repeat(3,1fr);max-width:980px;margin:0 auto}}
+  .wear-notes textarea{min-height:140px}
+  .cta{display:flex;justify-content:center;gap:8px;max-width:980px;margin:8px auto 24px}
+</style>
+</head>
+<body>
+<div class="kx">
+  <h3 class="card-title">Vehicle Details</h3>
+  <div class="fieldset">
+    <div class="row row--2">
+      <label class="field"><span class="label">VIN</span>
+        <input id="vin" maxlength="17" placeholder="Enter 17 digit VIN" aria-describedby="vinHint">
+        <small id="vinHint" class="sr-only">VIN auto-capitalizes; letters I,O,Q invalid.</small>
+      </label>
+      <label class="field"><span class="label">Current Mileage</span>
+        <input id="miles" type="number" min="0" step="1" inputmode="numeric" placeholder="e.g., 45,000">
+      </label>
+    </div>
+
+    <div class="row row--2">
+      <label class="field"><span class="label">Condition</span>
+        <select id="cond"><option>Average</option><option>Good</option><option>Excellent</option><option>Rough</option></select>
+      </label>
+      <div aria-hidden="true"></div>
+    </div>
+
+    <div class="row row--2">
+      <label class="field"><span class="label">Year</span><select id="year"></select></label>
+      <label class="field"><span class="label">Make</span><input id="make" placeholder="e.g., Chevrolet"></label>
+    </div>
+
+    <div class="row row--2">
+      <label class="field"><span class="label">Model</span><input id="model" placeholder="e.g., Equinox"></label>
+      <label class="field"><span class="label">Trim Level (if known)</span><input id="trim" placeholder="e.g., LT, Premier"></label>
+    </div>
+
+    <div class="row row--2">
+      <label class="field"><span class="label">Exterior Color</span><input id="extColor"></label>
+      <label class="field"><span class="label">Interior Color</span><input id="intColor"></label>
+    </div>
+
+    <div class="row row--2">
+      <label class="field"><span class="label">Number of Keys Included</span><input id="keys" type="number" min="0" max="10"></label>
+      <label class="field"><span class="label">Title Status</span>
+        <select id="title"><option>Clean / I have Title</option><option>Lien</option><option>Rebuilt</option><option>Salvage</option></select>
+      </label>
+    </div>
+
+    <div class="row row--2">
+      <label class="field"><span class="label">Number of Owners (estimate OK)</span><input id="owners" type="number" min="0" max="20"></label>
+      <label class="field"><span class="label">Has the vehicle ever been in an accident?</span><select id="accident"><option>No</option><option>Yes</option></select></label>
+    </div>
+
+    <label class="field"><span class="label">If yes, was it professionally repaired?</span>
+      <textarea id="accidentRepair" rows="3" placeholder="Yes / No / Details"></textarea>
+    </label>
+  </div>
+
+  <h3 class="card-title">Tell us about your Vehicle</h3>
+  <div class="fieldset about">
+    <div class="about-grid">
+      <label class="field"><span class="label">Any warning lights on dashboard?</span><select id="warnings"><option>No</option><option>Yes</option></select></label>
+      <label class="field"><span class="label">Mechanical issues</span><textarea id="mech" rows="3"></textarea></label>
+      <label class="field"><span class="label">Cosmetic issues</span><textarea id="cosmetic" rows="3"></textarea></label>
+      <label class="field"><span class="label">Aftermarket parts or modifications?</span><textarea id="mods" rows="2"></textarea></label>
+      <label class="field"><span class="label">Interior clean and damage-free?</span><textarea id="interior" rows="2"></textarea></label>
+      <label class="field"><span class="label">Unusual smells?</span><textarea id="smells" rows="2"></textarea></label>
+      <label class="field"><span class="label">Routine services up to date?</span><textarea id="service" rows="2"></textarea></label>
+      <label class="field"><span class="label">Tire Condition</span><select id="tires"><option>New</option><option>Good</option><option>Worn</option><option>Needs Replacement</option></select></label>
+      <label class="field"><span class="label">Brake Condition</span><select id="brakes"><option>New</option><option>Good</option><option>Worn</option><option>Needs Replacement</option></select></label>
+      <label class="field wear-notes"><span class="label">Other Wear Items (issues?)</span><textarea id="wear" rows="3"></textarea></label>
+    </div>
+  </div>
+
+  <div class="cta"><button id="next" class="btn">Ownership options →</button></div>
 </div>
-<h3 class="card-title">Tell us about your Vehicle</h3>
-<div class="fieldset narrow about"><div class="about-grid">
-<label class="field about__warnings"><span class="label">Any warning lights on dashboard?</span><select id="warnings"><option>No</option><option>Yes</option></select></label>
-<label class="field about__mech"><span class="label">Mechanical issues</span><textarea id="mech" rows="3"></textarea></label>
-<label class="field about__cosmetic"><span class="label">Cosmetic issues</span><textarea id="cosmetic" rows="3"></textarea></label>
-<label class="field about__mods"><span class="label">Aftermarket parts or modifications?</span><textarea id="mods" rows="2"></textarea></label>
-<label class="field about__interior"><span class="label">Interior clean and damage-free?</span><textarea id="interior" rows="2"></textarea></label>
-<label class="field about__smells"><span class="label">Unusual smells?</span><textarea id="smells" rows="2"></textarea></label>
-<label class="field about__service"><span class="label">Routine services up to date?</span><textarea id="service" rows="2"></textarea></label>
-<label class="field about__tire"><span class="label">Tire Condition</span><select id="tires"><option>New</option><option>Good</option><option>Worn</option><option>Needs Replacement</option></select></label>
-<label class="field about__brakes"><span class="label">Brake Condition</span><select id="brakes"><option>New</option><option>Good</option><option>Worn</option><option>Needs Replacement</option></select></label>
-<label class="field about__wearnotes wear-notes"><span class="label">Other Wear Items (issues?)</span><textarea id="wear" rows="3"></textarea></label>
-</div></div>
-<div class="cta"><button id="next" class="btn">Ownership options →</button></div></div>
+
 <script>
-const{save,load,post,track}=window.kiosk,vinEl=document.getElementById("vin"),milesEl=document.getElementById("miles"),condEl=document.getElementById("cond"),yearEl=document.getElementById("year"),makeEl=document.getElementById("make"),modelEl=document.getElementById("model"),trimEl=document.getElementById("trim"),extEl=document.getElementById("extColor"),intEl=document.getElementById("intColor"),keysEl=document.getElementById("keys"),titleEl=document.getElementById("title"),ownersEl=document.getElementById("owners"),accidentEl=document.getElementById("accident"),accidentRepairEl=document.getElementById("accidentRepair"),warningsEl=document.getElementById("warnings"),mechEl=document.getElementById("mech"),cosmeticEl=document.getElementById("cosmetic"),interiorEl=document.getElementById("interior"),modsEl=document.getElementById("mods"),smellsEl=document.getElementById("smells"),serviceEl=document.getElementById("service"),tiresEl=document.getElementById("tires"),brakesEl=document.getElementById("brakes"),wearEl=document.getElementById("wear");let lastBodyClass="",currentRange={low:0,high:0};milesEl.addEventListener("input",()=>{milesEl.value=String(milesEl.value||"").replace(/\D/g,"").slice(0,8)});function clampVIN(e){return String(e||"").toUpperCase().replace(/[IOQ]/g,"").replace(/[^A-Z0-9]/g,"").slice(0,17)}function sendPayload(){const e={vin:vinEl.value||"",miles:milesEl.value||"",condition:condEl.value,year:yearEl.value||"",make:makeEl.value||"",model:modelEl.value||"",trim:trimEl.value||"",exterior:extEl.value||"",interior:intEl.value||"",keys:keysEl.value||"",title:titleEl.value||"",owners:ownersEl.value||"",accident:accidentEl.value||"",accidentRepair:accidentRepairEl.value||"",warnings:warningsEl.value||"",mech:mechEl.value||"",cosmetic:cosmeticEl.value||"",interiorNotes:interiorEl.value||"",mods:modsEl.value||"",smells:smellsEl.value||"",service:serviceEl.value||"",tires:tiresEl.value||"",brakes:brakesEl.value||"",wear:wearEl.value||"",bodyClass:lastBodyClass||"",rangeLow:currentRange.low,rangeHigh:currentRange.high};return save("guided_trade",e),post("trade:update",e),e}!function(){const e=new Date,n=e.getFullYear()+1;let t=['<option value="" selected disabled">Select Year</option>'];for(let a=n;a>=1990;a--)t.push(`<option>${a}</option>`);yearEl.innerHTML=t.join("")}();const WHOLESALE_ANCHORS={SedanCompact:22000,SedanMidsize:28000,SUVCompact:32000,SUVMidsize:42000,SUVFull:56000,PickupHalf:55000,PickupHD:65000,SportsCar:60000,Van:36000,Other:30000};function segmentFromBody(e=""){const n=e.toLowerCase();return n.includes("pickup")&&n.includes("light")?"PickupHalf":n.includes("pickup")&&(n.includes("heavy")||n.includes("3500")||n.includes("hd"))?"PickupHD":n.includes("sport utility")||n.includes("suv")?n.includes("small")||n.includes("compact")?"SUVCompact":n.includes("full")?"SUVFull":"SUVMidsize":n.includes("van")?"Van":n.includes("coupe")||n.includes("convertible")||n.includes("roadster")||n.includes("sport")?"SportsCar":n.includes("sedan")?n.includes("mid")||n.includes("large")?"SedanMidsize":"SedanCompact":"Other"}const COND_MULTI={Excellent:1.05,Good:1,Average:.93,Rough:.85};function mileageMultiplier(e){const n=Number(e||0),t=(n-1e5)/1e4;let a=1+(t>0?-.025*t:.02*Math.abs(t));return Math.max(.6,Math.min(1.15,a))}function ageMultiplier(e){if(e<=1)return.78;const n=.78*Math.pow(.83,e-1);return Math.max(.1,n)}function wholesaleEstimate({year:e,bodyClass:n,miles:t,condition:a}){const r=segmentFromBody(n),o=WHOLESALE_ANCHORS[r]||WHOLESALE_ANCHORS.Other,s=new Date().getFullYear(),i=Math.max(0,s-Number(e||s)),l=COND_MULTI[a]||COND_MULTI.Average;let c=o*ageMultiplier(i)*mileageMultiplier(t)*l;return c*=.72,c=Math.min(1e5,Math.max(900,c)),{low:Math.round(c-Math.max(500,.12*c)),high:Math.round(c+Math.max(500,.12*c)),seg:r}}function recomputeSilent(){currentRange=wholesaleEstimate({year:yearEl.value,bodyClass:lastBodyClass,miles:milesEl.value,condition:condEl.value}),sendPayload()}async function decodeVIN(e){const n=clampVIN(e);if(vinEl.value=n,17!==n.length)return;try{const e=`https://vpic.nhtsa.dot.gov/api/vehicles/decodevinvaluesextended/${encodeURIComponent(n)}?format=json`,t=await fetch(e),a=await t.json(),r=a.Results&&a.Results[0]||{};r.ModelYear&&(yearEl.value=r.ModelYear),r.Make&&(makeEl.value=r.Make),r.Model&&(modelEl.value=r.Model);const o=r.Trim||r.Series||"";o&&(trimEl.value=o),lastBodyClass=r.BodyClass||"",recomputeSilent()}catch(e){console.warn("VPIC decode failed",e)}}vinEl.addEventListener("input",e=>{const n=clampVIN(e.target.value);n!==e.target.value&&(e.target.value=n),17===n.length&&decodeVIN(n),sendPayload()}),[milesEl,condEl,yearEl,makeEl,modelEl,trimEl,extEl,intEl,keysEl,titleEl,ownersEl,accidentEl,accidentRepairEl,warningsEl,mechEl,cosmeticEl,interiorEl,modsEl,smellsEl,serviceEl,tiresEl,brakesEl,wearEl].forEach(e=>e.addEventListener("input",recomputeSilent)),function(){const e=load("guided_trade",null);e&&(vinEl.value=e.vin||"",milesEl.value=e.miles||"",condEl.value=e.condition||"Average",yearEl.value=e.year||"",makeEl.value=e.make||"",modelEl.value=e.model||"",trimEl.value=e.trim||"",extEl.value=e.exterior||"",intEl.value=e.interior||"",keysEl.value=e.keys||"",titleEl.value=e.title||"Clean / I have Title",ownersEl.value=e.owners||"",accidentEl.value=e.accident||"No",accidentRepairEl.value=e.accidentRepair||"",warningsEl.value=e.warnings||"No",mechEl.value=e.mech||"",cosmeticEl.value=e.cosmetic||"",interiorEl.value=e.interiorNotes||"",modsEl.value=e.mods||"",smellsEl.value=e.smells||"",serviceEl.value=e.service||"",tiresEl.value=e.tires||"New",brakesEl.value=e.brakes||"New",wearEl.value=e.wear||"",lastBodyClass=e.bodyClass||""),vinEl.value&&17===vinEl.value.length&&decodeVIN(vinEl.value),recomputeSilent()}(),function(){const e=window.location.origin;function n(){const n=Math.max(document.documentElement.scrollHeight,document.body.scrollHeight);window.parent?.postMessage({type:"trade:height",payload:{height:n}},e)}window.addEventListener("load",n),"ResizeObserver"in window?new ResizeObserver(n).observe(document.documentElement):(setInterval(n,600),window.addEventListener("resize",n)),document.addEventListener("input",n,!0)}(),document.getElementById("next").addEventListener("click",()=>{const e=sendPayload();track?.("guided_trade_next"),post("trade:done",e)});
-</script></body></html>
+  const {save,load,post,track}=window.kiosk;
+  const $=id=>document.getElementById(id);
+  const vinEl=$("vin"),milesEl=$("miles"),condEl=$("cond"),yearEl=$("year"),makeEl=$("make"),modelEl=$("model"),
+        trimEl=$("trim"),extEl=$("extColor"),intEl=$("intColor"),keysEl=$("keys"),titleEl=$("title"),
+        ownersEl=$("owners"),accidentEl=$("accident"),accidentRepairEl=$("accidentRepair"),
+        warningsEl=$("warnings"),mechEl=$("mech"),cosmeticEl=$("cosmetic"),interiorEl=$("interior"),
+        modsEl=$("mods"),smellsEl=$("smells"),serviceEl=$("service"),tiresEl=$("tires"),brakesEl=$("brakes"),wearEl=$("wear");
+
+  let lastBodyClass="",range={low:0,high:0};
+
+  milesEl.addEventListener("input",()=>milesEl.value=String(milesEl.value||"").replace(/\D/g,"").slice(0,8));
+  const clampVIN=v=>String(v||"").toUpperCase().replace(/[IOQ]/g,"").replace(/[^A-Z0-9]/g,"").slice(0,17);
+
+  const send=()=>{
+    const p={vin:vinEl.value||"",miles:milesEl.value||"",condition:condEl.value,year:yearEl.value||"",make:makeEl.value||"",
+      model:modelEl.value||"",trim:trimEl.value||"",exterior:extEl.value||"",interior:intEl.value||"",keys:keysEl.value||"",
+      title:titleEl.value||"",owners:ownersEl.value||"",accident:accidentEl.value||"",accidentRepair:accidentRepairEl.value||"",
+      warnings:warningsEl.value||"",mech:mechEl.value||"",cosmetic:cosmeticEl.value||"",interiorNotes:interiorEl.value||"",
+      mods:modsEl.value||"",smells:smellsEl.value||"",service:serviceEl.value||"",tires:tiresEl.value||"",brakes:brakesEl.value||"",
+      wear:wearEl.value||"",bodyClass:lastBodyClass||"",rangeLow:range.low,rangeHigh:range.high};
+    save("guided_trade",p); post("trade:update",p); return p;
+  };
+
+  (()=>{
+    const max=new Date().getFullYear()+1,opts=['<option value="" selected disabled">Select Year</option>'];
+    for(let y=max;y>=1990;--y) opts.push(`<option>${y}</option>`);
+    yearEl.innerHTML=opts.join("");
+  })();
+
+  const ANCHORS={SedanCompact:22000,SedanMidsize:28000,SUVCompact:32000,SUVMidsize:42000,SUVFull:56000,PickupHalf:55000,PickupHD:65000,SportsCar:60000,Van:36000,Other:30000};
+  const seg=b=>{const n=(b||"").toLowerCase();return n.includes("pickup")&&n.includes("light")?"PickupHalf":n.includes("pickup")&&(n.includes("heavy")||n.includes("3500")||n.includes("hd"))?"PickupHD":n.includes("suv")||n.includes("sport utility")?(n.includes("compact")?"SUVCompact":n.includes("full")?"SUVFull":"SUVMidsize"):n.includes("van")?"Van":/coupe|convertible|roadster|sport/.test(n)?"SportsCar":n.includes("sedan")?(n.includes("mid")||n.includes("large")?"SedanMidsize":"SedanCompact"):"Other"};
+  const COND={Excellent:1.05,Good:1,Average:.93,Rough:.85};
+  const mMult=m=>{const t=(Number(m||0)-1e5)/1e4;return Math.max(.6,Math.min(1.15,1+(t>0?-.025*t:.02*Math.abs(t))))};
+  const aMult=y=>y<=1?.78:Math.max(.1,.78*Math.pow(.83,y-1));
+  const estimate=({year,bodyClass,miles,condition})=>{
+    const base=ANCHORS[seg(bodyClass)]||ANCHORS.Other,age=Math.max(0,new Date().getFullYear()-Number(year||new Date().getFullYear()));
+    let v=base*aMult(age)*mMult(miles)*(COND[condition]||COND.Average); v*=.72; v=Math.min(1e5,Math.max(900,v));
+    return {low:Math.round(v-Math.max(500,.12*v)),high:Math.round(v+Math.max(500,.12*v))};
+  };
+  const recompute=()=>{range=estimate({year:yearEl.value,bodyClass:lastBodyClass,miles:milesEl.value,condition:condEl.value});send()};
+
+  async function decode(v){
+    const n=clampVIN(v); vinEl.value=n; if(n.length!==17) return;
+    try{
+      const r=await fetch(`https://vpic.nhtsa.dot.gov/api/vehicles/decodevinvaluesextended/${encodeURIComponent(n)}?format=json`).then(r=>r.json());
+      const d=(r.Results&&r.Results[0])||{};
+      if(d.ModelYear) yearEl.value=d.ModelYear; if(d.Make) makeEl.value=d.Make; if(d.Model) modelEl.value=d.Model;
+      if(d.Trim||d.Series) trimEl.value=d.Trim||d.Series; lastBodyClass=d.BodyClass||""; recompute();
+    }catch(_){}
+  }
+
+  vinEl.addEventListener("input",e=>{const n=clampVIN(e.target.value); if(n!==e.target.value) e.target.value=n; if(n.length===17) decode(n); send();});
+  [milesEl,condEl,yearEl,makeEl,modelEl,trimEl,extEl,intEl,keysEl,titleEl,ownersEl,accidentEl,accidentRepairEl,warningsEl,mechEl,cosmeticEl,interiorEl,modsEl,smellsEl,serviceEl,tiresEl,brakesEl,wearEl].forEach(el=>el.addEventListener("input",recompute));
+
+  (()=>{
+    const s=load("guided_trade",null);
+    if(s){vinEl.value=s.vin||"";milesEl.value=s.miles||"";condEl.value=s.condition||"Average";yearEl.value=s.year||"";makeEl.value=s.make||"";modelEl.value=s.model||"";trimEl.value=s.trim||"";extEl.value=s.exterior||"";intEl.value=s.interior||"";keysEl.value=s.keys||"";titleEl.value=s.title||"Clean / I have Title";ownersEl.value=s.owners||"";accidentEl.value=s.accident||"No";accidentRepairEl.value=s.accidentRepair||"";warningsEl.value=s.warnings||"No";mechEl.value=s.mech||"";cosmeticEl.value=s.cosmetic||"";interiorEl.value=s.interiorNotes||"";modsEl.value=s.mods||"";smellsEl.value=s.smells||"";serviceEl.value=s.service||"";tiresEl.value=s.tires||"New";brakesEl.value=s.brakes||"New";wearEl.value=s.wear||"";lastBodyClass=s.bodyClass||"";}
+    if(vinEl.value.length===17) decode(vinEl.value); recompute();
+  })();
+
+  (()=>{
+    const origin=location.origin,resize=()=>{const h=Math.max(document.documentElement.scrollHeight,document.body.scrollHeight);window.parent?.postMessage({type:"trade:height",payload:{height:h}},origin)};
+    addEventListener("load",resize); "ResizeObserver"in window?new ResizeObserver(resize).observe(document.documentElement):(setInterval(resize,600),addEventListener("resize",resize)); document.addEventListener("input",resize,true);
+  })();
+
+  $("next").addEventListener("click",()=>{const p=send();track?.("guided_trade_next");post("trade:done",p)});
+</script>
+</body>
+</html>
