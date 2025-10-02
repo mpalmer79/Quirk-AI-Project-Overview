@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        pkg: [".", "orchestrator", "sandbox", "kiosk-api"]
+        pkg: ["orchestrator", "sandbox", "kiosk-api"]
 
     steps:
       - name: Checkout
