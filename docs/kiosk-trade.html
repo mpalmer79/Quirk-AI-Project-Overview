@@ -14,10 +14,28 @@
   .fieldset{max-width:980px;margin:16px auto;padding:16px;border:1px solid #e5e7eb;border-radius:16px;background:#fff}
   .fieldset.about{border:none;background:transparent;padding-top:0}
   .row{display:grid;gap:12px}.row--2{grid-template-columns:1fr}@media(min-width:860px){.row--2{grid-template-columns:1fr 1fr}}
-  .field{display:flex;flex-direction:column}.label{text-align:center;font-weight:600}
+  .field{display:flex;flex-direction:column;align-items:center}
+  .label{text-align:center;font-weight:600}
+
+  /* Center + specific widths */
   #vin{width:20ch;margin:0 auto;text-transform:uppercase}
   #miles{width:14ch;margin:0 auto}
   #cond{width:16ch;margin:0 auto}
+
+  #year{width:15ch;margin:0 auto}
+  #make{width:17ch;margin:0 auto}
+  #model{width:17ch;margin:0 auto}
+  #trim{width:22ch;margin:0 auto} /* unchanged by request, just reasonable */
+
+  #extColor{width:10ch;margin:0 auto}
+  #intColor{width:10ch;margin:0 auto}
+
+  #keys{width:24ch;margin:0 auto} /* ≈ label length “Number of Keys Included” */
+  #title{width:25ch;margin:0 auto}
+
+  #owners{width:4ch;margin:0 auto}
+  #accident{width:5ch;margin:0 auto}
+
   .sr-only{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0,0,0,0)}
   .about-grid{display:grid;gap:12px;grid-template-columns:1fr}@media(min-width:980px){.about-grid{grid-template-columns:repeat(3,1fr);max-width:980px;margin:0 auto}}
   .wear-notes textarea{min-height:140px}
@@ -29,17 +47,20 @@
   <h3 class="card-title">Vehicle Details</h3>
   <div class="fieldset">
     <div class="row row--2">
-      <label class="field"><span class="label">VIN</span>
+      <label class="field">
+        <span class="label">VIN</span>
         <input id="vin" maxlength="17" placeholder="Enter 17 digit VIN" aria-describedby="vinHint">
         <small id="vinHint" class="sr-only">VIN auto-capitalizes; letters I,O,Q invalid.</small>
       </label>
-      <label class="field"><span class="label">Current Mileage</span>
+      <label class="field">
+        <span class="label">Current Mileage</span>
         <input id="miles" type="number" min="0" step="1" inputmode="numeric" placeholder="e.g., 45,000">
       </label>
     </div>
 
     <div class="row row--2">
-      <label class="field"><span class="label">Condition</span>
+      <label class="field">
+        <span class="label">Condition</span>
         <select id="cond"><option>Average</option><option>Good</option><option>Excellent</option><option>Rough</option></select>
       </label>
       <div aria-hidden="true"></div>
@@ -73,7 +94,7 @@
     </div>
 
     <label class="field"><span class="label">If yes, was it professionally repaired?</span>
-      <textarea id="accidentRepair" rows="3" placeholder="Yes / No / Details"></textarea>
+      <textarea id="accidentRepair" rows="3" placeholder="Yes / No / Details" style="width:100%;max-width:720px"></textarea>
     </label>
   </div>
 
