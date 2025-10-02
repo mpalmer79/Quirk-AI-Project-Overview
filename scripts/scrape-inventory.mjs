@@ -20,7 +20,8 @@ const SRP_PAUSE  = 800;    // ms between SRP pages
 const VDP_PAUSE  = 600;    // ms between VDP fetches
 const MIN_EXPECTED = 20;   // fail run if total vehicles drop below this
 const OUT_PATH   = "sandbox/inventory.json";
-const UA         = "QuirkKioskBot/1.0 (github nightly; contact: webmaster@quirkcars.com)";
+// Use a realistic browser User‑Agent so the site doesn’t block the crawler.
+const UA         = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36";
 
 /* ======== HTTP helpers ======== */
 async function fetchHtml(url, tries = 4) {
@@ -29,7 +30,12 @@ async function fetchHtml(url, tries = 4) {
   for (let i = 0; i < tries; i++) {
     try {
       const res = await request(url, {
-        headers: { "user-agent": UA, "accept": "text/html,application/xhtml+xml" },
+        headers: {
+          // Provide a realistic UA and standard Accept + Accept‑Language headers.
+          "user-agent": UA,
+          "accept": "text/html,application/xhtml+xml",
+          "accept-language": "en-US,en;q=0.9",
+        },
       });
       if (res.statusCode === 304) return ""; // Not used (we don't send cond. headers yet)
       if (res.statusCode < 400) return await res.body.text();
