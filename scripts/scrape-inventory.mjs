@@ -32,16 +32,20 @@ async function fetchHtml(url, tries = 4) {
       const res = await request(url, {
         headers: {
           // Provide a realistic UA and standard Accept + Accept‑Language headers.
-          "user-agent": UA,
-          "accept": "text/html,application/xhtml+xml",
-     
-          "accept-language": "en-US,en;q=0.9",
-        "referer": BASE,
+          "        "user-agent": UA,
+        "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+        "accept-language": "en-US,en;q=0.9",
+        "accept-encoding": "gzip, deflate, br",
+        "cache-control": "max-age=0",
+        "upgrade-insecure-requests": "1",
         "sec-fetch-site": "same-origin",
         "sec-fetch-mode": "navigate",
+        "sec-fetch-user": "?1",
         "sec-fetch-dest": "document",
-        "upgrade-insecure-requests": "1",
-      });
+        "sec-ch-ua": "\"Chromium\";v=\"124\", \"Not-A.Brand\";v=\"99\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\"",
+        "referer": BASE
       if (res.statusCode === 304) return ""; // Not used (we don't send cond. headers yet)
       if (res.statusCode < 400) return await res.body.text();
       if (res.statusCode === 404) throw new Error(`404 ${url}`);
