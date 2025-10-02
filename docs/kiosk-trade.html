@@ -25,16 +25,21 @@
   #year{width:15ch;margin:0 auto}
   #make{width:17ch;margin:0 auto}
   #model{width:17ch;margin:0 auto}
-  #trim{width:22ch;margin:0 auto} /* unchanged by request, just reasonable */
+  #trim{width:22ch;margin:0 auto}
 
   #extColor{width:10ch;margin:0 auto}
   #intColor{width:10ch;margin:0 auto}
 
-  #keys{width:24ch;margin:0 auto} /* ≈ label length “Number of Keys Included” */
+  #keys{width:24ch;margin:0 auto}
   #title{width:25ch;margin:0 auto}
 
   #owners{width:4ch;margin:0 auto}
   #accident{width:5ch;margin:0 auto}
+
+  /* Placeholder gray for Title Status until valid selection */
+  .sel:invalid{ color:#94a3b8; }                /* slate-400 */
+  .sel option{ color:#0f172a; }                 /* black/slate-900 for dropdown options */
+  .sel option[disabled]{ color:#94a3b8; }       /* placeholder in list if visible */
 
   .sr-only{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0,0,0,0)}
   .about-grid{display:grid;gap:12px;grid-template-columns:1fr}@media(min-width:980px){.about-grid{grid-template-columns:repeat(3,1fr);max-width:980px;margin:0 auto}}
@@ -84,13 +89,22 @@
     <div class="row row--2">
       <label class="field"><span class="label">Number of Keys Included</span><input id="keys" type="number" min="0" max="10"></label>
       <label class="field"><span class="label">Title Status</span>
-        <select id="title"><option>Clean / I have Title</option><option>Lien</option><option>Rebuilt</option><option>Salvage</option></select>
+        <!-- required + placeholder option keeps gray until user chooses -->
+        <select id="title" class="sel" required>
+          <option value="" disabled selected>Clean / I have Title</option>
+          <option value="Clean / I have Title">Clean / I have Title</option>
+          <option value="Lien">Lien</option>
+          <option value="Rebuilt">Rebuilt</option>
+          <option value="Salvage">Salvage</option>
+        </select>
       </label>
     </div>
 
     <div class="row row--2">
       <label class="field"><span class="label">Number of Owners (estimate OK)</span><input id="owners" type="number" min="0" max="20"></label>
-      <label class="field"><span class="label">Has the vehicle ever been in an accident?</span><select id="accident"><option>No</option><option>Yes</option></select></label>
+      <label class="field"><span class="label">Has the vehicle ever been in an accident?</span>
+        <select id="accident"><option>No</option><option>Yes</option></select>
+      </label>
     </div>
 
     <label class="field"><span class="label">If yes, was it professionally repaired?</span>
@@ -132,9 +146,10 @@
   const clampVIN=v=>String(v||"").toUpperCase().replace(/[IOQ]/g,"").replace(/[^A-Z0-9]/g,"").slice(0,17);
 
   const send=()=>{
+    const titleVal = titleEl.value || ""; // keep placeholder semantics if not chosen
     const p={vin:vinEl.value||"",miles:milesEl.value||"",condition:condEl.value,year:yearEl.value||"",make:makeEl.value||"",
       model:modelEl.value||"",trim:trimEl.value||"",exterior:extEl.value||"",interior:intEl.value||"",keys:keysEl.value||"",
-      title:titleEl.value||"",owners:ownersEl.value||"",accident:accidentEl.value||"",accidentRepair:accidentRepairEl.value||"",
+      title:titleVal,owners:ownersEl.value||"",accident:accidentEl.value||"",accidentRepair:accidentRepairEl.value||"",
       warnings:warningsEl.value||"",mech:mechEl.value||"",cosmetic:cosmeticEl.value||"",interiorNotes:interiorEl.value||"",
       mods:modsEl.value||"",smells:smellsEl.value||"",service:serviceEl.value||"",tires:tiresEl.value||"",brakes:brakesEl.value||"",
       wear:wearEl.value||"",bodyClass:lastBodyClass||"",rangeLow:range.low,rangeHigh:range.high};
@@ -174,7 +189,17 @@
 
   (()=>{
     const s=load("guided_trade",null);
-    if(s){vinEl.value=s.vin||"";milesEl.value=s.miles||"";condEl.value=s.condition||"Average";yearEl.value=s.year||"";makeEl.value=s.make||"";modelEl.value=s.model||"";trimEl.value=s.trim||"";extEl.value=s.exterior||"";intEl.value=s.interior||"";keysEl.value=s.keys||"";titleEl.value=s.title||"Clean / I have Title";ownersEl.value=s.owners||"";accidentEl.value=s.accident||"No";accidentRepairEl.value=s.accidentRepair||"";warningsEl.value=s.warnings||"No";mechEl.value=s.mech||"";cosmeticEl.value=s.cosmetic||"";interiorEl.value=s.interiorNotes||"";modsEl.value=s.mods||"";smellsEl.value=s.smells||"";serviceEl.value=s.service||"";tiresEl.value=s.tires||"New";brakesEl.value=s.brakes||"New";wearEl.value=s.wear||"";lastBodyClass=s.bodyClass||"";}
+    if(s){
+      vinEl.value=s.vin||""; milesEl.value=s.miles||""; condEl.value=s.condition||"Average";
+      yearEl.value=s.year||""; makeEl.value=s.make||""; modelEl.value=s.model||""; trimEl.value=s.trim||"";
+      extEl.value=s.exterior||""; intEl.value=s.interior||""; keysEl.value=s.keys||"";
+      titleEl.value=s.title||""; /* keep placeholder if not chosen */
+      ownersEl.value=s.owners||""; accidentEl.value=s.accident||"No"; accidentRepairEl.value=s.accidentRepair||"";
+      warningsEl.value=s.warnings||"No"; mechEl.value=s.mech||""; cosmeticEl.value=s.cosmetic||"";
+      interiorEl.value=s.interiorNotes||""; modsEl.value=s.mods||""; smellsEl.value=s.smells||"";
+      serviceEl.value=s.service||""; tiresEl.value=s.tires||"New"; brakesEl.value=s.brakes||"New";
+      wearEl.value=s.wear||""; lastBodyClass=s.bodyClass||"";
+    }
     if(vinEl.value.length===17) decode(vinEl.value); recompute();
   })();
 
