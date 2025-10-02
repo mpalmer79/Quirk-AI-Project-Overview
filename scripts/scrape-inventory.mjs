@@ -34,8 +34,13 @@ async function fetchHtml(url, tries = 4) {
           // Provide a realistic UA and standard Accept + Accept‑Language headers.
           "user-agent": UA,
           "accept": "text/html,application/xhtml+xml",
+     
           "accept-language": "en-US,en;q=0.9",
-        },
+        "referer": BASE,
+        "sec-fetch-site": "same-origin",
+        "sec-fetch-mode": "navigate",
+        "sec-fetch-dest": "document",
+        "upgrade-insecure-requests": "1",
       });
       if (res.statusCode === 304) return ""; // Not used (we don't send cond. headers yet)
       if (res.statusCode < 400) return await res.body.text();
@@ -242,10 +247,19 @@ function stableStringify(obj) {
 
 /* ======== Main ======== */
 (async () => {
-  const [newInv, usedInv] = await Promise.all([
-    buildInventoryFrom(SRP_NEW, "New"),
-    buildInventoryFrom(SRP_USED, "Used"),
-  ]);
+   let newInv = [];
+  let usedInv = [];
+  try {
+    [newInv, usedInv] = await Promise.all([
+      buildInventoryFrom(SRP_NEW, "New"),
+      buildInventoryFrom(SRP_USED, "Used"),
+    ]);
+  } catch (err) {
+    console.error('Scrape failed:', err);
+    const fallback = parseSampleCSV();
+    newInv = fallback.filter(v => String(v.stockType || v.stockType).toLowerCase() === 'new');
+    usedInv = fallback.filter(v => String(v.stockType || v.stockType).toLowerCase() === 'used');
+  }
 
   // Dedupe VINs (prefer New over Used if collision)
   const byVin = new Map();
