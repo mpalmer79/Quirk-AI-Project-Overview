@@ -1,107 +1,143 @@
-// Nightly scraper for Quirk Chevy NH inventory -> sandbox/inventory.json
-// Strategy: crawl SRP pages, collect VDP URLs, parse JSON-LD on each VDP,
-// map to kiosk schema. Be polite and resilient.
+// Nightly scraper for Quirk Chevy NH -> sandbox/inventory.json
+// - Crawls New + Used SRPs, follows pagination (cap MAX_PAGES)
+// - Extracts VDP URLs from JSON blobs or anchors
+// - Parses JSON-LD/metadata/text on each VDP
+// - Retries with backoff, polite delays, validation, dedupe by VIN
+// - Writes sandbox/inventory.json only if changed
 
-import { writeFileSync } from "node:fs";
-import { readFileSync, existsSync } from "node:fs";
+import { writeFileSync, readFileSync, existsSync } from "node:fs";
 import { setTimeout as sleep } from "node:timers/promises";
 import * as cheerio from "cheerio";
 import { request } from "undici";
 import { URL } from "node:url";
 
-const BASE = "https://www.quirkchevynh.com";
-const SRP_START = `${BASE}/new-vehicles/`;          // you can add used later
-const UA = "QuirkKioskBot/1.0 (+https://quirkchevynh.com)";
+/* ======== CONFIG: tune these, no code changes below required ======== */
+const BASE       = "https://www.quirkchevynh.com";
+const SRP_NEW    = `${BASE}/new-vehicles/`;
+const SRP_USED   = `${BASE}/used-vehicles/`;
+const MAX_PAGES  = 20;     // SRP pagination hard stop
+const SRP_PAUSE  = 800;    // ms between SRP pages
+const VDP_PAUSE  = 600;    // ms between VDP fetches
+const MIN_EXPECTED = 20;   // fail run if total vehicles drop below this
+const OUT_PATH   = "sandbox/inventory.json";
+const UA         = "QuirkKioskBot/1.0 (github nightly; contact: webmaster@quirkcars.com)";
 
-async function fetchHtml(url) {
-  const res = await request(url, {
-    headers: { "user-agent": UA, "accept": "text/html,application/xhtml+xml" },
-  });
-  if (res.statusCode >= 400) throw new Error(`HTTP ${res.statusCode} for ${url}`);
-  return await res.body.text();
+/* ======== HTTP helpers ======== */
+async function fetchHtml(url, tries = 4) {
+  let delay = 500;
+  let lastErr;
+  for (let i = 0; i < tries; i++) {
+    try {
+      const res = await request(url, {
+        headers: { "user-agent": UA, "accept": "text/html,application/xhtml+xml" },
+      });
+      if (res.statusCode === 304) return ""; // Not used (we don't send cond. headers yet)
+      if (res.statusCode < 400) return await res.body.text();
+      if (res.statusCode === 404) throw new Error(`404 ${url}`);
+      lastErr = new Error(`HTTP ${res.statusCode} for ${url}`);
+    } catch (e) {
+      lastErr = e;
+    }
+    await sleep(delay);
+    delay *= 2;
+  }
+  throw lastErr || new Error(`Failed after retries: ${url}`);
 }
 
-// robots.txt check (simple allow for SRP path)
 async function robotsAllows(urlStr) {
   try {
-    const robots = await fetchHtml(`${BASE}/robots.txt`);
+    const robots = await fetchHtml(`${BASE}/robots.txt`, 1);
     const disallows = robots
       .split("\n")
-      .filter(l => /^Disallow:/i.test(l))
-      .map(l => l.split(":")[1].trim());
+      .filter((l) => /^Disallow:/i.test(l))
+      .map((l) => l.split(":")[1]?.trim())
+      .filter(Boolean);
     const path = new URL(urlStr).pathname;
-    return !disallows.some(rule => rule && path.startsWith(rule));
+    return !disallows.some((rule) => rule && path.startsWith(rule));
   } catch {
-    // If robots unreachable, fail closed or proceed; here we proceed cautiously.
+    // If robots is unreachable, proceed cautiously.
     return true;
   }
 }
 
-// Collect all VDP links from SRP (following pagination)
+/* ======== SRP helpers ======== */
+function extractJsonBlobs($) {
+  const blobs = [];
+  $('script[type="application/json"], script[type="application/ld+json"]').each((_, el) => {
+    const t = $(el).contents().text();
+    try {
+      const j = JSON.parse(t);
+      blobs.push(j);
+    } catch {}
+  });
+  return blobs;
+}
+
+function urlsFromBlob(blob) {
+  // Conservative: fish out any /vehicle URLs in JSON
+  const asText = JSON.stringify(blob);
+  const matches = asText.match(/https?:\/\/[^"']+\/vehicle[^"']+/g) || [];
+  return matches;
+}
+
 async function collectVDPLinks(startUrl) {
-  const seen = new Set();
+  const seenPages = new Set();
   const vdp = new Set();
   let next = startUrl;
   let page = 1;
 
-  while (next && page <= 20) { // hard stop to avoid runaway
+  while (next && page <= MAX_PAGES) {
     if (!(await robotsAllows(next))) throw new Error(`Blocked by robots: ${next}`);
     const html = await fetchHtml(next);
     const $ = cheerio.load(html);
 
-    // Collect vehicle detail links – conservative patterns:
+    // 1) Try JSON blobs first
+    const blobs = extractJsonBlobs($);
+    for (const blob of blobs) urlsFromBlob(blob).forEach((u) => vdp.add(u));
+
+    // 2) Fallback: scan anchors
     $("a[href]").each((_, el) => {
       const href = $(el).attr("href");
       if (!href) return;
       const abs = new URL(href, BASE).toString();
-
-      // Heuristics: VDPs usually not paginated list URLs and not filters.
-      if (abs.includes("/vehicle") || /\/new-vehicles\/[^?]+\/.+/.test(abs)) {
-        vdp.add(abs);
-      }
+      if (abs.includes("/vehicle")) vdp.add(abs);
     });
 
-    // Find pagination "next" (rel or text)
-    let nextHref = $('a[rel="next"]').attr("href");
-    if (!nextHref) {
-      nextHref = $('a:contains("Next")').attr("href");
-    }
+    // Find Next page
+    let nextHref = $('a[rel="next"]').attr("href") || $('a:contains("Next")').attr("href");
     if (!nextHref) break;
-
     const absNext = new URL(nextHref, BASE).toString();
-    if (seen.has(absNext)) break;
-    seen.add(absNext);
+    if (seenPages.has(absNext)) break;
+    seenPages.add(absNext);
     next = absNext;
     page += 1;
 
-    await sleep(800); // politeness delay
+    await sleep(SRP_PAUSE);
   }
 
   return Array.from(vdp);
 }
 
-// Parse JSON-LD Vehicle/Product on a VDP, with fallbacks
+/* ======== VDP parsing ======== */
 function parseVehicleFromVDP(html, vdpUrl) {
   const $ = cheerio.load(html);
-  const scripts = $('script[type="application/ld+json"]');
-  let dataBlocks = [];
-
-  scripts.each((_, el) => {
+  // gather all JSON-LD blocks
+  const dataBlocks = [];
+  $('script[type="application/ld+json"]').each((_, el) => {
     try {
       const text = $(el).contents().text().trim();
       if (!text) return;
       const parsed = JSON.parse(text);
-      if (Array.isArray(parsed)) dataBlocks.push(...parsed);
-      else dataBlocks.push(parsed);
+      Array.isArray(parsed) ? dataBlocks.push(...parsed) : dataBlocks.push(parsed);
     } catch {}
   });
 
-  // Pick the best block
-  const ld = dataBlocks.find(d => d["@type"] === "Vehicle") ||
-             dataBlocks.find(d => d["@type"] === "Product") ||
-             dataBlocks.find(d => d["@type"] && /Vehicle|Product/i.test(String(d["@type"])));
+  // select a likely block
+  const ld =
+    dataBlocks.find((d) => d["@type"] === "Vehicle") ||
+    dataBlocks.find((d) => d["@type"] === "Product") ||
+    dataBlocks.find((d) => d["@type"] && /Vehicle|Product/i.test(String(d["@type"])));
 
-  // Extract common fields
   let vin = "";
   let year = "";
   let make = "";
@@ -111,31 +147,29 @@ function parseVehicleFromVDP(html, vdpUrl) {
   let photo = $('meta[property="og:image"]').attr("content") || "";
 
   if (ld) {
-    // Vehicle fields (schema)
     vin = ld.vin || ld.sku || ld.mpn || "";
     const brand = (ld.brand && (ld.brand.name || ld.brand)) || "";
     const name = ld.name || "";
-    // Try to parse year/make/model/trim from name if needed
-    const tokens = name.split(/\s+/);
+    // Try to infer year/make/model/trim from name if not explicit
+    const tokens = (name || "").trim().split(/\s+/);
     const maybeYear = tokens[0] && /^\d{4}$/.test(tokens[0]) ? tokens[0] : "";
     year = ld.modelDate || ld.productionDate || maybeYear || "";
+
     make = String(brand || (tokens[1] || "")).trim();
-    // Model/Trim guesses from name fallback
     if (tokens.length >= 3) {
       model = tokens[2] || "";
       trim = tokens.slice(3).join(" ");
     }
-    // Offers
+
+    // Offers block for price
     const offer = Array.isArray(ld.offers) ? ld.offers[0] : ld.offers;
     if (offer && (offer.price || offer.priceSpecification?.price)) {
       price = Number(offer.price || offer.priceSpecification?.price || 0);
     }
-    if (ld.image && !photo) {
-      photo = Array.isArray(ld.image) ? ld.image[0] : ld.image;
-    }
+    if (ld.image && !photo) photo = Array.isArray(ld.image) ? ld.image[0] : ld.image;
   }
 
-  // Fallbacks from page text if needed
+  // Fallbacks (best-effort)
   if (!vin) {
     const text = $("body").text();
     const m = text.match(/\bVIN[:\s]*([A-HJ-NPR-Z0-9]{11,17})\b/i);
@@ -146,7 +180,8 @@ function parseVehicleFromVDP(html, vdpUrl) {
     if (m) year = m[1];
   }
 
-  const stockType = vdpUrl.includes("/used-") || /used/i.test($("body").text()) ? "Used" : "New";
+  // Stock type guess
+  const stockType = /\/used-/.test(vdpUrl) || /used/i.test($("body").text()) ? "Used" : "New";
 
   return {
     vin: vin || "",
@@ -157,56 +192,104 @@ function parseVehicleFromVDP(html, vdpUrl) {
     price: Number(price) || 0,
     stockType,
     photo: photo || "",
-    vdp: vdpUrl
+    vdp: vdpUrl,
   };
 }
 
-async function buildInventory() {
-  const vdpUrls = await collectVDPLinks(SRP_START);
-
+/* ======== Builders ======== */
+async function buildInventoryFrom(startUrl, forcedStockType) {
+  const vdpUrls = await collectVDPLinks(startUrl);
   const out = [];
-  for (const [i, url] of vdpUrls.entries()) {
+  for (const url of vdpUrls) {
     try {
       if (!(await robotsAllows(url))) continue;
       const html = await fetchHtml(url);
       const v = parseVehicleFromVDP(html, url);
-
-      // Minimal validity: need VIN and price>0 (relax as needed)
+      if (forcedStockType) v.stockType = forcedStockType;
+      // Minimal validity gate; relax/tighten as desired:
       if (v.vin && (v.price > 0 || v.stockType === "New")) {
         out.push(v);
       }
-      await sleep(600); // politeness
+      await sleep(VDP_PAUSE);
     } catch (e) {
-      // continue on errors
+      // keep going on individual errors
     }
   }
+  return out;
+}
 
-  // Deduplicate by VIN
-  const byVin = new Map();
-  for (const v of out) {
-    if (!byVin.has(v.vin)) byVin.set(v.vin, v);
+function validateInventory(arr) {
+  const errs = [];
+  for (const v of arr) {
+    if (!/^[A-HJ-NPR-Z0-9]{11,17}$/.test(String(v.vin))) errs.push(`Bad VIN: ${v.vin}`);
+    if (!v.year || String(v.year).length < 4) errs.push(`Bad year for VIN ${v.vin}`);
+    if (!v.make || !v.model) errs.push(`Missing make/model for VIN ${v.vin}`);
+    if (v.stockType !== "New" && v.stockType !== "Used") errs.push(`Bad stockType ${v.stockType} (${v.vin})`);
+    if (v.price && Number.isNaN(Number(v.price))) errs.push(`Bad price for VIN ${v.vin}`);
   }
-  return Array.from(byVin.values());
+  return errs;
 }
 
 function stableStringify(obj) {
   return JSON.stringify(obj, null, 2) + "\n";
 }
 
+/* ======== Main ======== */
 (async () => {
-  const inventory = await buildInventory();
+  const [newInv, usedInv] = await Promise.all([
+    buildInventoryFrom(SRP_NEW, "New"),
+    buildInventoryFrom(SRP_USED, "Used"),
+  ]);
 
-  const path = "sandbox/inventory.json";
-  const newBody = stableStringify(inventory);
+  // Dedupe VINs (prefer New over Used if collision)
+  const byVin = new Map();
+  [...newInv, ...usedInv].forEach((v) => {
+    if (!byVin.has(v.vin) || byVin.get(v.vin).stockType === "Used") byVin.set(v.vin, v);
+  });
+  const inv = Array.from(byVin.values());
 
-  let oldBody = "";
-  if (existsSync(path)) {
-    try { oldBody = readFileSync(path, "utf8"); } catch {}
+  // Validate and filter if necessary (don’t fail on small bad subset)
+  const errs = validateInventory(inv);
+  if (errs.length) {
+    console.error(`Validation warnings (${errs.length}), showing first 20:\n` + errs.slice(0, 20).join("\n"));
+  }
+  const clean = inv.filter(
+    (v) =>
+      /^[A-HJ-NPR-Z0-9]{11,17}$/.test(String(v.vin)) &&
+      v.year &&
+      v.make &&
+      v.model &&
+      (v.stockType === "New" || v.stockType === "Used")
+  );
+
+  // Guardrail: fail run if suspiciously low
+  if (clean.length < MIN_EXPECTED) {
+    console.error(`Too few vehicles: ${clean.length} < ${MIN_EXPECTED}`);
+    process.exit(2);
   }
 
+  // Diff summary vs. prior file
+  let oldInv = [];
+  if (existsSync(OUT_PATH)) {
+    try {
+      oldInv = JSON.parse(readFileSync(OUT_PATH, "utf8"));
+    } catch {}
+  }
+  const oldVIN = new Set(oldInv.map((v) => v.vin));
+  const newVIN = new Set(clean.map((v) => v.vin));
+  const added = [...newVIN].filter((v) => !oldVIN.has(v));
+  const removed = [...oldVIN].filter((v) => !newVIN.has(v));
+
+  console.log(`Vehicles: ${clean.length} (added ${added.length}, removed ${removed.length})`);
+  if (added.length) console.log("Added VINs:", added.slice(0, 10).join(", "), added.length > 10 ? "..." : "");
+  if (removed.length) console.log("Removed VINs:", removed.slice(0, 10).join(", "), removed.length > 10 ? "..." : "");
+
+  // Write only if changed
+  const newBody = stableStringify(clean);
+  const oldBody = existsSync(OUT_PATH) ? readFileSync(OUT_PATH, "utf8") : "";
   if (newBody !== oldBody) {
-    writeFileSync(path, newBody, "utf8");
-    console.log(`Wrote ${inventory.length} vehicles to ${path}`);
+    writeFileSync(OUT_PATH, newBody, "utf8");
+    console.log(`Wrote ${clean.length} vehicles to ${OUT_PATH}`);
   } else {
     console.log("No change in inventory.");
   }
