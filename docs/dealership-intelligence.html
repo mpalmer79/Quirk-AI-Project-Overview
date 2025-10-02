@@ -10,15 +10,24 @@
 
 <!-- Page-scoped, kept tiny -->
 <style>
-  .lead{margin:18px 0 6px;color:#475569;font-size:1.05rem}
-  .pill-row{margin:12px 0 0;display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
-  .center-cards .card h3{text-align:center}
-  .alerts{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
-  .alerts .after-hours{grid-column:1/-1;max-width:560px;justify-self:center}
-  .table-wrap{overflow-x:auto}
-  table{width:100%;border-collapse:collapse;background:#fff;border:1px solid #e5e7eb;border-radius:12px}
-  th,td{padding:12px;border-bottom:1px solid #e5e7eb;text-align:left}
-  th{width:240px;color:#0f172a;background:#f9fafb}
+  .center { text-align:center }
+  .lead { margin:18px 0 6px; color:#475569; font-size:1.05rem }
+  .pill-row { margin:12px 0 0; display:flex; flex-wrap:wrap; gap:10px; justify-content:center }
+  .alerts { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px }
+  .alerts .after-hours { grid-column:1/-1; max-width:560px; justify-self:center }
+  .table-wrap { overflow-x:auto }
+  table { width:100%; border-collapse:collapse; background:#fff; border:1px solid #e5e7eb; border-radius:12px }
+  th,td { padding:12px; border-bottom:1px solid #e5e7eb; text-align:left }
+  th[scope="row"] { width:240px; color:#0f172a; background:#f9fafb }
+  /* Treat tiles as articles, not links */
+  .feature-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px }
+  .library-card { display:block; background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:14px; box-shadow:0 1px 6px rgba(0,0,0,.04) }
+  .library-card .title { display:block; font-weight:700; color:#0f172a; margin-bottom:6px }
+  .library-card .meta { display:block; color:#475569; font-size:.95rem }
+  .compliance-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:14px }
+  .compliance-item { background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:12px; text-align:center }
+  .compliance-number { font-size:1.6rem; font-weight:800; color:#0f172a; margin:0 }
+  .compliance-label { color:#475569; margin:4px 0 0 }
 </style>
 </head>
 <body>
@@ -54,39 +63,40 @@
 
   <!-- System Overview -->
   <section class="section">
-    <h2 class="section-title" style="text-align:center">System Overview</h2>
-    <div class="feature-grid center-cards" aria-label="System overview highlights">
-      <a class="library-card" href="#">
+    <h2 class="section-title center">System Overview</h2>
+    <div class="feature-grid" aria-label="System overview highlights">
+      <div class="library-card" role="article" aria-label="100+ IP Cameras Network Capable">
         <span class="title">100+ IP Cameras Network Capable</span>
         <span class="meta">Coverage across entrances, sales areas, service, and showroom with area-based monitoring.</span>
-      </a>
-      <a class="library-card" href="#">
+      </div>
+      <div class="library-card" role="article" aria-label="Biometric Integration">
         <span class="title">Biometric Integration</span>
         <span class="meta">Sync with fingerprint time clocks to cross-reference attendance data.</span>
-      </a>
-      <a class="library-card" href="#">
+      </div>
+      <div class="library-card" role="article" aria-label="Department-Based Access">
         <span class="title">Department-Based Access</span>
         <span class="meta">Role-specific area permissions for Sales, Service, Management.</span>
-      </a>
-      <a class="library-card" href="#">
+      </div>
+      <div class="library-card" role="article" aria-label="Automotive Compliance">
         <span class="title">Automotive Compliance</span>
         <span class="meta">30-day retention, admin audit trails, and industry-grade security.</span>
-      </a>
+      </div>
     </div>
   </section>
 
   <!-- Technical Specifications -->
   <section class="section">
-    <h2 class="section-title" style="text-align:center">Technical Specifications</h2>
+    <h2 class="section-title center">Technical Specifications</h2>
     <div class="table-wrap" role="region" aria-label="Specifications table">
       <table>
+        <caption class="sr-only">Workplace Verification System Specifications</caption>
         <tbody>
-          <tr><th>Camera Coverage</th><td>100 IP cameras across dealership areas</td></tr>
-          <tr><th>Employee Capacity</th><td>150+ employees supported</td></tr>
-          <tr><th>Operating Hours</th><td>Mon–Thu 7AM–8PM, Fri–Sat 7AM–6PM, Sun 10AM–5PM (Sales)</td></tr>
-          <tr><th>Data Retention</th><td>30 days automatic cleanup</td></tr>
-          <tr><th>Platform</th><td>Windows-compatible with SQLite database</td></tr>
-          <tr><th>Integration</th><td>Biometric time clock sync capability</td></tr>
+          <tr><th scope="row">Camera Coverage</th><td>100 IP cameras across dealership areas</td></tr>
+          <tr><th scope="row">Employee Capacity</th><td>150+ employees supported</td></tr>
+          <tr><th scope="row">Operating Hours</th><td>Mon–Thu 7AM–8PM, Fri–Sat 7AM–6PM, Sun 10AM–5PM (Sales)</td></tr>
+          <tr><th scope="row">Data Retention</th><td>30 days automatic cleanup</td></tr>
+          <tr><th scope="row">Platform</th><td>Windows-compatible with SQLite database</td></tr>
+          <tr><th scope="row">Integration</th><td>Biometric time clock sync capability</td></tr>
         </tbody>
       </table>
     </div>
@@ -94,7 +104,7 @@
 
   <!-- Monitored Areas -->
   <section class="section">
-    <h2 class="section-title" style="text-align:center">Monitored Areas</h2>
+    <h2 class="section-title center">Monitored Areas</h2>
     <div class="compliance-grid" aria-label="Monitored area counts">
       <div class="compliance-item">
         <p class="compliance-number">28</p><p class="compliance-label">Entrance Cameras</p>
@@ -113,8 +123,8 @@
 
   <!-- Intelligent Alert System -->
   <section class="section">
-    <h2 class="section-title" style="text-align:center">Intelligent Alert System</h2>
-    <p class="muted" style="text-align:center">If/then logic provides contextual alerts based on employee status, location, and time.</p>
+    <h2 class="section-title center">Intelligent Alert System</h2>
+    <p class="muted center">If/then logic provides contextual alerts based on employee status, location, and time.</p>
     <div class="alerts" aria-label="Alert types">
       <div class="library-card"><span class="title">Verified Presence</span><span class="meta">Clocked in + detected in appropriate area → verification logged.</span></div>
       <div class="library-card"><span class="title">Unauthorized Area</span><span class="meta">Department mismatch (e.g., Sales in Service) triggers alert.</span></div>
