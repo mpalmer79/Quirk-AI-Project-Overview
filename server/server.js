@@ -5,7 +5,7 @@ import pino from "pino";
 import fetch from "node-fetch";
 import "dotenv/config";
 import nacl from "tweetnacl";
-import cors from "cors"; // <-- CORS (added)
+import cors from "cors"; // CORS
 
 const log = pino({ transport: { target: "pino-pretty" } });
 const app = express();
@@ -17,17 +17,14 @@ app.use(helmet());
 const allowed = [
   "https://<your-username>.github.io",
   "https://<your-username>.github.io/Quirk-AI-Project-Overview",
-  // Optional: your custom domain if you front Pages with one
-  "https://<your-custom-domain>",
-  // Local dev (optional)
-  "http://localhost:3000",
+  "https://<your-custom-domain>", // optional
+  "http://localhost:3000",        // local dev (optional)
   "http://localhost:5173"
 ];
 
 app.use(cors({
   origin: function (origin, cb) {
-    // allow same-origin requests (no Origin header) and explicit matches
-    if (!origin) return cb(null, true);
+    if (!origin) return cb(null, true); // same-origin / server-to-server
     const ok = allowed.some(a => origin === a || origin.startsWith(a));
     cb(ok ? null : new Error("Not allowed by CORS"), ok);
   },
@@ -91,6 +88,14 @@ const jobs = new Map();
 let seq = 1;
 const TERMINAL = new Set(["decisioned", "error"]);
 
+// --- consent receipts (demo, in-memory) ---
+/*
+consents[id] = {
+  id, fcra:true, privacy:true, timestamp, ip, userAgent, page:'kiosk-credit.html', version:'v1'
+}
+*/
+const consents = new Map();
+
 function enqueue(vendor, payload) {
   const id = `${vendor.toUpperCase()}-${String(seq++).padStart(6, "0")}`;
   const now = new Date().toISOString();
@@ -132,11 +137,38 @@ app.post("/api/credit/submit", async (req, res) => {
   }
   const data = parsed.data;
 
+  // (Step 5B) store a temporary consent receipt immediately after validation
+  try {
+    const ip = req.headers["x-forwarded-for"]?.toString().split(",")[0]?.trim() || req.socket.remoteAddress || "";
+    const ua = req.headers["user-agent"] || "";
+    const tempId = `TEMP-${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
+    consents.set(tempId, {
+      id: tempId,
+      fcra: !!data.consent.fcra,
+      privacy: !!data.consent.privacy,
+      timestamp: new Date().toISOString(),
+      ip, userAgent: ua,
+      page: "kiosk-credit.html",
+      version: "v1"
+    });
+    // stash so we can re-key to the final job id
+    req._consentTempId = tempId;
+  } catch (e) {
+    log.warn({ e }, "failed to store temporary consent (non-fatal)");
+  }
+
   const target = (req.query.to || "routeone").toString().toLowerCase();
   try {
     // In real life: create job, call vendor, update job by webhook/callback.
-    // For now: enqueue and pretend adapters will run.
     const job = enqueue(target, data);
+
+    // (Step 5C) re-key the consent receipt from TEMP-* to the final job id
+    if (req._consentTempId && consents.has(req._consentTempId)) {
+      const rec = consents.get(req._consentTempId);
+      consents.delete(req._consentTempId);
+      rec.id = job.id;
+      consents.set(job.id, rec);
+    }
 
     // kick off vendor call stubs (no-op demos)
     if (target === "cudl") await submitToCUDL(data);
@@ -160,6 +192,13 @@ app.get("/api/credit/status/:id", (req, res) => {
     decision: job.decision,    // 'approved' | 'conditional' | 'declined' | null
     updatedAt: job.updatedAt
   });
+});
+
+// (Step 5D) retrieve consent receipt (useful for staff tools; add auth later)
+app.get("/api/credit/receipt/:id", (req, res) => {
+  const r = consents.get(req.params.id);
+  if (!r) return res.status(404).json({ ok:false, error:"Not found" });
+  res.json({ ok:true, receipt: r });
 });
 
 app.get("/healthz", (_, res) => res.json({ ok: true }));
