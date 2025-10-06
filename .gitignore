@@ -1,1 +1,5 @@
+# secrets
+server/.env
+# logs
+*.log
 
