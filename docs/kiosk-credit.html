@@ -179,6 +179,19 @@
 
           <!-- Actions -->
           <div class="mt-3 flex flex-col items-center gap-3">
+            <!-- Consent (required) -->
+            <div class="mt-2 text-sm text-slate-700 max-w-xl text-center">
+              <label class="inline-flex items-start gap-2 my-1">
+                <input id="consent_fcra" type="checkbox" class="mt-1" required>
+                <span>I authorize the dealership and its partners to obtain my consumer report for credit evaluation (FCRA).</span>
+              </label><br>
+              <label class="inline-flex items-start gap-2 my-1">
+                <input id="consent_privacy" type="checkbox" class="mt-1" required>
+                <span>I agree to the privacy policy and electronic communications.</span>
+              </label>
+              <div class="hint mt-1">Your SSN is masked on this device and transmitted over an encrypted connection.</div>
+            </div>
+
             <button id="next" class="btn">Let’s make sure it’s you →</button>
             <a class="btn-ghost" href="saleskiosk-welcome.html">← Back to Kiosk</a>
           </div>
@@ -234,24 +247,48 @@ function wire(){
   // seed from kiosk profile (optional)
   const p = K.load('kiosk_profile',{name:'',contact:''});
   if(p?.contact){ el.a_phone.value = fmtPhone(onlyDigits(p.contact)); }
-  // Next -> verify
+
+  // Next -> submit to backend API
   document.getElementById('next').addEventListener('click', ()=>{
-    // basic store & go to MFA stage if you later split screens
     const payload = {
       a:{ first:el.a_first.value,last:el.a_last.value,dob:el.a_dob.value,ssn:el.a_ssn.dataset._raw||onlyDigits(el.a_ssn.value),
           phone:el.a_phone.value,email:el.a_email.value,employer:el.a_employer.value,title:el.a_title.value,zip:el.a_zip.value,
           income:Number(el.a_income.value||0) },
-      c:{ first:el.c_first.value,last:el.c_last.value,dob:el.c_dob.value,ssn:el.c_ssn.dataset._raw||onlyDigits(el.c_ssn.value) }
+      c:(el.c_first.value || el.c_last.value) ? {
+          first:el.c_first.value,last:el.c_last.value,dob:el.c_dob.value,
+          ssn:el.c_ssn.dataset._raw||onlyDigits(el.c_ssn.value)
+        } : undefined,
+      consent:{ fcra: document.getElementById('consent_fcra').checked,
+                privacy: document.getElementById('consent_privacy').checked }
     };
+
     // validate conditional rules quickly
     const mustA = (payload.a.first && payload.a.last) ? (!payload.a.dob || !payload.a.ssn) : false;
-    const mustC = (payload.c.first && payload.c.last) ? (!payload.c.dob || !payload.c.ssn) : false;
+    const mustC = (payload.c?.first && payload.c?.last) ? (!payload.c.dob || !payload.c.ssn) : false;
     if(mustA || mustC){ alert('DOB and SSN are required when both first and last name are entered.'); return; }
+    if(!payload.consent.fcra || !payload.consent.privacy){ alert('Please provide the required consents to continue.'); return; }
+
+    // save locally for UX continuity
     K.save('guided_credit_basic', payload);
     K.track('credit.start.next');
-    // If this page is inside guidedflow iframe, notify parent; otherwise push to MFA segment you’ll add later
-    try{ K.post('credit:done'); }catch{}
-    alert('Demo: proceed to phone verification.');
+
+    // Submit to backend API (default: RouteOne). Absolute path avoids <base> surprises.
+    const endpoint = '/api/credit/submit?to=routeone';
+    fetch(endpoint, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    })
+    .then(async r => {
+      const d = await r.json().catch(()=>({}));
+      if(!r.ok || !d.ok) throw new Error(d.error || 'Submission failed');
+      try{ K.post('credit:done'); }catch{}
+      alert(`Submitted to ${d.vendor}. Tracking ID: ${d.id}. Next step: phone verification.`);
+    })
+    .catch(err => {
+      console.error(err);
+      alert('Sorry—there was a problem submitting your application.');
+    });
   });
 }
 document.addEventListener('DOMContentLoaded', wire);
