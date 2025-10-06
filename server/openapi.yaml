@@ -16,16 +16,8 @@ paths:
               $ref: '#/components/schemas/CreditPayload'
       responses:
         '200': { description: OK }
-  /api/credit/status/{id}:
-    get:
-      summary: Poll status by vendor id
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: string }
-      responses:
-        '200': { description: OK }
+  /healthz:
+    get: { summary: Health check, responses: { '200': { description: OK } } }
 components:
   schemas:
     CreditPayload:
@@ -45,10 +37,10 @@ components:
       type: object
       required: [first, last, dob, ssn]
       properties:
-        first: {type:string}   # map → givenName
-        last:  {type:string}   # map → familyName
-        dob:   {type:string, format: date}
-        ssn:   {type:string}
+        first: {type:string}
+        last: {type:string}
+        dob: {type:string, format: date}
+        ssn: {type:string}
         phone: {type:string}
         email: {type:string, format: email}
         employer: {type:string}
@@ -56,4 +48,4 @@ components:
         zip: {type:string}
         income: {type:number}
     CoApplicant:
-      allOf: [ { $ref: '#/components/schemas/Applicant' } ]
+      allOf: [{ $ref: '#/components/schemas/Applicant' }]
