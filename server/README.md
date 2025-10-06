@@ -1,4 +1,4 @@
-## IMPORTANT - NEXT STEPS FOR ROUTEONE AND CUDL INTEGRATION
+## IMPORTANT - Next steps for RouteOne and CUDL integration
 
 How to run (locally or in your hosting of choice), how to set env vars, where logs go, how to rotate keys, etc.
 
