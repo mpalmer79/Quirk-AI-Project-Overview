@@ -90,3 +90,44 @@ body.kiosk-bg > * { position:relative; z-index:1; }
     grid-column: 1 / -1;
   }
 }
+/* --- Filled-state tint for required kiosk fields (global across all kiosk pages) --- */
+:root { --kiosk-filled-bg: #e6f0ff; } /* light blue */
+
+.sales-kiosk input,
+.sales-kiosk select,
+.sales-kiosk textarea,
+.kiosk input,
+.kiosk select,
+.kiosk textarea {
+  transition: background-color .15s ease;
+}
+
+/* Inputs/Textareas: tint once the user has typed something or the field is valid */
+.sales-kiosk input[required]:not(:placeholder-shown),
+.sales-kiosk textarea[required]:not(:placeholder-shown),
+.sales-kiosk input[required]:valid,
+.sales-kiosk textarea[required]:valid,
+.kiosk input[required]:not(:placeholder-shown),
+.kiosk textarea[required]:not(:placeholder-shown),
+.kiosk input[required]:valid,
+.kiosk textarea[required]:valid {
+  background: var(--kiosk-filled-bg) !important;
+}
+
+/* Selects: tint after a real choice is made (requires an empty value default option) */
+.sales-kiosk select[required]:valid,
+.kiosk select[required]:valid {
+  background: var(--kiosk-filled-bg) !important;
+}
+
+/* Autofill: keep tint even when browser fills */
+.sales-kiosk input[required]:-webkit-autofill,
+.sales-kiosk select[required]:-webkit-autofill,
+.sales-kiosk textarea[required]:-webkit-autofill,
+.kiosk input[required]:-webkit-autofill,
+.kiosk select[required]:-webkit-autofill,
+.kiosk textarea[required]:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px var(--kiosk-filled-bg) inset !important;
+  box-shadow: 0 0 0 1000px var(--kiosk-filled-bg) inset !important;
+  -webkit-text-fill-color: #0f172a !important;
+}
