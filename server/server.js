@@ -20,6 +20,7 @@ function seal(obj) {
   return { n: Buffer.from(nonce).toString("base64"), c: Buffer.from(cipher).toString("base64") };
 }
 
+// --- validation schemas ---
 const Applicant = z.object({
   first: z.string().min(1),
   last: z.string().min(1),
@@ -52,6 +53,51 @@ const CreditPayload = z.object({
   })
 });
 
+// --- in-memory queue/state (demo) ---
+/**
+ * jobs[id] = {
+ *   id, vendor, status: 'received'|'processing'|'decisioned'|'error',
+ *   decision: 'approved'|'conditional'|'declined'|null,
+ *   createdAt, updatedAt
+ * }
+ */
+const jobs = new Map();
+let seq = 1;
+const TERMINAL = new Set(["decisioned", "error"]);
+
+function enqueue(vendor, payload) {
+  const id = `${vendor.toUpperCase()}-${String(seq++).padStart(6, "0")}`;
+  const now = new Date().toISOString();
+  const job = { id, vendor, status: "received", decision: null, createdAt: now, updatedAt: now };
+  jobs.set(id, job);
+
+  // simulate async processing
+  setTimeout(() => advance(job, "processing"), 1000);
+  setTimeout(() => {
+    // random demo decision; replace with real vendor response
+    const pick = Math.random();
+    const decision = pick < 0.6 ? "approved" : (pick < 0.85 ? "conditional" : "declined");
+    advance(job, "decisioned", decision);
+  }, 3500);
+
+  // minimal sealed audit blob (do NOT store full PII in logs)
+  const sealed = seal({
+    a: { dob: payload.a.dob, ssn: payload.a.ssn },
+    c: payload.c ? { dob: payload.c.dob, ssn: payload.c.ssn } : undefined
+  });
+  log.info({ event: "queue.enqueued", id, vendor, sealed });
+  return job;
+}
+
+function advance(job, status, decision = null) {
+  if (!job || TERMINAL.has(job.status)) return;
+  job.status = status;
+  if (decision) job.decision = decision;
+  job.updatedAt = new Date().toISOString();
+  log.info({ event: "queue.advance", id: job.id, status: job.status, decision: job.decision });
+}
+
+// --- routes ---
 app.post("/api/credit/submit", async (req, res) => {
   const parsed = CreditPayload.safeParse(req.body);
   if (!parsed.success) {
@@ -60,39 +106,48 @@ app.post("/api/credit/submit", async (req, res) => {
   }
   const data = parsed.data;
 
-  // seal sensitive bits for audit (in real life, store to DB)
-  const sealed = seal({
-    a: { dob: data.a.dob, ssn: data.a.ssn },
-    c: data.c ? { dob: data.c.dob, ssn: data.c.ssn } : undefined
-  });
-  log.info({ actor: "kiosk", event: "credit.submit.received", a_last: data.a.last, sealed });
-
   const target = (req.query.to || "routeone").toString().toLowerCase();
   try {
-    const result = target === "cudl" ? await submitToCUDL(data) : await submitToRouteOne(data);
-    return res.json({ ok: true, vendor: result.vendor, status: result.status, id: result.id });
+    // In real life: create job, call vendor, update job by webhook/callback.
+    // For now: enqueue and pretend adapters will run.
+    const job = enqueue(target, data);
+
+    // kick off vendor call stubs (no-op demos)
+    if (target === "cudl") await submitToCUDL(data);
+    else await submitToRouteOne(data);
+
+    return res.json({ ok: true, vendor: job.vendor, status: job.status, id: job.id });
   } catch (e) {
     log.error(e, "vendor error");
     return res.status(502).json({ ok: false, error: "Upstream error" });
   }
 });
 
+app.get("/api/credit/status/:id", (req, res) => {
+  const job = jobs.get(req.params.id);
+  if (!job) return res.status(404).json({ ok: false, error: "Not found" });
+  return res.json({
+    ok: true,
+    id: job.id,
+    vendor: job.vendor,
+    status: job.status,        // 'received' | 'processing' | 'decisioned' | 'error'
+    decision: job.decision,    // 'approved' | 'conditional' | 'declined' | null
+    updatedAt: job.updatedAt
+  });
+});
+
+app.get("/healthz", (_, res) => res.json({ ok: true }));
+
 // --- Vendor adapters (replace with real specs/creds when issued) ---
 async function submitToRouteOne(payload) {
   // TODO: Map payload to RouteOne schema + OAuth/token
-  // const token = await getRouteOneToken();
-  // const resp = await fetch(ROUTEONE_URL, { ... });
-  return { vendor: "routeone", status: "queued", id: "RO-DEMO-123" };
+  return { vendor: "routeone", status: "queued", id: "RO-STUB" };
 }
 
 async function submitToCUDL(payload) {
   // TODO: Map payload to CUDL schema + OAuth/token
-  // const token = await getCUDLToken();
-  // const resp = await fetch(CUDL_URL, { ... });
-  return { vendor: "cudl", status: "queued", id: "CUDL-DEMO-456" };
+  return { vendor: "cudl", status: "queued", id: "CUDL-STUB" };
 }
-
-app.get("/healthz", (_, res) => res.json({ ok: true }));
 
 const port = process.env.PORT || 8080;
 app.listen(port, () => log.info(`kiosk api listening on :${port}`));
