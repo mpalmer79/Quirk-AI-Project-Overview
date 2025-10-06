@@ -1,0 +1,59 @@
+openapi: 3.0.3
+info: { title: Quirk Kiosk Credit API, version: 0.1.0 }
+paths:
+  /api/credit/submit:
+    post:
+      summary: Submit credit application to RouteOne or CUDL
+      parameters:
+        - in: query
+          name: to
+          schema: { type: string, enum: [routeone, cudl] }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreditPayload'
+      responses:
+        '200': { description: OK }
+  /api/credit/status/{id}:
+    get:
+      summary: Poll status by vendor id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+components:
+  schemas:
+    CreditPayload:
+      type: object
+      required: [a, consent]
+      properties:
+        a: { $ref: '#/components/schemas/Applicant' }
+        c: { $ref: '#/components/schemas/CoApplicant' }
+        vehicle:
+          type: object
+          properties: { vin: {type:string}, stock:{type:string}, price:{type:number} }
+        consent:
+          type: object
+          required: [fcra, privacy]
+          properties: { fcra:{type:boolean}, privacy:{type:boolean} }
+    Applicant:
+      type: object
+      required: [first, last, dob, ssn]
+      properties:
+        first: {type:string}   # map → givenName
+        last:  {type:string}   # map → familyName
+        dob:   {type:string, format: date}
+        ssn:   {type:string}
+        phone: {type:string}
+        email: {type:string, format: email}
+        employer: {type:string}
+        title: {type:string}
+        zip: {type:string}
+        income: {type:number}
+    CoApplicant:
+      allOf: [ { $ref: '#/components/schemas/Applicant' } ]
