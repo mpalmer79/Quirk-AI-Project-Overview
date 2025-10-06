@@ -5,10 +5,36 @@ import pino from "pino";
 import fetch from "node-fetch";
 import "dotenv/config";
 import nacl from "tweetnacl";
+import cors from "cors"; // <-- CORS (added)
 
 const log = pino({ transport: { target: "pino-pretty" } });
 const app = express();
+
+// --- security & CORS ---
 app.use(helmet());
+
+// Allow your GitHub Pages origin (and localhost for testing). Replace <your-username>.
+const allowed = [
+  "https://<your-username>.github.io",
+  "https://<your-username>.github.io/Quirk-AI-Project-Overview",
+  // Optional: your custom domain if you front Pages with one
+  "https://<your-custom-domain>",
+  // Local dev (optional)
+  "http://localhost:3000",
+  "http://localhost:5173"
+];
+
+app.use(cors({
+  origin: function (origin, cb) {
+    // allow same-origin requests (no Origin header) and explicit matches
+    if (!origin) return cb(null, true);
+    const ok = allowed.some(a => origin === a || origin.startsWith(a));
+    cb(ok ? null : new Error("Not allowed by CORS"), ok);
+  },
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
 app.use(express.json({ limit: "200kb" }));
 
 // --- crypto helpers (symmetric secretbox; rotate key via env) ---
