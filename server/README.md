@@ -1,39 +1,17 @@
-## IMPORTANT - Next steps for RouteOne and CUDL integration
+# Quirk Kiosk Credit API
 
-How to run (locally or in your hosting of choice), how to set env vars, where logs go, how to rotate keys, etc.
+Minimal Express server providing `/api/credit/submit`. PII is validated with Zod and sealed (TweetNaCl) for audit-at-rest.
 
-Note your compliance stance: FCRA/GLBA notice, retention, incident response, least-privilege access.
+## Run (locally or in a host)
+1. Copy `.env.example` → `.env` and set `DATA_KEY` (32+ chars).
+2. `npm install` (once).
+3. `npm start` → listens on `:8080`.
 
-Mapping & next steps (so you’re production-ready)
+## Deploy
+- Works on Render/Heroku/Fly/etc. Set environment variables in the host’s secret manager.
+- Add a reverse proxy rule so frontend `/api/*` routes hit this server.
 
-Apply for integrations
-
-## RouteOne: 
-Complete their integrate form (they’ll share specs after NDA). 
-
-## CUDL: 
-Create an Origence developer account and request API access for CUDL Connect. 
-Origence Connect Developer Portal
-+1
-
-## Add field mapping docs
-Create server/mapping/routeone.md and server/mapping/cudl.md and paste vendor sample payloads → document how your kiosk fields map to each vendor’s schema (names, formats, enums, required/optional).
-
-## Auth & tokens
-Vendors typically use OAuth2 or signed requests. Implement getRouteOneToken() and getCUDLToken() helpers and never expose these to the browser.
-
-## Environment & secrets
-Add .gitignore entry for .env. Only store secrets in your hosting provider’s secret manager (e.g., Render/Heroku/Vercel serverless functions).
-
-## Data protection
-Encrypt SSN/DOB at rest (already scaffolded).
-Minimize retention—delete sealed blobs after decisioning if policy allows.
-Role-based access; redact PII in logs.
-Display FCRA/GLBA notices and capture a timestamped consent flag.
-
-## Dealer workflow
-Return a status ID that lets your kiosk poll /api/credit/status/:id.
-Support “decision received” webhooks if a vendor provides them.
-
-Add optional CUDL Loan Payoff lookup for trades when you get access. 
-Origence Connect Developer Portal
+## Next
+- Replace vendor adapter stubs with real mappings + OAuth/token exchange.
+- Add `/api/credit/status/:id` when vendor supports polling or webhooks.
+- Store sealed PII and consent receipts in a DB with short retention.
