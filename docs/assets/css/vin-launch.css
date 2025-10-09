@@ -125,3 +125,45 @@ body.page{background:#f8fafc;color:var(--fg);}
 
 /* Hero parallax: we’ll reuse your .countdown-glow as a floating layer */
 .countdown-glow{transition: transform .15s linear; will-change: transform;}
+/* === Dramatic reveal for the Launch Countdown card === */
+.hero .countdown-wrap {
+  /* ensure the container can animate cleanly */
+  will-change: opacity, transform, filter, box-shadow;
+}
+
+/* starting state is already handled by .reveal from motion.css;
+   this class runs the fancier entrance once it's on screen */
+.hero .countdown-wrap.anim-in {
+  animation:
+    countdownIn 1400ms cubic-bezier(.22,.61,.36,1) forwards,
+    glowPulse   6000ms ease-in-out 1200ms infinite alternate;
+}
+
+/* Reduce Motion: turn off the fancy bits */
+@media (prefers-reduced-motion: reduce) {
+  .hero .countdown-wrap.anim-in {
+    animation: none !important;
+  }
+}
+
+/* Keyframes: slow fade + de-blur + subtle pop */
+@keyframes countdownIn {
+  0%   { opacity:0; transform: translateY(22px) scale(.96); filter: blur(8px); }
+  60%  { opacity:1; filter: blur(0); }
+  100% { opacity:1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+/* Soft breathing glow around the card for a premium feel */
+@keyframes glowPulse {
+  0%   { box-shadow: 0 6px 22px rgba(2,6,23,.08), inset 0 0 0 rgba(3,105,161,0); }
+  100% { box-shadow: 0 14px 48px rgba(2,6,23,.16), inset 0 0 36px rgba(3,105,161,.12); }
+}
+
+/* Phone tweak: slightly faster entrance, shorter travel */
+@media (max-width: 640px) {
+  .hero .countdown-wrap.anim-in {
+    animation:
+      countdownIn 1100ms cubic-bezier(.22,.61,.36,1) forwards,
+      glowPulse   5500ms ease-in-out 900ms infinite alternate;
+  }
+}
