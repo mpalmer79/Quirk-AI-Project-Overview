@@ -1,169 +1,72 @@
-:root{
-  --ink:#0b0b0c;
-  --ink-2:#1e1f22;
-  --fg:#0f172a;
-  --muted:#64748b;
-  --brand:#0ea5e9; /* cyan-ish accent */
-  --glow:#7dd3fc;
-  --card:#ffffff;
-  --ring:#e2e8f0;
-  --pill:#0b0b0c;
-  --success:#16a34a;
-  --warning:#f59e0b;
-}
-
-/* a11y helpers + summary label swap */
-.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
-details[open] .when-closed{display:none;}
-details:not([open]) .when-open{display:none;}
-
-body.page{background:#f8fafc;color:var(--fg);}
-.topbar{background:#fff;border-bottom:1px solid var(--ring);position:sticky;top:0;z-index:50;}
-.topbar-title{font-weight:800;}
-.page-wrap{max-width:1100px;margin:0 auto;padding:18px}
-
-/* ===== HERO + COUNTDOWN ===== */
-.hero{
-  position:relative;
-  margin:18px 0 10px;
-  padding:52px 18px 28px;
-  border-radius:24px;
-  overflow:hidden;
-  background:
-    radial-gradient(1200px 300px at 50% -20%, rgba(14,165,233,.25), transparent 60%),
-    url("../hero-bg.jpg"),
-    linear-gradient(180deg,#ffffff, #f1f5f9);
-  background-blend-mode: screen, multiply, normal;
-  border:1px solid var(--ring);
-}
-.hero h1{font-size:clamp(1.4rem, 3.5vw, 2.2rem);margin:0 0 6px;font-weight:900;}
-.hero p.muted{margin:0 0 16px;color:var(--muted);}
-
-.countdown-wrap{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
-  padding:14px 16px;border-radius:20px;background:rgba(255,255,255,0.7);
-  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
-  border:1px solid var(--ring);
-  box-shadow: 0 10px 35px rgba(14,165,233,.18), inset 0 0 0 1px rgba(255,255,255,0.6);
-}
-.launch-badge{
-  display:inline-flex;align-items:center;gap:8px;
-  background:#000;color:#fff;padding:8px 12px;border-radius:999px;
-  font-weight:800;letter-spacing:.02em;text-transform:uppercase;font-size:.78rem;
-  box-shadow: 0 4px 14px rgba(0,0,0,.25);
-}
-.timer{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;}
-.tbox{
-  position:relative;min-width:110px;text-align:center;
-  background:#0b1324;color:#e2f3ff;border-radius:18px;padding:16px 14px;
-  box-shadow:0 10px 28px rgba(2,6,23,.35), inset 0 1px 0 rgba(255,255,255,.06), 0 0 0 2px rgba(125,211,252,.15);
-  border:1px solid rgba(148,163,184,.25);
-}
-.tbox .num{font-size:2.2rem;font-weight:900;line-height:1;letter-spacing:.02em;}
-.tbox .lab{display:block;font-size:.78rem;opacity:.9;margin-top:4px;color:#a8d8ff;}
-.countdown-glow{position:absolute;inset:-20%;background:radial-gradient(120px 60px at 50% 30%, rgba(125,211,252,.45), transparent 40%);filter: blur(24px);animation:floaty 6s ease-in-out infinite;}
-@keyframes floaty{0%{transform:translateY(0) scale(1);}50%{transform:translateY(6px) scale(1.03);}100%{transform:translateY(0) scale(1);}}
-
-/* ===== CTA ROW ===== */
-.cta-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:12px}
-.btn-giant{
-  display:inline-flex;align-items:center;gap:10px;border-radius:999px;padding:12px 16px;
-  font-weight:800;text-decoration:none;border:1px solid var(--ring);background:#fff;color:#0b0b0c;
-}
-.btn-giant:hover{box-shadow:0 8px 18px rgba(2,6,23,.12)}
-.btn-primary{background:linear-gradient(180deg,#0ea5e9,#0284c7);color:#fff;border-color:transparent;}
-.btn-primary:hover{filter:brightness(1.04)}
-.btn-ghost{background:#fff;color:#0b0b0c}
-
-/* ===== CONTENT ===== */
-.section{margin:24px 0}
-.cards{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));}
-.card{background:var(--card);border:1px solid var(--ring);border-radius:16px;padding:16px 14px;}
-.card h3{margin:0 0 6px;text-align:left}
-.muted{color:var(--muted)}
-.kicker{font-weight:800;letter-spacing:.03em;color:#0b0b0c}
-.list{padding-left:18px;margin:8px 0}
-.badge{display:inline-block;border:1px solid var(--ring);border-radius:999px;padding:4px 10px;font-size:.78rem;font-weight:700}
-.media{aspect-ratio:16/9;background:#0b1324;border-radius:14px;border:1px dashed rgba(148,163,184,.4);display:grid;place-items:center;color:#a7b3c5}
-.media small{opacity:.8}
-
-/* Footer */
-.footer{border-top:1px solid var(--ring);padding:16px;text-align:center;background:#fff;margin-top:28px}
-/* ===== Motion tokens ===== */
-:root{
-  --elev-1: 0 8px 18px rgba(2,6,23,.10);
-  --elev-2: 0 12px 26px rgba(2,6,23,.14);
-  --ease: cubic-bezier(.22,.61,.36,1);
-}
-
-/* Scroll reveal (auto-instrumented via JS) */
-.reveal{opacity:0; transform: translateY(16px) scale(.98); transition:
-  opacity .6s var(--ease) var(--delay,0ms),
-  transform .6s var(--ease) var(--delay,0ms);
-  will-change: transform, opacity;
-}
-.reveal.in{opacity:1; transform: none;}
-@media (prefers-reduced-motion: reduce){
-  .reveal{opacity:1; transform:none; transition:none}
-}
-
-/* Card micro-interaction */
-.card{transition: transform .25s var(--ease), box-shadow .25s var(--ease);}
-.card:hover{transform: translateY(-4px); box-shadow: var(--elev-1);}
-
-/* Media tiles (your three screenshots) */
-.card img{border-radius:12px; transition: transform .35s var(--ease), box-shadow .35s var(--ease);}
-.card:hover img{transform: translateY(-2px) scale(1.01); box-shadow: var(--elev-2);}
-
-/* CTA buttons */
-.btn-giant{transition: transform .18s var(--ease), box-shadow .18s var(--ease);}
-.btn-giant:hover{transform: translateY(-2px); box-shadow: var(--elev-1);}
-
-/* Sticky topbar shadow on scroll */
-.topbar{transition: box-shadow .25s var(--ease), background .25s var(--ease);}
-.topbar.scrolled{box-shadow: 0 8px 20px rgba(2,6,23,.08); background:#fff}
-
-/* Hero parallax: we’ll reuse your .countdown-glow as a floating layer */
-.countdown-glow{transition: transform .15s linear; will-change: transform;}
-/* === Dramatic reveal for the Launch Countdown card === */
-.hero .countdown-wrap {
-  /* ensure the container can animate cleanly */
+/* === Dramatic reveal for the Launch Countdown card (3s, flash + slow fade) === */
+.hero .countdown-wrap{
   will-change: opacity, transform, filter, box-shadow;
+  /* make the flash feel crisp on high-DPI screens */
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
-/* starting state is already handled by .reveal from motion.css;
-   this class runs the fancier entrance once it's on screen */
-.hero .countdown-wrap.anim-in {
+.hero .countdown-wrap.anim-in{
   animation:
-    countdownIn 1400ms cubic-bezier(.22,.61,.36,1) forwards,
-    glowPulse   6000ms ease-in-out 1200ms infinite alternate;
+    countdownInFlash 3000ms cubic-bezier(.22,.61,.36,1) forwards,
+    glowPulse        6500ms ease-in-out 2600ms infinite alternate;
 }
 
-/* Reduce Motion: turn off the fancy bits */
-@media (prefers-reduced-motion: reduce) {
-  .hero .countdown-wrap.anim-in {
-    animation: none !important;
+/* Respect user preference */
+@media (prefers-reduced-motion: reduce){
+  .hero .countdown-wrap.anim-in{ animation: none !important; }
+}
+
+/* 0%: hidden + bright pre-light
+   6%: quick silver flash (pop)
+   60%: mostly in, blur gone
+   100%: fully settled */
+@keyframes countdownInFlash{
+  0%{
+    opacity: 0;
+    transform: translateY(24px) scale(.96);
+    filter: blur(10px) brightness(1.6) saturate(1.05);
+    box-shadow: 0 0 0 rgba(255,255,255,0);
+  }
+  6%{ /* ~180ms flash */
+    opacity: .85;
+    transform: translateY(14px) scale(.985);
+    filter: blur(2.5px) brightness(2.4) saturate(1.2) contrast(1.05);
+    box-shadow:
+      0 10px 34px rgba(192,198,206,.55),   /* silver outer */
+      0 0 0 2px rgba(206,212,220,.7) inset;/* bright silver rim */
+  }
+  24%{
+    opacity: .95;
+    transform: translateY(10px) scale(.992);
+    filter: blur(1.5px) brightness(1.25) saturate(1.05);
+  }
+  60%{
+    opacity: 1;
+    transform: translateY(4px) scale(.998);
+    filter: blur(0) brightness(1.06);
+  }
+  100%{
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: none;
+    box-shadow: 0 12px 36px rgba(2,6,23,.14);
   }
 }
 
-/* Keyframes: slow fade + de-blur + subtle pop */
-@keyframes countdownIn {
-  0%   { opacity:0; transform: translateY(22px) scale(.96); filter: blur(8px); }
-  60%  { opacity:1; filter: blur(0); }
-  100% { opacity:1; transform: translateY(0) scale(1); filter: blur(0); }
+/* Soft breathing glow once settled */
+@keyframes glowPulse{
+  0%   { box-shadow: 0 10px 30px rgba(2,6,23,.10), inset 0 0 0 rgba(3,105,161,0); }
+  100% { box-shadow: 0 18px 56px rgba(2,6,23,.18), inset 0 0 42px rgba(3,105,161,.12); }
 }
 
-/* Soft breathing glow around the card for a premium feel */
-@keyframes glowPulse {
-  0%   { box-shadow: 0 6px 22px rgba(2,6,23,.08), inset 0 0 0 rgba(3,105,161,0); }
-  100% { box-shadow: 0 14px 48px rgba(2,6,23,.16), inset 0 0 36px rgba(3,105,161,.12); }
-}
-
-/* Phone tweak: slightly faster entrance, shorter travel */
-@media (max-width: 640px) {
-  .hero .countdown-wrap.anim-in {
-    animation:
-      countdownIn 1100ms cubic-bezier(.22,.61,.36,1) forwards,
-      glowPulse   5500ms ease-in-out 900ms infinite alternate;
+/* Phone tweak: slightly less travel, same 3s duration */
+@media (max-width: 640px){
+  @keyframes countdownInFlash{
+    0%  { opacity:0; transform: translateY(18px) scale(.97); filter: blur(8px) brightness(1.6); }
+    6%  { opacity:.9; transform: translateY(10px) scale(.988); filter: blur(2px) brightness(2.3) saturate(1.18); }
+    24% { opacity:.96; transform: translateY(8px)  scale(.994); filter: blur(1.2px) brightness(1.2); }
+    60% { opacity:1;   transform: translateY(3px)  scale(.998); filter: none; }
+    100%{ opacity:1;   transform: translateY(0)    scale(1);    filter: none; }
   }
 }
