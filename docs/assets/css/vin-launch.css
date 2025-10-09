@@ -89,3 +89,39 @@ body.page{background:#f8fafc;color:var(--fg);}
 
 /* Footer */
 .footer{border-top:1px solid var(--ring);padding:16px;text-align:center;background:#fff;margin-top:28px}
+/* ===== Motion tokens ===== */
+:root{
+  --elev-1: 0 8px 18px rgba(2,6,23,.10);
+  --elev-2: 0 12px 26px rgba(2,6,23,.14);
+  --ease: cubic-bezier(.22,.61,.36,1);
+}
+
+/* Scroll reveal (auto-instrumented via JS) */
+.reveal{opacity:0; transform: translateY(16px) scale(.98); transition:
+  opacity .6s var(--ease) var(--delay,0ms),
+  transform .6s var(--ease) var(--delay,0ms);
+  will-change: transform, opacity;
+}
+.reveal.in{opacity:1; transform: none;}
+@media (prefers-reduced-motion: reduce){
+  .reveal{opacity:1; transform:none; transition:none}
+}
+
+/* Card micro-interaction */
+.card{transition: transform .25s var(--ease), box-shadow .25s var(--ease);}
+.card:hover{transform: translateY(-4px); box-shadow: var(--elev-1);}
+
+/* Media tiles (your three screenshots) */
+.card img{border-radius:12px; transition: transform .35s var(--ease), box-shadow .35s var(--ease);}
+.card:hover img{transform: translateY(-2px) scale(1.01); box-shadow: var(--elev-2);}
+
+/* CTA buttons */
+.btn-giant{transition: transform .18s var(--ease), box-shadow .18s var(--ease);}
+.btn-giant:hover{transform: translateY(-2px); box-shadow: var(--elev-1);}
+
+/* Sticky topbar shadow on scroll */
+.topbar{transition: box-shadow .25s var(--ease), background .25s var(--ease);}
+.topbar.scrolled{box-shadow: 0 8px 20px rgba(2,6,23,.08); background:#fff}
+
+/* Hero parallax: we’ll reuse your .countdown-glow as a floating layer */
+.countdown-glow{transition: transform .15s linear; will-change: transform;}
