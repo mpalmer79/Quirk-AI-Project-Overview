@@ -3,10 +3,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>VIN Gen AI Alternative</title>
+  <title>Quirk AI VIN Solutions Helper — Launch</title>
 
   <!-- Force LIGHT theme -->
   <meta name="color-scheme" content="light" />
+  <meta name="description" content="Quirk AI VIN Solutions Helper — site-specific Chrome extension that accelerates VIN Solutions drafting with AI Smart Replies, templates, and on-page workflow nudges. Launch countdown and product overview.">
+  <link rel="canonical" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/vin-gen-ai-alternative.html">
 
   <!-- Keep all relative URLs under this GitHub Pages project -->
   <base href="/Quirk-AI-Project-Overview/">
@@ -15,12 +17,108 @@
   <link rel="stylesheet" href="assets/style.css" />
   <link rel="stylesheet" href="assets/css/vin-alt.css" />
 
-  <!-- Favicon -->
-  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <link rel="alternate icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
-  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <!-- Page-specific styles (draft; you can move into assets/css later) -->
+  <style>
+    :root{
+      --ink:#0b0b0c;
+      --ink-2:#1e1f22;
+      --fg:#0f172a;
+      --muted:#64748b;
+      --brand:#0ea5e9; /* cyan-ish accent */
+      --glow:#7dd3fc;
+      --card:#ffffff;
+      --ring:#e2e8f0;
+      --pill:#0b0b0c;
+      --success:#16a34a;
+      --warning:#f59e0b;
+    }
+    /* a11y helpers + summary label swap */
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+    details[open] .when-closed{display:none;}
+    details:not([open]) .when-open{display:none;}
+
+    body.page{background:#f8fafc;color:var(--fg);}
+    .topbar{background:#fff;border-bottom:1px solid var(--ring);position:sticky;top:0;z-index:50;}
+    .topbar-title{font-weight:800;}
+    .page-wrap{max-width:1100px;margin:0 auto;padding:18px;}
+
+    /* ===== HERO + COUNTDOWN ===== */
+    .hero{
+      position:relative;
+      margin:18px 0 10px;
+      padding:52px 18px 28px;
+      border-radius:24px;
+      overflow:hidden;
+      background:
+        radial-gradient(1200px 300px at 50% -20%, rgba(14,165,233,.25), transparent 60%),
+        url("assets/hero-bg.jpg"), /* optional; can be missing */
+        linear-gradient(180deg,#ffffff, #f1f5f9);
+      background-blend-mode: screen, multiply, normal;
+      border:1px solid var(--ring);
+    }
+    .hero h1{font-size:clamp(1.4rem, 3.5vw, 2.2rem);margin:0 0 6px;font-weight:900;}
+    .hero p.muted{margin:0 0 16px;color:var(--muted);}
+
+    .countdown-wrap{
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+      padding:14px 16px;border-radius:20px;background:rgba(255,255,255,0.7);
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      border:1px solid var(--ring);
+      box-shadow: 0 10px 35px rgba(14,165,233,.18), inset 0 0 0 1px rgba(255,255,255,0.6);
+    }
+    .launch-badge{
+      display:inline-flex;align-items:center;gap:8px;
+      background: #000;color:#fff;padding:8px 12px;border-radius:999px;
+      font-weight:800;letter-spacing:.02em;text-transform:uppercase;font-size:.78rem;
+      box-shadow: 0 4px 14px rgba(0,0,0,.25);
+    }
+    .timer{
+      display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;
+    }
+    .tbox{
+      position:relative;min-width:110px;text-align:center;
+      background:#0b1324;color:#e2f3ff;border-radius:18px;padding:16px 14px;
+      box-shadow:
+        0 10px 28px rgba(2,6,23,.35),
+        inset 0 1px 0 rgba(255,255,255,.06),
+        0 0 0 2px rgba(125,211,252,.15);
+      border:1px solid rgba(148,163,184,.25);
+    }
+    .tbox .num{font-size:2.2rem;font-weight:900;line-height:1;letter-spacing:.02em;}
+    .tbox .lab{display:block;font-size:.78rem;opacity:.9;margin-top:4px;color:#a8d8ff;}
+    /* subtle pulse/glow */
+    .countdown-glow{position:absolute;inset:-20%;background:radial-gradient(120px 60px at 50% 30%, rgba(125,211,252,.45), transparent 40%);filter: blur(24px);animation:floaty 6s ease-in-out infinite;}
+    @keyframes floaty{0%{transform:translateY(0) scale(1);}50%{transform:translateY(6px) scale(1.03);}100%{transform:translateY(0) scale(1);}}
+
+    /* ===== CTA ROW ===== */
+    .cta-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:12px}
+    .btn-giant{
+      display:inline-flex;align-items:center;gap:10px;border-radius:999px;padding:12px 16px;
+      font-weight:800;text-decoration:none;border:1px solid var(--ring);background:#fff;color:#0b0b0c;
+    }
+    .btn-giant:hover{box-shadow:0 8px 18px rgba(2,6,23,.12)}
+    .btn-primary{background:linear-gradient(180deg,#0ea5e9,#0284c7);color:#fff;border-color:transparent;}
+    .btn-primary:hover{filter:brightness(1.04)}
+    .btn-ghost{background:#fff;color:#0b0b0c}
+
+    /* ===== CONTENT ===== */
+    .section{margin:24px 0}
+    .cards{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));}
+    .card{background:var(--card);border:1px solid var(--ring);border-radius:16px;padding:16px 14px;}
+    .card h3{margin:0 0 6px;text-align:left}
+    .muted{color:var(--muted)}
+    .kicker{font-weight:800;letter-spacing:.03em;color:#0b0b0c}
+    .list{padding-left:18px;margin:8px 0}
+    .badge{display:inline-block;border:1px solid var(--ring);border-radius:999px;padding:4px 10px;font-size:.78rem;font-weight:700}
+    .media{aspect-ratio:16/9;background:#0b1324;border-radius:14px;border:1px dashed rgba(148,163,184,.4);display:grid;place-items:center;color:#a7b3c5}
+    .media small{opacity:.8}
+
+    /* Downloads block already styled in your CSS; keep as-is */
+    .footer{border-top:1px solid var(--ring);padding:16px;text-align:center;background:#fff;margin-top:28px}
+  </style>
 </head>
 <body class="page">
+  <!-- DO NOT MOVE: preserves your floating black HOME button position -->
   <div class="home-wrap">
     <a class="home-btn" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
   </div>
@@ -29,7 +127,7 @@
   <header class="topbar" role="banner">
     <div class="topbar-inner">
       <a class="home-link" href="./">HOME</a>
-      <div class="topbar-title">VIN Gen AI Alternative</div>
+      <div class="topbar-title">Quirk AI VIN Solutions Helper</div>
       <nav class="topbar-menu" aria-label="Secondary Navigation">
         <a class="topbar-title-link" href="project-library.html">Project Library</a>
       </nav>
@@ -38,431 +136,120 @@
 
   <!-- ======= Page Content ======= -->
   <main class="page-wrap" id="top">
-    <section class="hero">
-      <h1>VIN Gen&nbsp;AI Alternative — Appointment-First Automation</h1>
-      <p class="muted">Designed for BDC teams to respond faster, book more shows, and keep every touch logged in VIN Solutions.</p>
-    </section>
 
-    <!-- >>>>>> Agent Playground <<<<<< -->
-    <section id="playground" class="section">
-      <!-- pillbar row with the new right-aligned button -->
-      <div class="pillbar" aria-hidden="true"
-           style="display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;">
-        <div>
-          <span class="pill">Agent Playground</span>
-          <span class="pill sub">Draft → Approve → Send</span>
+    <!-- ===== HERO / COUNTDOWN ===== -->
+    <section class="hero" aria-label="Launch announcement">
+      <h1>Quirk AI VIN Solutions Helper</h1>
+      <p class="muted">A site-specific Chrome extension that drafts replies inside VIN Solutions, keeps your dealership voice, and nudges follow-ups – all on the page.</p>
+
+      <div class="countdown-wrap" aria-live="polite">
+        <div class="countdown-glow" aria-hidden="true"></div>
+        <span class="launch-badge">🚀 Launch Countdown</span>
+        <div class="timer" id="launchTimer" role="group" aria-label="Countdown to November 1, 2025">
+          <div class="tbox"><div class="num" id="tDays">—</div><span class="lab">Days</span></div>
+          <div class="tbox"><div class="num" id="tHours">—</div><span class="lab">Hours</span></div>
+          <div class="tbox"><div class="num" id="tMins">—</div><span class="lab">Minutes</span></div>
+          <div class="tbox"><div class="num" id="tSecs">—</div><span class="lab">Seconds</span></div>
         </div>
-        <a href="https://github.com/mpalmer79/quirk-ai-sidecar"
-           target="_blank" rel="noopener"
-           style="background:#000;color:#fff;text-decoration:none;padding:10px 14px;border-radius:9999px;font-weight:700;display:inline-block;">
-          View GitHub Demo of Chrome extension
-        </a>
-      </div>
-
-      <h2 class="sr-only">Agent Playground (Draft → Approve → Send)</h2>
-      <p class="muted">Paste a lead, pick a model/trim, and generate a ready-to-send draft that always drives to two appointment options.</p>
-
-      <details>
-        <summary>Open for more (what this does)</summary>
-        <div class="small" style="margin-top:8px">
-          <ul>
-            <li>Builds an email/SMS with [[stock_count]], [[model_trim]], [[cash_rebate]], [[apr_rate]], [[two_appt_options]], and lease tokens when available.</li>
-            <li>Today: uses front-end logic; later, switch <code>API_BASE</code> to your AutoGPT Platform URL or Worker.</li>
-          </ul>
-        </div>
-      </details>
-
-      <div class="cards" style="margin-top:12px">
-        <div class="card">
-          <h3>Lead Context</h3>
-          <label class="small" for="leadText">Paste lead snippet (name, interest, zip, notes)</label>
-          <textarea id="leadText" rows="6" style="width:100%;border:1px solid #e2e8f0;border-radius:10px;padding:10px"></textarea>
-
-          <div style="display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin-top:10px">
-            <div>
-              <label class="small" for="make">Make</label>
-              <input id="make" class="small" style="width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:8px" value="Chevrolet" />
-            </div>
-            <div>
-              <label class="small" for="model">Model</label>
-              <input id="model" class="small" style="width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:8px" value="Traverse" />
-            </div>
-            <div>
-              <label class="small" for="zip">ZIP (inventory)</label>
-              <input id="zip" class="small" style="width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:8px" value="03103" />
-            </div>
-            <div>
-              <label class="small" for="offersZip">ZIP (offers override)</label>
-              <input id="offersZip" class="small" style="width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:8px" value="03103" />
-            </div>
-            <div>
-              <label class="small" for="channel">Channel</label>
-              <select id="channel" class="small" style="width:100%;border:1px solid #e2e8f0;border-radius:8px;padding:8px">
-                <option value="email">Email</option>
-                <option value="sms">SMS</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Agent Profiles -->
-          <div style="margin-top:10px">
-            <label class="small">Agent Profile</label><br>
-            <div id="profilesSeg" class="seg" role="tablist" aria-label="Agent Profiles">
-              <button class="active" data-profile="new_lead" role="tab" aria-selected="true">New Lead</button>
-              <button data-profile="best_price" role="tab" aria-selected="false">Best Price</button>
-              <button data-profile="credit" role="tab" aria-selected="false">Credit-Challenged</button>
-              <button data-profile="manager" role="tab" aria-selected="false">Manager Tone</button>
-            </div>
-            <div class="small muted" id="profileHelp" style="margin-top:6px">Preset shapes tone + CTA; “Best Price” also nudges pricing scenario.</div>
-          </div>
-
-          <button id="composeBtn" class="btn" style="margin-top:12px">Generate Draft</button>
-        </div>
-
-        <div class="card">
-          <h3>Output</h3>
-          <div id="draftPane" class="small" style="white-space:pre-wrap;min-height:140px;border:1px dashed #e2e8f0;border-radius:10px;padding:10px"></div>
-          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
-            <button id="copyDraftBtn" class="btn small">Copy</button>
-            <button id="saveRunBtn" class="btn small" title="Simulates logging a run like AutoGPT Platform">Save as Run</button>
-          </div>
-
-          <!-- Feedback bar -->
-          <div id="feedbackBar" class="small" style="display:flex;gap:8px;margin-top:10px;align-items:center;flex-wrap:wrap">
-            <span class="muted">Feedback:</span>
-            <button id="fbUp" class="btn small" title="Helpful">👍</button>
-            <button id="fbDown" class="btn small" title="Needs work">👎</button>
-            <input id="fbReason" class="small" placeholder="optional note (what was great / missing)" style="flex:1;border:1px solid #e2e8f0;border-radius:8px;padding:8px;min-width:220px">
-            <button id="fbSave" class="btn small" title="Save feedback">Save</button>
-            <span id="fbSaved" class="small muted" style="display:none">Saved ✓</span>
-          </div>
-
-          <details style="margin-top:10px">
-            <summary>Open for more (cURL for backend wiring)</summary>
-<pre class="small" id="curlBlock" style="overflow:auto"></pre>
-          </details>
+        <div class="cta-row">
+          <!-- Wire these up next step (video, ZIP, web store) -->
+          <a class="btn-giant btn-primary" href="#" role="button" aria-disabled="true">Watch Overview (soon)</a>
+          <a class="btn-giant btn-ghost" href="#" role="button" aria-disabled="true">Get the Extension (soon)</a>
         </div>
       </div>
     </section>
-    <!-- >>>>>> END Agent Playground <<<<<< -->
 
-    <!-- >>>>>> Batch Composer (Queue → Generate → Export) <<<<<< -->
-    <section id="batch" class="section">
-      <div class="pillbar" aria-hidden="true">
-        <span class="pill">Batch Composer</span>
-        <span class="pill sub">Queue → Generate → Export</span>
-      </div>
-      <h2 class="sr-only">Batch Composer</h2>
-      <p class="muted">Paste multiple leads (one per line or blank-line separated). Uses the same Make/Model/ZIP/Offers ZIP and current <strong>Agent Profile</strong> from the Playground.</p>
-
-      <div class="cards" style="margin-top:12px">
-        <div class="card">
-          <h3>Lead List</h3>
-          <label class="small" for="batchInput">Examples: <em>“Name: Maria, asks about rebates”</em> or raw lead snippets. Blank lines create new items.</label>
-          <textarea id="batchInput" rows="8" style="width:100%;border:1px solid #e2e8f0;border-radius:10px;padding:10px"></textarea>
-
-          <div class="small muted" style="margin-top:8px" id="batchCount">0 leads detected</div>
-          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
-            <button id="batchParseBtn" class="btn small">Parse</button>
-            <button id="batchGenerateBtn" class="btn small">Generate All</button>
-            <button id="batchExportBtn" class="btn small" title="Export drafts to CSV">Export CSV</button>
-            <button id="batchClearBtn" class="btn small" title="Clear results">Clear</button>
-          </div>
-        </div>
-
-        <div class="card">
-          <h3>Results</h3>
-          <div id="batchStatus" class="small muted">No results yet.</div>
-          <div id="batchTableWrap" class="small" style="margin-top:8px;overflow:auto"></div>
-        </div>
-      </div>
-    </section>
-    <!-- >>>>>> END Batch Composer <<<<<< -->
-
-    <!-- Executive Summary -->
-    <section id="executive-summary" class="section">
-      <h2 style="text-align:center">Executive Summary</h2>
-      <p class="muted">VIN Solutions remains your CRM backbone. The Gen&nbsp;AI layer personalizes emails/SMS/call prompts in real time, injects inventory & incentives, and auto-logs tasks/appointments in VIN.</p>
-
+    <!-- ===== PRODUCT HOOK ===== -->
+    <section class="section" id="why">
       <div class="cards">
         <div class="card">
-          <h3 style="text-align:center">VIN Solutions</h3>
-          <ul class="small">
-            <li>Canned templates feel impersonal</li>
-            <li>Heavy manual personalization & task follow-up</li>
-            <li>Slow response on busy days</li>
-            <li>Appointments depend on agent skill</li>
+          <h3 class="kicker">Outcomes</h3>
+          <ul class="list small">
+            <li>Respond in seconds with context-aware AI Smart Replies.</li>
+            <li>Keep a consistent dealership voice with reusable templates.</li>
+            <li>Surface unresponded leads and nudge follow-ups on-page.</li>
+            <li>Cut copy/paste—write directly into VIN message fields.</li>
+            <li>Reduce ramp-up time for new staff with guided tools.</li>
           </ul>
         </div>
         <div class="card">
-          <h3 style="text-align:center">Gen AI Overlay</h3>
-          <ul class="small">
-            <li>&lt; 5-minute responses with inventory & incentives</li>
-            <li>Tasks/appointments created & logged in VIN</li>
-            <li>Consistent appointment push with 2 time options</li>
-            <li>Projected +15–20% appointment conversion lift</li>
+          <h3 class="kicker">Major Features</h3>
+          <ul class="list small">
+            <li><strong>Floating Smart Replies</strong> panel on lead pages.</li>
+            <li><strong>Template Library</strong> for common scenarios.</li>
+            <li><strong>Auto-Context Gathering</strong> from the page.</li>
+            <li><strong>Dashboard Nudges</strong> for unresponded leads.</li>
+            <li><strong>Side Panel Assistant</strong> to refine tone/variants.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3 class="kicker">Privacy & Security</h3>
+          <ul class="list small">
+            <li>Runs only on VIN Solutions domains (host-scoped).</li>
+            <li>No remote code execution; MV3 with least-privilege.</li>
+            <li>Local storage for dealership prefs and sign-offs.</li>
+            <li>No background data collection.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3 class="kicker">Deployment</h3>
+          <ul class="list small">
+            <li>Chrome (Manifest V3) • Windows & macOS.</li>
+            <li>Private or public Web Store listing.</li>
+            <li>Auto-updates via Web Store releases.</li>
           </ul>
         </div>
       </div>
-
       <details class="section">
-        <summary>Open for more (proof points & examples)</summary>
-        <div class="callout small" style="margin-top:10px">
-          <strong>Example</strong>: “We have 3 Traverses in stock including RS; $1,500 customer cash + 2.9% APR. Can I reserve one for Thursday evening or Saturday morning?”
+        <summary><span class="when-closed">Open for more (How it works)</span><span class="when-open">Close</span></summary>
+        <div class="card small" style="margin-top:8px">
+          The extension injects lightweight content scripts on VIN Solutions pages to find compose areas and lead details.
+          When the Smart Replies panel opens, suggestions are prepared using page context; users review and insert with one click.
+          Activity is still sent via VIN Solutions so conversation history stays in the CRM.
         </div>
       </details>
     </section>
 
-    <!-- KPIs -->
-    <section id="kpis" class="section">
-      <h2 style="text-align:center">Target KPIs</h2>
-      <div class="kpi-grid" style="display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin:12px 0 24px;">
-        <div class="tile" style="border:1px solid #e2e8f0;border-radius:16px;padding:16px 14px;background:#fff;">
-          <h3>Appointment Conversion</h3>
-          <div class="num" style="font-size:1.6rem;font-weight:800;">+15–20%</div>
-          <div class="muted small">within 6 months</div>
-        </div>
-        <div class="tile" style="border:1px solid #e2e8f0;border-radius:16px;padding:16px 14px;background:#fff;">
-          <h3>Response Speed</h3>
-          <div class="num" style="font-size:1.6rem;font-weight:800;">&lt; 5 min</div>
-          <div class="muted small">avg compose+send</div>
-        </div>
-        <div class="tile" style="border:1px solid #e2e8f0;border-radius:16px;padding:16px 14px;background:#fff;">
-          <h3>Staff Workload</h3>
-          <div class="num" style="font-size:1.6rem;font-weight:800;">−30%</div>
-          <div class="muted small">manual tasks/emails</div>
-        </div>
-        <div class="tile" style="border:1px solid #e2e8f0;border-radius:16px;padding:16px 14px;background:#fff;">
-          <h3>Follow-up Compliance</h3>
-          <div class="num" style="font-size:1.6rem;font-weight:800;">95%+</div>
-          <div class="muted small">VIN tasks on time</div>
-        </div>
+    <!-- ===== MEDIA / DEMO PLACEHOLDERS ===== -->
+    <section class="section" id="media">
+      <h2 style="text-align:center;margin-bottom:10px">See It In Action</h2>
+      <p class="muted" style="text-align:center">We’ll drop screenshots and a short demo video here next step.</p>
+      <div class="cards">
+        <div class="card media"><small>Hero video placeholder (mp4/webm)</small></div>
+        <div class="card media"><small>Screenshot carousel placeholder</small></div>
+        <div class="card media"><small>Before → After reply comparison</small></div>
       </div>
     </section>
 
-    <!-- Workflow Comparison -->
-    <section id="workflow" class="section">
-      <h2 style="text-align:center">Workflow Comparison</h2>
+    <!-- ===== TRAINING / ROLLOUT ===== -->
+    <section class="section" id="rollout">
+      <h2 style="text-align:center">Rollout Plan</h2>
       <div class="cards">
         <div class="card">
-          <h3 style="text-align:center">VIN Solutions (Today)</h3>
-          <ol class="small">
-            <li>New lead → manual template pick</li>
-            <li>Agent edits pricing/inventory</li>
-            <li>Manual task & appt creation</li>
-            <li>Follow-ups depend on agent</li>
-          </ol>
-        </div>
-        <div class="card">
-          <h3 style="text-align:center">Gen AI Alternative (Overlay)</h3>
-          <ol class="small">
-            <li>Lead hits VIN → AI pulls inventory + incentives</li>
-            <li>AI composes email/SMS w/ 2 appt slots (&lt;5 min)</li>
-            <li>Auto-logs activity & creates VIN task/appointment</li>
-            <li>AI re-nudges at 24/48h; manager escalates at 7d</li>
-          </ol>
-        </div>
-      </div>
-
-      <details class="section">
-        <summary>Open for more (sample activity log fields)</summary>
-        <div class="small" style="margin-top:8px">
-          <ul>
-            <li><code>activity_note(html)</code> with inventory & incentive tokens</li>
-            <li><code>lead_id</code>, <code>suggested_times</code>, <code>task_due_at</code></li>
-            <li><code>appointment(start/end)</code> on acceptance</li>
-          </ul>
-        </div>
-      </details>
-    </section>
-
-    <!-- Smart Response Library -->
-    <section id="library" class="section">
-      <h2 style="text-align:center">Smart Response Library (Sampler)</h2>
-      <p class="muted">Standardized email/SMS/call prompts that always push toward an appointment.</p>
-
-      <div class="cards">
-        <div class="card">
-          <h3>New Internet Lead — Inventory</h3>
-          <p class="small"><strong>Email</strong>: “Hi [Name], we currently have <em>[stock_count]</em> [Model] in stock including [trim]. This week: <em>[cash_rebate]</em> + <em>[apr_rate]</em>. Would Thursday 6:15pm or Saturday 10:30am work for a quick drive?”</p>
-        </div>
-        <div class="card">
-          <h3>Best Price Inquiry</h3>
-          <p class="small">“The [Model] is $[price] with incentives. I can have one ready for you — does Thursday evening or Saturday morning work best?”</p>
-        </div>
-        <div class="card">
-          <h3>“I’m Just Shopping”</h3>
-          <p class="small">“Totally understand. How about a quick 15-minute no-obligation test drive? It’ll help you compare. Thursday or Saturday?”</p>
-        </div>
-        <div class="card">
-          <h3>No Response 24/48h</h3>
-          <p class="small">Light nudge with inventory/incentive reminder and two new times. Auto-schedules in VIN.</p>
-        </div>
-      </div>
-
-      <details class="section">
-        <summary>Open for more (all 20 scenarios list)</summary>
-        <div class="small" style="margin-top:8px">
-          Includes: Trade-In Interest, Lease vs Purchase, Appointment Confirmation, Reschedule, Missed Appt Recovery, Post-Test-Drive, Manager Escalation, Final-Chance Closeout, Post-Sale Thank You, Unsold Visit Follow-Up, End-of-Month Push, Credit-Challenged, Out-of-Area, Vehicle On-Order, Vehicle Sold — Alternatives, Service-to-Sales Equity Mining, and more.
-        </div>
-      </details>
-    </section>
-
-    <!-- Training & Roleplay -->
-    <section id="training" class="section">
-      <h2 style="text-align:center">Training & Roleplay</h2>
-      <p class="muted">Run calls twice: first with a typical VIN template, then with AI prompts. Measure whether the appointment was secured.</p>
-
-      <div class="cards">
-        <div class="card">
-          <h3>Traverse Example (Phone)</h3>
-          <p class="small"><strong>AI prompt</strong>: mention stock count → cite incentive → offer two times. Consistent appointment push beats generic invites.</p>
-        </div>
-        <div class="card">
-          <h3>Objection Handling</h3>
-          <p class="small">Reassure → low-commitment visit → two time options. Keeps the conversation alive and directed to a show.</p>
-        </div>
-      </div>
-
-      <details class="section">
-        <summary>Open for more (quick drill checklist)</summary>
-        <ul class="small" style="margin-top:8px">
-          <li>Pair up (customer/agent)</li>
-          <li>Run VIN style → score outcome</li>
-          <li>Run AI style → score outcome</li>
-          <li>Note confidence, clarity, and appointment set</li>
-        </ul>
-      </details>
-    </section>
-
-    <!-- Inventory & Incentives Integration -->
-    <section id="inventory" class="section">
-      <h2 style="text-align:center">Inventory & Incentives Integration</h2>
-      <p class="muted">AI reads live website inventory and OEM programs, then injects tokens into responses while keeping work inside VIN.</p>
-
-      <div class="cards">
-        <div class="card">
-          <h3>Data & Endpoints</h3>
-          <ul class="small">
-            <li><strong>Inventory</strong>: <code>GET /inventory.json</code> (stock_number, vin, year, trim, status, price, photo, updated_at)</li>
-            <li><strong>Incentives</strong>: <code>GET /incentives?make=&amp;model=&amp;zip=</code> (cash_rebate, apr, term, expiry)</li>
-            <li><strong>Tokens</strong>: [[stock_count]], [[model_trim]], [[cash_rebate]], [[apr_rate]], [[two_appt_options]], [[primary_photo]]</li>
+          <h3>Phase 1 — Pilot (Weeks 1–2)</h3>
+          <ul class="list small">
+            <li>Install with 3–5 advisors; confirm site matching.</li>
+            <li>Tune templates and sign-offs.</li>
           </ul>
         </div>
         <div class="card">
-          <h3>Event Flow</h3>
-          <ol class="small">
-            <li>New lead arrives in VIN</li>
-            <li>AI pulls inventory + incentives</li>
-            <li>Composes email/SMS (&lt;5 min) with two slots</li>
-            <li>Logs Activity + creates Task/Appt in VIN</li>
-            <li>Handles replies; sends confirmation/reminder</li>
-          </ol>
-        </div>
-      </div>
-
-      <details class="section">
-        <summary>Open for more (fallbacks & SLAs)</summary>
-        <div class="small" style="margin-top:8px">
-          If inventory feed unreachable → serve cache ≤15 min & flag “stale”.  
-          If incentives timeout → omit incentives line, keep the appointment CTA.  
-          Price/availability mismatch → add “subject to prior sale” + closest alternative.
-        </div>
-      </details>
-    </section>
-
-    <!-- (Hidden hooks so tokens.js stays happy after removing the Live Tokens section) -->
-    <div class="sr-only">
-      <div id="tokenPreview"></div>
-      <div id="tokenMeta"></div>
-    </div>
-
-    <!-- Desk Log Insights -->
-    <section id="insights" class="section">
-      <h2 style="text-align:center">Desk Log Insights (Snapshot)</h2>
-      <p class="muted">Where automation helps most: faster first replies and auto-nudges when staff are busy.</p>
-
-      <div class="cards">
-        <div class="card">
-          <h3>Funnel Summary</h3>
-          <table class="table small" aria-label="Funnel summary">
-            <thead><tr><th>Stage</th><th>Count</th><th>Conv from prior</th></tr></thead>
-            <tbody>
-              <tr><td>Leads Created</td><td>17</td><td>—</td></tr>
-              <tr><td>Contacted</td><td>9</td><td>-47%</td></tr>
-              <tr><td>Appointments Set</td><td>0</td><td>-100%</td></tr>
-              <tr><td>Showroom Visits</td><td>0</td><td>—</td></tr>
-              <tr><td>Deals</td><td>0</td><td>—</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="card">
-          <h3>Response Time Buckets</h3>
-          <table class="table small" aria-label="Response times">
-            <thead><tr><th>Bucket</th><th>Count</th></tr></thead>
-            <tbody>
-              <tr><td>1–24 hrs</td><td>9</td></tr>
-              <tr><td>No Attempt</td><td>8</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="callout small" style="margin-top:12px">
-        <strong>Opportunity</strong>: Auto-compose within 5 minutes + 24/48-hour re-nudges + manager escalation at day 7 closes the gap from “contacted” to “appointments set.”
-      </div>
-    </section>
-
-    <!-- Implementation Timeline -->
-    <section id="timeline" class="section">
-      <h2 style="text-align:center">Implementation Timeline</h2>
-      <div class="cards">
-        <div class="card">
-          <h3>Phase 1: Discovery/Design (M1-2)</h3>
-          <ul class="small">
-            <li>Map BDC workflows; pick top 20–30 scenarios</li>
-            <li>Draft templates; assemble AI training set</li>
+          <h3>Phase 2 — Team Deploy (Weeks 3–4)</h3>
+          <ul class="list small">
+            <li>Push via Web Store (private listing).</li>
+            <li>Track reply speed and appointment set rate.</li>
           </ul>
         </div>
         <div class="card">
-          <h3>Phase 2: Build/Pilot (M3-4)</h3>
-          <ul class="small">
-            <li>Email automation + VIN integration</li>
-            <li>Pilot with small BDC group; track KPIs</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>Phase 3: Full Email Deploy (M5)</h3>
-          <ul class="small">
-            <li>Roll to full team; monitor response speed & conversions</li>
-            <li>Scope real-time phone prompts</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>Phase 4-5: Expansion (M6-12)</h3>
-          <ul class="small">
-            <li>Phone assist + live inventory feeds</li>
-            <li>Scale to additional rooftops; continuous improvement</li>
+          <h3>Phase 3 — Optimize (Ongoing)</h3>
+          <ul class="list small">
+            <li>Refine prompts; add template packs.</li>
+            <li>Release notes per version; light training refreshers.</li>
           </ul>
         </div>
       </div>
     </section>
 
-    <!-- >>>>>> Recent Agent Runs <<<<<< -->
-    <section id="runs" class="section">
-      <h2 style="text-align:center">Recent Agent Runs</h2>
-      <p class="muted">Drafts saved from the Playground appear here. Later, point this at the Platform backend.</p>
-      <div class="cards">
-        <div class="card">
-          <h3>Last 10</h3>
-          <div id="runsTable" class="small">No runs yet.</div>
-          <button id="reloadRunsBtn" class="btn small" style="margin-top:10px">Reload</button>
-        </div>
-      </div>
-    </section>
-    <!-- >>>>>> END Recent Agent Runs <<<<<< -->
-
-    <!-- Downloads -->
+    <!-- ======= Downloads (UNCHANGED) ======= -->
     <section id="downloads" class="section">
       <h2 style="text-align:center">Downloads</h2>
       <p class="muted">Save or print one-pagers, training packets, and response libraries.</p>
@@ -524,55 +311,11 @@
       </div>
     </section>
 
-    <!-- FAQ -->
-    <section id="faq" class="section">
-      <h2 style="text-align:center">FAQ</h2>
-
-      <details>
-        <summary>Will AI replace our BDC agents?</summary>
-        <div class="small" style="margin-top:8px">
-          <p><strong>No.</strong> AI drafts, nudges, and keeps tasks moving; people build trust and close. The system removes repetitive work so agents can focus on live conversations and appointment-setting.</p>
-          <p><strong>What AI handles</strong></p>
-          <ul>
-            <li>Composes personalized emails/SMS with inventory & incentives in under 5 minutes.</li>
-            <li>Creates/updates VIN activities, tasks, and appointments so nothing slips.</li>
-            <li>Sends 24/48-hour re-nudges and day-7 manager escalation, consistently.</li>
-            <li>Provides real-time talk tracks for common objections.</li>
-          </ul>
-          <p><strong>What agents do</strong></p>
-          <ul>
-            <li>Approve/modify outbound messages as needed and make the calls.</li>
-            <li>Handle pricing nuance, trade-value conversations, and relationship building.</li>
-            <li>Confirm appointment details, coordinate vehicles, and close for the show.</li>
-          </ul>
-        </div>
-      </details>
-
-      <details>
-        <summary>Does everything stay inside VIN Solutions?</summary>
-        <div class="small" style="margin-top:8px">
-          <p><strong>Yes—VIN remains the system of record.</strong> The AI layer writes back every interaction so reporting and accountability live in one place.</p>
-          <ul>
-            <li><strong>Activities:</strong> full message body (HTML note), who/when, and tokens used.</li>
-            <li><strong>Tasks:</strong> auto-created follow-ups with due dates to maintain compliance.</li>
-            <li><strong>Appointments:</strong> proposed times and confirmed start/end once the customer accepts.</li>
-          </ul>
-        </div>
-      </details>
-
-      <details>
-        <summary>How do incentives and inventory stay accurate?</summary>
-        <div class="small" style="margin-top:8px">
-          <p>Live data with sensible fallbacks: if feeds are missing, the message omits specifics and keeps the appointment CTA; cache ≤15 minutes if inventory is unreachable.</p>
-        </div>
-      </details>
-    </section>
-
   </main>
 
   <!-- Footer -->
   <footer class="footer">
-    <small>© 2025 Quirk AI — VIN Gen AI Alternative</small>
+    <small>© 2025 Quirk AI — Quirk AI VIN Solutions Helper</small>
   </footer>
 
   <!-- Bundled JS (order matters) -->
@@ -580,5 +323,50 @@
   <script defer src="assets/js/playground.js"></script>
   <script defer src="assets/js/batch-composer.js"></script>
   <script defer src="assets/js/run-log.js"></script>
+
+  <!-- Countdown script (page-local) -->
+  <script>
+    (function(){
+      // Countdown to Nov 1, 2025 00:00:00 Eastern (adjust if you want a specific hour)
+      const target = new Date('2025-11-01T00:00:00-04:00').getTime();
+
+      const elD = document.getElementById('tDays');
+      const elH = document.getElementById('tHours');
+      const elM = document.getElementById('tMins');
+      const elS = document.getElementById('tSecs');
+      const timerWrap = document.getElementById('launchTimer');
+
+      function pad(n){return n.toString().padStart(2,'0');}
+
+      function tick(){
+        const now = Date.now();
+        let diff = Math.max(0, target - now);
+
+        const days = Math.floor(diff / (1000*60*60*24));
+        diff -= days * (1000*60*60*24);
+        const hours = Math.floor(diff / (1000*60*60));
+        diff -= hours * (1000*60*60);
+        const mins = Math.floor(diff / (1000*60));
+        diff -= mins * (1000*60);
+        const secs = Math.floor(diff / 1000);
+
+        elD.textContent = days;
+        elH.textContent = pad(hours);
+        elM.textContent = pad(mins);
+        elS.textContent = pad(secs);
+
+        if (target - now <= 0){
+          timerWrap.innerHTML = `
+            <div class="tbox" style="min-width:280px;background:#06210f;border-color:rgba(34,197,94,.35);box-shadow:0 10px 28px rgba(8,145,78,.35), inset 0 1px 0 rgba(255,255,255,.06)">
+              <div class="num" style="color:#bbf7d0">LAUNCHED</div>
+              <span class="lab" style="color:#86efac">Quirk AI VIN Solutions Helper</span>
+            </div>`;
+          clearInterval(int);
+        }
+      }
+      tick();
+      const int = setInterval(tick, 1000);
+    })();
+  </script>
 </body>
 </html>
