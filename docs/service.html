@@ -16,7 +16,7 @@
 
   <!-- Inline page styles (self-contained). You can move these into assets/style.css later. -->
   <style>
-    : root {
+    :root {
       --brand-green: #0b6e37;
       --brand-blue: #1d4ed8;
       --ink: #0f172a;
@@ -70,39 +70,53 @@
 
     /* Shared image cards */
     .img-card { display: grid; place-items: center; margin-top: 16px; }
-    .img-card img, .phone-grid img {
+    .img-card img, .phone-grid img, .custom-grid img {
       width: 100%; height: auto; border-radius: 12px; border: 1px solid #e5e7eb; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
     .img-hero img { width: 100%; max-width: 1000px; }
 
-    /* Screenshot grids */
+    /* Screenshot grids (first row uses your app cards) */
     .phone-grid {
       display: grid; grid-template-columns: 1fr; gap: 18px; margin-top: 22px; justify-items: center; text-align: left;
     }
     .phone-grid figure { width: 100%; max-width: 320px; }
-    .phone-grid figcaption { margin-top: 8px; color: var(--muted); font-size: 0.95rem; text-align: center; }
+    .phone-grid figcaption { display:none; } /* remove captions beneath the three app card screenshots */
     @media (min-width: 780px) {
       .phone-grid { grid-template-columns: repeat(3, 1fr); }
       .phone-grid figure { max-width: 100%; }
     }
 
+    /* Second row (your 1.jpg, 2.jpg, 3.jpg) */
+    .custom-grid {
+      display: grid; grid-template-columns: 1fr; gap: 18px; margin: 18px auto 0; justify-items: center;
+    }
+    .custom-grid figure { width: 100%; max-width: 320px; text-align: center; }
+    .custom-grid figcaption { margin-top: 8px; color: var(--muted); font-size: 0.95rem; }
+    @media (min-width: 780px) {
+      .custom-grid { grid-template-columns: repeat(3, 1fr); }
+      .custom-grid figure { max-width: 100%; }
+    }
+
     /* Sections (library cards) */
     .section {
       max-width: 900px;
-      margin: 28px auto 0;
+      margin: 56px auto 0; /* extra breathing room before the first card below the custom grid */
       background: var(--card-bg);
       border: 1px solid var(--card-bd);
       border-radius: var(--card-radius);
       box-shadow: var(--card-shadow);
       padding: 18px 20px 18px;
-      text-align: center; /* center-align the content inside the card */
+      text-align: center;
     }
+    .section + .section { margin-top: 28px; } /* normal spacing between subsequent cards */
+
     .section h2 {
       font-size: 1.5rem;
       font-weight: 800;
       margin: 4px 0 12px;
       color: #111;
     }
+
     .lede { margin-top: 20px; font-size: 1.1rem; color: var(--ink); max-width: 700px; margin-left: auto; margin-right: auto; }
 
     /* Center the list block while keeping items readable (left) */
@@ -126,7 +140,7 @@
 
   <!-- ======= Page Content ======= -->
   <main class="page-wrap" id="main-content">
-    <!-- KEEP: Title + Status + Intro (exactly as in your current page) -->
+    <!-- KEEP: Title + Status + Intro -->
     <h1 class="title">Quirk AI for Service</h1>
     <p class="status">Status: <span class="dev">In Development</span></p>
 
@@ -135,7 +149,7 @@
       to modernize check-ins, approvals, parts lookups, and follow-ups — powered by Quirk AI.
     </p>
 
-    <!-- CTA Bar (only one centered button) -->
+    <!-- CTA Bar (centered single button) -->
     <section class="cta-bar" aria-label="Primary Actions">
       <a class="btn primary" href="https://quirkchevynhservice.netlify.app/" target="_blank" rel="noopener">
         Open Web Preview
@@ -157,7 +171,7 @@
           <source srcset="assets/schedule-service.png" type="image/png" />
           <img src="assets/schedule-service.png" alt="Schedule Service screen" loading="lazy" />
         </picture>
-        <figcaption>Schedule Service</figcaption>
+        <!-- caption intentionally removed -->
       </figure>
 
       <figure>
@@ -165,7 +179,7 @@
           <source srcset="assets/inspection.png" type="image/png" />
           <img src="assets/inspection.png" alt="Multi-Point Inspection overview" loading="lazy" />
         </picture>
-        <figcaption>Multi-Point Inspection</figcaption>
+        <!-- caption intentionally removed -->
       </figure>
 
       <figure>
@@ -173,33 +187,24 @@
           <source srcset="assets/parts.png" type="image/png" />
           <img src="assets/parts.png" alt="GM Parts & Accessories request" loading="lazy" />
         </picture>
-        <figcaption>GM Parts & Accessories</figcaption>
+        <!-- caption intentionally removed -->
       </figure>
     </section>
 
-    <!-- Screenshot Grid (row 2) -->
-    <section class="phone-grid" aria-label="More App Screens">
+    <!-- Screenshot Grid (row 2) — your 1.jpg, 2.jpg, 3.jpg -->
+    <section class="custom-grid" aria-label="More App Screens">
       <figure>
-        <picture>
-          <source srcset="assets/status.avif" type="image/avif" />
-          <img src="assets/status.jpg" alt="Live Service Status milestones" loading="lazy" sizes="(min-width: 780px) 30vw, 90vw" />
-        </picture>
+        <img src="assets/1.jpg" alt="Live Service Status milestones" loading="lazy" />
         <figcaption>Live Service Status</figcaption>
       </figure>
 
       <figure>
-        <picture>
-          <source srcset="assets/checkin.avif" type="image/avif" />
-          <img src="assets/checkin.jpg" alt="Touchless Check-In with QR" loading="lazy" sizes="(min-width: 780px) 30vw, 90vw" />
-        </picture>
+        <img src="assets/2.jpg" alt="Touchless Check-In with QR" loading="lazy" />
         <figcaption>Touchless Check-In</figcaption>
       </figure>
 
       <figure>
-        <picture>
-          <source srcset="assets/loyalty.avif" type="image/avif" />
-          <img src="assets/loyalty.jpg" alt="Loyalty & Offers wallet" loading="lazy" sizes="(min-width: 780px) 30vw, 90vw" />
-        </picture>
+        <img src="assets/3.jpg" alt="Loyalty & Offers wallet" loading="lazy" />
         <figcaption>Loyalty & Offers</figcaption>
       </figure>
     </section>
