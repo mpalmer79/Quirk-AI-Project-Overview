@@ -11,11 +11,13 @@
   <!-- Keep URLs resolving under the project site -->
   <base href="/Quirk-AI-Project-Overview/">
 
+  <!-- Global site styles -->
   <link rel="stylesheet" href="assets/style.css" />
 
   <style>
-    :root { --brand-green: #0b6e37; }
+    :root { --brand-green: #0b6e37; --brand-blue:#1d4ed8; --ink:#0f172a; --muted:#334155; }
 
+    /* Layout */
     .page-wrap {
       max-width: 1000px;
       margin: 0 auto;
@@ -24,24 +26,6 @@
       z-index: 1;
       text-align: center;
     }
-
-    .title {
-      text-align: center;
-      font-size: 2rem;
-      font-weight: 700;
-      margin: 32px 0 12px;
-      color: #111;
-    }
-
-    .status {
-      text-align: center;
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin: 12px 0 0;
-      color: #111;
-    }
-
-    .status .dev { color: #1d4ed8; font-weight: 800; }
 
     /* Watermark background */
     body::before {
@@ -55,81 +39,125 @@
       pointer-events: none;
     }
 
-    /* ----- Image cards (shared look) ----- */
+    /* Headings & status (keep identical look) */
+    .title {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 32px 0 12px;
+      color: #111;
+    }
+    .status {
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin: 12px 0 0;
+      color: #111;
+    }
+    .status .dev { color: var(--brand-blue); font-weight: 800; }
+
+    /* CTA Bar */
+    .cta-bar {
+      margin: 20px 0 8px;
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-block;
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: box-shadow .15s ease, transform .05s ease;
+    }
+    .btn:active { transform: translateY(1px); }
+    .btn.primary {
+      border: 1px solid var(--brand-blue);
+      background: var(--brand-blue);
+      color: #fff;
+    }
+    .btn.primary:hover { box-shadow: 0 8px 20px rgba(29,78,216,.25); }
+    .btn.secondary {
+      border: 1px solid #cbd5e1;
+      background: #e2e8f0;
+      color: #475569;
+      cursor: default;
+    }
+
+    /* Shared image cards */
     .img-card {
       display: grid;
       place-items: center;
-      margin-top: 32px;
+      margin-top: 16px;
     }
-    .img-card img {
+    .img-card img, .phone-grid img {
       width: 100%;
       height: auto;
-      border-radius: 8px;
+      border-radius: 12px;
       border: 1px solid #e5e7eb;
       background: #fff;
       box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
-
-    /* Top image: increased ~50% from previous 75% -> now full container width */
     .img-hero img { width: 100%; max-width: 1000px; }
 
-    /* Bottom image: show at 75% width */
-    .img-75 img { width: 75%; max-width: 1000px; }
-
-    /* Optional: show pointer on linked hero image */
-    .img-hero a { display: inline-block; }
-    .img-hero a:hover img { box-shadow: 0 6px 16px rgba(0,0,0,0.12); }
-
-    /* ---- Three-phone grid ---- */
+    /* Screenshot grid (3-up) */
     .phone-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 16px;
-      margin-top: 24px;
+      gap: 18px;
+      margin-top: 22px;
       justify-items: center;
+      text-align: left;
     }
-    .phone-grid img {
-      width: 100%;
-      max-width: 320px;
-      height: auto;
-      border-radius: 12px;
-      border: 1px solid #e5e7eb;
-      background: #fff;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    }
+    .phone-grid figure { width: 100%; max-width: 320px; }
+    .phone-grid figcaption { margin-top: 8px; color: var(--muted); font-size: 0.95rem; text-align: center; }
     @media (min-width: 780px) {
       .phone-grid { grid-template-columns: repeat(3, 1fr); }
+      .phone-grid figure { max-width: 100%; }
     }
 
-    /* ---- New: two-phone grid for 4.jpg and 5.jpg ---- */
-    .pair-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 16px;
-      margin-top: 16px;
-      justify-items: center;
+    /* Content sections */
+    .lede {
+      margin-top: 20px; font-size: 1.1rem; color: var(--ink);
+      max-width: 700px; margin-left: auto; margin-right: auto;
     }
-    .pair-grid img {
-      width: 100%;
-      max-width: 360px;
-      height: auto;
-      border-radius: 12px;
-      border: 1px solid #e5e7eb;
-      background: #fff;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    .section {
+      max-width: 900px;
+      margin: 28px auto 0;
+      text-align: left;
     }
-    @media (min-width: 780px) {
-      .pair-grid { grid-template-columns: repeat(2, 1fr); }
+    .section h2 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+      color: #111;
     }
+    .bullets {
+      padding-left: 18px;
+      line-height: 1.6;
+      color: var(--ink);
+    }
+    .bullets.twocol {
+      columns: 2; column-gap: 24px;
+    }
+    @media (max-width: 700px) {
+      .bullets.twocol { columns: 1; }
+    }
+
+    /* Topbar (existing) quick styles in case assets/style.css is minimal */
+    .topbar { position: sticky; top: 0; z-index: 10; background: #ffffffcc; backdrop-filter: saturate(180%) blur(6px); border-bottom: 1px solid #e5e7eb; }
+    .topbar-inner { max-width: 1000px; margin: 0 auto; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .topbar-title { font-weight: 700; color: #111; }
+    .topbar a { color: var(--brand-blue); font-weight: 700; text-decoration: none; }
+    .home-wrap { display: none; } /* keep your legacy home button hidden on this page */
   </style>
 </head>
 <body>
-  <div class="home-wrap">
-  <a class="home-btn" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
-</div>
 
   <!-- ======= Top Navigation Bar ======= -->
-  <header class="topbar">
+  <header class="topbar" role="banner">
     <div class="topbar-inner">
       <a class="home-link" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
       <div class="topbar-title">Quirk AI for Service</div>
@@ -140,41 +168,101 @@
   </header>
 
   <!-- ======= Page Content ======= -->
-  <main class="page-wrap">
+  <main class="page-wrap" id="main-content">
+    <!-- KEEP: Title + Status + Intro (exactly as in your current page) -->
     <h1 class="title">Quirk AI for Service</h1>
     <p class="status">Status: <span class="dev">In Development</span></p>
 
-    <p style="margin-top:20px; font-size:1.1rem; color:#0f172a; max-width:700px; margin-left:auto; margin-right:auto;">
+    <p class="lede">
       Mobile-first tools designed for service advisors and customers, with native Android and iPhone apps
       to modernize check-ins, approvals, parts lookups, and follow-ups — powered by Quirk AI.
     </p>
 
-    <!-- Top image: larger and clickable (opens in new tab) -->
-    <div class="img-card img-hero">
-      <a href="https://createanything.com/mobile-preview/54a62cc5-7f83-42a6-ae1c-a8ef7e84f22f?path=%2Faccount" target="_blank" rel="noopener">
-        <img src="assets/app.png" alt="Quirk AI Service app preview">
+    <!-- CTA Bar -->
+    <section class="cta-bar" aria-label="Primary Actions">
+      <a class="btn primary" href="https://quirkchevynhservice.netlify.app/" target="_blank" rel="noopener">
+        Open Web Preview
       </a>
-    </div>
+      <span class="btn secondary" aria-disabled="true">
+        Join Beta (iOS/Android) — Coming Soon
+      </span>
+    </section>
 
-    <!-- Bottom image at 75% width with AVIF + PNG fallback -->
-    <div class="img-card img-75">
+    <!-- Hero Screenshot -->
+    <div class="img-card img-hero" aria-label="App Hero">
       <picture>
-        <source srcset="assets/app1.avif" type="image/avif">
-        <img src="assets/app1.png" alt="Quirk AI Service full app preview">
+        <source srcset="assets/hero-service.avif" type="image/avif" />
+        <img src="assets/hero-service.jpg" alt="Quirk Chevy Service app — hero" loading="eager" />
       </picture>
     </div>
 
-    <!-- Three screenshots -->
-    <section class="phone-grid" aria-label="App screens">
-      <img src="assets/1.jpg" alt="Schedule Service screen">
-      <img src="assets/2.jpg" alt="My Vehicles screen">
-      <img src="assets/3.jpg" alt="My Account screen">
+    <!-- Screenshot Grid -->
+    <section class="phone-grid" aria-label="Key App Screens">
+      <figure>
+        <picture>
+          <source srcset="assets/schedule-service.avif" type="image/avif" />
+          <img src="assets/schedule-service.jpg" alt="Schedule Service screen" loading="lazy" />
+        </picture>
+        <figcaption>Schedule Service</figcaption>
+      </figure>
+
+      <figure>
+        <picture>
+          <source srcset="assets/inspection.avif" type="image/avif" />
+          <img src="assets/inspection.jpg" alt="Multi-Point Inspection overview" loading="lazy" />
+        </picture>
+        <figcaption>Multi-Point Inspection</figcaption>
+      </figure>
+
+      <figure>
+        <picture>
+          <source srcset="assets/parts.avif" type="image/avif" />
+          <img src="assets/parts.jpg" alt="GM Parts & Accessories request" loading="lazy" />
+        </picture>
+        <figcaption>GM Parts & Accessories</figcaption>
+      </figure>
     </section>
 
-    <!-- New: two screenshots at the bottom (left = 4.jpg, right = 5.jpg) -->
-    <section class="pair-grid" aria-label="Additional app screens">
-      <img src="assets/4.jpg" alt="Additional screen 4">
-      <img src="assets/5.jpg" alt="Additional screen 5">
+    <!-- Feature Highlights -->
+    <section class="section" aria-label="Feature Highlights">
+      <h2>What it does</h2>
+      <ul class="bullets twocol">
+        <li>Schedule & reminders</li>
+        <li>Touchless check-in</li>
+        <li>Service status updates</li>
+        <li>GM parts requests</li>
+        <li>Loyalty & offers</li>
+        <li>Sight-Unseen trade-in</li>
+      </ul>
+    </section>
+
+    <!-- How It Works -->
+    <section class="section" aria-label="How It Works">
+      <h2>How it works</h2>
+      <ol class="bullets">
+        <li>Pick a time that fits your day.</li>
+        <li>Check in on arrival — touchless option available.</li>
+        <li>Track status, approve work, and get notified for pickup.</li>
+      </ol>
+    </section>
+
+    <!-- Built for Quirk -->
+    <section class="section" aria-label="Technology">
+      <h2>Built for Quirk Chevrolet</h2>
+      <p style="color: var(--ink);">
+        Native iPhone & Android experience with a lightweight web preview. Built with React + Vite, Tailwind, and shadcn/ui.
+        Secure messaging via Netlify Functions. No payment info stored client-side.
+      </p>
+    </section>
+
+    <!-- Roadmap -->
+    <section class="section" aria-label="Roadmap">
+      <h2>Roadmap</h2>
+      <ul class="bullets">
+        <li><strong>Now:</strong> Scheduling, parts, inspection overview</li>
+        <li><strong>Next:</strong> VIN scan, approvals, loyalty integration</li>
+        <li><strong>Planned:</strong> Live service status milestones, push notifications</li>
+      </ul>
     </section>
   </main>
 
