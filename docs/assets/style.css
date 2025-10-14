@@ -265,3 +265,78 @@ footer.footer small{color:var(--muted);font-weight:500}
 
 /* ===== Hard remove the old green nav bar everywhere (keeps black HOME button) ===== */
 .topbar{display:none!important}
+/* --- Quirk Service page: minimal patch --- */
+:root {
+  --brand-green: #0b6e37;
+  --brand-blue: #1d4ed8;
+  --ink: #0f172a;
+  --muted: #334155;
+}
+
+/* Page shell */
+.page-wrap {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px 20px 56px;
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+/* Watermark background */
+body::before {
+  content: "";
+  background: url("assets/quirk-ai-logo.png") no-repeat center center;
+  background-size: 400px auto;
+  opacity: 0.06;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Title + status (kept look) */
+.title { text-align: center; font-size: 2rem; font-weight: 700; margin: 32px 0 12px; color: #111; }
+.status { text-align: center; font-size: 1.5rem; font-weight: 700; margin: 12px 0 0; color: #111; }
+.status .dev { color: var(--brand-blue); font-weight: 800; }
+
+/* Topbar (light sticky) */
+.topbar { position: sticky; top: 0; z-index: 10; background: #ffffffcc; backdrop-filter: saturate(180%) blur(6px); border-bottom: 1px solid #e5e7eb; }
+.topbar-inner { max-width: 1000px; margin: 0 auto; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.topbar-title { font-weight: 700; color: #111; }
+.topbar a { color: var(--brand-blue); font-weight: 700; text-decoration: none; }
+.home-wrap { display: none; } /* hide the legacy floating HOME on this page */
+
+/* CTA bar + buttons */
+.cta-bar { margin: 20px 0 8px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.btn { display: inline-block; padding: 10px 16px; border-radius: 10px; font-weight: 700; text-decoration: none; transition: box-shadow .15s ease, transform .05s ease; }
+.btn:active { transform: translateY(1px); }
+.btn.primary { border: 1px solid var(--brand-blue); background: var(--brand-blue); color: #fff; }
+.btn.primary:hover { box-shadow: 0 8px 20px rgba(29,78,216,.25); }
+.btn.secondary { border: 1px solid #cbd5e1; background: #e2e8f0; color: #475569; cursor: default; }
+
+/* Shared image cards */
+.img-card { display: grid; place-items: center; margin-top: 16px; }
+.img-card img, .phone-grid img {
+  width: 100%; height: auto; border-radius: 12px; border: 1px solid #e5e7eb; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.img-hero img { width: 100%; max-width: 1000px; }
+
+/* Screenshot grids */
+.phone-grid {
+  display: grid; grid-template-columns: 1fr; gap: 18px; margin-top: 22px; justify-items: center; text-align: left;
+}
+.phone-grid figure { width: 100%; max-width: 320px; }
+.phone-grid figcaption { margin-top: 8px; color: var(--muted); font-size: 0.95rem; text-align: center; }
+@media (min-width: 780px) {
+  .phone-grid { grid-template-columns: repeat(3, 1fr); }
+  .phone-grid figure { max-width: 100%; }
+}
+
+/* Sections */
+.lede { margin-top: 20px; font-size: 1.1rem; color: var(--ink); max-width: 700px; margin-left: auto; margin-right: auto; }
+.section { max-width: 900px; margin: 28px auto 0; text-align: left; }
+.section h2 { font-size: 1.5rem; font-weight: 800; margin-bottom: 10px; color: #111; }
+.bullets { padding-left: 18px; line-height: 1.6; color: var(--ink); }
+.bullets.twocol { columns: 2; column-gap: 24px; }
+@media (max-width: 700px) { .bullets.twocol { columns: 1; } }
