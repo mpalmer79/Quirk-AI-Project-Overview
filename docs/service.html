@@ -221,8 +221,9 @@
 
     <!-- Video Demo (muted by default) -->
     <section class="video-wrap" aria-label="Scheduling Flow Demo">
-      <video class="promo-video" src="assets/chevy-schedule-loop.mp4"
-             muted playsinline autoplay loop controls></video>
+      <video class="promo-video"
+             src="assets/chevy-schedule-loop.mp4"
+             muted playsinline autoplay loop controls preload="metadata"></video>
     </section>
 
     <!-- Feature Highlights -->
@@ -272,5 +273,60 @@
   <footer class="container footer">
     <p>&copy; 2025 Quirk AI — Service</p>
   </footer>
+
+  <!-- Autoplay only when in view -->
+  <script>
+    (function () {
+      const video = document.querySelector('.promo-video');
+      if (!video) return;
+
+      // Ensure mobile-friendly defaults
+      video.muted = true;
+      video.playsInline = true;
+
+      // Respect reduced motion
+      const prefersReduced = window.matchMedia &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReduced) {
+        video.removeAttribute('autoplay');
+        video.pause();
+        return;
+      }
+
+      // Observer: play when >= 50% visible, pause otherwise
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+            const p = video.play();
+            if (p && typeof p.then === 'function') p.catch(() => {});
+          } else {
+            video.pause();
+          }
+        });
+      }, { threshold: [0, 0.5, 1] });
+
+      observer.observe(video);
+
+      // Pause when tab is hidden; resume when visible and in view
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          video.pause();
+        } else {
+          // Check if it's in view enough to resume
+          const rect = video.getBoundingClientRect();
+          const inView = rect.top < window.innerHeight * 0.5 && rect.bottom > window.innerHeight * 0.5;
+          if (inView) {
+            const p = video.play();
+            if (p && typeof p.then === 'function') p.catch(() => {});
+          }
+        }
+      });
+
+      // Extra safety for loop on some mobile browsers
+      video.addEventListener('ended', () => {
+        try { video.currentTime = 0; video.play(); } catch (e) {}
+      });
+    })();
+  </script>
 </body>
 </html>
