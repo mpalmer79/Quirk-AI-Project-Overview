@@ -16,11 +16,15 @@
 
   <!-- Inline page styles (self-contained). You can move these into assets/style.css later. -->
   <style>
-    : root {
+    :root {
       --brand-green: #0b6e37;
       --brand-blue: #1d4ed8;
       --ink: #0f172a;
       --muted: #334155;
+      --card-bg: #fff;
+      --card-bd: #e5e7eb;
+      --card-shadow: 0 10px 24px rgba(0,0,0,.06);
+      --card-radius: 16px;
     }
 
     /* Page shell */
@@ -63,7 +67,6 @@
     .btn:active { transform: translateY(1px); }
     .btn.primary { border: 1px solid var(--brand-blue); background: var(--brand-blue); color: #fff; }
     .btn.primary:hover { box-shadow: 0 8px 20px rgba(29,78,216,.25); }
-    .btn.secondary { border: 1px solid #cbd5e1; background: #e2e8f0; color: #475569; cursor: default; }
 
     /* Shared image cards */
     .img-card { display: grid; place-items: center; margin-top: 16px; }
@@ -83,11 +86,27 @@
       .phone-grid figure { max-width: 100%; }
     }
 
-    /* Sections */
+    /* Sections (library cards) */
+    .section {
+      max-width: 900px;
+      margin: 28px auto 0;
+      background: var(--card-bg);
+      border: 1px solid var(--card-bd);
+      border-radius: var(--card-radius);
+      box-shadow: var(--card-shadow);
+      padding: 18px 20px 18px;
+      text-align: center; /* center-align the content inside the card */
+    }
+    .section h2 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin: 4px 0 12px;
+      color: #111;
+    }
     .lede { margin-top: 20px; font-size: 1.1rem; color: var(--ink); max-width: 700px; margin-left: auto; margin-right: auto; }
-    .section { max-width: 900px; margin: 28px auto 0; text-align: left; }
-    .section h2 { font-size: 1.5rem; font-weight: 800; margin-bottom: 10px; color: #111; }
-    .bullets { padding-left: 18px; line-height: 1.6; color: var(--ink); }
+
+    /* Center the list block while keeping items readable (left) */
+    .bullets { line-height: 1.6; color: var(--ink); text-align: left; display: inline-block; }
     .bullets.twocol { columns: 2; column-gap: 24px; }
     @media (max-width: 700px) { .bullets.twocol { columns: 1; } }
   </style>
@@ -116,21 +135,18 @@
       to modernize check-ins, approvals, parts lookups, and follow-ups — powered by Quirk AI.
     </p>
 
-    <!-- CTA Bar -->
+    <!-- CTA Bar (only one centered button) -->
     <section class="cta-bar" aria-label="Primary Actions">
       <a class="btn primary" href="https://quirkchevynhservice.netlify.app/" target="_blank" rel="noopener">
         Open Web Preview
       </a>
-      <span class="btn secondary" aria-disabled="true">
-        Join Beta (iOS/Android) — Coming Soon
-      </span>
     </section>
 
     <!-- Hero Screenshot -->
     <div class="img-card img-hero" aria-label="App Hero">
       <picture>
-        <source srcset="assets/hero-service.png" type="image/png" />
-        <img src="assets/hero-service.png" alt="Quirk Chevy Service app — hero" loading="eager" />
+        <source srcset="assets/hero-service.avif" type="image/avif" />
+        <img src="assets/hero-service.jpg" alt="Quirk Chevy Service app — hero" loading="eager" />
       </picture>
     </div>
 
@@ -214,7 +230,7 @@
     <!-- Built for Quirk -->
     <section class="section" aria-label="Technology">
       <h2>Built for Quirk Chevrolet</h2>
-      <p style="color: var(--ink);">
+      <p style="color: var(--ink); max-width: 760px; margin: 0 auto;">
         Native iPhone & Android experience with a lightweight web preview. Built with React + Vite, Tailwind, and shadcn/ui.
         Secure messaging via Netlify Functions. No payment info stored client-side.
       </p>
