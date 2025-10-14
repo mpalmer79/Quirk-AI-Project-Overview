@@ -59,7 +59,7 @@
     .topbar-inner { max-width: 1000px; margin: 0 auto; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
     .topbar-title { font-weight: 700; color: #111; }
     .topbar a { color: var(--brand-blue); font-weight: 700; text-decoration: none; }
-    .home-wrap { display: none; } /* hide legacy floating HOME button on this page */
+    .home-wrap { display: none; }
 
     /* CTA bar + buttons */
     .cta-bar { margin: 20px 0 8px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
@@ -80,7 +80,7 @@
       display: grid; grid-template-columns: 1fr; gap: 18px; margin-top: 22px; justify-items: center; text-align: left;
     }
     .phone-grid figure { width: 100%; max-width: 320px; }
-    .phone-grid figcaption { display:none; } /* remove captions beneath the three app card screenshots */
+    .phone-grid figcaption { display:none; }
     @media (min-width: 780px) {
       .phone-grid { grid-template-columns: repeat(3, 1fr); }
       .phone-grid figure { max-width: 100%; }
@@ -91,16 +91,32 @@
       display: grid; grid-template-columns: 1fr; gap: 18px; margin: 18px auto 0; justify-items: center;
     }
     .custom-grid figure { width: 100%; max-width: 320px; text-align: center; }
-    .custom-grid figcaption { display:none; } /* captions removed per request */
+    .custom-grid figcaption { display:none; }
     @media (min-width: 780px) {
       .custom-grid { grid-template-columns: repeat(3, 1fr); }
       .custom-grid figure { max-width: 100%; }
     }
 
+    /* Video section */
+    .video-wrap {
+      max-width: 900px;
+      margin: 28px auto 44px; /* creates breathing room below video before the first card */
+      padding: 0 4px;
+    }
+    .promo-video {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 12px;
+      border: 1px solid var(--card-bd);
+      box-shadow: 0 8px 20px rgba(0,0,0,.08);
+      background: #000;
+    }
+
     /* Sections (library cards) */
     .section {
       max-width: 900px;
-      margin: 56px auto 0; /* extra breathing room before the first card below the custom grid */
+      margin: 56px auto 0; /* healthy spacing from content above */
       background: var(--card-bg);
       border: 1px solid var(--card-bd);
       border-radius: var(--card-radius);
@@ -108,7 +124,7 @@
       padding: 18px 20px 18px;
       text-align: center;
     }
-    .section + .section { margin-top: 28px; } /* normal spacing between subsequent cards */
+    .section + .section { margin-top: 28px; }
 
     .section h2 {
       font-size: 1.5rem;
@@ -171,7 +187,6 @@
           <source srcset="assets/schedule-service.png" type="image/png" />
           <img src="assets/schedule-service.png" alt="Schedule Service screen" loading="lazy" />
         </picture>
-        <!-- caption intentionally removed -->
       </figure>
 
       <figure>
@@ -179,7 +194,6 @@
           <source srcset="assets/inspection.png" type="image/png" />
           <img src="assets/inspection.png" alt="Multi-Point Inspection overview" loading="lazy" />
         </picture>
-        <!-- caption intentionally removed -->
       </figure>
 
       <figure>
@@ -187,7 +201,6 @@
           <source srcset="assets/parts.png" type="image/png" />
           <img src="assets/parts.png" alt="GM Parts & Accessories request" loading="lazy" />
         </picture>
-        <!-- caption intentionally removed -->
       </figure>
     </section>
 
@@ -195,18 +208,21 @@
     <section class="custom-grid" aria-label="More App Screens">
       <figure>
         <img src="assets/1.jpg" alt="Live Service Status milestones" loading="lazy" />
-        <!-- caption removed -->
       </figure>
 
       <figure>
         <img src="assets/2.jpg" alt="Touchless Check-In with QR" loading="lazy" />
-        <!-- caption removed -->
       </figure>
 
       <figure>
         <img src="assets/3.jpg" alt="Loyalty & Offers wallet" loading="lazy" />
-        <!-- caption removed -->
       </figure>
+    </section>
+
+    <!-- Video Demo (muted by default) -->
+    <section class="video-wrap" aria-label="Scheduling Flow Demo">
+      <video class="promo-video" src="assets/chevy-schedule-loop.mp4"
+             muted playsinline autoplay loop controls></video>
     </section>
 
     <!-- Feature Highlights -->
