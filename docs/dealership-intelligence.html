@@ -4,205 +4,173 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Smart Workplace Verification — Quirk AI</title>
-<meta name="description" content="Quirk AI Smart Workplace Verification: camera coverage + biometric time-clock sync with compliance-first operations for dealerships."/>
+<meta name="description" content="Dealership workplace verification: what U.S. dealers actually use, compliance risks, and a practical path forward."/>
 <base href="/Quirk-AI-Project-Overview/"/>
 <link rel="stylesheet" href="assets/style.css"/>
 
 <style>
-  .center { text-align:center }
-  .lead { margin:18px 0 6px; color:#475569; font-size:1.05rem }
-  .alerts { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px }
-  .alerts .after-hours { grid-column:1/-1; max-width:560px; justify-self:center }
-  .table-wrap { overflow-x:auto }
-  table { width:100%; border-collapse:collapse; background:#fff; border:1px solid #e5e7eb; border-radius:12px }
-  th,td { padding:12px; border-bottom:1px solid #e5e7eb; text-align:left }
-  th[scope="row"] { width:240px; color:#0f172a; background:#f9fafb }
-  .feature-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px }
-  .library-card { display:block; background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:14px; box-shadow:0 1px 6px rgba(0,0,0,.04) }
-  .library-card .title { display:block; font-weight:700; color:#0f172a; margin-bottom:6px }
-  .library-card .meta { display:block; color:#475569; font-size:.95rem }
-  .compliance-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:14px }
-  .compliance-item { background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:12px; text-align:center }
-  .compliance-number { font-size:1.6rem; font-weight:800; color:#0f172a; margin:0 }
-  .compliance-label { color:#475569; margin:4px 0 0 }
+  :root{
+    --ink:#0f172a; --muted:#475569; --card:#fff; --bd:#e5e7eb;
+  }
+
+  /* Page shell */
+  body{margin:0}
+  .wrap{max-width:1100px;margin:0 auto;padding:24px 16px 64px}
+
+  /* Centered HOME pill */
+  .home-rail{display:flex;justify-content:center;margin-top:22px;margin-bottom:12px}
+  .home-pill{
+    display:inline-block;background:#111;color:#fff;text-decoration:none;
+    padding:10px 18px;border-radius:12px;font-weight:800;letter-spacing:.3px;
+    box-shadow:0 8px 24px rgba(0,0,0,.12);
+  }
+  .home-pill:focus,.home-pill:hover{outline:none;filter:brightness(1.05)}
 
   /* Video container */
-  .video-section {
-    max-width: 1100px;
-    margin: 40px auto 60px;
-    text-align: center;
-    position: relative;
-    aspect-ratio: 16 / 9;
+  .video-section{
+    width:100%;max-width:1100px;margin:26px auto 36px;position:relative;
+    aspect-ratio:16/9;border-radius:12px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.08);
+    border:1px solid var(--bd);
   }
-  .video-section iframe {
-    width: 100%;
-    height: 100%;
-    border-radius: 12px;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  .video-section iframe{width:100%;height:100%;border:0;display:block;background:#000}
+
+  @media (max-width:768px){
+    .video-section{margin:18px auto 28px}
   }
 
-  @media (max-width: 768px) {
-    .video-section { margin: 28px auto 48px; width: 100%; }
-    .video-section iframe { height: 300px; }
+  /* Section heading */
+  .section-title{font:800 1.35rem/1.2 ui-sans-serif,system-ui; color:var(--ink); text-align:center; margin:10px 0 12px}
+
+  /* Library cards */
+  .cards{
+    display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    margin-top:10px
   }
+  .card{
+    background:var(--card);border:1px solid var(--bd);border-radius:12px;
+    box-shadow:0 1px 8px rgba(0,0,0,.05);padding:14px 14px 12px
+  }
+  .card h3{margin:2px 0 8px;text-align:center;font-weight:800;color:var(--ink);font-size:1.05rem}
+  .card p{margin:0;color:var(--muted)}
+  .card ul{margin:6px 0 0 18px;color:var(--muted)}
+  .card li{margin:4px 0}
+
+  /* Container for the cards section */
+  .cards-section{margin-top:18px}
 </style>
 </head>
 <body>
+  <div class="wrap">
 
-<div class="home-wrap"><a class="home-btn" href="./">HOME</a></div>
+    <!-- Centered HOME button -->
+    <div class="home-rail">
+      <a class="home-pill" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
+    </div>
 
-<header class="topbar">
-  <div class="topbar-inner">
-    <a class="home-link" href="./">HOME</a>
-    <div class="topbar-title">Smart Workplace Verification</div>
-    <nav class="topbar-menu" aria-label="Secondary Navigation">
-      <a href="project-library.html">Project Library</a>
-    </nav>
+    <!-- Embedded YouTube Video (kept) -->
+    <section class="video-section" aria-label="Workforce monitoring overview video">
+      <iframe id="workforce-video"
+        src="https://www.youtube.com/embed/mFi-kErgWks?enablejsapi=1&mute=1"
+        title="BioEnable AI: The Future of Workforce Management | AI Powered HR & Attendance Solutions"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen></iframe>
+    </section>
+
+    <!-- Findings as white library cards -->
+    <section class="cards-section" aria-label="Findings">
+      <h2 class="section-title">Dealership Employee-Presence Monitoring — What’s Actually Used</h2>
+      <div class="cards">
+        <article class="card">
+          <h3>Common Today</h3>
+          <p>Dealers widely use <strong>biometric time clocks</strong> (fingerprint/face) to stop buddy-punching and <strong>geofenced or beacon-gated mobile punches</strong> to ensure on-site clock-ins.</p>
+        </article>
+
+        <article class="card">
+          <h3>Cameras in Dealerships</h3>
+          <p>IP camera systems with analytics (LPR, alerts, remote monitoring) are common for <strong>security and operations</strong>, but they’re typically <strong>kept separate from payroll/attendance</strong>.</p>
+        </article>
+
+        <article class="card">
+          <h3>Why Camera → Timecard Is Rare</h3>
+          <ul>
+            <li><strong>Legal risk</strong> (e.g., biometric privacy laws) and class-action exposure.</li>
+            <li><strong>Culture & trust</strong>: continuous visual tracking tied to HR records is sensitive.</li>
+            <li><strong>Governance burden</strong>: consent, retention, appeals, and auditing.</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h3>Practical Path for Quirk</h3>
+          <ul>
+            <li><strong>Tier 1:</strong> Geofencing + Microfence-style beacons; optional kiosk biometric clocks.</li>
+            <li><strong>Tier 2:</strong> Use cameras for security/ops; don’t feed them into payroll systems.</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h3>Governance Must-Haves</h3>
+          <ul>
+            <li>Written notice & consent; clear retention/deletion policy.</li>
+            <li>Security controls; employee appeal path for mismatches.</li>
+            <li>Provide a non-biometric alternative for clock-ins.</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h3>Forward-Looking</h3>
+          <p>Expect tighter state rules and vendor offerings that emphasize <strong>privacy-by-design</strong> (edge processing, minimal retention, and consent workflows) over broad video-to-payroll integrations.</p>
+        </article>
+      </div>
+    </section>
+
   </div>
-</header>
 
-<main class="container" style="padding-top:16px;padding-bottom:56px">
-  <!-- Intro -->
-  <section class="section">
-    <p class="lead">
-      The Quirk AI Workplace Verification system integrates facial recognition with your biometric time clock to ensure
-      employees are present in appropriate areas during work hours. Built for dealership operations with a compliance-first architecture.
-      Camera feeds identify individuals against an employee photo database to verify presence, correlate with timecards, and monitor
-      movements by area and workstation.
-    </p>
-  </section>
+  <!-- Autoplay only when in view (muted by default) -->
+  <script>
+    (function () {
+      const iframe = document.getElementById("workforce-video");
+      if (!iframe) return;
 
-  <!-- Embedded YouTube Video -->
-  <section class="video-section" aria-label="BioEnable AI video">
-    <iframe id="workforce-video" 
-      src="https://www.youtube.com/embed/mFi-kErgWks?enablejsapi=1&mute=1"
-      title="BioEnable AI: The Future of Workforce Management | AI Powered HR & Attendance Solutions"
-      frameborder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-      referrerpolicy="strict-origin-when-cross-origin"
-      allowfullscreen>
-    </iframe>
-  </section>
+      function startPlayer() {
+        const player = new YT.Player("workforce-video", {
+          events: {
+            onReady: (ev) => { try { ev.target.mute(); ev.target.playVideo(); } catch(e) {} }
+          }
+        });
 
-  <!-- System Overview -->
-  <section class="section">
-    <h2 class="section-title center">System Overview</h2>
-    <div class="feature-grid" aria-label="System overview highlights">
-      <div class="library-card" role="article" aria-label="100+ IP Cameras Network Capable">
-        <span class="title">100+ IP Cameras Network Capable</span>
-        <span class="meta">Coverage across entrances, sales areas, service, and showroom with area-based monitoring.</span>
-      </div>
-      <div class="library-card" role="article" aria-label="Biometric Integration">
-        <span class="title">Biometric Integration</span>
-        <span class="meta">Sync with fingerprint time clocks to cross-reference attendance data.</span>
-      </div>
-      <div class="library-card" role="article" aria-label="Department-Based Access">
-        <span class="title">Department-Based Access</span>
-        <span class="meta">Role-specific area permissions for Sales, Service, Management.</span>
-      </div>
-      <div class="library-card" role="article" aria-label="Automotive Compliance">
-        <span class="title">Automotive Compliance</span>
-        <span class="meta">30-day retention, admin audit trails, and industry-grade security.</span>
-      </div>
-    </div>
-  </section>
+        const obs = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+              try { player.playVideo(); } catch(e) {}
+            } else {
+              try { player.pauseVideo(); } catch(e) {}
+            }
+          });
+        }, { threshold: [0, 0.5, 1] });
 
-  <!-- Technical Specifications -->
-  <section class="section">
-    <h2 class="section-title center">Technical Specifications</h2>
-    <div class="table-wrap" role="region" aria-label="Specifications table">
-      <table>
-        <tbody>
-          <tr><th scope="row">Camera Coverage</th><td>100 IP cameras across dealership areas</td></tr>
-          <tr><th scope="row">Employee Capacity</th><td>150+ employees supported</td></tr>
-          <tr><th scope="row">Operating Hours</th><td>Mon–Thu 7AM–8PM, Fri–Sat 7AM–6PM, Sun 10AM–5PM (Sales)</td></tr>
-          <tr><th scope="row">Data Retention</th><td>30 days automatic cleanup</td></tr>
-          <tr><th scope="row">Platform</th><td>Windows-compatible with SQLite database</td></tr>
-          <tr><th scope="row">Integration</th><td>Biometric time clock sync capability</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
+        obs.observe(iframe);
 
-  <!-- Monitored Areas -->
-  <section class="section">
-    <h2 class="section-title center">Monitored Areas</h2>
-    <div class="compliance-grid" aria-label="Monitored area counts">
-      <div class="compliance-item"><p class="compliance-number">28</p><p class="compliance-label">Entrance Cameras</p></div>
-      <div class="compliance-item"><p class="compliance-number">4</p><p class="compliance-label">Sales Desk</p></div>
-      <div class="compliance-item"><p class="compliance-number">8</p><p class="compliance-label">Showroom Areas</p></div>
-      <div class="compliance-item"><p class="compliance-number">4</p><p class="compliance-label">Service Departments</p></div>
-    </div>
-  </section>
-
-  <!-- Intelligent Alert System -->
-  <section class="section">
-    <h2 class="section-title center">Intelligent Alert System</h2>
-    <p class="muted center">If/then logic provides contextual alerts based on employee status, location, and time.</p>
-    <div class="alerts" aria-label="Alert types">
-      <div class="library-card"><span class="title">Verified Presence</span><span class="meta">Clocked in + detected in appropriate area → verification logged.</span></div>
-      <div class="library-card"><span class="title">Unauthorized Area</span><span class="meta">Department mismatch (e.g., Sales in Service) triggers alert.</span></div>
-      <div class="library-card"><span class="title">Time Clock Discrepancy</span><span class="meta">Present but not clocked in → potential time-theft alert.</span></div>
-      <div class="library-card after-hours"><span class="title">After-Hours Detection</span><span class="meta">Security alerts for unauthorized presence outside business hours.</span></div>
-    </div>
-  </section>
-
-  <!-- “Is it possible?” -->
-  <section class="section" id="install" aria-labelledby="possible-title">
-    <div class="cta">
-      <div class="docx-block">
-        <h3 id="possible-title" class="docx-title">Is it possible?</h3>
-        <p class="docx-paragraph"><strong>Facial recognition software that integrates with Paycom.</strong> Check employee activity while on-premises against their timecard. Are they still on site while clocked in? Let’s design an AI-powered approach.</p>
-        <p class="docx-paragraph">No current off-the-shelf product continuously checks activity vs. timecards in Paycom using facial recognition, but it’s technically feasible.</p>
-      </div>
-    </div>
-  </section>
-</main>
-
-<footer class="footer"><small>© 2025 Quirk AI — Smart Workplace Verification</small></footer>
-
-<!-- Video autoplay logic -->
-<script>
-(function() {
-  const iframe = document.getElementById("workforce-video");
-  if (!iframe) return;
-
-  // YouTube API requires this setup
-  function onYouTubeIframeAPIReady() {
-    const player = new YT.Player("workforce-video", {
-      events: {
-        onReady: event => {
-          event.target.mute();
-          event.target.playVideo();
-        }
+        document.addEventListener('visibilitychange', () => {
+          if (document.hidden) { try { player.pauseVideo(); } catch(e) {} }
+          else {
+            const r = iframe.getBoundingClientRect();
+            const mid = window.innerHeight * 0.5;
+            const inView = r.top < mid && r.bottom > mid;
+            if (inView) { try { player.playVideo(); } catch(e) {} }
+          }
+        });
       }
-    });
 
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
-          player.playVideo();
-        } else {
-          player.pauseVideo();
-        }
-      });
-    }, { threshold: [0, 0.5, 1] });
-
-    observer.observe(iframe);
-  }
-
-  // Load YouTube Iframe API if not already loaded
-  if (typeof YT === "undefined" || typeof YT.Player === "undefined") {
-    const tag = document.createElement("script");
-    tag.src = "https://www.youtube.com/iframe_api";
-    const firstScriptTag = document.getElementsByTagName("script")[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-    window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
-  } else {
-    onYouTubeIframeAPIReady();
-  }
-})();
-</script>
+      if (typeof YT === "undefined" || typeof YT.Player === "undefined") {
+        const tag = document.createElement("script");
+        tag.src = "https://www.youtube.com/iframe_api";
+        document.head.appendChild(tag);
+        window.onYouTubeIframeAPIReady = startPlayer;
+      } else {
+        startPlayer();
+      }
+    })();
+  </script>
 </body>
 </html>
