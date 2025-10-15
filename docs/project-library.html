@@ -81,22 +81,6 @@
 
     /* tiny utility for gray text when needed */
     .muted { color:#64748b; }
-
-    /* === Video modal (Sales Kiosk demo) === */
-    .qv-overlay{
-      position: fixed; inset: 0; display: grid; place-items: center;
-      background: rgba(0,0,0,.6); z-index: 1000; padding: 20px;
-    }
-    .qv-dialog{
-      width: min(920px, 100%); background: #000; border-radius: 12px;
-      box-shadow: 0 12px 32px rgba(0,0,0,.35); position: relative; overflow: hidden;
-      border: 1px solid #e5e7eb;
-    }
-    .qv-close{
-      position: absolute; top: 6px; right: 8px; border: 0; background: transparent;
-      color: #fff; font-size: 28px; line-height: 1; cursor: pointer;
-    }
-    .qv-close:focus-visible{ outline: 2px solid #fff; outline-offset: 2px; }
   </style>
 </head>
 <body>
@@ -353,11 +337,12 @@
           <p><a class="q-cta q-cta-small" href="assets/AI_Auto_Sales_Kiosk_Blueprint_Landscape.pdf" target="_blank" rel="noopener">Futuristic AI Kiosk Sales Process</a></p>
           <p><a class="q-cta q-cta-small" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/saleskiosk-welcome.html" target="_blank" rel="noopener">Launch Quirk AI Sales Kiosk</a></p>
 
-          <!-- UPDATED: opens modal instead of new tab -->
+          <!-- Opens a centered popup window sized to video -->
           <p>
-            <a class="q-cta q-cta-small js-open-video"
-               href="#"
-               data-video="assets/quirkai-saleskiosk.mp4"
+            <a class="q-cta q-cta-small js-video-popup"
+               href="assets/quirkai-saleskiosk.mp4"
+               data-width="980"
+               data-height="560"
                aria-label="Play quick video simulator of Quirk AI Sales Kiosk in showroom">
               Quirk AI Sales Kiosk in showroom (quick video simulator)
             </a>
@@ -519,58 +504,63 @@
 
   </main>
 
-  <!-- ==== Lightweight video modal ==== -->
-  <div id="q-video-modal" class="qv-overlay" hidden>
-    <div class="qv-dialog" role="dialog" aria-modal="true" aria-label="Video">
-      <button class="qv-close" type="button" aria-label="Close video">&times;</button>
-      <!-- Player is created once and reused -->
-      <video id="qv-player"
-             controls
-             playsinline
-             preload="metadata"
-             muted
-             style="display:block;width:100%;height:auto;border-radius:12px"></video>
-    </div>
-  </div>
-
+  <!-- Small popup player -->
   <script>
     (function(){
-      const overlay = document.getElementById('q-video-modal');
-      const player  = document.getElementById('qv-player');
-      const closeBtn= overlay.querySelector('.qv-close');
+      function openVideoPopup(url, w, h){
+        const dualScreenLeft = window.screenLeft !== undefined ? window.screenLeft : window.screenX;
+        const dualScreenTop  = window.screenTop  !== undefined ? window.screenTop  : window.screenY;
 
-      function openVideo(src){
-        player.pause();
-        player.src = src;
-        // Enforce muted + 0.5x rate every open (reliable across browsers)
-        player.muted = true;
-        function setRate(){ player.playbackRate = 0.5; }
-        player.addEventListener('loadedmetadata', setRate, { once: true });
+        const width  = window.innerWidth  || document.documentElement.clientWidth  || screen.width;
+        const height = window.innerHeight || document.documentElement.clientHeight || screen.height;
 
-        overlay.hidden = false;
-        player.play().catch(()=>{ /* autoplay might be blocked; user can click play */ });
+        // Center the popup
+        const left = ((width - w) / 2) + dualScreenLeft;
+        const top  = ((height - h) / 2) + dualScreenTop;
+
+        const features = `scrollbars=no,resizable=yes,status=no,location=no,toolbar=no,menubar=no,
+                          width=${w},height=${h},top=${top},left=${left}`;
+        const win = window.open("", "quirk_kiosk_video", features);
+
+        if(!win){ // popup blocked → fallback to direct open
+          window.open(url, "_blank", "noopener");
+          return;
+        }
+
+        // Minimal HTML with muted + 0.5x defaults
+        win.document.write(`
+          <!doctype html><html><head>
+            <meta charset="utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <title>Quirk AI Sales Kiosk</title>
+            <style>
+              html,body{margin:0;height:100%;background:#000;display:grid;place-items:center}
+              video{max-width:100%;max-height:100%;display:block}
+            </style>
+          </head>
+          <body>
+            <video id="vid" controls playsinline preload="metadata" muted>
+              <source src="${url}" type="video/mp4">
+            </video>
+            <script>
+              const v = document.getElementById('vid');
+              v.addEventListener('loadedmetadata', ()=>{ v.playbackRate = 0.5; v.play().catch(()=>{}); }, {once:true});
+            <\/script>
+          </body></html>
+        `);
+        win.document.close();
       }
 
-      function closeVideo(){
-        player.pause();
-        player.removeAttribute('src');  // release resource and hide last frame on mobile
-        player.load();
-        overlay.hidden = true;
-      }
-
-      // Delegate: open from any link with .js-open-video
-      document.addEventListener('click', (e)=>{
-        const a = e.target.closest('a.js-open-video');
+      document.addEventListener('click', function(e){
+        const a = e.target.closest('a.js-video-popup');
         if(!a) return;
-        e.preventDefault();
-        const src = a.getAttribute('data-video');
-        if(src) openVideo(src);
-      });
 
-      // Close interactions
-      closeBtn.addEventListener('click', closeVideo);
-      overlay.addEventListener('click', (e)=>{ if(e.target === overlay) closeVideo(); });
-      document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape' && !overlay.hidden) closeVideo(); });
+        e.preventDefault();
+        const url = a.getAttribute('href');
+        const w = parseInt(a.getAttribute('data-width') || "980", 10);
+        const h = parseInt(a.getAttribute('data-height') || "560", 10);
+        openVideoPopup(url, w, h);
+      });
     })();
   </script>
 </body>
