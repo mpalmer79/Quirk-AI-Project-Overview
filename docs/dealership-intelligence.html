@@ -8,18 +8,15 @@
 <base href="/Quirk-AI-Project-Overview/"/>
 <link rel="stylesheet" href="assets/style.css"/>
 
-<!-- Page-scoped, kept tiny -->
 <style>
   .center { text-align:center }
   .lead { margin:18px 0 6px; color:#475569; font-size:1.05rem }
-  .pill-row { margin:12px 0 0; display:flex; flex-wrap:wrap; gap:10px; justify-content:center }
   .alerts { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px }
   .alerts .after-hours { grid-column:1/-1; max-width:560px; justify-self:center }
   .table-wrap { overflow-x:auto }
   table { width:100%; border-collapse:collapse; background:#fff; border:1px solid #e5e7eb; border-radius:12px }
   th,td { padding:12px; border-bottom:1px solid #e5e7eb; text-align:left }
   th[scope="row"] { width:240px; color:#0f172a; background:#f9fafb }
-  /* Treat tiles as articles, not links */
   .feature-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px }
   .library-card { display:block; background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:14px; box-shadow:0 1px 6px rgba(0,0,0,.04) }
   .library-card .title { display:block; font-weight:700; color:#0f172a; margin-bottom:6px }
@@ -28,11 +25,31 @@
   .compliance-item { background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:12px; text-align:center }
   .compliance-number { font-size:1.6rem; font-weight:800; color:#0f172a; margin:0 }
   .compliance-label { color:#475569; margin:4px 0 0 }
+
+  /* Video container */
+  .video-section {
+    max-width: 1100px;
+    margin: 40px auto 60px;
+    text-align: center;
+    position: relative;
+    aspect-ratio: 16 / 9;
+  }
+  .video-section iframe {
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  }
+
+  @media (max-width: 768px) {
+    .video-section { margin: 28px auto 48px; width: 100%; }
+    .video-section iframe { height: 300px; }
+  }
 </style>
 </head>
 <body>
 
-<!-- Global HOME pill (uses styles from assets/style.css) -->
 <div class="home-wrap"><a class="home-btn" href="./">HOME</a></div>
 
 <header class="topbar">
@@ -54,11 +71,18 @@
       Camera feeds identify individuals against an employee photo database to verify presence, correlate with timecards, and monitor
       movements by area and workstation.
     </p>
-    <div class="pill-row" role="group" aria-label="Quick actions">
-      <a class="btn" href="smart-workplace-verification-demo.html">Click for demo</a>
-      <a class="btn" href="https://claude.ai/public/artifacts/8fa578b8-25ab-4f25-ad26-672a55774384" target="_blank" rel="noopener">See the code</a>
-      <a class="btn" href="#install">How to Install</a>
-    </div>
+  </section>
+
+  <!-- Embedded YouTube Video -->
+  <section class="video-section" aria-label="BioEnable AI video">
+    <iframe id="workforce-video" 
+      src="https://www.youtube.com/embed/mFi-kErgWks?enablejsapi=1&mute=1"
+      title="BioEnable AI: The Future of Workforce Management | AI Powered HR & Attendance Solutions"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      referrerpolicy="strict-origin-when-cross-origin"
+      allowfullscreen>
+    </iframe>
   </section>
 
   <!-- System Overview -->
@@ -89,7 +113,6 @@
     <h2 class="section-title center">Technical Specifications</h2>
     <div class="table-wrap" role="region" aria-label="Specifications table">
       <table>
-        <caption class="sr-only">Workplace Verification System Specifications</caption>
         <tbody>
           <tr><th scope="row">Camera Coverage</th><td>100 IP cameras across dealership areas</td></tr>
           <tr><th scope="row">Employee Capacity</th><td>150+ employees supported</td></tr>
@@ -106,18 +129,10 @@
   <section class="section">
     <h2 class="section-title center">Monitored Areas</h2>
     <div class="compliance-grid" aria-label="Monitored area counts">
-      <div class="compliance-item">
-        <p class="compliance-number">28</p><p class="compliance-label">Entrance Cameras</p>
-      </div>
-      <div class="compliance-item">
-        <p class="compliance-number">4</p><p class="compliance-label">Sales Desk</p>
-      </div>
-      <div class="compliance-item">
-        <p class="compliance-number">8</p><p class="compliance-label">Showroom Areas</p>
-      </div>
-      <div class="compliance-item">
-        <p class="compliance-number">4</p><p class="compliance-label">Service Departments</p>
-      </div>
+      <div class="compliance-item"><p class="compliance-number">28</p><p class="compliance-label">Entrance Cameras</p></div>
+      <div class="compliance-item"><p class="compliance-number">4</p><p class="compliance-label">Sales Desk</p></div>
+      <div class="compliance-item"><p class="compliance-number">8</p><p class="compliance-label">Showroom Areas</p></div>
+      <div class="compliance-item"><p class="compliance-number">4</p><p class="compliance-label">Service Departments</p></div>
     </div>
   </section>
 
@@ -133,53 +148,61 @@
     </div>
   </section>
 
-  <!-- “Is it possible?” (DOCX-style block) -->
+  <!-- “Is it possible?” -->
   <section class="section" id="install" aria-labelledby="possible-title">
     <div class="cta">
       <div class="docx-block">
         <h3 id="possible-title" class="docx-title">Is it possible?</h3>
-
         <p class="docx-paragraph"><strong>Facial recognition software that integrates with Paycom.</strong> Check employee activity while on-premises against their timecard. Are they still on site while clocked in? Let’s design an AI-powered approach.</p>
-
-        <p class="docx-paragraph">No current off-the-shelf product continuously checks activity vs. timecards in Paycom using facial recognition, but it’s technically feasible: vendors offer AI-powered time clocks and camera analytics that can integrate with HR platforms.</p>
-
-        <h4 class="docx-subhead">How a continuous monitoring system could work</h4>
-        <p class="docx-paragraph small-note">This is more invasive than a standard time clock and must be privacy- and law-first.</p>
-        <ul class="docx-list">
-          <li><strong>Surveillance hardware:</strong> AI cameras beyond entrances, covering key zones.</li>
-          <li><strong>Facial tracking:</strong> Match faces to a registered employee gallery in near-real time.</li>
-          <li><strong>Premise verification:</strong> Confirm on-site presence while clocked in; alert if absent or out-of-bounds.</li>
-          <li><strong>Activity cross-reference:</strong> Compare camera events with Paycom timecards (API) to flag discrepancies.</li>
-        </ul>
-
-        <h4 class="docx-subhead">Legal and ethical concerns</h4>
-        <p class="docx-paragraph">Continuous tracking heightens legal, ethical, and cultural risks.</p>
-        <ul class="docx-list">
-          <li><strong>Consent & notice:</strong> States like IL/TX/WA regulate biometrics (e.g., BIPA) → written notice & consent.</li>
-          <li><strong>Litigation risk:</strong> Class-action exposure over biometric privacy violations.</li>
-          <li><strong>Privacy & morale:</strong> Persistent monitoring can erode trust and chill the workplace.</li>
-          <li><strong>Bias:</strong> FR systems can misidentify women/people of color → discriminatory outcomes.</li>
-          <li><strong>Mission creep:</strong> Drift into productivity scoring without renewed consent.</li>
-        </ul>
-
-        <h4 class="docx-subhead">Paycom-friendly, lower-risk options</h4>
-        <p class="docx-paragraph">Alternatives that discourage time theft without constant facial tracking:</p>
-        <ul class="docx-list">
-          <li><strong>Microfence:</strong> Bluetooth beacons; app clock-ins only within zone.</li>
-          <li><strong>Geofencing:</strong> GPS boundary for clock-in/out via the app.</li>
-          <li><strong>App biometrics:</strong> Face/Touch ID to unlock the app (distinct from live surveillance).</li>
-        </ul>
-
-        <div class="docx-questions">
-          <p class="docx-paragraph"><strong>What other Paycom tools prevent time theft?</strong></p>
-          <p class="docx-paragraph"><strong>How does Microfence verify location while preserving privacy?</strong></p>
-          <p class="docx-paragraph"><strong>What non-FR options balance accountability and trust?</strong></p>
-        </div>
+        <p class="docx-paragraph">No current off-the-shelf product continuously checks activity vs. timecards in Paycom using facial recognition, but it’s technically feasible.</p>
       </div>
     </div>
   </section>
 </main>
 
 <footer class="footer"><small>© 2025 Quirk AI — Smart Workplace Verification</small></footer>
+
+<!-- Video autoplay logic -->
+<script>
+(function() {
+  const iframe = document.getElementById("workforce-video");
+  if (!iframe) return;
+
+  // YouTube API requires this setup
+  function onYouTubeIframeAPIReady() {
+    const player = new YT.Player("workforce-video", {
+      events: {
+        onReady: event => {
+          event.target.mute();
+          event.target.playVideo();
+        }
+      }
+    });
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+          player.playVideo();
+        } else {
+          player.pauseVideo();
+        }
+      });
+    }, { threshold: [0, 0.5, 1] });
+
+    observer.observe(iframe);
+  }
+
+  // Load YouTube Iframe API if not already loaded
+  if (typeof YT === "undefined" || typeof YT.Player === "undefined") {
+    const tag = document.createElement("script");
+    tag.src = "https://www.youtube.com/iframe_api";
+    const firstScriptTag = document.getElementsByTagName("script")[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
+  } else {
+    onYouTubeIframeAPIReady();
+  }
+})();
+</script>
 </body>
 </html>
