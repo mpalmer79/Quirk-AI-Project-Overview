@@ -27,6 +27,16 @@
       --card-radius: 16px;
     }
 
+    /* Centered black HOME pill (same look as other pages) */
+    .home-wrap{display:flex;justify-content:center;padding:18px 0 4px;position:relative;z-index:10}
+    .home-btn{
+      display:inline-block;background:#111;color:#fff;text-decoration:none;text-transform:uppercase;
+      font-weight:800;letter-spacing:.02em;border-radius:999px;padding:10px 20px;line-height:1;
+      border:1px solid rgba(255,255,255,.06);box-shadow:0 10px 24px rgba(0,0,0,.18);
+      transition:transform .15s,box-shadow .15s,background .15s
+    }
+    .home-btn:hover{background:#0a0a0a;box-shadow:0 12px 28px rgba(0,0,0,.24);transform:translateY(-1px)}
+
     /* Page shell */
     .page-wrap {
       max-width: 1000px;
@@ -59,7 +69,6 @@
     .topbar-inner { max-width: 1000px; margin: 0 auto; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
     .topbar-title { font-weight: 700; color: #111; }
     .topbar a { color: var(--brand-blue); font-weight: 700; text-decoration: none; }
-    .home-wrap { display: none; }
 
     /* CTA bar + buttons */
     .cta-bar { margin: 20px 0 8px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
@@ -142,6 +151,11 @@
   </style>
 </head>
 <body>
+
+  <!-- Centered HOME button -->
+  <div class="home-wrap">
+    <a class="home-btn" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
+  </div>
 
   <!-- ======= Top Navigation Bar ======= -->
   <header class="topbar" role="banner">
@@ -312,7 +326,6 @@
         if (document.hidden) {
           video.pause();
         } else {
-          // Check if it's in view enough to resume
           const rect = video.getBoundingClientRect();
           const inView = rect.top < window.innerHeight * 0.5 && rect.bottom > window.innerHeight * 0.5;
           if (inView) {
