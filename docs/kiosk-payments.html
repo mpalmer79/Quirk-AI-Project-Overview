@@ -1,14 +1,19 @@
-<!doctype html><html lang="en"><head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<base href="/Quirk-AI-Project-Overview/"><title>Kiosk • Payments</title>
-<link rel="stylesheet" href="assets/kiosk-shared.css"><script src="assets/kiosk-shared.js"></script>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<base href="/Quirk-AI-Project-Overview/">
+<title>Kiosk • Payments</title>
+<link rel="stylesheet" href="assets/kiosk-shared.css">
+<script src="assets/kiosk-shared.js"></script>
 <style>
 .grid-5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
 @media(max-width:1100px){.grid-5{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:720px){.grid-5{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:520px){.grid-5{grid-template-columns:1fr}}
 .comp-field{display:block}
-.comp-label{display:block;text-align:center;font-weight:600;color:#334155;margin-bottom:.35rem}
+.comp-label{text-align:center;font-weight:600;color:#334155;margin-bottom:.35rem;display:block}
 .comp-input{border:1px solid #e5e7eb;border-radius:.75rem;padding:.55rem .75rem;background:#fff;width:auto}
 .comp-input:focus{outline:2px solid #10b981;outline-offset:2px}
 .fit{justify-self:center}
@@ -16,64 +21,55 @@
 .center-row{display:flex;justify-content:center;margin-top:10px}
 .center-col{width:min(520px,94%)}
 </style>
-</head><body>
+</head>
+<body>
 <div class="kx">
-  <h2>Build your payment</h2><p class="sub">Taxes/fees estimated; lender approval required.</p>
+  <h2>Build your payment</h2>
+  <p class="sub">Taxes/fees estimated; lender approval required.</p>
 
-  <!-- ---------- Finance Worksheet (3 x 5) ---------- -->
+  <!-- ---------- Finance Worksheet ---------- -->
   <div class="panel" style="margin-top:10px">
     <h3 class="h3">Finance Worksheet</h3>
     <div class="grid-5">
-      <!-- Row 1 -->
       <label class="comp-field fit"><span class="comp-label">Vehicle Price ($)</span>
-        <input id="price" class="comp-input currency" inputmode="decimal" size="16" placeholder="$0.00">
+        <input id="price" class="comp-input currency" inputmode="decimal" placeholder="$0.00">
       </label>
       <label class="comp-field fit"><span class="comp-label">Down Payment ($)</span>
-        <input id="down" class="comp-input currency" inputmode="decimal" size="16" placeholder="$0.00">
+        <input id="down" class="comp-input currency" inputmode="decimal" placeholder="$0.00">
       </label>
       <label class="comp-field fit"><span class="comp-label">Trade-in Value ($)</span>
-        <input id="tradeInFin" class="comp-input currency" inputmode="decimal" size="17" placeholder="$0.00">
+        <input id="tradeInFin" class="comp-input currency" inputmode="decimal" placeholder="$0.00">
       </label>
       <label class="comp-field fit"><span class="comp-label">Sales Tax (decimal)</span>
-        <input id="salesTaxFin" class="comp-input" type="number" step="0.0001" size="18" placeholder="0.0625">
+        <input id="salesTaxFin" class="comp-input" type="number" step="0.0001" placeholder="0.0625">
       </label>
-      <label class="comp-field fit"><span class="comp-label">Title &amp; Registration ($)</span>
-        <input id="titleRegFin" class="comp-input currency" inputmode="decimal" size="22" placeholder="$0.00">
+      <label class="comp-field fit"><span class="comp-label">Title & Registration ($)</span>
+        <input id="titleRegFin" class="comp-input currency" inputmode="decimal" placeholder="$0.00">
       </label>
 
-      <!-- Row 2 -->
       <label class="comp-field fit"><span class="comp-label">Other Fees ($)</span>
-        <input id="otherFeesFin" class="comp-input currency" inputmode="decimal" size="14" placeholder="$0.00">
+        <input id="otherFeesFin" class="comp-input currency" inputmode="decimal" placeholder="$0.00">
       </label>
       <label class="comp-field fit"><span class="comp-label">Cash Incentives / Rebates ($)</span>
-        <input id="rebatesFin" class="comp-input currency" inputmode="decimal" size="27" placeholder="$0.00">
+        <input id="rebatesFin" class="comp-input currency" inputmode="decimal" placeholder="$0.00">
       </label>
       <label class="comp-field fit"><span class="comp-label">APR (%)</span>
-        <input id="apr" class="comp-input" type="number" step="0.01" size="8" placeholder="6.99">
+        <input id="apr" class="comp-input" type="number" step="0.01" placeholder="6.99">
       </label>
       <label class="comp-field fit"><span class="comp-label">Term (months)</span>
-        <input id="term" class="comp-input" type="number" step="1" size="14" placeholder="72">
+        <input id="term" class="comp-input" type="number" step="1" placeholder="72">
       </label>
       <label class="comp-field fit"><span class="comp-label">Amount Financed ($)</span>
-        <input id="amountFinFin" class="comp-input" size="19" readonly>
+        <input id="amountFinFin" class="comp-input" readonly>
       </label>
 
-      <!-- Row 3 -->
       <label class="comp-field fit"><span class="comp-label">Monthly Payment</span>
-        <input id="monthlyFin" class="comp-input" size="16" readonly>
+        <input id="monthlyFin" class="comp-input" readonly>
       </label>
-      <label class="comp-field fit"><span class="comp-label">Placeholder</span>
-        <input class="comp-input" size="12" placeholder="">
-      </label>
-      <label class="comp-field fit"><span class="comp-label">Placeholder</span>
-        <input class="comp-input" size="12" placeholder="">
-      </label>
-      <label class="comp-field fit"><span class="comp-label">Placeholder</span>
-        <input class="comp-input" size="12" placeholder="">
-      </label>
-      <label class="comp-field fit"><span class="comp-label">Placeholder</span>
-        <input class="comp-input" size="12" placeholder="">
-      </label>
+      <label class="comp-field fit"><span class="comp-label">Placeholder</span><input class="comp-input"></label>
+      <label class="comp-field fit"><span class="comp-label">Placeholder</span><input class="comp-input"></label>
+      <label class="comp-field fit"><span class="comp-label">Placeholder</span><input class="comp-input"></label>
+      <label class="comp-field fit"><span class="comp-label">Placeholder</span><input class="comp-input"></label>
     </div>
   </div>
 
@@ -83,35 +79,71 @@
     <label style="display:flex;align-items:center;gap:8px;margin-top:6px"><input type="checkbox" id="maint"> Maintenance ($495)</label>
   </details>
 
-  <!-- ---------- Lease Worksheet (unchanged layout) ---------- -->
+  <!-- ---------- Lease Worksheet ---------- -->
   <div id="leaseBlock" class="panel" style="display:none;margin-top:10px">
     <h3 class="h3">Lease Worksheet</h3>
     <div class="grid-5">
-      <!-- Row 1 -->
-      <label class="comp-field fit"><span class="comp-label">MSRP ($)</span><input id="msrp" class="comp-input currency" inputmode="decimal" size="12" placeholder="$0.00"></label>
-      <label class="comp-field fit"><span class="comp-label">Residual %</span><input id="residualPct" class="comp-input" type="number" step="0.1" size="10" placeholder="50"></label>
-      <label class="comp-field fit"><span class="comp-label">APR (%)</span><input id="leaseApr" class="comp-input" type="number" step="0.01" size="8" placeholder="5.90"></label>
-      <label class="comp-field fit"><span class="comp-label">Term (months)</span><input id="leaseTerm" class="comp-input" type="number" step="1" size="14" placeholder="36"></label>
-      <label class="comp-field fit"><span class="comp-label">Sales Tax (decimal)</span><input id="taxRate" class="comp-input" type="number" step="0.0001" size="18" placeholder="0.0625"></label>
-      <!-- Row 2 -->
-      <label class="comp-field fit"><span class="comp-label">Initial Cap Cost (Selling Price)</span><input id="capCost" class="comp-input currency" inputmode="decimal" size="28" placeholder="$0.00"></label>
-      <label class="comp-field fit"><span class="comp-label">Initial Investment</span><input id="capReduction" class="comp-input currency" inputmode="decimal" size="18" placeholder="$1,000.00"></label>
-      <label class="comp-field fit"><span class="comp-label">Title &amp; Registration</span><input id="titleReg" class="comp-input currency" inputmode="decimal" size="22" placeholder="$499.00"></label>
-      <label class="comp-field fit"><span class="comp-label">Lender Acquisition</span><input id="acqFee" class="comp-input currency" inputmode="decimal" size="18" placeholder="$795.00"></label>
-      <label class="comp-field fit"><span class="comp-label">Documentation Fee</span><input id="docFee" class="comp-input currency" inputmode="decimal" size="18" placeholder="$499.00"></label>
-      <!-- Row 3 -->
-      <label class="comp-field fit"><span class="comp-label">Residual Value ($)</span><input id="residualValue" class="comp-input" size="18" readonly></label>
-      <label class="comp-field fit"><span class="comp-label">Miles per Year</span><input id="milesPerYear" class="comp-input" inputmode="numeric" size="13" placeholder="12,000"></label>
-      <label class="comp-field fit"><span class="comp-label">Adjusted Cap Cost</span><input id="adjustedCap" class="comp-input" size="18" readonly></label>
-      <label class="comp-field fit"><span class="comp-label">Trade-In Credit ($)</span><input id="tradeCredit" class="comp-input currency" inputmode="decimal" size="18" placeholder="$0.00"></label>
-      <label class="comp-field fit"><span class="comp-label">Rebates / Incentives ($)</span><input id="rebates" class="comp-input currency" inputmode="decimal" size="22" placeholder="$0.00"></label>
+      <label class="comp-field fit"><span class="comp-label">MSRP ($)</span>
+        <input id="msrp" class="comp-input currency" inputmode="decimal" placeholder="$0.00">
+      </label>
+      <label class="comp-field fit"><span class="comp-label">Residual %</span>
+        <input id="residualPct" class="comp-input" type="number" step="0.1" placeholder="50">
+      </label>
+      <label class="comp-field fit"><span class="comp-label">APR (%)</span>
+        <input id="leaseApr" class="comp-input" type="number" step="0.01" placeholder="5.90">
+      </label>
+      <label class="comp-field fit"><span class="comp-label">Term (months)</span>
+        <input id="leaseTerm" class="comp-input" type="number" step="1" placeholder="36">
+      </label>
+      <label class="comp-field fit"><span class="comp-label">Sales Tax (decimal)</span>
+        <input id="taxRate" class="comp-input" type="number" step="0.0001" placeholder="0.0625">
+      </label>
+
+      <label class="comp-field fit"><span class="comp-label">Initial Cap Cost (Selling Price)</span>
+        <input id="capCost" class="comp-input currency" inputmode="decimal" placeholder="$0.00">
+      </label>
+      <label class="comp-field fit"><span class="comp-label">Initial Investment</span>
+        <input id="capReduction" class="comp-input currency" inputmode="decimal" placeholder="$1,000.00">
+      </label>
+      <label class="comp-field fit"><span class="comp-label">Title & Registration</span>
+        <input id="titleReg" class="comp-input currency" inputmode="decimal" placeholder="$499.00">
+      </label>
+      <label class="comp-field fit"><span class="comp-label">Lender Acquisition</span>
+        <input id="acqFee" class="comp-input currency" inputmode="decimal" placeholder="$795.00">
+      </label>
+      <label class="comp-field fit"><span class="comp-label">Documentation Fee</span>
+        <input id="docFee" class="comp-input currency" inputmode="decimal" placeholder="$499.00">
+      </label>
+
+      <label class="comp-field fit"><span class="comp-label">Residual Value ($)</span>
+        <input id="residualValue" class="comp-input" readonly>
+      </label>
+      <label class="comp-field fit"><span class="comp-label">Miles per Year</span>
+        <input id="milesPerYear" class="comp-input" inputmode="numeric" placeholder="12,000">
+      </label>
+      <label class="comp-field fit"><span class="comp-label">Adjusted Cap Cost</span>
+        <input id="adjustedCap" class="comp-input" readonly>
+      </label>
+      <label class="comp-field fit"><span class="comp-label">Trade-In Credit ($)</span>
+        <input id="tradeCredit" class="comp-input currency" inputmode="decimal" placeholder="$0.00">
+      </label>
+      <label class="comp-field fit"><span class="comp-label">Rebates / Incentives ($)</span>
+        <input id="rebates" class="comp-input currency" inputmode="decimal" placeholder="$0.00">
+      </label>
     </div>
     <div class="note" id="leaseSummary" style="margin-top:10px"></div>
-    <div class="center-row"><label class="comp-field center-col"><span class="comp-label">Monthly Payment</span><input id="monthlyPayment" class="comp-input" readonly></label></div>
+    <div class="center-row">
+      <label class="comp-field center-col">
+        <span class="comp-label">Monthly Payment</span>
+        <input id="monthlyPayment" class="comp-input" readonly>
+      </label>
+    </div>
   </div>
 
   <div class="note" id="summary" style="margin-top:8px"></div>
-  <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px"><button id="next" class="btn">Start credit →</button></div>
+  <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">
+    <button id="next" class="btn">Start credit →</button>
+  </div>
 </div>
 
 <script>
@@ -119,21 +151,42 @@ const {save,load,post}=window.kiosk;
 const $=id=>document.getElementById(id);
 const toNum=v=>Number(String(v||0).replace(/[^\d.-]/g,''))||0;
 const money=n=>Number(n||0).toLocaleString(undefined,{style:'currency',currency:'USD'});
-const intSep=n=>(parseInt(String(n).replace(/[^\d-]/g,''),10)||0).toLocaleString();
+
+/* ---------- Populate from inventory ---------- */
+async function populateFromInventory(){
+  try{
+    const vin=load('guided_selectedVin',null);
+    const matchStock=load('guided_stock_match',null);
+    const stockNum=matchStock?.stock_number || matchStock?.stock || null;
+    if(!vin && !stockNum) return;
+    const r=await fetch('docs/sandbox/inventory.json',{cache:'no-store'});
+    if(!r.ok) return;
+    const inv=await r.json();
+    const found=inv.find(v=>
+      (v.vin && vin && v.vin===vin) ||
+      (v.stock_number && stockNum && v.stock_number===stockNum)
+    );
+    if(found){
+      const price=Number(found.price||0), msrp=Number(found.msrp||0);
+      if(price){$('price').value=money(price);$('capCost').value=money(price);}
+      if(msrp){$('msrp').value=money(msrp);}
+    }
+  }catch(e){console.error('Inventory mapping failed',e);}
+}
 
 /* ---------- FINANCE ---------- */
-const F={
-  price:$('price'),down:$('down'),trade:$('tradeInFin'),tax:$('salesTaxFin'),
-  title:$('titleRegFin'),other:$('otherFeesFin'),rebates:$('rebatesFin'),
-  apr:$('apr'),term:$('term'),amount:$('amountFinFin'),monthly:$('monthlyFin'),
-  vsc:$('vsc'),gap:$('gap'),maint:$('maint'),summary:$('summary')
-};
+const F={price:$('price'),down:$('down'),trade:$('tradeInFin'),tax:$('salesTaxFin'),
+title:$('titleRegFin'),other:$('otherFeesFin'),rebates:$('rebatesFin'),
+apr:$('apr'),term:$('term'),amount:$('amountFinFin'),monthly:$('monthlyFin'),
+vsc:$('vsc'),gap:$('gap'),maint:$('maint'),summary:$('summary')};
+
 function maskCurrency(el){el.value=money(toNum(el.value))}
 ;[F.price,F.down,F.trade,F.title,F.other,F.rebates].forEach(el=>{
   el.addEventListener('blur',()=>{maskCurrency(el);renderFin()});
   el.addEventListener('input',renderFin);
 });
 [F.tax,F.apr,F.term].forEach(el=>el.addEventListener('input',renderFin));
+
 function financeAmount(){
   const price=toNum(F.price.value),
         down =toNum(F.down.value),
@@ -151,37 +204,51 @@ function renderFin(){
   const amt=financeAmount(), m=pay(amt, F.apr.value||6.99, Math.max(1,Number(F.term.value||72)));
   F.amount.value = money(amt);
   F.monthly.value= money(Math.round(m));
-  F.summary.innerHTML=`Amount financed: <strong>${money(amt)}</strong> &nbsp;•&nbsp; Est. monthly: <strong>${money(Math.round(m))}</strong>`;
+  F.summary.innerHTML=`Amount financed: <strong>${money(amt)}</strong> • Est. monthly: <strong>${money(Math.round(m))}</strong>`;
 }
 ['vsc','gap','maint'].forEach(id=>$(id)?.addEventListener('input',renderFin));
 
-/* ---------- LEASE (unchanged math) ---------- */
+/* ---------- LEASE ---------- */
 const block=$('leaseBlock'),L={
-  msrp:$('msrp'),residualPct:$('residualPct'),leaseApr:$('leaseApr'),leaseTerm:$('leaseTerm'),taxRate:$('taxRate'),
-  capCost:$('capCost'),capReduction:$('capReduction'),titleReg:$('titleReg'),acqFee:$('acqFee'),docFee:$('docFee'),
-  residualValue:$('residualValue'),milesPerYear:$('milesPerYear'),adjustedCap:$('adjustedCap'),tradeCredit:$('tradeCredit'),rebates:$('rebates'),
+  msrp:$('msrp'),residualPct:$('residualPct'),leaseApr:$('leaseApr'),
+  leaseTerm:$('leaseTerm'),taxRate:$('taxRate'),capCost:$('capCost'),
+  capReduction:$('capReduction'),titleReg:$('titleReg'),acqFee:$('acqFee'),
+  docFee:$('docFee'),residualValue:$('residualValue'),milesPerYear:$('milesPerYear'),
+  adjustedCap:$('adjustedCap'),tradeCredit:$('tradeCredit'),rebates:$('rebates'),
   summary:$('leaseSummary'),monthly:$('monthlyPayment')
 };
 function seedLease(){if(!L.leaseApr.value)L.leaseApr.value=5.90;if(!L.leaseTerm.value)L.leaseTerm.value=36;if(!L.taxRate.value)L.taxRate.value=0.0625;if(!L.titleReg.value)L.titleReg.value='$499.00';if(!L.acqFee.value)L.acqFee.value='$795.00';if(!L.capReduction.value)L.capReduction.value='$1,000.00';if(!L.docFee.value)L.docFee.value='$499.00';if(!L.milesPerYear.value)L.milesPerYear.value='12,000'}
-function leaseCalc(p){const msrp=toNum(p.msrp),resPct=Number(p.residualPct)||0,cap=toNum(p.capCost),red=toNum(p.capReduction),ttl=toNum(p.titleReg),acq=toNum(p.acqFee),doc=toNum(p.docFee),trade=toNum(p.tradeCredit),reb=toNum(p.rebates),term=Math.max(1,Number(p.term)||36),tax=Number(p.taxRate)||0,mf=(Number(p.apr)||0)/2400,res=msrp*(resPct/100),adj=cap+acq+ttl,capCalc=adj-red-reb-trade+doc,dep=(capCalc-res)/term,rent=(capCalc+res)*mf,base=dep+rent,monthly=base*(1+tax);return{base,monthly,residual:res,adjusted:adj}}
+function leaseCalc(p){const msrp=toNum(p.msrp),resPct=Number(p.residualPct)||0,cap=toNum(p.capCost),
+red=toNum(p.capReduction),ttl=toNum(p.titleReg),acq=toNum(p.acqFee),doc=toNum(p.docFee),
+trade=toNum(p.tradeCredit),reb=toNum(p.rebates),term=Math.max(1,Number(p.term)||36),
+tax=Number(p.taxRate)||0,mf=(Number(p.apr)||0)/2400,res=msrp*(resPct/100),
+adj=cap+acq+ttl,capCalc=adj-red-reb-trade+doc,dep=(capCalc-res)/term,rent=(capCalc+res)*mf,
+base=dep+rent,monthly=base*(1+tax);return{base,monthly,residual:res,adjusted:adj}}
 function recalcLease(){
   L.residualValue.value = money(toNum(L.msrp.value)*((Number(L.residualPct.value)||0)/100));
   L.adjustedCap.value   = money(toNum(L.capCost.value)+toNum(L.acqFee.value)+toNum(L.titleReg.value));
-  const r=leaseCalc({msrp:L.msrp.value,residualPct:L.residualPct.value,capCost:L.capCost.value,capReduction:L.capReduction.value,titleReg:L.titleReg.value,acqFee:L.acqFee.value,docFee:L.docFee.value,tradeCredit:L.tradeCredit.value,rebates:L.rebates.value,term:L.leaseTerm.value,taxRate:L.taxRate.value,apr:L.leaseApr.value});
-  L.summary.innerHTML=`Base (pre-tax): <strong>${money(r.base)}</strong> &nbsp;•&nbsp; With tax: <strong>${money(r.monthly)}</strong>`;
+  const r=leaseCalc({msrp:L.msrp.value,residualPct:L.residualPct.value,capCost:L.capCost.value,
+    capReduction:L.capReduction.value,titleReg:L.titleReg.value,acqFee:L.acqFee.value,
+    docFee:L.docFee.value,tradeCredit:L.tradeCredit.value,rebates:L.rebates.value,
+    term:L.leaseTerm.value,taxRate:L.taxRate.value,apr:L.leaseApr.value});
+  L.summary.innerHTML=`Base (pre-tax): <strong>${money(r.base)}</strong> • With tax: <strong>${money(r.monthly)}</strong>`;
   L.monthly.value = money(r.monthly);
 }
 ;[L.msrp,L.capCost,L.capReduction,L.titleReg,L.acqFee,L.docFee,L.tradeCredit,L.rebates].forEach(el=>{
   el.addEventListener('blur',()=>{el.value=money(toNum(el.value));recalcLease()});
   el.addEventListener('input',recalcLease);
 });
-L.milesPerYear.addEventListener('blur',()=>L.milesPerYear.value=intSep(L.milesPerYear.value));
-L.milesPerYear.addEventListener('input',recalcLease);
 [L.residualPct,L.leaseApr,L.leaseTerm,L.taxRate].forEach(el=>el.addEventListener('input',recalcLease));
-function maybeShowLease(){const needs=load('guided_needs',{})||{};const show=String(needs.leaseSpecials||'').toLowerCase()==='yes';block.style.display=show?'block':'none';if(show){seedLease();recalcLease()}}
+function maybeShowLease(){
+  const needs=load('guided_needs',{})||{};
+  const show=String(needs.leaseSpecials||'').toLowerCase()==='yes';
+  block.style.display=show?'block':'none';
+  if(show){seedLease();recalcLease();}
+}
 
-/* boot */
+/* ---------- Boot ---------- */
 $('next').addEventListener('click',()=>{renderFin();post('payments:done')});
-renderFin();maybeShowLease();
+(async()=>{await populateFromInventory();renderFin();maybeShowLease();})();
 </script>
-</body></html>
+</body>
+</html>
