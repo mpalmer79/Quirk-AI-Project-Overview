@@ -1,158 +1,85 @@
-<!doctype html> 
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>VIN Solutions Alternatives — Quirk AI</title>
   <meta name="description" content="Quirk-branded comparison of VIN Solutions alternatives focused on BDC speed, appointment setting, and automation." />
-
-  <!-- Keep URLs resolving under the project site -->
   <base href="/Quirk-AI-Project-Overview/">
-
   <link rel="stylesheet" href="assets/style.css" />
   <style>
-    /* ===== Quirk Brand Add-on (scoped to this page) ===== */
-    :root {
-      --quirk-green: #0b6e37;
-      --quirk-ink: #0f172a;
-      --quirk-muted: #475569;
-      --quirk-border: #e5e7eb;
-      --quirk-bg: #ffffff;
+    :root{
+      --quirk-green:#0b6e37;--quirk-ink:#0f172a;--quirk-muted:#475569;
+      --quirk-border:#e5e7eb;--quirk-bg:#fff
     }
-    .q-wrap { max-width: 1080px; margin: 0 auto; padding: 24px 20px 64px; }
-
-    .q-hero {
-      border-radius: 16px;
-      padding: 36px 20px;
-      background:
-        linear-gradient(0deg, rgba(11,110,55,0.06), rgba(11,110,55,0.06)),
-        var(--quirk-bg);
-      border: 1px solid var(--quirk-border);
-      text-align: center;
-      margin: 24px 0 32px;
+    /* Centered black HOME pill (identical style) */
+    .home-wrap{display:flex;justify-content:center;padding:18px 0 4px;position:relative;z-index:10}
+    .home-btn{
+      display:inline-block;background:#111;color:#fff;text-decoration:none;text-transform:uppercase;
+      font-weight:800;letter-spacing:.02em;border-radius:999px;padding:10px 20px;line-height:1;
+      border:1px solid rgba(255,255,255,.06);box-shadow:0 10px 24px rgba(0,0,0,.18);
+      transition:transform .15s,box-shadow .15s,background .15s
     }
-    /* NEW: wordmark in place of the pill */
-    .q-hero .q-eyebrow-logo{
-      display:block;
-      height:40px;          /* desktop height */
-      width:auto;
-      margin: 0 auto 12px;  /* centered + spacing below */
-      object-fit: contain;
+    .home-btn:hover{background:#0a0a0a;box-shadow:0 12px 28px rgba(0,0,0,.24);transform:translateY(-1px)}
+
+    .q-wrap{max-width:1080px;margin:0 auto;padding:24px 20px 64px}
+    .q-hero{
+      border-radius:16px;padding:36px 20px;background:
+        linear-gradient(0deg,rgba(11,110,55,.06),rgba(11,110,55,.06)),var(--quirk-bg);
+      border:1px solid var(--quirk-border);text-align:center;margin:24px 0 32px
     }
-    @media (max-width:640px){
-      .q-hero .q-eyebrow-logo{ height:34px; }
+    .q-eyebrow-logo{display:block;height:40px;margin:0 auto 12px;object-fit:contain}
+    @media(max-width:640px){.q-eyebrow-logo{height:34px}}
+    .q-hero h1{margin:0 0 10px;font-size:clamp(1.75rem,2.7vw,2.25rem);line-height:1.2;color:var(--quirk-ink);font-weight:800}
+    .q-hero p{margin:0;color:var(--quirk-muted);font-size:1.05rem}
+
+    .q-grid{display:grid;gap:20px;grid-template-columns:repeat(12,1fr)}
+    .q-col-12{grid-column:span 12}.q-col-6{grid-column:span 6}
+    @media(max-width:900px){.q-col-6{grid-column:span 12}}
+
+    .q-card{background:var(--quirk-bg);border:1px solid var(--quirk-border);border-radius:14px;padding:20px;box-shadow:0 6px 16px rgba(2,6,23,.06)}
+    .q-card h2{margin:0 0 6px;font-size:1.25rem;color:var(--quirk-green);font-weight:800}
+    .q-card p{margin:8px 0 0;color:var(--quirk-ink)}
+    .q-bullets{margin:10px 0 0 18px;color:var(--quirk-ink)} .q-bullets li{margin:6px 0}
+    .q-kicker{display:inline-block;font-weight:700;color:var(--quirk-green);margin-top:6px}
+
+    .q-cta{
+      display:inline-block;margin-top:14px;padding:10px 14px;border-radius:999px;border:1px solid rgba(11,110,55,.22);
+      color:var(--quirk-green);text-decoration:none;font-weight:700;transition:transform .06s;background:#fff;white-space:nowrap
     }
+    .q-cta:hover{transform:translateY(-1px)}
+    .q-cta-small{padding:8px 12px;font-size:.95rem}
 
-    .q-hero h1 {
-      margin: 0 0 10px;
-      font-size: clamp(1.75rem, 2.7vw, 2.25rem);
-      line-height: 1.2;
-      color: var(--quirk-ink);
-      font-weight: 800;
-    }
-    .q-hero p { margin: 0; color: var(--quirk-muted); font-size: 1.05rem; }
+    .q-logo-heading{margin:0 0 6px}
+    .q-logo-heading img{display:block;height:28px;width:auto}
+    .q-logo-heading .logo-salesforce{height:34px}
+    @media(max-width:640px){.q-logo-heading img{height:24px}.q-logo-heading .logo-salesforce{height:30px}}
 
-    .q-grid { display: grid; gap: 20px; grid-template-columns: repeat(12, 1fr); }
-    .q-col-12 { grid-column: span 12; }
-    .q-col-6  { grid-column: span 6; }
-    .q-col-4  { grid-column: span 4; }
-    @media (max-width: 900px){ .q-col-6, .q-col-4 { grid-column: span 12; } }
+    .clamp-2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 
-    .q-card {
-      background: var(--quirk-bg);
-      border: 1px solid var(--quirk-border);
-      border-radius: 14px;
-      padding: 20px;
-      box-shadow: 0 6px 16px rgba(2,6,23,.06);
-    }
-    .q-card h2 { margin: 0 0 6px; font-size: 1.25rem; color: var(--quirk-green); font-weight: 800; }
-    .q-card p { margin: 8px 0 0; color: var(--quirk-ink); }
-    .q-bullets { margin: 10px 0 0 18px; color: var(--quirk-ink); }
-    .q-bullets li { margin: 6px 0; }
+    /* Expand/Collapse label swap */
+    details.q-disclosure summary::-webkit-details-marker{display:none}
+    details.q-disclosure summary{list-style:none;cursor:pointer}
+    .q-disclosure .label-close{display:none}
+    .q-disclosure[open] .label-open{display:none}
+    .q-disclosure[open] .label-close{display:inline}
 
-    .q-kicker { display: inline-block; font-weight: 700; color: var(--quirk-green); margin-top: 6px; }
+    /* Right-side link in green topbar (from shared CSS) */
+    .topbar-menu .lib-link{color:#fff;text-decoration:none;font-weight:600;font-size:clamp(16px,1.8vw,20px);line-height:1}
+    .topbar-menu .lib-link:hover,.topbar-menu .lib-link:focus{text-decoration:underline}
 
-    .q-cta {
-      display: inline-block;
-      margin-top: 14px;
-      padding: 10px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(11,110,55,.22);
-      color: var(--quirk-green);
-      text-decoration: none;
-      font-weight: 700;
-      transition: transform .06s ease;
-      background: #fff;
-      white-space: nowrap; /* keep buttons on one line */
-    }
-    .q-cta:hover { transform: translateY(-1px); text-decoration: none; }
-    .q-cta-small { padding: 8px 12px; font-size: 0.95rem; }
-
-    /* --- Partner logo headings --- */
-    .q-logo-heading { margin: 0 0 6px; }
-    .q-logo-heading .logo-creatio,
-    .q-logo-heading .logo-fullpath,
-    .q-logo-heading .logo-salesforce,
-    .q-logo-heading .logo-tekion,
-    .q-logo-heading .logo-hubspot,
-    .q-logo-heading .logo-monday {
-      display: block;
-      height: 28px;
-      width: auto;
-    }
-    @media (max-width: 640px){
-      .q-logo-heading .logo-creatio,
-      .q-logo-heading .logo-fullpath,
-      .q-logo-heading .logo-salesforce,
-      .q-logo-heading .logo-tekion,
-      .q-logo-heading .logo-hubspot,
-      .q-logo-heading .logo-monday { height: 24px; }
-    }
-
-    /* Keep initial card height consistent with a 2-line teaser */
-    .clamp-2 {
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    /* --- Disclosure control: Expand/Collapse label swap --- */
-    details.q-disclosure summary::-webkit-details-marker { display: none; }
-    details.q-disclosure summary { list-style: none; cursor: pointer; }
-    .q-disclosure .label-close { display: none; }
-    .q-disclosure[open] .label-open { display: none; }
-    .q-disclosure[open] .label-close { display: inline; }
-
-    /* Salesforce size tweak to align with Creatio visually */
-    .q-logo-heading .logo-salesforce { height: 34px; width: auto; }
-    @media (max-width: 640px){
-      .q-logo-heading .logo-salesforce { height: 30px; }
-    }
-
-    /* Make right-side Project Library link match the centered title */
-    .topbar-menu .lib-link {
-      color: #fff;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: clamp(16px, 1.8vw, 20px);
-      line-height: 1;
-    }
-    .topbar-menu .lib-link:hover,
-    .topbar-menu .lib-link:focus { text-decoration: underline; }
-
-    /* Tidy/centered actions (used in report card) */
-    .q-actions { display:flex; gap:12px; align-items:center; justify-content:center; }
-    .q-actions.nowrap { flex-wrap: nowrap; }
-    .q-center { text-align:center; }
+    .q-actions{display:flex;gap:12px;align-items:center;justify-content:center}
+    .q-center{text-align:center}
   </style>
 </head>
 <body>
-<div class="home-wrap">
-  <a class="home-btn" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
-</div>
 
-  <!-- Top green bar -->
+  <!-- Centered HOME button -->
+  <div class="home-wrap">
+    <a class="home-btn" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
+  </div>
+
+  <!-- Top green bar (kept) -->
   <header class="topbar" role="banner">
     <div class="topbar-inner">
       <a class="home-link" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
@@ -164,31 +91,28 @@
   </header>
 
   <div class="q-wrap">
+    <!-- Hero -->
     <section class="q-hero">
-      <!-- REPLACED: pill -> QUIRK wordmark -->
-      <img class="q-eyebrow-logo" src="assets/quirk-wordmark.png" alt="QUIRK" />
-
+      <img class="q-eyebrow-logo" src="assets/quirk-wordmark.png" alt="QUIRK">
       <h1>Top Alternatives to <span style="color:var(--quirk-green)">VIN Solutions</span></h1>
       <p>Quirk Auto Dealers perspective on modern CRM/BDC options that improve response speed, reduce manual tasks, and book more appointments.</p>
     </section>
 
-    <!-- Highlight: Quirk Generative AI Alternative -->
+    <!-- Quirk Generative AI Alternative -->
     <section class="q-grid" aria-label="Primary recommendation">
       <div class="q-col-12">
-        <article class="q-card -center">
-           <h2>Quirk Generative AI Alternative</h2>
-           <p> 
-             An AI overlay that works alongside your CRM: composes personalized responses in minutes,
-             injects live inventory/incentives, and drives consistent appointment offers. Typical outcomes:
-           </p>
-           <ul class="q-bullets">
-             <li><strong>+15–20%</strong> appointment conversion lift; <strong>10–15%</strong> engagement lift.</li>
-             <li><strong>&lt;5 min</strong> response time with <strong>95%+</strong> follow-up compliance.</li>
-             <li>~<strong>30%</strong> fewer manual tasks so BDC focuses on high-value calls.</li>
-           </ul>
-           <span class="q-kicker">Best for: dealerships prioritizing speed to lead and appointment setting.</span>
-         </article>
-
+        <article class="q-card">
+          <h2>Quirk Generative AI Alternative</h2>
+          <p>An AI overlay that works alongside your CRM: composes personalized responses in minutes, injects live inventory/incentives, and drives consistent appointment offers. Typical outcomes:</p>
+          <ul class="q-bullets">
+            <li><strong>+15–20%</strong> appointment conversion lift; <strong>10–15%</strong> engagement lift.</li>
+            <li><strong>&lt;5 min</strong> response time with <strong>95%+</strong> follow-up compliance.</li>
+            <li>~<strong>30%</strong> fewer manual tasks so BDC focuses on high-value calls.</li>
+          </ul>
+          <span class="q-kicker">Best for: dealerships prioritizing speed to lead and appointment setting.</span>
+        </article>
+      </div>
+    </section>
 
     <!-- Other Alternatives -->
     <section class="q-grid" style="margin-top:22px" aria-label="Other options">
@@ -200,47 +124,18 @@
               <img class="logo-creatio" src="assets/logo_creatio.svg" alt="Creatio">
             </a>
           </h2>
-
-          <p class="clamp-2">
-            Creatio Copilot centralizes generative AI use cases across the Creatio platform with no-code setup and embedded AI in Sales, Marketing, and Service.
-          </p>
-
+          <p class="clamp-2">Creatio Copilot centralizes generative AI use cases across the Creatio platform with no-code setup and embedded AI in Sales, Marketing, and Service.</p>
           <details class="q-disclosure">
             <summary class="q-cta q-cta-small" role="button" aria-controls="creatio-more">
-              <span class="label-open">Expand</span>
-              <span class="label-close">Collapse</span>
+              <span class="label-open">Expand</span><span class="label-close">Collapse</span>
             </summary>
             <div id="creatio-more" class="q-long">
-              <p><strong>Creatio integrates with OpenAI, but there is no direct, native integration between Creatio and PBS Dealer Systems.</strong> Integration with PBS would require using Creatio's flexible API and a third-party connector or custom development.</p>
-
-              <p><strong>Creatio and OpenAI integration</strong></p>
-              <p>Creatio features a built-in AI copilot that uses OpenAI's large language models (LLMs). It can also connect to other services. This integration is available out-of-the-box and offers these features:</p>
+              <p><strong>Creatio integrates with OpenAI, but there is no direct, native integration with PBS Dealer Systems.</strong> Use Creatio’s APIs/iPaaS or custom work for PBS connectivity.</p>
               <ul>
-                <li><strong>Built-in capabilities:</strong> Creatio Copilot is LLM-agnostic. It supports OpenAI's GPT models, as well as Anthropic Claude and Google Gemini, to assist users. A ChatGPT connector is also available through the Creatio Marketplace.</li>
-                <li><strong>Use cases:</strong> The AI assists with text generation for emails, chats, and social posts. It can also act as a virtual assistant by referencing knowledge base articles to suggest solutions for customer service cases.</li>
-                <li><strong>Developer tools:</strong> For no-code developers, Creatio Copilot can assist with the app-development process, such as generating app templates based on a description.</li>
-                <li><strong>Custom AI skills:</strong> Custom AI skills can be created to perform more complex, multi-step tasks with a single prompt.</li>
-              </ul>
-
-              <p><strong>Creatio and PBS Dealer Systems integration</strong></p>
-              <p>While there is no pre-built connector, integrating Creatio with a specific Dealer Management System (DMS) like PBS is possible using several methods.</p>
-              <ul>
-                <li><strong>Open API:</strong> Creatio offers REST API support and OData protocol, allowing custom integrations with third-party systems.</li>
-                <li><strong>Integration Platform as a Service (iPaaS):</strong> Partners like Cyclr and Tray.io can enable connections with a wider range of applications.</li>
-                <li><strong>Custom connectors:</strong> Businesses can develop their own connectors using Creatio's open platform to exchange data with PBS Systems.</li>
-                <li><strong>Integration partners:</strong> Specialized partners may build a custom solution for specific needs.</li>
-              </ul>
-
-              <p><strong>Integrating the three systems</strong></p>
-              <p>The most effective way to combine all three systems is to use Creatio as the central hub:</p>
-              <ul>
-                <li><strong>Data exchange:</strong> Implement a custom integration between Creatio and PBS Dealer Systems to sync dealership data (such as sales, customer, and vehicle information) into Creatio.</li>
-                <li><strong>AI-powered processes:</strong> Use Creatio's native OpenAI integration to analyze, augment, and automate business processes using that dealership data. For example:
-                  <ul>
-                    <li>Use AI to generate personalized follow-up emails for new sales leads based on data imported from PBS.</li>
-                    <li>Leverage AI to create summaries of customer service chats to log in Creatio, referencing case information from the PBS integration.</li>
-                  </ul>
-                </li>
+                <li>Built-in AI copilot; GPT/Claude/Gemini supported.</li>
+                <li>Use cases: email/chat content, virtual assistant from KB.</li>
+                <li>No/low-code tools + custom “skills”.</li>
+                <li>Open REST/OData APIs; partners (Cyclr/Tray) for integration.</li>
               </ul>
             </div>
           </details>
@@ -255,35 +150,16 @@
               <img class="logo-fullpath" src="assets/logo_fullpath.jpg" alt="Fullpath">
             </a>
           </h2>
-
-          <p class="clamp-2">
-            Fullpath integrates with OpenAI, but there is no public information indicating a direct integration with PBS Systems. Fullpath focuses on integrations relevant to its business as a customer data and experience platform (CDXP) for automotive dealerships.
-          </p>
-
+          <p class="clamp-2">Fullpath integrates with OpenAI; no public indication of a direct PBS Systems integration. Focused on CDP/CDXP for auto dealers.</p>
           <details class="q-disclosure">
             <summary class="q-cta q-cta-small" role="button" aria-controls="fullpath-more">
-              <span class="label-open">Expand</span>
-              <span class="label-close">Collapse</span>
+              <span class="label-open">Expand</span><span class="label-close">Collapse</span>
             </summary>
             <div id="fullpath-more" class="q-long">
-              <p><strong>Fullpath</strong> integrates with OpenAI to offer AI-powered marketing and customer engagement tools for the automotive industry. As part of its Customer Data Platform (CDP), Fullpath uses OpenAI's Large Language Models (LLMs) to generate personalized customer experiences based on a dealership's data.</p>
-              <p><strong>Key features of the integration</strong></p>
-              <p><em>Enhanced customer data platform (CDP):</em> Fullpath's CDP is the foundation of its AI capabilities. It consolidates data from a dealership's CRM, DMS, inventory, website, and ad platforms. This allows the AI to generate hyper-personalized content for customers.</p>
               <ul>
-                <li><em>AI-driven email marketing:</em> Fullpath uses OpenAI-powered AI to create and run email marketing campaigns.</li>
-                <li><em>Custom campaigns:</em> Dealers can use the CDP's first-party data to define specific audience segments and send them targeted, personalized emails with content generated by the AI.</li>
-                <li><em>Automated content generation:</em> The AI assists dealerships by creating personalized content that can be seamlessly integrated into their existing marketing automation workflows.</li>
-                <li><em>ChatGPT integration:</em> Uses dealership data to create a holistic and personalized conversational experience for customers.</li>
-                <li><em>Customized chatbot:</em> A custom GPT trained on inventory, OEM offers, and local promotions for a tailored chatbot experience.</li>
-                <li><em>Safety measures:</em> Guardrails such as system-level prompts and disclosures ensure the chatbot provides appropriate and transparent responses.</li>
-              </ul>
-              <p><strong>How Fullpath uses AI with OpenAI</strong></p>
-              <ul>
-                <li><em>Data consolidation:</em> Aggregates CRM, DMS, inventory, site, and ad data into one platform.</li>
-                <li><em>Data activation:</em> Uses consolidated data to train and activate AI for personalized content.</li>
-                <li><em>Campaign creation:</em> Dealers define segments and goals in Fullpath's tools.</li>
-                <li><em>AI generation:</em> LLMs generate targeted, engaging content—e.g., emails—for those campaigns.</li>
-                <li><em>Execution and tracking:</em> Automates delivery and measures performance to show impact.</li>
+                <li>AI-driven email campaigns from first-party data.</li>
+                <li>ChatGPT-style experiences on dealership data.</li>
+                <li>Automated content creation & performance tracking.</li>
               </ul>
             </div>
           </details>
@@ -298,41 +174,22 @@
               <img class="logo-salesforce" src="assets/Salesforce.com_logo.svg.png" alt="Salesforce">
             </a>
           </h2>
-
-          <p class="clamp-2">
-            Salesforce CRM is a cloud-based platform that unifies sales, service, marketing, and commerce on a single integrated platform with AI-driven insights and automation.
-          </p>
-
+          <p class="clamp-2">Salesforce unifies sales, service, marketing, and commerce; strong native AI and OpenAI options. PBS DMS requires custom integration.</p>
           <details class="q-disclosure">
             <summary class="q-cta q-cta-small" role="button" aria-controls="salesforce-more">
-              <span class="label-open">Expand</span>
-              <span class="label-close">Collapse</span>
+              <span class="label-open">Expand</span><span class="label-close">Collapse</span>
             </summary>
             <div id="salesforce-more" class="q-long">
-              <p><strong>Salesforce can be integrated with OpenAI and PBS Systems, but the process and capabilities differ for each.</strong> Integration with OpenAI is a widely supported native and API-driven process, while integrating with PBS Systems, a Dealer Management System (DMS), requires custom development because the two products have competing functionalities.</p>
-
-              <p><strong>Integration with OpenAI</strong></p>
-              <p>Salesforce and OpenAI can be integrated in a variety of ways to embed AI capabilities directly into CRM workflows.</p>
               <ul>
-                <li><strong>Native AI features:</strong> Salesforce’s own AI, Einstein, is enhanced by a strategic partnership with OpenAI to provide generative AI features.</li>
-                <li><strong>API integration:</strong> Developers can use Apex to connect Salesforce to OpenAI’s APIs for custom use cases like intelligent lead scoring, automated summaries, and advanced customer service.</li>
-                <li><strong>Third-party connectors:</strong> Platforms like <em>n8n.io</em> and <em>Relay.app</em> offer low-code solutions to connect Salesforce and OpenAI through pre-built templates and workflows.</li>
-              </ul>
-
-              <p><strong>Integration with PBS Systems DMS</strong></p>
-              <p>Integrating Salesforce with PBS Systems is a more complex undertaking, as PBS is a comprehensive, standalone DMS that also contains its own CRM functions.</p>
-              <ul>
-                <li><strong>Custom API development:</strong> Integration is primarily achieved through custom API development. PBS Systems provides an API toolkit for partners to build integrations with its v10 DMS.</li>
-                <li><strong>No out-of-the-box solution:</strong> Since Salesforce offers its own competing Automotive Cloud, there is no simple, “plug-and-play” connector for PBS Systems on the AppExchange.</li>
-                <li><strong>Specialized consultants:</strong> Dealerships often work with specialized integrators or consulting firms, who use advanced APIs and platforms like MuleSoft to build a bi-directional data sync between the two systems.</li>
-                <li><strong>Data synchronization:</strong> Key to this integration is mapping data fields and building a synchronization strategy to avoid duplicates and ensure consistency for customer, vehicle, and inventory information.</li>
+                <li>Einstein + OpenAI via APIs or third-party connectors.</li>
+                <li>PBS: custom API work / integrators (no plug-and-play).</li>
               </ul>
             </div>
           </details>
         </article>
       </div>
 
-      <!-- TEKION -->
+      <!-- Tekion -->
       <div class="q-col-6">
         <article class="q-card">
           <h2 class="q-logo-heading">
@@ -340,33 +197,16 @@
               <img class="logo-tekion" src="assets/logo_tekion.png" alt="Tekion">
             </a>
           </h2>
-
-          <p class="clamp-2">
-            Tekion integrates with OpenAI and partners with PBS Systems; its ARC platform uses Azure OpenAI to streamline communications and customer experience.
-          </p>
-
+          <p class="clamp-2">Tekion uses Azure OpenAI within ARC; has partner relationships enabling PBS connectivity.</p>
           <details class="q-disclosure">
             <summary class="q-cta q-cta-small" role="button" aria-controls="tekion-more">
-              <span class="label-open">Expand</span>
-              <span class="label-close">Collapse</span>
+              <span class="label-open">Expand</span><span class="label-close">Collapse</span>
             </summary>
             <div id="tekion-more" class="q-long">
-              <p><strong>Tekion integrates with OpenAI and has a partner relationship with PBS Systems.</strong></p>
-
-              <p><strong>Integration with OpenAI</strong></p>
               <ul>
-                <li><strong>Azure OpenAI Service:</strong> Tekion uses OpenAI's technology within its Automotive Retail Cloud (ARC) via Microsoft’s Azure OpenAI Service.</li>
-                <li><strong>Customer Communication:</strong> “Smart Communication” analyzes and summarizes calls, chats, and emails between customers and sales agents.</li>
-                <li><strong>Sales Recommendations:</strong> Provides agents with customer-specific recommendations and prompts to deepen engagement.</li>
-                <li><strong>Customer Experience:</strong> Generative AI streamlines the purchasing process to make the experience more fluid and efficient.</li>
-              </ul>
-
-              <p><strong>Integration with PBS Systems</strong></p>
-              <ul>
-                <li><strong>DMS Connectivity:</strong> Integration enables shared customers to connect data between Tekion and PBS Systems.</li>
-                <li><strong>API Partner:</strong> In March 2025, Hammer announced new API integrations with both Tekion and PBS Systems.</li>
-                <li><strong>Data Sharing:</strong> Partnership improves data flow and lead handling for dealerships using both platforms.</li>
-                <li><strong>Open Platform:</strong> Tekion’s Automotive Partner Cloud (APC) allows third-party vendors and partners to build direct integrations.</li>
+                <li>Smart Communication: summarize calls/chats/emails.</li>
+                <li>Recommendations/prompts for sales agents.</li>
+                <li>APC partner cloud + recent API partner news.</li>
               </ul>
             </div>
           </details>
@@ -377,43 +217,27 @@
       <div class="q-col-6">
         <article class="q-card">
           <h2 class="q-logo-heading">
-            <a href="https://www.hubspot.com/products/crm/ai-crm?hubs_content=www.hubspot.com/&hubs_content-cta=nav-software-smartcrm" target="_blank" rel="noopener">
+            <a href="https://www.hubspot.com/products/crm/ai-crm" target="_blank" rel="noopener">
               <img class="logo-hubspot" src="assets/logo_hubspot.jpg" alt="HubSpot">
             </a>
           </h2>
-
-          <p class="clamp-2">
-            HubSpot CRM integrates directly with OpenAI for AI-powered automations; no native PBS Systems connector—connect via iPaaS or custom API.
-          </p>
-
+          <p class="clamp-2">HubSpot has direct OpenAI features; PBS requires iPaaS or custom API work.</p>
           <details class="q-disclosure">
             <summary class="q-cta q-cta-small" role="button" aria-controls="hubspot-more">
-              <span class="label-open">Expand</span>
-              <span class="label-close">Collapse</span>
+              <span class="label-open">Expand</span><span class="label-close">Collapse</span>
             </summary>
             <div id="hubspot-more" class="q-long">
-              <p><strong>HubSpot CRM offers a direct integration with OpenAI, allowing for various AI-powered automations.</strong> However, it does not have a native, out-of-the-box integration with PBS Dealer Systems. You can connect to PBS using a third-party integration platform or HubSpot's custom API tools.</p>
-
-              <p><strong>HubSpot and OpenAI integration</strong></p>
-              <p>The direct integration between HubSpot and OpenAI enables you to use AI to automate and enhance customer relationship tasks and research.</p>
               <ul>
-                <li><strong>Workflow automation:</strong> Use OpenAI-powered actions within HubSpot workflows to summarize customer records, personalize emails, and generate new tasks.</li>
-                <li><strong>Deep research connector:</strong> With a paid OpenAI subscription, query your CRM data in natural language within ChatGPT to get instant insights.</li>
-                <li><strong>Content generation:</strong> Generate email drafts, social posts, and more using OpenAI models inside HubSpot.</li>
-              </ul>
-
-              <p><strong>HubSpot and PBS Dealer Systems integration</strong></p>
-              <p>HubSpot does not have a pre-built app for PBS Dealer Systems. To integrate HubSpot with PBS, you have two primary options:</p>
-              <ul>
-                <li><strong>Option 1 – Third-party platform:</strong> Use Zapier, n8n, or APIcenter to connect and automate data syncs.</li>
-                <li><strong>Option 2 – Custom build:</strong> Use HubSpot’s open APIs (or a HubSpot Integration Partner) to create a two-way sync tailored to your workflows.</li>
+                <li>OpenAI in workflows; summarize/personalize/generate.</li>
+                <li>Deep research connector with paid OpenAI account.</li>
+                <li>PBS via Zapier/Make/n8n or custom integration.</li>
               </ul>
             </div>
           </details>
         </article>
       </div>
 
-      <!-- monday.com CRM -->
+      <!-- monday.com -->
       <div class="q-col-6">
         <article class="q-card">
           <h2 class="q-logo-heading">
@@ -421,32 +245,15 @@
               <img class="logo-monday" src="assets/logo_mondaycrm.png" alt="monday.com CRM">
             </a>
           </h2>
-
-          <p class="clamp-2">
-            monday.com CRM integrates with OpenAI; no pre-built PBS Systems integration—connecting to PBS requires a custom solution.
-          </p>
-
+          <p class="clamp-2">monday.com supports OpenAI; PBS requires custom solution or middleware.</p>
           <details class="q-disclosure">
             <summary class="q-cta q-cta-small" role="button" aria-controls="monday-more">
-              <span class="label-open">Expand</span>
-              <span class="label-close">Collapse</span>
+              <span class="label-open">Expand</span><span class="label-close">Collapse</span>
             </summary>
             <div id="monday-more" class="q-long">
-              <p><strong>monday.com CRM integrates with OpenAI, but there is no direct, pre-built integration with PBS Dealer Systems.</strong> A custom solution would be necessary to connect with PBS.</p>
-
-              <p><strong>monday.com and OpenAI integration</strong></p>
-              <p>monday.com has built-in AI capabilities and supports integrations with OpenAI through several methods.</p>
               <ul>
-                <li><strong>Native features:</strong> Uses OpenAI’s GPT models (and others) to power content generation, email writing, and task summaries.</li>
-                <li><strong>Integration apps:</strong> Marketplace apps or platforms like Make (Integromat), Zapier, or n8n can wire OpenAI to monday.com to automate workflows.</li>
-                <li><strong>API:</strong> Developers can use monday.com’s robust API to build custom apps that connect OpenAI for highly specific use cases.</li>
-              </ul>
-
-              <p><strong>monday.com and PBS Dealer Systems</strong></p>
-              <p>There is no readily available integration for PBS Dealer Systems in the monday.com marketplace or standard connectors.</p>
-              <ul>
-                <li><strong>Custom integration:</strong> Use monday.com’s API to build a bespoke connection to PBS (internal devs or a hired developer).</li>
-                <li><strong>Middleware platforms:</strong> You can also craft a custom workflow using Make or Zapier by leveraging monday.com’s API and any available PBS connectivity options.</li>
+                <li>Native AI + marketplace apps + API.</li>
+                <li>PBS via custom API or Make/Zapier.</li>
               </ul>
             </div>
           </details>
@@ -454,34 +261,18 @@
       </div>
     </section>
 
-      <!-- =======================
-         Comparison Report (View PDF only)
-         ======================= -->
+    <!-- Report -->
     <section class="q-grid" style="margin-top:22px" aria-label="CRM comparison report">
       <div class="q-col-12">
         <article class="q-card">
           <h2 class="q-center">CRM Platform Comparison Report</h2>
-          <p class="q-center" style="margin-top:6px; color:var(--quirk-muted);">
-            Executive summary and matrix covering AI depth, PBS DMS integration realities, cost ranges, and multi-rooftop fit.
-          </p>
-
-          <div class="q-actions nowrap" style="margin-top:14px;">
-            <a
-              class="q-cta q-cta-small"
-              target="_blank"
-              rel="noopener"
-              href="assets/crm_comparison_report.pdf"
-              aria-label="View the CRM Comparison report PDF in a new tab"
-            >
-              View PDF
-            </a>
+          <p class="q-center" style="margin-top:6px;color:var(--quirk-muted)">Executive summary and matrix covering AI depth, PBS DMS integration realities, cost ranges, and multi-rooftop fit.</p>
+          <div class="q-actions" style="margin-top:14px">
+            <a class="q-cta q-cta-small" target="_blank" rel="noopener" href="assets/crm_comparison_report.pdf">View PDF</a>
           </div>
         </article>
       </div>
     </section>
-
   </div>
 </body>
 </html>
-
-     
