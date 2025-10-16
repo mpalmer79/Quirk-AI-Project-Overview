@@ -10,65 +10,43 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
-    :focus-visible { outline: 2px solid #34d399; outline-offset: 2px; }
-    body { background: transparent; }
+    :focus-visible{outline:2px solid #34d399;outline-offset:2px}
+    body{background:transparent}
+    html,body{height:auto;overflow:visible!important}
+    #discoveryShell,#discoveryCard,#discoveryCard .card-body{max-height:none!important;overflow:visible!important}
 
-    /* Let content grow; avoid inner scrollbars */
-    html, body { height: auto; overflow: visible !important; }
-    #discoveryShell, #discoveryCard, #discoveryCard .card-body {
-      max-height: none !important; overflow: visible !important;
-    }
+    .field-label{display:block;font-size:.875rem;font-weight:600;color:#334155;margin-bottom:.25rem;text-align:center}
+    .field-input{display:block;margin-left:auto;margin-right:auto;border:1px solid #e5e7eb;border-radius:.75rem;padding:.75rem;background:#fff}
+    .field-input:focus{outline:2px solid #10b981;outline-offset:2px}
+    .field-input.w-full{width:100%}
 
-    /* Form labels + inputs */
-    .field-label{
-      display:block; font-size:.875rem; font-weight:600; color:#334155;
-      margin-bottom:.25rem; text-align:center;
-    }
-    .field-input{
-      display:block; margin-left:auto; margin-right:auto;
-      border:1px solid #e5e7eb; border-radius:.75rem; padding:.75rem; background:#fff;
-    }
-    .field-input:focus{ outline:2px solid #10b981; outline-offset:2px }
-    .field-input.w-full{ width:100% }
+    select.field-input{color:#0f172a}
+    select.field-input:required:invalid{color:#94a3b8}
+    select.field-input option{color:#0f172a}
+    select.field-input option[disabled][value=""]{color:#94a3b8}
 
-    /* Select color rules: only the placeholder is gray, options are black */
-    select.field-input { color:#0f172a; }                          /* slate-900 */
-    select.field-input:required:invalid { color:#94a3b8; }         /* slate-400 when placeholder showing */
-    select.field-input option { color:#0f172a; }                   /* dropdown options = black */
-    select.field-input option[disabled][value=""] { color:#94a3b8; } /* placeholder in list = gray */
-    /* If you prefer to hide placeholder from the open list, uncomment: */
-    /* select.field-input option[disabled][value=""] { display:none; } */
-
-    /* Compact “ch” widths keep desktop tidy but still center on mobile */
     .w-model{width:34ch!important}.w-cab{width:20ch!important}.w-use{width:28ch!important}
     .w-towing{width:22ch!important}.w-seating{width:8ch!important}.w-fuel{width:12ch!important}
     .w-invest{width:25ch!important}.w-budget{width:18ch!important}.w-lease{width:16ch!important}
     .w-payoff{width:22ch!important}.w-condition{width:40ch!important}
+    .w-stock{width:22ch!important}
 
-    input[type="number"]::-webkit-outer-spin-button,
-    input[type="number"]::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0 }
-    input[type="number"]{ -moz-appearance:textfield }
+    input[type="number"]::-webkit-outer-spin-button,input[type="number"]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+    input[type="number"]{-moz-appearance:textfield}
 
-    /* Top row toggles cab select for Silverado */
-    #firstRow{
-      display:grid; grid-template-columns:1fr; gap:1rem; align-items:end; place-items:center;
-    }
-    #firstRow.two-cols{ grid-template-columns:auto auto }
+    #firstRow{display:grid;grid-template-columns:1fr;gap:1rem;align-items:end;place-items:center}
+    #firstRow.two-cols{grid-template-columns:auto auto}
 
-    .section-title{
-      text-align:center; color:#065f46; font-weight:800;
-      font-size:1.25rem; margin-top:1.25rem; margin-bottom:.25rem; border:0!important;
-    }
+    .section-title{text-align:center;color:#065f46;font-weight:800;font-size:1.25rem;margin-top:1.25rem;margin-bottom:.25rem;border:0!important}
     .section-title::before,.section-title::after{content:none!important;display:none!important}
     .subtle{color:#64748b}
 
-    /* Currency adorners */
     .currency{padding-left:2.75rem!important}
     .currency.tight{padding-left:2.25rem!important}
-    .dollar{position:absolute; left:.55rem; top:50%; transform:translateY(-50%); color:#64748b; user-select:none;}
+    .dollar{position:absolute;left:.55rem;top:50%;transform:translateY(-50%);color:#64748b;user-select:none}
     .currency-slim{padding-left:1.45rem!important}
 
-    .cta{display:flex; justify-content:center}
+    .cta{display:flex;justify-content:center}
   </style>
 </head>
 <body class="p-2">
@@ -76,7 +54,6 @@
     <div id="discoveryCard" class="rounded-2xl border border-slate-200 shadow bg-white/95 p-4 sm:p-6">
       <h2 class="text-center text-xl sm:text-2xl font-bold text-emerald-800">Discovery</h2>
 
-      <!-- Desktop copy vs. mobile headline -->
       <p class="text-center text-slate-600 mt-1">
         <span class="hidden sm:inline">Answer a few questions so we can match the right vehicle.</span>
         <span class="block sm:hidden font-medium">Let’s find the<br>right vehicle</span>
@@ -93,7 +70,7 @@
             <span class="field-label">Vehicle you’re interested in</span>
             <select id="model" class="field-input w-model" required>
               <option value="" selected disabled>Select from drop down menu</option>
-              <!-- real options are injected by JS -->
+              <!-- real options injected by JS -->
             </select>
           </label>
 
@@ -108,8 +85,18 @@
           </label>
         </div>
 
-        <!-- Row 2 -->
-        <div class="grid md:grid-cols-2 gap-4 place-items-center md:place-items-start">
+        <!-- NEW: Stock Number (center-aligned, 10 chars, optional) -->
+        <div class="grid place-items-center">
+          <label class="block text-center">
+            <span class="field-label">Stock Number</span>
+            <input id="stockNumber" type="text" maxlength="10"
+                   class="field-input w-stock text-center"
+                   placeholder="(optional)" inputmode="text" autocomplete="off">
+          </label>
+        </div>
+
+        <!-- Row 2 (center items on desktop as requested) -->
+        <div class="grid md:grid-cols-2 gap-4 place-items-center md:place-items-center">
           <label class="block w-full text-center">
             <span class="field-label">Primary use</span>
             <select id="use" class="field-input w-use">
@@ -199,7 +186,6 @@
             <span class="field-label">Year</span>
             <select id="tradeYear" class="field-input w-full" required>
               <option value="" selected disabled>Select Year</option>
-              <!-- years injected -->
             </select>
           </label>
 
@@ -266,144 +252,151 @@
 <script>
 /* Kiosk Discovery — collect needs, persist, notify parent */
 
-const $ = (id) => document.getElementById(id);
-const saveLocal = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
-const loadLocal = (k, d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } };
-const TARGET_ORIGIN = window.location.origin;
+const $ = (id)=>document.getElementById(id);
+const saveLocal=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));}catch{}};
+const loadLocal=(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch{return d;}};
+const TARGET_ORIGIN=window.location.origin;
 
 /* Currency helpers */
-const parseMoney = (s) => Number(String(s||"").replace(/[^\d.]/g,"") || 0);
-const fmtMoney   = (n) => Number(n||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
-const attachCurrency = (el, blankOkay=false) => {
-  el.addEventListener('blur', () => {
-    const raw = String(el.value||"").replace(/[^\d.]/g,"");
-    el.value = (raw || !blankOkay) ? fmtMoney(parseMoney(el.value)) : "";
-    persist();
-  });
-  el.addEventListener('input', persistDebounced);
+const parseMoney=(s)=>Number(String(s||"").replace(/[^\d.]/g,"")||0);
+const fmtMoney=(n)=>Number(n||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+const attachCurrency=(el,blankOkay=false)=>{
+  el.addEventListener('blur',()=>{const raw=String(el.value||"").replace(/[^\d.]/g,"");el.value=(raw||!blankOkay)?fmtMoney(parseMoney(el.value)):"";persist();});
+  el.addEventListener('input',persistDebounced);
 };
 
 /* Elements */
-const firstRow=$('firstRow'), modelEl=$('model'), cabWrap=$('cabWrap'), cabEl=$('cab');
-const useEl=$('use'), towingEl=$('towing'), seatingEl=$('seating'), fuelEl=$('fuel');
-const downEl=$('downPayment'), budgetEl=$('budget'), leaseEl=$('leaseSpecials');
-const tradeYear=$('tradeYear'), tradeMake=$('tradeMake'), tradeModel=$('tradeModel');
-const payoffEl=$('payoff'), financedWithEl=$('financedWith'), milesEl=$('miles'), vehicleConditionEl=$('vehicleCondition');
-const form=$('discForm'), backBtn=$('backBtn'), live=$('live');
+const firstRow=$('firstRow'),modelEl=$('model'),cabWrap=$('cabWrap'),cabEl=$('cab');
+const useEl=$('use'),towingEl=$('towing'),seatingEl=$('seating'),fuelEl=$('fuel');
+const downEl=$('downPayment'),budgetEl=$('budget'),leaseEl=$('leaseSpecials');
+const tradeYear=$('tradeYear'),tradeMake=$('tradeMake'),tradeModel=$('tradeModel');
+const payoffEl=$('payoff'),financedWithEl=$('financedWith'),milesEl=$('miles'),vehicleConditionEl=$('vehicleCondition');
+const stockEl=$('stockNumber');
+const form=$('discForm'),backBtn=$('backBtn'),live=$('live');
 
 /* Data */
-const RAW_MODELS = [
-  'Blazer','Colorado','Corvette E-Ray','Corvette Stingray','Equinox',
-  'Express Cargo 2500','Express Cargo 3500','Express Cutaway 3500',
-  'Low Cab Forward 4500','Low Cab Forward 4500 HD','Low Cab Forward 5500 HD','Low Cab Forward 6500 HD',
-  'Silverado 1500','Silverado 2500 HD','Silverado 3500 HD','Silverado 3500 HD Chassis Cab',
-  'Silverado 4500 HD','Silverado 5500 HD','Silverado 6500 HD','Silverado EV',
-  'Suburban','Tahoe','Trailblazer','Traverse','Trax'
-];
-const customSort = (a,b) => {
-  const w = (n) => n.startsWith('Corvette') ? 0 : (n==='Trax'?2:1);
-  return w(a)===w(b) ? a.localeCompare(b) : w(a)-w(b);
-};
+const RAW_MODELS=['Blazer','Colorado','Corvette E-Ray','Corvette Stingray','Equinox','Express Cargo 2500','Express Cargo 3500','Express Cutaway 3500','Low Cab Forward 4500','Low Cab Forward 4500 HD','Low Cab Forward 5500 HD','Low Cab Forward 6500 HD','Silverado 1500','Silverado 2500 HD','Silverado 3500 HD','Silverado 3500 HD Chassis Cab','Silverado 4500 HD','Silverado 5500 HD','Silverado 6500 HD','Silverado EV','Suburban','Tahoe','Trailblazer','Traverse','Trax'];
+const customSort=(a,b)=>{const w=(n)=>n.startsWith('Corvette')?0:(n==='Trax'?2:1);return w(a)===w(b)?a.localeCompare(b):w(a)-w(b);};
 
-/* Build model list with placeholder first; do NOT auto-restore last pick */
+/* Build model list */
 async function fillModels(){
   let list=[];
-  try{
-    const r=await fetch('assets/models.json',{cache:'no-store'});
-    if(r.ok){ const a=await r.json(); if(Array.isArray(a)&&a.length) list=a; }
-  }catch{}
-  if(!list.length) list=RAW_MODELS;
+  try{const r=await fetch('assets/models.json',{cache:'no-store'});if(r.ok){const a=await r.json();if(Array.isArray(a)&&a.length)list=a;}}catch{}
+  if(!list.length)list=RAW_MODELS;
   list=[...list].sort(customSort);
-  modelEl.insertAdjacentHTML('beforeend', list.map(m=>`<option>${m}</option>`).join(''));
+  modelEl.insertAdjacentHTML('beforeend',list.map(m=>`<option>${m}</option>`).join(''));
 }
 
 /* Years list */
-function fillYears(){
-  const thisYear=new Date().getFullYear();
-  const opts=[]; for(let y=thisYear;y>=1990;y--) opts.push(`<option>${y}</option>`);
-  tradeYear.insertAdjacentHTML('beforeend', opts.join(''));
-}
+function fillYears(){const y=new Date().getFullYear();const o=[];for(let i=y;i>=1990;i--)o.push(`<option>${i}</option>`);tradeYear.insertAdjacentHTML('beforeend',o.join(''));}
 
 /* Silverado-only cab control */
-const isSilverado = (m) => /^Silverado\s(1500|2500|3500)/.test(m||'');
+const isSilverado=(m)=>/^Silverado\s(1500|2500|3500)/.test(m||'');
 function updateCabVisibility(){
   const show=isSilverado(modelEl.value);
-  cabWrap.classList.toggle('hidden', !show);
-  firstRow.classList.toggle('two-cols', show);
-  if(live) live.textContent = show ? 'Cab style options are now available for Silverado.' : 'Cab style options hidden for non-Silverado models.';
+  cabWrap.classList.toggle('hidden',!show);
+  firstRow.classList.toggle('two-cols',show);
+  if(live) live.textContent=show?'Cab style options are now available for Silverado.':'Cab style options hidden for non-Silverado models.';
 }
 
-/* Optional: normalize model family and persist interest (without auto-restore) */
-function normalizeModel(label){
-  if(!label) return '';
-  const L=String(label).trim().toLowerCase();
-  if(L.includes('corvette')) return 'Corvette';
-  return String(label).trim();
-}
+/* Normalize/persist interest model */
+function normalizeModel(label){if(!label)return'';const L=String(label).trim().toLowerCase();if(L.includes('corvette'))return'Corvette';return String(label).trim();}
 function persistInterestModel(){
-  const raw=String(modelEl.value||'').trim();
-  if(!raw) return; // ignore placeholder
+  const raw=String(modelEl.value||'').trim(); if(!raw) return;
   const norm=normalizeModel(raw);
-  saveLocal('guided_interest_raw', raw);
-  saveLocal('guided_interest_model', norm);
-  // reflect in guided_needs as well
-  const needs = loadLocal('guided_needs', {});
-  saveLocal('guided_needs', { ...needs, model: raw });
+  saveLocal('guided_interest_raw',raw);
+  saveLocal('guided_interest_model',norm);
+  const needs=loadLocal('guided_needs',{}); saveLocal('guided_needs',{...needs,model:raw});
 }
 
-/* Clear user-entered numeric fields on fresh load */
-function setFreshDefaults(){
-  budgetEl.value=""; payoffEl.value=""; downEl.value=""; milesEl.value=""; leaseEl.value="";
-}
+/* Keep numeric fields blank by default */
+function setFreshDefaults(){budgetEl.value="";payoffEl.value="";downEl.value="";milesEl.value="";leaseEl.value="";}
 
 /* Persist the whole form */
 function persist(){
-  const modelVal = modelEl.value || null;
-  const data = {
-    model: modelVal, cab: cabEl.value, use: useEl.value, towing: towingEl.value,
-    seating: seatingEl.value, fuel: fuelEl.value,
-    downPayment: parseMoney(downEl.value), budget: parseMoney(budgetEl.value),
-    leaseSpecials: leaseEl.value,
-    tradeYear: tradeYear.value || null, tradeMake: tradeMake.value || null, tradeModel: tradeModel.value || null,
-    payoff: parseMoney(payoffEl.value),
-    financedWith: financedWithEl.value || "",
-    miles: milesEl.value ? Number(String(milesEl.value).replace(/[^\d]/g,'')) : null,
-    vehicleCondition: vehicleConditionEl.value
+  const modelVal=modelEl.value||null;
+  const data={
+    model:modelVal,cab:cabEl.value,use:useEl.value,towing:towingEl.value,seating:seatingEl.value,fuel:fuelEl.value,
+    downPayment:parseMoney(downEl.value),budget:parseMoney(budgetEl.value),leaseSpecials:leaseEl.value,
+    tradeYear:tradeYear.value||null,tradeMake:tradeMake.value||null,tradeModel:tradeModel.value||null,
+    payoff:parseMoney(payoffEl.value),financedWith:financedWithEl.value||"",
+    miles:milesEl.value?Number(String(milesEl.value).replace(/[^\d]/g,'')):null,
+    vehicleCondition:vehicleConditionEl.value, stockNumber: (stockEl.value||"").trim()
   };
-  saveLocal('guided_needs', data);
-  window.parent?.postMessage({ type:'discovery:update', payload:{ budget:data.budget, model:modelVal } }, TARGET_ORIGIN);
+  saveLocal('guided_needs',data);
+  window.parent?.postMessage({type:'discovery:update',payload:{budget:data.budget,model:modelVal}},TARGET_ORIGIN);
 }
-const debounce = (fn,ms)=>{ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a),ms); } };
-const persistDebounced = debounce(persist,120);
+const debounce=(fn,ms)=>{let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms);}};
+const persistDebounced=debounce(persist,120);
+
+/* Inventory scan by stock number (docs/sandbox/inventory.json) */
+let INV_CACHE=null;
+async function loadInventoryDocs(){
+  if(INV_CACHE) return INV_CACHE;
+  try{
+    const r=await fetch('docs/sandbox/inventory.json',{cache:'no-store'});
+    if(r.ok){INV_CACHE=await r.json();} else {INV_CACHE=[];}
+  }catch{INV_CACHE=[];}
+  return INV_CACHE;
+}
+function getStockValue(obj){
+  return obj.stock?.toString()
+      || obj.stockNumber?.toString()
+      || obj.stock_number?.toString()
+      || obj['Stock']?.toString()
+      || obj['StockNumber']?.toString()
+      || obj['Stock #']?.toString()
+      || "";
+}
+async function checkStockMatch(){
+  const q=(stockEl.value||"").trim(); if(!q){saveLocal('guided_stock_match',null);return;}
+  const inv=await loadInventoryDocs();
+  const found=(Array.isArray(inv)?inv:[]).find(v=>getStockValue(v).toUpperCase()===q.toUpperCase());
+  saveLocal('guided_stock_match',found||null);
+  if(found){
+    // If VIN present, stash it for downstream steps
+    const vin = found.vin || found.VIN || found.vin_number || null;
+    if(vin) saveLocal('guided_selectedVin', vin);
+    if(live) live.textContent=`Stock ${q} matched ${found.year||''} ${found.make||''} ${found.model||''}.`;
+  }else{
+    if(live) live.textContent=`No vehicle found for stock ${q}.`;
+  }
+}
 
 /* Events */
-modelEl.addEventListener('change', ()=>{ updateCabVisibility(); persistInterestModel(); persist(); });
+modelEl.addEventListener('change',()=>{updateCabVisibility();persistInterestModel();persist();});
 [cabEl,useEl,towingEl,seatingEl,fuelEl,tradeYear,tradeMake,tradeModel,milesEl,financedWithEl,leaseEl,vehicleConditionEl]
-  .forEach(el=>el.addEventListener('input', persistDebounced));
+  .forEach(el=>el.addEventListener('input',persistDebounced));
 
-backBtn.addEventListener('click', ()=> window.parent?.postMessage({type:'discovery:back'}, TARGET_ORIGIN));
-form.addEventListener('submit', (e)=>{ e.preventDefault(); persistInterestModel(); persist(); window.parent?.postMessage({type:'discovery:done'}, TARGET_ORIGIN); });
+stockEl.addEventListener('input',e=>{
+  // Allow only letters/numbers, max 10
+  const cleaned=e.target.value.replace(/[^a-z0-9]/gi,'').slice(0,10);
+  if(cleaned!==e.target.value) e.target.value=cleaned;
+  persistDebounced();
+});
+stockEl.addEventListener('blur',async()=>{persist();await checkStockMatch();});
+
+backBtn.addEventListener('click',()=>window.parent?.postMessage({type:'discovery:back'},TARGET_ORIGIN));
+form.addEventListener('submit',(e)=>{e.preventDefault();persistInterestModel();persist();window.parent?.postMessage({type:'discovery:done'},TARGET_ORIGIN);});
 
 /* Currency fields */
-attachCurrency(downEl,true);
-attachCurrency(budgetEl,true);
-attachCurrency(payoffEl,true);
+attachCurrency(downEl,true); attachCurrency(budgetEl,true); attachCurrency(payoffEl,true);
 
 /* Height reporting to parent */
 function sendHeight(){
   const h=document.documentElement.scrollHeight;
-  window.parent?.postMessage({ type:'discovery:height', payload:{height:h} }, TARGET_ORIGIN);
+  window.parent?.postMessage({type:'discovery:height',payload:{height:h}},TARGET_ORIGIN);
 }
-window.addEventListener('load', sendHeight);
-('ResizeObserver' in window) ? new ResizeObserver(sendHeight).observe(document.documentElement) : setInterval(sendHeight, 500);
+window.addEventListener('load',sendHeight);
+('ResizeObserver' in window)?new ResizeObserver(sendHeight).observe(document.documentElement):setInterval(sendHeight,500);
 
 /* Boot */
 (async()=>{
   await fillModels();
   updateCabVisibility();
   fillYears();
-  setFreshDefaults();     // keep fields blank on fresh load
-  persist();              // seed storage with current defaults
+  setFreshDefaults();
+  persist();
   sendHeight();
 })();
 </script>
