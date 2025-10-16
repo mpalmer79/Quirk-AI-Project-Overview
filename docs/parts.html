@@ -4,272 +4,70 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Quirk AI for Parts</title>
-
-  <!-- Force browser/UI to render in light mode -->
   <meta name="color-scheme" content="light">
-
-  <!-- Keep URLs resolving under the project site -->
   <base href="/Quirk-AI-Project-Overview/">
-
   <link rel="stylesheet" href="assets/style.css" />
-
   <style>
-    :root { --brand-green: #0b6e37; }
-
-    /* ---------- HOME button (centered at top) ---------- */
-    .home-wrap{
-      display:flex;
-      justify-content:center;
-      padding:18px 0 4px;
-      position:relative;
-      z-index:10;
-    }
-    .home-btn{
-      display:inline-block;
-      background:#111;
-      color:#fff;
-      padding:10px 20px;
-      border-radius:999px;
-      font-weight:800;
-      letter-spacing:.02em;
-      text-transform:uppercase;
-      text-decoration:none;
-      line-height:1;
-      box-shadow:0 10px 24px rgba(0,0,0,.18);
-      border:1px solid rgba(255,255,255,.06);
-      transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
-    }
-    .home-btn:hover{ background:#0a0a0a; box-shadow:0 12px 28px rgba(0,0,0,.24); transform:translateY(-1px); }
-    .home-btn:active{ transform:translateY(0); }
-
-    .page-wrap {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 24px 20px 56px;
-      position: relative;
-      z-index: 1;
-      text-align: center;
-    }
-
-    .title {
-      text-align: center;
-      font-size: 2rem;
-      font-weight: 700;
-      margin: 32px 0 12px;
-      color: #111;
-    }
-
-    .status {
-      text-align: center;
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin: 12px 0 0;
-      color: #111;
-    }
-
-    .status .dev { color: #1d4ed8; font-weight: 800; }
-
-    /* Watermark background */
-    body::before {
-      content: "";
-      background: url("assets/quirk-ai-logo.png") no-repeat center center;
-      background-size: 400px auto;
-      opacity: 0.06;
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
-    }
-
-    /* ---------- Disclosure pattern ---------- */
-    .sections {
-      margin-top: 28px;
-      text-align: left;
-    }
-
-    details.disclosure {
-      border: 1px solid #e5e7eb;
-      border-radius: 10px;
-      background: #fff;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      margin: 16px 0;
-      overflow: hidden;
-    }
-
-    details.disclosure[open] { box-shadow: 0 6px 16px rgba(0,0,0,0.08); }
-
-    details.disclosure > summary {
-      list-style: none;
-      cursor: pointer;
-      padding: 16px 18px;
-      font-weight: 700;
-      font-size: 1.05rem;
-      color: #0b1220;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: linear-gradient(0deg, #ffffff 0%, #fafafa 100%);
-    }
-
-    /* caret */
-    details.disclosure > summary::before {
-      content: "▸";
-      transition: transform 0.2s ease;
-      color: var(--brand-green);
-      font-size: 1.1rem;
-      margin-right: 2px;
-    }
-    details.disclosure[open] > summary::before { transform: rotate(90deg); }
-
-    /* Open/Close label swap */
-    .label-open,
-    .label-close {
-      font-weight: 700;
-      color: var(--brand-green);
-      border: 1px solid #cfe9db;
-      background: #ecfdf5;
-      padding: 2px 8px;
-      border-radius: 999px;
-      font-size: .75rem;
-      letter-spacing: .02em;
-    }
-    .label-close { display: none; }
-    details[open] .label-open { display: none; }
-    details[open] .label-close { display: inline-block; }
-
-    .panel {
-      padding: 18px;
-      border-top: 1px solid #eef2f7;
-      font-size: 0.98rem;
-      line-height: 1.55;
-      color: #0f172a;
-      background: #fff;
-    }
-
-    .panel h3 {
-      margin: 8px 0 6px;
-      font-size: 1.05rem;
-      color: #0b6e37;
-    }
-
-    .panel .cols {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 14px;
-    }
-    @media (min-width: 860px) {
-      .panel .cols { grid-template-columns: repeat(2, 1fr); }
-    }
-
-    .kbd {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: .85rem;
-      background: #f6f8fa;
-      border: 1px solid #e5e7eb;
-      border-radius: 6px;
-      padding: 2px 6px;
-    }
-
-    ul.tight { margin: 8px 0 0 18px; }
-    ul.tight li { margin: 6px 0; }
-
-    /* Demo buttons */
-    .btn-demo {
-      display: inline-block;
-      padding: 10px 16px;
-      border-radius: 8px;
-      background: var(--brand-green);
-      color: #fff;
-      text-decoration: none;
-      font-weight: 600;
-      transition: background .2s;
-    }
-    .btn-demo:hover { background: #09582c; }
-
-    /* --------- ROI table (Robotics section) --------- */
-    .roi-scroll { overflow-x: auto; }
-    .roi-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.95rem;
-      background: #fff;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-    }
-    .roi-table th, .roi-table td {
-      padding: 10px 12px;
-      border-bottom: 1px solid #eef2f7;
-      text-align: left;
-      white-space: nowrap;
-    }
-    .roi-table thead th {
-      background: #f8fafc;
-      font-weight: 700;
-    }
-    .roi-table tbody tr:hover { background: #fafafa; }
-
-    /* Robotics hero GIF */
-    .robotics-hero {
-      display: flex;
-      justify-content: center;
-      margin: 6px 0 14px;
-    }
-    .robotics-hero img {
-      max-width: 920px;
-      width: 100%;
-      height: auto;
-      border-radius: 8px;
-    }
+    :root{--brand:#0b6e37;--ink:#0f172a;--blk:#111;--brd:#e5e7eb}
+    *{box-sizing:border-box}
+    body{margin:0;color:var(--ink);font:16px/1.55 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial}
+    body::before{content:"";position:fixed;inset:0;background:url("assets/quirk-ai-logo.png") no-repeat center/400px auto;opacity:.06;pointer-events:none}
+    a{color:var(--brand)}
+    .wrap{max-width:1000px;margin:0 auto;padding:24px 20px 56px;text-align:center;position:relative;z-index:1}
+    .title{margin:32px 0 12px;font-size:2rem;font-weight:700;color:#111}
+    .status{margin:12px 0 0;font-size:1.25rem;font-weight:700;color:#111}
+    .status .dev{color:#1d4ed8}
+    .homebar{display:flex;justify-content:center;padding:18px 0 4px;position:relative;z-index:10}
+    .homebtn{display:inline-block;background:var(--blk);color:#fff;text-decoration:none;text-transform:uppercase;font-weight:800;letter-spacing:.02em;border-radius:999px;padding:10px 20px;line-height:1;border:1px solid rgba(255,255,255,.06);box-shadow:0 10px 24px rgba(0,0,0,.18);transition:transform .15s,box-shadow .15s,background .15s}
+    .homebtn:hover{background:#0a0a0a;box-shadow:0 12px 28px rgba(0,0,0,.24);transform:translateY(-1px)}
+    .badge{font-weight:700;color:var(--brand);border:1px solid #cfe9db;background:#ecfdf5;padding:2px 8px;border-radius:999px;font-size:.75rem;letter-spacing:.02em}
+    .banner{background:#ecfdf5;border-bottom:1px solid #cfe9db;padding:10px 16px;text-align:center}
+    .sections{margin-top:28px;text-align:left}
+    details.disc{margin:16px 0;border:1px solid var(--brd);border-radius:10px;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,.05);overflow:hidden}
+    details.disc[open]{box-shadow:0 6px 16px rgba(0,0,0,.08)}
+    summary{list-style:none;cursor:pointer;padding:16px 18px;font-weight:700;font-size:1.05rem;color:#0b1220;display:flex;align-items:center;gap:10px;background:linear-gradient(#fff,#fafafa)}
+    summary::before{content:"▸";color:var(--brand);transition:transform .2s;font-size:1.1rem}
+    details[open] summary::before{transform:rotate(90deg)}
+    .panel{padding:18px;border-top:1px solid #eef2f7;background:#fff}
+    h3{margin:8px 0 6px;font-size:1.05rem;color:var(--brand)}
+    .cols{display:grid;grid-template-columns:1fr;gap:14px}
+    @media(min-width:860px){.cols{grid-template-columns:repeat(2,1fr)}}
+    .kbd{font:12px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:#f6f8fa;border:1px solid var(--brd);border-radius:6px;padding:2px 6px}
+    ul.tight{margin:8px 0 0 18px} ul.tight li{margin:6px 0}
+    .btn{display:inline-block;padding:10px 16px;border-radius:8px;background:var(--brand);color:#fff;text-decoration:none;font-weight:600;transition:background .2s}
+    .btn:hover{background:#09582c}
+    .hero{display:flex;justify-content:center;margin:6px 0 14px}
+    .hero img{max-width:920px;width:100%;height:auto;border-radius:8px}
+    .roi-scroll{overflow-x:auto}
+    table.roi{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--brd);border-radius:8px;font-size:.95rem}
+    .roi th,.roi td{padding:10px 12px;border-bottom:1px solid #eef2f7;text-align:left;white-space:nowrap}
+    .roi thead th{background:#f8fafc;font-weight:700}
+    .roi tbody tr:hover{background:#fafafa}
+    footer{padding:24px 0;text-align:center;color:#666}
   </style>
 </head>
 <body>
-  <!-- Centered HOME button (same-window redirect) -->
-  <div class="home-wrap">
-    <a class="home-btn" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
+  <div class="homebar">
+    <a class="homebtn" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
   </div>
 
-  <!-- ======= Demo Banner ======= -->
-  <div style="background:#ecfdf5; border-bottom:1px solid #cfe9db; padding:10px 16px; text-align:center;">
+  <div class="banner">
     🚀 Live Demos:
-    <a href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/parts_api_swagger.html"
-       target="_blank" rel="noopener noreferrer"
-       style="margin:0 8px; color:#0b6e37; font-weight:600;">Swagger API Explorer</a> |
-    <a href="https://quirk-ai-parts-demos-m99uzwbajpxrdt5rgo8rzi.streamlit.app/"
-       target="_blank" rel="noopener noreferrer"
-       style="margin:0 8px; color:#0b6e37; font-weight:600;">Advisor Copilot</a>
+    <a href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/parts_api_swagger.html" target="_blank" rel="noopener">Swagger API Explorer</a> |
+    <a href="https://quirk-ai-parts-demos-m99uzwbajpxrdt5rgo8rzi.streamlit.app/" target="_blank" rel="noopener">Advisor Copilot</a>
   </div>
 
-  <!-- ======= Top Navigation Bar ======= -->
-  <header class="topbar">
-    <div class="topbar-inner">
-      <a class="home-link" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
-      <div class="topbar-title">Quirk AI for Parts</div>
-      <nav class="topbar-menu" aria-label="Secondary Navigation">
-        <a class="topbar-title-link" href="./project-library.html">Project Library</a>
-      </nav>
-    </div>
-  </header>
-
-  <!-- ======= Page Content ======= -->
-  <main class="page-wrap">
+  <main class="wrap">
     <h1 class="title">Quirk AI for Parts</h1>
     <p class="status">Status: <span class="dev">In Development</span></p>
 
-    <p style="margin-top:20px; font-size:1.1rem; color:#0f172a; max-width:700px; margin-left:auto; margin-right:auto;">
-      AI powered tools designed for parts advisors and our customers.
-      Our goal is to modernize the transactional process for Retail, Wholesale and Internal workflow by maximizing the use of automated efficiency, LLM and machine learning — powered by Quirk AI.
+    <p style="margin:20px auto 0;max-width:700px;font-size:1.1rem">
+      AI powered tools designed for parts advisors and our customers. Our goal is to modernize the transactional process for Retail, Wholesale and Internal workflow by maximizing automated efficiency, LLM and machine learning — powered by Quirk AI.
     </p>
 
-    <!-- ========= Collapsible Sections ========= -->
     <div class="sections">
-
-      <!-- 1. Scale & Scope -->
-      <details class="disclosure">
-        <summary>
-          <span class="label-open">Open</span>
-          <span class="label-close">Close</span>
-          Scale & Scope of QuirkParts
-        </summary>
+      <details class="disc">
+        <summary><span class="badge">Open</span><span class="badge" style="display:none">Close</span> <span>Scale &amp; Scope of QuirkParts</span></summary>
         <div class="panel">
           <div class="cols">
             <div>
@@ -293,8 +91,8 @@
                 <li>Robotics/ASRS for faster picks in small-parts, fast-mover zones.</li>
                 <li>Unified data layer for pricing, availability, and fitment across channels.</li>
               </ul>
-              <div style="margin-top:10px;font-size:.95rem;">
-                Handy link templates:  
+              <div style="margin-top:10px;font-size:.95rem">
+                Handy link templates:
                 <span class="kbd">quirkparts.com/dodge-parts-and-accessories</span> ·
                 <span class="kbd">/subaru-parts-and-accessories</span> ·
                 <span class="kbd">/jeep-parts-and-accessories</span>
@@ -304,286 +102,202 @@
         </div>
       </details>
 
-      <!-- 2. Advanced Tech -->
-      <details class="disclosure">
-        <summary>
-          <span class="label-open">Open</span>
-          <span class="label-close">Close</span>
-          Advanced Tech for Parts Operations (2025)
-        </summary>
+      <details class="disc">
+        <summary><span class="badge">Open</span><span class="badge" style="display:none">Close</span> Advanced Tech for Parts Operations (2025)</summary>
         <div class="panel">
           <h3>AI / LLM Use-Cases</h3>
           <ul class="tight">
-            <li><strong>Natural-language & VIN search:</strong> “Clip for trunk latch on 2018 Wrangler” → exact OEM PN with supersessions.</li>
+            <li><strong>Natural-language &amp; VIN search:</strong> “Clip for trunk latch on 2018 Wrangler” → exact OEM PN with supersessions.</li>
             <li><strong>Image recognition:</strong> Photo → part identification, catalog diagram hot-spotting.</li>
-            <li><strong>Advisor copilot:</strong> Cross-catalog lookup, price/availability, warranty & TSB references in one console.</li>
-            <li><strong>Conversational CX:</strong> Web chat & phone IVR that quotes stock/price, creates carts, and schedules pickup/ship.</li>
+            <li><strong>Advisor copilot:</strong> Cross-catalog lookup, price/availability, warranty &amp; TSB references in one console.</li>
+            <li><strong>Conversational CX:</strong> Web chat &amp; phone IVR that quotes stock/price, creates carts, and schedules pickup/ship.</li>
           </ul>
-
           <h3>Machine Learning</h3>
           <ul class="tight">
-            <li><strong>Demand forecasting:</strong> seasonal & VIN-park trends; hub vs spoke stocking; automatic reorder points.</li>
-            <li><strong>Dynamic pricing:</strong> elasticity by channel (retail, wholesale, marketplace), competitive crawls, margin guardrails.</li>
+            <li><strong>Demand forecasting:</strong> seasonal &amp; VIN-park trends; hub vs spoke stocking; automatic reorder points.</li>
+            <li><strong>Dynamic pricing:</strong> elasticity by channel, competitive crawls, margin guardrails.</li>
             <li><strong>Slotting optimization:</strong> ABC velocity → shelf/VLM locations to minimize walk time.</li>
           </ul>
-
-          <h3>Automation & Robotics</h3>
+          <h3>Automation &amp; Robotics</h3>
           <ul class="tight">
             <li><strong>ASRS / VLMs:</strong> Goods-to-person for small SKUs; integrates with pick-to-light and DMS.</li>
-            <li><strong>AMRs & conveyors:</strong> Zone pickups & tote routing; batch-picking waves for high-volume times.</li>
-            <li><strong>Cycle-count automation:</strong> Vision robots/drones for nightly counts; 99%+ location accuracy.</li>
+            <li><strong>AMRs &amp; conveyors:</strong> Zone pickups &amp; tote routing; batch-picking waves.</li>
+            <li><strong>Cycle-count automation:</strong> Vision robots/drones for nightly counts.</li>
           </ul>
-
-          <h3>IoT & Data Fabric</h3>
+          <h3>IoT &amp; Data Fabric</h3>
           <ul class="tight">
             <li>RFID/weight-sensing bins for auto-decrement; mislabeled/empty-bin alerts.</li>
-            <li>Unified event stream (orders, picks, receipts) → real-time dashboards & anomaly detection.</li>
-            <li>APIs to DMS/ERP/e-comm: Reynolds/CDK, PartsLink, Shopify/Headless, WMS.</li>
+            <li>Unified event stream → dashboards &amp; anomaly detection.</li>
+            <li>APIs to DMS/ERP/e-comm.</li>
           </ul>
         </div>
       </details>
 
-      <!-- 3. Competitive Benchmark -->
-      <details class="disclosure">
-        <summary>
-          <span class="label-open">Open</span>
-          <span class="label-close">Close</span>
-          Competitive Benchmark — Group1, AutoNation, Penske, Sonic
-        </summary>
+      <details class="disc">
+        <summary><span class="badge">Open</span><span class="badge" style="display:none">Close</span> Competitive Benchmark — Group1, AutoNation, Penske, Sonic</summary>
         <div class="panel">
           <div class="cols">
             <div>
               <h3>Group 1 Automotive</h3>
               <ul class="tight">
-                <li>Predictive inventory & network balancing to reduce overstock.</li>
-                <li>Fixed-ops scheduling & outreach driving parts pull-through.</li>
+                <li>Predictive inventory &amp; network balancing.</li>
+                <li>Fixed-ops scheduling &amp; outreach pull-through.</li>
                 <li>Dedicated e-comm footprint for OEM parts.</li>
               </ul>
               <h3>AutoNation</h3>
               <ul class="tight">
                 <li>Nationwide parts e-commerce with VIN-fitment.</li>
-                <li>Multi-brand assortment; store network as micro-fulfillment.</li>
-                <li>Data-driven stocking & margin optimization.</li>
+                <li>Store network as micro-fulfillment.</li>
+                <li>Data-driven stocking &amp; margin optimization.</li>
               </ul>
             </div>
             <div>
               <h3>Penske Automotive</h3>
               <ul class="tight">
-                <li>Process excellence; hub-and-spoke parts logistics.</li>
-                <li>Luxury OEM complexity managed via ASRS & strict controls.</li>
-                <li>Predictive maintenance DNA from truck leasing arm.</li>
+                <li>Process excellence; hub-and-spoke logistics.</li>
+                <li>ASRS &amp; strict controls for luxury OEMs.</li>
+                <li>Predictive maintenance DNA.</li>
               </ul>
               <h3>Sonic Automotive</h3>
               <ul class="tight">
                 <li>Omnichannel, AI-forward platform investments.</li>
-                <li>Digital-first CX; efficiencies extend to fixed ops.</li>
-                <li>Emphasis on speed and transparency across channels.</li>
+                <li>Digital-first CX; efficiencies to fixed ops.</li>
+                <li>Speed and transparency across channels.</li>
               </ul>
             </div>
           </div>
         </div>
       </details>
 
-      <!-- 4. Action Plan -->
-      <details class="disclosure">
-        <summary>
-          <span class="label-open">Open</span>
-          <span class="label-close">Close</span>
-          Action Plan for Quirk AI — Parts
-        </summary>
+      <details class="disc">
+        <summary><span class="badge">Open</span><span class="badge" style="display:none">Close</span> Action Plan for Quirk AI — Parts</summary>
         <div class="panel">
           <h3>Phase 0 — Foundations (30–60 days)</h3>
           <ul class="tight">
-            <li>
-              Stand up a <strong>unified parts index</strong> (catalog + supersessions + price + on-hand + lead-time).
-            </li>
-            <li>
-              Expose a secure <strong>Parts Graph API</strong> (fitment, substitutes, availability) to web/app/advisors.
-              👉 <a href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/parts_api_swagger.html" target="_blank" rel="noopener noreferrer">View Swagger Demo</a>
-            </li>
-            <li>
-              Instrument <strong>events</strong>: search → add-to-cart → pick → ship; build live dashboards.
-            </li>
+            <li>Unified parts index (catalog + supersessions + price + on-hand + lead-time).</li>
+            <li>Secure <strong>Parts Graph API</strong> to web/app/advisors — <a href="parts_api_swagger.html" target="_blank" rel="noopener">Swagger Demo</a>.</li>
+            <li>Instrument events: search → cart → pick → ship.</li>
           </ul>
-
-          <h3>Phase 1 — Advisor & Customer Intelligence (60–120 days)</h3>
+          <h3>Phase 1 — Advisor &amp; Customer Intelligence (60–120 days)</h3>
           <ul class="tight">
-            <li>
-              Deploy <strong>LLM Advisor Copilot</strong> (VIN decode, multi-catalog lookup, price/ETA, upsell kits).
-              👉 <a href="https://quirk-ai-parts-demos-m99uzwbajpxrdt5rgo8rzi.streamlit.app/" target="_blank" rel="noopener noreferrer">Try Copilot Demo</a>
-            </li>
-            <li>Add <strong>image-to-part</strong> beta on site + internal tool for counter team.</li>
-            <li>Launch <strong>conversational chat/IVR</strong> for stock, quotes, order status, and B2B reorders.</li>
+            <li><strong>LLM Advisor Copilot</strong> (VIN decode, lookup, price/ETA, upsell kits) — <a href="https://quirk-ai-parts-demos-m99uzwbajpxrdt5rgo8rzi.streamlit.app/" target="_blank" rel="noopener">Try Demo</a>.</li>
+            <li>Image-to-part beta (site &amp; internal).</li>
+            <li>Chat/IVR for stock, quotes, order status, B2B reorders.</li>
           </ul>
-
           <h3>Phase 2 — Inventory Science (120–180 days)</h3>
           <ul class="tight">
-            <li><strong>ML (Machine Learning) forecasting</strong> per SKU/site; auto min/max & reorder proposals with human approval.</li>
-            <li><strong>Slotting optimizer</strong>: re-map fast movers near pack stations; measure walk-time saved.</li>
-            <li><strong>Dynamic pricing</strong> with guardrails by channel and customer segment.</li>
+            <li>ML forecasting per SKU/site; auto min/max proposals.</li>
+            <li>Slotting optimizer; measure walk-time saved.</li>
+            <li>Dynamic pricing with guardrails.</li>
           </ul>
-
           <h3>Phase 3 — Automation (pilot → scale)</h3>
           <ul class="tight">
-            <li>Pilot <strong>ASRS/VLM</strong> for small parts; integrate pick-to-light & WMS.</li>
-            <li>Introduce <strong>AMRs</strong> for tote moves; wave picking for batch orders.</li>
-            <li>Nightly <strong>vision cycle counts</strong>; exception queue to human.</li>
+            <li>ASRS/VLM pilot; pick-to-light &amp; WMS.</li>
+            <li>AMRs for tote moves; wave picking.</li>
+            <li>Nightly vision cycle counts.</li>
           </ul>
-
-          <h3>KPIs to Track</h3>
+          <h3>KPIs</h3>
           <ul class="tight">
-            <li>Fill rate, backorder rate, days on hand, inventory turns.</li>
-            <li>Pick rate (lines/hr), walk distance, order cycle time, accuracy.</li>
-            <li>First-time-right part rate, return rate, CX CSAT/NPS.</li>
-            <li>Gross margin by channel; aged inventory & write-downs.</li>
+            <li>Fill/backorder rate, days on hand, turns.</li>
+            <li>Pick rate, walk distance, cycle time, accuracy.</li>
+            <li>First-time-right, returns, CSAT/NPS.</li>
+            <li>Gross margin by channel; aged inventory.</li>
           </ul>
         </div>
       </details>
 
-      <!-- 5. Robotics & Automation -->
-      <details class="disclosure">
-        <summary>
-          <span class="label-open">Open</span>
-          <span class="label-close">Close</span>
-          Robotics & Automation — Picking, Packing, Sorting, AGVs
-        </summary>
-
+      <details class="disc">
+        <summary><span class="badge">Open</span><span class="badge" style="display:none">Close</span> Robotics &amp; Automation — Picking, Packing, Sorting, AGVs</summary>
         <div class="panel">
-          <!-- NEW: centered hero GIF above the two columns -->
-          <div class="robotics-hero" aria-label="Robotics automation demo animation">
-            <img src="assets/deepfleet.gif" alt="Automated deep fleet robotics flow animation" loading="lazy">
-          </div>
-
+          <div class="hero"><img src="assets/deepfleet.gif" alt="Automated deep fleet robotics flow animation" loading="lazy"></div>
           <div class="cols">
             <div>
               <h3>Quirk Facilities (Context)</h3>
               <ul class="tight">
                 <li><strong>Quincy, MA:</strong> 200,000 sq ft, multi-level.</li>
                 <li><strong>Manchester, NH:</strong> 200,000 sq ft, multi-level.</li>
-                <li>Objective: higher throughput, lower labor per order, fewer errors.</li>
+                <li>Objective: throughput ↑, labor/order ↓, errors ↓.</li>
               </ul>
-
-              <h3>What MOPAR Is Doing (Pattern)</h3>
+              <h3>What MOPAR Is Doing</h3>
               <ul class="tight">
-                <li>High-density grid (AutoStore-style) with robots retrieving bins.</li>
-                <li>Robots feed <em>human</em> pack stations for QC, packing, shipping.</li>
-                <li>Benefits: speed, accuracy, compact footprint; scale robots up as volume grows.</li>
+                <li>AutoStore-style grid; robots retrieve bins.</li>
+                <li>Robots feed human pack stations.</li>
+                <li>Benefits: speed, accuracy, compact footprint.</li>
               </ul>
-
-              <h3>Your Options (Layered)</h3>
+              <h3>Your Options</h3>
               <ul class="tight">
-                <li><strong>Packing Automation:</strong> fit-to-size carton makers + pack stations → labor ↓, corrugate/void fill ↓, DIM weight ↓.</li>
-                <li><strong>Sorting Automation:</strong> modular robotic/cross-belt sorters → high items/hr, near-zero mis-sorts, peak smoothing.</li>
-                <li><strong>AGVs/AMRs:</strong> tote/pallet moves between floors/zones, 24/7, safer than forklifts, scalable fleets.</li>
+                <li><strong>Packing:</strong> fit-to-size + stations → labor/material/DIM ↓.</li>
+                <li><strong>Sorting:</strong> modular cross-belt → items/hr ↑, mis-sorts ↓.</li>
+                <li><strong>AGVs/AMRs:</strong> tote/pallet moves; scalable fleets.</li>
               </ul>
             </div>
-
             <div>
-              <h3>How AI/ML (Machine Learning) Fits</h3>
+              <h3>How AI/ML Fits</h3>
               <ul class="tight">
-                <li><strong>Vision & ID:</strong> camera/AI for item verification, box selection, damage checks.</li>
-                <li><strong>Dynamic slotting:</strong> ML assigns fast movers to optimal locations; walk time ↓.</li>
-                <li><strong>Forecasting:</strong> ML for demand → min/max & reorder proposals auto-generated.</li>
-                <li><strong>Flow orchestration:</strong> WES/WMS uses ML to balance waves, robots, and stations.</li>
+                <li>Vision for item verification, box selection, damage checks.</li>
+                <li>Dynamic slotting; walk time ↓.</li>
+                <li>Forecasting for min/max proposals.</li>
+                <li>Flow orchestration across waves/robots/stations.</li>
               </ul>
-
-              <h3>Business Wins (Summary)</h3>
+              <h3>Business Wins</h3>
               <ul class="tight">
-                <li>Labor savings from fewer touches and automated transport.</li>
-                <li>Throughput & cycle-time gains (more lines/hr, later ship cutoffs).</li>
-                <li>Error & return reduction via machine-verified sort/pack.</li>
-                <li>Space efficiency; delay building expansions.</li>
+                <li>Labor savings; fewer touches and trips.</li>
+                <li>Throughput &amp; cycle-time gains.</li>
+                <li>Error/return reduction via verification.</li>
+                <li>Space efficiency; defer expansions.</li>
               </ul>
             </div>
           </div>
 
-          <h3 style="margin-top:14px;">Ballpark CapEx & ROI (Illustrative)</h3>
+          <h3 style="margin-top:14px">Ballpark CapEx &amp; ROI (Illustrative)</h3>
           <div class="roi-scroll">
-            <table class="roi-table">
-              <thead>
-                <tr>
-                  <th>Automation Area</th>
-                  <th>Typical Initial CapEx</th>
-                  <th>ROI @ Year 1</th>
-                  <th>ROI @ Year 3</th>
-                  <th>ROI @ Year 5</th>
-                </tr>
-              </thead>
+            <table class="roi">
+              <thead><tr><th>Automation Area</th><th>Typical Initial CapEx</th><th>ROI @ Y1</th><th>ROI @ Y3</th><th>ROI @ Y5</th></tr></thead>
               <tbody>
-                <tr>
-                  <td><strong>Packing Automation</strong></td>
-                  <td>$0.3–0.5M / line</td>
-                  <td>~60% (partial payback)</td>
-                  <td>~180% (payback)</td>
-                  <td>~300% (≈3×)</td>
-                </tr>
-                <tr>
-                  <td><strong>Sorting Automation</strong></td>
-                  <td>$1–2M (modular to large)</td>
-                  <td>~40%</td>
-                  <td>~120% (≈breakeven)</td>
-                  <td>~200% (≈2×)</td>
-                </tr>
-                <tr>
-                  <td><strong>AGVs/AMRs</strong></td>
-                  <td>$0.5–1.0M (fleet + SW)</td>
-                  <td>~50%</td>
-                  <td>~150% (payback)</td>
-                  <td>~250% (≈2.5×)</td>
-                </tr>
+                <tr><td><strong>Packing Automation</strong></td><td>$0.3–0.5M / line</td><td>~60%</td><td>~180%</td><td>~300%</td></tr>
+                <tr><td><strong>Sorting Automation</strong></td><td>$1–2M</td><td>~40%</td><td>~120%</td><td>~200%</td></tr>
+                <tr><td><strong>AGVs/AMRs</strong></td><td>$0.5–1.0M</td><td>~50%</td><td>~150%</td><td>~250%</td></tr>
               </tbody>
             </table>
           </div>
-          <p style="font-size:.9rem;color:#555;margin-top:6px;">
-            Assumptions: steady utilization, 2–3 shift coverage, labor/material/accuracy savings realized; exact numbers depend on volumes, wages, vendor quotes, and integration scope.
-          </p>
-
-          <p style="margin-top:12px;">
-            <a href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/parts_api_swagger.html" target="_blank" rel="noopener noreferrer" class="btn-demo">🔗 Swagger API Explorer</a>
+          <p style="font-size:.9rem;color:#555;margin-top:6px">Assumptions: utilization, 2–3 shifts, realized savings; exacts depend on volumes, wages, vendors, scope.</p>
+          <p style="margin-top:12px">
+            <a href="parts_api_swagger.html" target="_blank" rel="noopener" class="btn">🔗 Swagger API Explorer</a>
             &nbsp;&nbsp;
-            <a href="https://quirk-ai-parts-demos-m99uzwbajpxrdt5rgo8rzi.streamlit.app/" target="_blank" rel="noopener noreferrer" class="btn-demo">🤖 Advisor Copilot</a>
+            <a href="https://quirk-ai-parts-demos-m99uzwbajpxrdt5rgo8rzi.streamlit.app/" target="_blank" rel="noopener" class="btn">🤖 Advisor Copilot</a>
           </p>
         </div>
       </details>
 
-      <!-- Demo Stubs -->
-      <details class="disclosure">
-        <summary>
-          <span class="label-open">Open</span>
-          <span class="label-close">Close</span>
-          Demo — Parts Graph API
-        </summary>
+      <details class="disc">
+        <summary><span class="badge">Open</span><span class="badge" style="display:none">Close</span> Demo — Parts Graph API</summary>
         <div class="panel">
-          <p>This demo will expose Quirk’s unified <strong>Parts Graph API</strong> — powering VIN-first lookup, supersessions, pricing, and availability across all brands.</p>
-          <p style="margin-top:12px;">
-            <a href="./parts_api_swagger.html" target="_blank" rel="noopener noreferrer" class="btn-demo">🔗 Launch API Explorer</a>
-          </p>
-          <p style="font-size:.9rem;color:#555;">(Prototype Swagger UI; points to mock schema for now.)</p>
+          <p>This demo exposes Quirk’s unified <strong>Parts Graph API</strong> for VIN-first lookup, supersessions, pricing, and availability across all brands.</p>
+          <p style="margin-top:12px"><a href="parts_api_swagger.html" target="_blank" rel="noopener" class="btn">🔗 Launch API Explorer</a></p>
+          <p style="font-size:.9rem;color:#555">(Prototype Swagger UI; mock schema.)</p>
         </div>
       </details>
 
-      <details class="disclosure">
-        <summary>
-          <span class="label-open">Open</span>
-          <span class="label-close">Close</span>
-          Demo — Advisor Copilot
-        </summary>
+      <details class="disc">
+        <summary><span class="badge">Open</span><span class="badge" style="display:none">Close</span> Demo — Advisor Copilot</summary>
         <div class="panel">
-          <p>The <strong>Advisor Copilot</strong> is an AI assistant for parts staff: VIN decoding, cross-catalog lookup, price/ETA checks, and upsell kits in one console.</p>
-          <p style="margin-top:12px;">
-            <a href="https://quirk-ai-parts-demos-m99uzwbajpxrdt5rgo8rzi.streamlit.app/" target="_blank" rel="noopener noreferrer" class="btn-demo">🤖 Try Copilot</a>
-          </p>
-          <p style="font-size:.9rem;color:#555;">(Hosted on Streamlit Cloud — mock data while we wire live APIs.)</p>
+          <p><strong>Advisor Copilot</strong> helps parts staff with VIN decoding, cross-catalog lookup, price/ETA, and upsell kits.</p>
+          <p style="margin-top:12px"><a href="https://quirk-ai-parts-demos-m99uzwbajpxrdt5rgo8rzi.streamlit.app/" target="_blank" rel="noopener" class="btn">🤖 Try Copilot</a></p>
+          <p style="font-size:.9rem;color:#555">(Hosted on Streamlit Cloud — mock data while wiring live APIs.)</p>
         </div>
       </details>
-
     </div>
-    <!-- ========= /Collapsible Sections ========= -->
   </main>
 
-  <!-- ======= Footer ======= -->
-  <footer class="container footer">
-    <p>&copy; 2025 Quirk AI — Parts</p>
-  </footer>
+  <footer><p>&copy; 2025 Quirk AI — Parts</p></footer>
+
+  <script>
+    // Toggle the Open/Close label swap once per section (kept tiny & dependency-free)
+    document.querySelectorAll('details.disc').forEach(d=>{
+      const [openBadge, closeBadge]=d.querySelectorAll('.badge');
+      const sync=()=>{ if(d.open){openBadge.style.display='none';closeBadge.style.display='inline-block'} else {openBadge.style.display='inline-block';closeBadge.style.display='none'} };
+      d.addEventListener('toggle',sync); sync();
+    });
+  </script>
 </body>
 </html>
