@@ -1,4 +1,4 @@
-<!doctype html> 
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -15,6 +15,32 @@
 
   <style>
     :root { --brand-green: #0b6e37; }
+
+    /* ---------- HOME button (centered at top) ---------- */
+    .home-wrap{
+      display:flex;
+      justify-content:center;
+      padding:18px 0 4px;
+      position:relative;
+      z-index:10;
+    }
+    .home-btn{
+      display:inline-block;
+      background:#111;
+      color:#fff;
+      padding:10px 20px;
+      border-radius:999px;
+      font-weight:800;
+      letter-spacing:.02em;
+      text-transform:uppercase;
+      text-decoration:none;
+      line-height:1;
+      box-shadow:0 10px 24px rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.06);
+      transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+    }
+    .home-btn:hover{ background:#0a0a0a; box-shadow:0 12px 28px rgba(0,0,0,.24); transform:translateY(-1px); }
+    .home-btn:active{ transform:translateY(0); }
 
     .page-wrap {
       max-width: 1000px;
@@ -197,6 +223,7 @@
   </style>
 </head>
 <body>
+  <!-- Centered HOME button (same-window redirect) -->
   <div class="home-wrap">
     <a class="home-btn" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
   </div>
