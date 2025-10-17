@@ -13,6 +13,7 @@
   <!-- Center all green bold section headers + keep H2 link color consistent -->
   <style>
     .block > h2 { text-align: center; }
+
     /* Make the H2 itself clickable without changing color on hover/visited/active */
     .block > h2 a.h2-link { color: inherit; text-decoration: none; }
     .block > h2 a.h2-link:visited,
@@ -20,8 +21,22 @@
     .block > h2 a.h2-link:active,
     .block > h2 a.h2-link:focus { color: inherit; text-decoration: underline; }
 
-    /* Center the "Open full report (PDF)" link inside its card */
-    .link-center { text-align: center; }
+    /* Card-level centering for the exact items you highlighted */
+    .card.centered h3,
+    .card.centered .title,
+    .card.centered p.muted,
+    .card.centered p.addr,
+    .card.centered p.status,
+    .card.centered .cta-center,
+    .card.centered .link-center { text-align: center; }
+
+    .card.centered .row { justify-content: center; }
+
+    /* Ensure the “Open full report / Open page / Read full case study” blocks center nicely */
+    .cta-center, .link-center { text-align: center; }
+
+    /* Don’t disturb bullet alignment inside centered cards */
+    .card.centered ul.list { text-align: left; }
   </style>
 </head>
 <body>
@@ -49,18 +64,18 @@
     <section class="block" id="locations">
       <h2>Locations & Accident Forms</h2>
       <div class="grid grid-2">
-        <article class="card">
+        <article class="card centered">
           <div class="title">Quincy, MA — Quirk Auto Body</div>
-          <p>45 Field St, Quincy, MA 02169</p>
+          <p class="addr">45 Field St, Quincy, MA 02169</p>
           <div class="row">
             <a class="btn" href="https://maps.google.com/?q=45+Field+St,+Quincy,+MA+02169" target="_blank" rel="noopener">Map</a>
             <a class="btn" href="assets/MA-State-Accident-Form-1.pdf" target="_blank" rel="noopener">Massachusetts Accident Form</a>
           </div>
         </article>
 
-        <article class="card">
+        <article class="card centered">
           <div class="title">Manchester, NH — Collision Center</div>
-          <p>1250 S Willow St, Manchester, NH 03103</p>
+          <p class="addr">1250 S Willow St, Manchester, NH 03103</p>
           <div class="row">
             <a class="btn" href="https://maps.google.com/?q=1250+S+Willow+St,+Manchester,+NH+03103" target="_blank" rel="noopener">Map</a>
             <a class="btn" href="assets/NH-State-Accident-Form-1.pdf" target="_blank" rel="noopener">New Hampshire Accident Form</a>
@@ -73,25 +88,25 @@
     <section class="block" id="chatbot-coverage">
       <h2>Website Chatbot Coverage (ChatGPT)</h2>
       <div class="grid grid-3">
-        <article class="card">
+        <article class="card centered">
           <h3>Quirk Ford Collision Center</h3>
           <p class="muted">quirk-ford.com</p>
           <p class="status yes"><span class="dot"></span> Yes — Live</p>
-          <p><a class="cta-link" href="https://www.quirk-ford.com/service/quirk-auto-body/" target="_blank" rel="noopener">Open page</a></p>
+          <p class="cta-center"><a class="cta-link" href="https://www.quirk-ford.com/service/quirk-auto-body/" target="_blank" rel="noopener">Open page</a></p>
         </article>
 
-        <article class="card">
+        <article class="card centered">
           <h3>Quirk Collision Center — Quincy</h3>
           <p class="muted">quirkautobody.com</p>
           <p class="status no"><span class="dot"></span> No — Not Installed</p>
-          <p><a class="cta-link" href="https://quirkautobody.com/quirk-auto-body-quincy-ma/" target="_blank" rel="noopener">Open page</a></p>
+          <p class="cta-center"><a class="cta-link" href="https://quirkautobody.com/quirk-auto-body-quincy-ma/" target="_blank" rel="noopener">Open page</a></p>
         </article>
 
-        <article class="card">
+        <article class="card centered">
           <h3>Quirk Collision Center — Manchester</h3>
           <p class="muted">quirkautobody.com</p>
           <p class="status no"><span class="dot"></span> No — Not Installed</p>
-          <p><a class="cta-link" href="https://quirkautobody.com/manchester-nh-auto-body-shop/" target="_blank" rel="noopener">Open page</a></p>
+          <p class="cta-center"><a class="cta-link" href="https://quirkautobody.com/manchester-nh-auto-body-shop/" target="_blank" rel="noopener">Open page</a></p>
         </article>
       </div>
 
@@ -111,7 +126,7 @@
     <section class="block" id="case-studies">
       <h2>Enterprise Case Studies & OEM Programs</h2>
       <div class="grid grid-3">
-        <article class="card">
+        <article class="card centered">
           <h3>Group 1 Automotive</h3>
           <p class="muted">AI-first operations across 30+ collision centers.</p>
           <ul class="list">
@@ -120,10 +135,10 @@
             <li>AI call assistance for after-hours collision inquiries.</li>
             <li>ADAS/EV readiness: digital calibrations, repurposed bays.</li>
           </ul>
-          <a class="cta-link" href="assets/AI%20ML%20Case%20Study_Collision%20Repair.pdf" target="_blank" rel="noopener">Read full case study (PDF)</a>
+          <p class="cta-center"><a class="cta-link" href="assets/AI%20ML%20Case%20Study_Collision%20Repair.pdf" target="_blank" rel="noopener">Read full case study (PDF)</a></p>
         </article>
 
-        <article class="card">
+        <article class="card centered">
           <h3>Sonic Automotive</h3>
           <p class="muted">Data-driven performance & training at scale.</p>
           <ul class="list">
@@ -131,10 +146,10 @@
             <li>LLM “internal assistant” for procedures & parts lookups.</li>
             <li>Ops analytics on advisor follow-ups, tech productivity, bottlenecks.</li>
           </ul>
-          <a class="cta-link" href="assets/AI%20ML%20Case%20Study_Collision%20Repair.pdf" target="_blank" rel="noopener">Read full case study (PDF)</a>
+          <p class="cta-center"><a class="cta-link" href="assets/AI%20ML%20Case%20Study_Collision%20Repair.pdf" target="_blank" rel="noopener">Read full case study (PDF)</a></p>
         </article>
 
-        <article class="card">
+        <article class="card centered">
           <h3>Top Ford Dealers (2025)</h3>
           <p class="muted">Programs we can adopt at Quirk Ford Auto Body.</p>
           <ul class="list">
@@ -143,14 +158,14 @@
             <li>AR repair aids / Remote Expert for structural & ADAS.</li>
             <li>AI photo estimating (CCC, Tractable/Ravin) + imaging portals.</li>
           </ul>
-          <a class="cta-link" href="assets/AI%20ML%20Case%20Study_Collision%20Repair.pdf" target="_blank" rel="noopener">Read full case study (PDF)</a>
+          <p class="cta-center"><a class="cta-link" href="assets/AI%20ML%20Case%20Study_Collision%20Repair.pdf" target="_blank" rel="noopener">Read full case study (PDF)</a></p>
         </article>
       </div>
     </section>
 
     <!-- NEW: AI & Automation in Collision Centers (2025) -->
     <section class="block" id="tech-advancement-2025">
-      <!-- Make the H2 itself a link (same green color on hover/click/visited) -->
+      <!-- H2 is a link to the PDF; color stays consistent on all states -->
       <h2>
         <a
           class="h2-link"
@@ -161,7 +176,7 @@
       </h2>
 
       <div class="grid grid-3">
-        <article class="card">
+        <article class="card centered">
           <h3>Executive Overview</h3>
           <p class="muted">Enterprise Adaptation — Technology, Trends & Transformation</p>
           <ul class="list">
@@ -169,7 +184,6 @@
             <li>OEM-aligned centers are evolving into <strong>AI-enhanced service hubs</strong>.</li>
             <li>Benefits: lower cycle time, higher repair accuracy, better customer experience.</li>
           </ul>
-          <!-- Center this link within the card -->
           <p class="link-center" style="margin-top:8px;">
             <a class="cta-link" href="assets/Collision%20Repair%20technology%20advancement%202025.pdf" target="_blank" rel="noopener">
               Open full report (PDF)
@@ -177,7 +191,7 @@
           </p>
         </article>
 
-        <article class="card">
+        <article class="card centered">
           <h3>Enterprise Examples</h3>
           <ul class="list">
             <li><strong>Group 1 Automotive:</strong> AI call routing handles most inquiries; EV/ADAS-ready bays.</li>
@@ -187,7 +201,7 @@
           </ul>
         </article>
 
-        <article class="card">
+        <article class="card centered">
           <h3>Tech Highlights</h3>
           <ul class="list">
             <li><strong>Hardware:</strong> AutoStore robotic warehousing; UVeye AI inspection portals; AR overlays.</li>
@@ -196,7 +210,7 @@
           </ul>
         </article>
 
-        <article class="card">
+        <article class="card centered">
           <h3>Automation & Integration</h3>
           <ul class="list">
             <li><strong>Parts Fulfillment:</strong> Fully automated — robotics.</li>
