@@ -1,1 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light">
+  <title>Quirk AI – Collision Center</title>
+
+  <!-- Keep links resolving under the project site -->
+  <base href="/Quirk-AI-Project-Overview/">
+
+  <!-- Global site styles already used across the repo -->
+  <link rel="stylesheet" href="assets/style.css"/>
+
+  <style>
+    /* ===== Universal HOME pill (matches site) ===== */
+    .home-wrap{display:flex;justify-content:center;padding:18px 0 4px;position:relative;z-index:10}
+    .home-btn{
+      display:inline-block;background:#111;color:#fff;text-decoration:none;text-transform:uppercase;
+      font-weight:800;letter-spacing:.02em;border-radius:999px;padding:10px 20px;line-height:1;
+      border:1px solid rgba(255,255,255,.06);box-shadow:0 10px 24px rgba(0,0,0,.18);
+      transition:transform .15s,box-shadow .15s,background .15s
+    }
+    .home-btn:hover{background:#0a0a0a;box-shadow:0 12px 28px rgba(0,0,0,.24);transform:translateY(-1px)}
+
+    /* ===== Page scaffolding ===== */
+    :root{
+      --ink:#0f172a;
+      --muted:#475569;
+      --green:#0b6e37;
+      --blue:#1d4ed8;
+      --card:#fff;
+      --bd:#e5e7eb;
+      --shadow:0 10px 24px rgba(2,6,23,.06);
+      --radius:16px;
+    }
+    .container{max-width:1100px;margin:0 auto;padding:0 18px}
+    .hero{
+      margin:10px auto 18px;padding:26px 20px;border:1px solid var(--bd);border-radius:16px;background:#fff;
+      background-image:radial-gradient(60rem 60rem at 80% -10%,rgba(11,110,55,.08),transparent 40%);
+      text-align:center;box-shadow:var(--shadow)
+    }
+    .hero h1{margin:4px 0 6px;font-size:clamp(1.6rem,3vw,2.2rem);line-height:1.2;color:var(--ink);font-weight:800}
+    .hero p{margin:0;color:var(--muted);font-size:1.06rem}
+    .cta-row{margin-top:14px;display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+    .btn{display:inline-block;padding:10px 14px;border-radius:999px;font-weight:700;text-decoration:none;line-height:1;border:1px solid rgba(11,110,55,.22);background:#fff;color:var(--green)}
+    .btn:hover{transform:translateY(-1px);text-decoration:none}
+    .btn-primary{background:var(--green);color:#fff;border-color:var(--green)}
+    .btn-blue{background:var(--blue);color:#fff;border-color:var(--blue)}
+    .btn-soft{background:rgba(11,110,55,.08);color:var(--green)}
+
+    /* Sections */
+    section.block{margin:22px 0}
+    .card{background:var(--card);border:1px solid var(--bd);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
+    .grid{display:grid;gap:16px}
+    @media(min-width:980px){.grid-2{grid-template-columns:1fr 1fr}.grid-3{grid-template-columns:repeat(3,1fr)}}
+    .block h2{margin:0 0 10px;font-size:1.3rem;color:var(--ink);font-weight:800;text-align:center}
+
+    /* Location cards */
+    .loc .title{font-weight:800;color:var(--green);font-size:1.1rem;margin-bottom:4px}
+    .loc p{margin:0 0 6px;color:var(--muted)}
+    .loc .row{display:flex;gap:8px;flex-wrap:wrap}
+
+    /* Mini “wizard” for photo estimate (front-end mock only) */
+    .wizard{max-width:800px;margin:0 auto}
+    .steps{display:flex;gap:8px;justify-content:center;margin-bottom:10px}
+    .step-dot{width:10px;height:10px;border-radius:999px;background:#d1fae5;border:1px solid #a7f3d0}
+    .step-dot.active{background:#10b981;border-color:#10b981}
+    .wiz-form{border:1px solid var(--bd);border-radius:12px;padding:14px}
+    .wiz-actions{display:flex;justify-content:space-between;margin-top:10px}
+    .wiz-actions .spacer{flex:1}
+    .wiz-field{display:grid;gap:6px;margin:8px 0}
+    label{font-weight:600;color:#0f172a}
+    input[type="text"],input[type="tel"],input[type="email"],select{
+      border:1px solid var(--bd);border-radius:8px;padding:10px;font:inherit
+    }
+    .hint{color:var(--muted);font-size:.92rem}
+
+    /* SMS templates */
+    .sms{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.92rem}
+    .sms-row{display:flex;gap:8px;align-items:center;margin:6px 0}
+    .sms-row button{padding:6px 10px;border-radius:8px;border:1px solid var(--bd);background:#fff;cursor:pointer}
+    .sms-row button:hover{background:#f8fafc}
+
+    /* Footer */
+    footer{margin:36px 0 18px;text-align:center;color:#667085}
+  </style>
+</head>
+<body>
+
+  <!-- HOME pill -->
+  <div class="home-wrap">
+    <a class="home-btn" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
+  </div>
+
+  <main class="container">
+    <!-- HERO -->
+    <section class="hero">
+      <h1>Collision Center</h1>
+      <p>Appointment-first collision repair powered by Quirk AI — faster estimates, proactive updates, and fewer delays for customers across Quincy, MA and Manchester, NH.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="https://quirkautobody.com/appointment-accident-forms/" target="_blank" rel="noopener">Book an Estimate</a>
+        <a class="btn btn-blue" href="#photo-estimate">Try Photo Estimate (Demo)</a>
+        <a class="btn btn-soft" href="#status-templates">Status Text Templates</a>
+        <a class="btn" href="#plan">30/60/90 Plan</a>
+      </div>
+    </section>
+
+    <!-- LOCATIONS / STATE FORMS -->
+    <section class="block">
+      <h2>Locations & Accident Forms</h2>
+      <div class="grid grid-2">
+        <article class="card loc">
+          <div class="title">Quincy, MA — Quirk Auto Body</div>
+          <p>45 Field St, Quincy, MA 02169</p>
+          <div class="row">
+            <a class="btn" href="https://maps.google.com/?q=45+Field+St,+Quincy,+MA+02169" target="_blank" rel="noopener">Map</a>
+            <!-- Place the MA PDF into /assets/ and this link will work -->
+            <a class="btn" href="assets/MA-State-Accident-Form-1.pdf" target="_blank" rel="noopener">Massachusetts Accident Form</a>
+          </div>
+        </article>
+
+        <article class="card loc">
+          <div class="title">Manchester, NH — Collision Center</div>
+          <p>1250 S Willow St, Manchester, NH 03103</p>
+          <div class="row">
+            <a class="btn" href="https://maps.google.com/?q=1250+S+Willow+St,+Manchester,+NH+03103" target="_blank" rel="noopener">Map</a>
+            <!-- Place the NH PDF into /assets/ and this link will work -->
+            <a class="btn" href="assets/NH-State-Accident-Form-1.pdf" target="_blank" rel="noopener">New Hampshire Accident Form</a>
+          </div>
 
