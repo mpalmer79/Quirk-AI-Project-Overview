@@ -1,189 +1,369 @@
-<!-- LOCATIONS / STATE FORMS -->
-<section class="block" id="locations">
-  <h2>Locations & Accident Forms</h2>
-  <div class="grid grid-2">
-    <article class="card loc">
-      <div class="title">Quincy, MA — Quirk Auto Body</div>
-      <p>45 Field St, Quincy, MA 02169</p>
-      <div class="row">
-        <a class="btn" href="https://maps.google.com/?q=45+Field+St,+Quincy,+MA+02169" target="_blank" rel="noopener">Map</a>
-        <a class="btn" href="assets/MA-State-Accident-Form-1.pdf" target="_blank" rel="noopener">Massachusetts Accident Form</a>
-      </div>
-    </article>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Collision Center — Quirk AI</title>
+  <meta name="description" content="Quirk Collision Center: locations, accident forms, enterprise AI/ML case studies, photo-estimate intake demo, status text templates, and a 30/60/90 plan." />
+  <!-- IMPORTANT: your Pages site publishes /docs at the root -->
+  <base href="/Quirk-AI-Project-Overview/">
+  <link rel="stylesheet" href="assets/style.css" />
 
-    <article class="card loc">
-      <div class="title">Manchester, NH — Collision Center</div>
-      <p>1250 S Willow St, Manchester, NH 03103</p>
-      <div class="row">
-        <a class="btn" href="https://maps.google.com/?q=1250+S+Willow+St,+Manchester,+NH+03103" target="_blank" rel="noopener">Map</a>
-        <a class="btn" href="assets/NH-State-Accident-Form-1.pdf" target="_blank" rel="noopener">New Hampshire Accident Form</a>
-      </div>
-    </article>
+  <style>
+    :root{
+      --green:#0b6e37;
+      --green-ink:#0f172a;
+      --ink:#0f172a;
+      --muted:#64748b;
+      --line:#e5e7eb;
+      --bg:#f8fafc;
+      --card:#ffffff;
+      --ring:rgba(11,110,55,.18);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:linear-gradient(180deg,#f7fbf9 0%, #f9fbfc 100%);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Helvetica Neue",Arial,sans-serif}
+    a{color:var(--green);text-decoration:none}
+    a:hover{text-decoration:underline}
+
+    /* Shared topbar */
+    .topbar{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line)}
+    .topbar-inner{max-width:1080px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:12px}
+    .home-link{font-weight:800;text-transform:uppercase;letter-spacing:.02em}
+    .topbar-title{margin-left:auto;margin-right:auto;font-weight:800;color:var(--green)}
+
+    /* Page wrap + hero */
+    .wrap{max-width:1080px;margin:0 auto;padding:24px 18px 72px}
+    .hero{border:1px solid var(--line);background:
+      linear-gradient(0deg,rgba(11,110,55,.06),rgba(11,110,55,.06)),#fff;
+      border-radius:16px;padding:28px 20px;margin:16px 0 24px;position:relative;overflow:hidden;text-align:center}
+    .hero::before{content:"";position:absolute;inset:-20%;
+      background:radial-gradient(60rem 60rem at 85% -15%,rgba(0,255,198,.16),transparent 40%),
+                 conic-gradient(from 180deg at 50% 50%,rgba(11,110,55,.09),transparent 60%);
+      filter:blur(12px)}
+    .hero h1{margin:0 0 8px;font-size:clamp(1.6rem,2.6vw,2.2rem);font-weight:800;color:var(--green-ink)}
+    .hero p{margin:0;color:#475569}
+
+    /* Section blocks */
+    .block{margin:28px 0}
+    .block > h2{margin:0 0 14px;font-size:1.35rem;color:var(--green);font-weight:800}
+
+    /* Grid + Cards */
+    .grid{display:grid;gap:18px}
+    .grid-2{grid-template-columns:repeat(12,1fr)}
+    .grid-3{grid-template-columns:repeat(12,1fr)}
+    @media (min-width:720px){
+      .grid-2 > *{grid-column:span 6}
+      .grid-3 > *{grid-column:span 4}
+    }
+    @media (max-width:719px){
+      .grid-2 > *, .grid-3 > *{grid-column:span 12}
+    }
+
+    .card{
+      background:var(--card);border:1px solid var(--line);border-radius:14px;
+      box-shadow:0 6px 16px rgba(2,6,23,.06);padding:16px 16px 14px;display:flex;flex-direction:column;gap:8px}
+    .card h3{margin:0 0 4px;font-size:1.05rem;color:var(--green-ink)}
+    .card .title{font-weight:800;margin-bottom:2px}
+    .muted{color:var(--muted)}
+
+    /* Buttons & links */
+    .row{display:flex;flex-wrap:wrap;gap:8px}
+    .btn{
+      display:inline-block;background:#fff;color:var(--green);border:1px solid rgba(11,110,55,.22);
+      border-radius:999px;padding:8px 12px;font-weight:700;line-height:1}
+    .btn:hover{transform:translateY(-1px);text-decoration:none}
+    .btn-primary{background:var(--green);color:#fff;border-color:var(--green)}
+    .cta-link{display:inline-flex;align-items:center;gap:6px;font-weight:700}
+    .cta-link::after{content:"↗";font-weight:800}
+
+    /* Lists */
+    .list{margin:6px 0 2px 18px}
+    .list li{margin:6px 0}
+
+    /* Wizard */
+    .wizard{position:relative}
+    .steps{position:absolute;top:12px;right:12px;display:flex;gap:8px}
+    .step-dot{width:8px;height:8px;border-radius:50%;background:#d1fae5;border:1px solid rgba(11,110,55,.25)}
+    .step-dot.active{background:var(--green)}
+    .wiz-form{margin-top:8px}
+    .wiz-field{display:flex;flex-direction:column;margin:10px 0}
+    .wiz-field label{font-weight:700;margin-bottom:4px}
+    .wiz-field input,.wiz-field textarea{
+      border:1px solid var(--line);border-radius:10px;padding:10px 12px;font:inherit}
+    .hint{font-size:.9rem;color:#6b7280;margin-top:4px}
+    .wiz-actions{display:flex;align-items:center;gap:10px;margin-top:8px}
+    .spacer{flex:1 1 auto}
+
+    /* SMS copy rows */
+    .sms .sms-row{display:flex;gap:8px;align-items:flex-start;margin:8px 0}
+    .sms code{
+      display:block;flex:1;border:1px dashed var(--line);background:#fbfbfb;padding:10px;border-radius:10px}
+    .sms button[data-copy]{white-space:nowrap}
+
+    /* Small utilities */
+    .home-wrap{display:flex;justify-content:center;padding:18px 0 4px}
+    .home-btn{
+      display:inline-block;background:#111;color:#fff;text-decoration:none;text-transform:uppercase;
+      font-weight:800;letter-spacing:.02em;border-radius:999px;padding:10px 20px;line-height:1;
+      border:1px solid rgba(255,255,255,.06);box-shadow:0 10px 24px rgba(0,0,0,.18)}
+    .home-btn:hover{background:#0a0a0a}
+  </style>
+</head>
+<body>
+  <!-- Centered HOME button (consistent across site) -->
+  <div class="home-wrap">
+    <a class="home-btn" href="https://mpalmer79.github.io/Quirk-AI-Project-Overview/">HOME</a>
   </div>
-</section>
 
-<!-- EXECUTIVE CASE STUDIES (from your report) -->
-<section class="block" id="case-studies">
-  <h2>Enterprise Case Studies & OEM Programs</h2>
-  <div class="grid grid-3">
-
-    <article class="card">
-      <h3>Group 1 Automotive</h3>
-      <p class="muted">AI-first operations across 30+ collision centers.</p>
-      <ul class="list">
-        <li>AI scheduling + follow-up to balance bay workload.</li>
-        <li>Drive-through CV/ML inspection (e.g., UVeye) for rapid damage discovery.</li>
-        <li>AI call assistance for after-hours collision inquiries.</li>
-        <li>ADAS/EV readiness: digital calibrations, repurposed bays.</li>
-      </ul>
-      <a class="cta-link" href="docs/assets/Enterprise%20level%20AI%20ML%20in%20Automotive%20Collision%20Centers_%20Industry%20Case%20Study.pdf" target="_blank" rel="noopener">Read full case study (PDF)</a>
-    </article>
-
-    <article class="card">
-      <h3>Sonic Automotive</h3>
-      <p class="muted">Data-driven performance & training at scale.</p>
-      <ul class="list">
-        <li>AmplifAI coaching dashboards to lift estimate→RO conversion.</li>
-        <li>LLM “internal assistant” for procedures & parts lookups.</li>
-        <li>Ops analytics on advisor follow-ups, tech productivity, bottlenecks.</li>
-      </ul>
-      <a class="cta-link" href="docs/assets/Enterprise%20level%20AI%20ML%20in%20Automotive%20Collision%20Centers_%20Industry%20Case%20Study.pdf" target="_blank" rel="noopener">Read full case study (PDF)</a>
-    </article>
-
-    <article class="card">
-      <h3>Mopar / Stellantis (2025)</h3>
-      <p class="muted">OEM parts, robotics & AI assistants.</p>
-      <ul class="list">
-        <li>AutoStore robotic PDC → faster OEM parts delivery.</li>
-        <li>ChatGPT-based in-car assistant & WhatsApp support for owners.</li>
-        <li>Predictive inventory & telematics-driven service guidance.</li>
-      </ul>
-      <a class="cta-link" href="docs/assets/Enterprise%20level%20AI%20ML%20in%20Automotive%20Collision%20Centers_%20Industry%20Case%20Study.pdf" target="_blank" rel="noopener">Read full case study (PDF)</a>
-    </article>
-
-    <article class="card">
-      <h3>Top Ford Dealers (2025)</h3>
-      <p class="muted">Programs we can adopt at Quirk Ford Auto Body.</p>
-      <ul class="list">
-        <li>FordDirect + Impel conversational AI for service/collision chat & SMS.</li>
-        <li>AI call analytics (e.g., Marchex) to recover missed estimate leads.</li>
-        <li>AR repair aids / Remote Expert for complex structural & ADAS work.</li>
-        <li>AI photo estimating (CCC, Tractable/Ravin) + imaging portals.</li>
-      </ul>
-      <a class="cta-link" href="docs/assets/Enterprise%20level%20AI%20ML%20in%20Automotive%20Collision%20Centers_%20Industry%20Case%20Study.pdf" target="_blank" rel="noopener">Read full case study (PDF)</a>
-    </article>
-
-    <article class="card">
-      <h3>Quick Wins for Quirk</h3>
-      <p class="muted">Pilot items to boost throughput in Quincy & Manchester.</p>
-      <ul class="list">
-        <li>Embed AI chat on <em>quirkautobody.com</em> for 24/7 estimate capture.</li>
-        <li>AI call triage + missed-opportunity alerts for advisors.</li>
-        <li>Photo estimate intake + next-step SMS automation.</li>
-        <li>Parts acceleration: OEM priority ordering & status texts.</li>
-      </ul>
-      <a class="cta-link" href="#photo-estimate">Open Photo Estimate demo</a>
-    </article>
-
-    <article class="card">
-      <h3>Reference Docs</h3>
-      <p class="muted">One-click downloads to share with leadership.</p>
-      <p><a class="cta-link" href="docs/assets/Enterprise%20level%20AI%20ML%20in%20Automotive%20Collision%20Centers_%20Industry%20Case%20Study.pdf" target="_blank" rel="noopener">Enterprise AI/ML Collision — Industry Case Study</a></p>
-      <p><a class="cta-link" href="project-library.html#projects">Browse Project Library</a></p>
-    </article>
-
-  </div>
-</section>
-
-<!-- PHOTO ESTIMATE DEMO -->
-<section class="block" id="photo-estimate">
-  <h2>Photo Estimate — Intake Demo</h2>
-  <div class="wizard card">
-    <div class="steps" aria-hidden="true">
-      <div class="step-dot active" id="sd1"></div>
-      <div class="step-dot" id="sd2"></div>
-      <div class="step-dot" id="sd3"></div>
+  <header class="topbar" role="banner">
+    <div class="topbar-inner">
+      <a class="home-link" href="./">HOME</a>
+      <div class="topbar-title">Collision Center</div>
+      <nav class="topbar-menu" aria-label="Secondary Navigation"></nav>
     </div>
+  </header>
 
-    <form class="wiz-form" id="wiz">
-      <!-- Step 1 -->
-      <div class="wiz-step" data-step="1">
-        <div class="wiz-field"><label for="name">Your name</label><input id="name" type="text" placeholder="First & last name"></div>
-        <div class="wiz-field"><label for="phone">Mobile</label><input id="phone" type="tel" placeholder="(###) ###-####"><div class="hint">We’ll text you updates about your estimate.</div></div>
-        <div class="wiz-actions"><span></span><span class="spacer"></span><button class="btn btn-primary" data-next type="button">Next</button></div>
+  <main class="wrap">
+    <section class="hero">
+      <h1>Collision Center & Auto Body</h1>
+      <p>Locations, accident forms, enterprise AI/ML playbooks, photo-estimate intake, and a 30/60/90 rollout.</p>
+    </section>
+
+    <!-- LOCATIONS / STATE FORMS -->
+    <section class="block" id="locations">
+      <h2>Locations & Accident Forms</h2>
+      <div class="grid grid-2">
+        <article class="card loc">
+          <div class="title">Quincy, MA — Quirk Auto Body</div>
+          <p>45 Field St, Quincy, MA 02169</p>
+          <div class="row">
+            <a class="btn" href="https://maps.google.com/?q=45+Field+St,+Quincy,+MA+02169" target="_blank" rel="noopener">Map</a>
+            <a class="btn" href="assets/MA-State-Accident-Form-1.pdf" target="_blank" rel="noopener">Massachusetts Accident Form</a>
+          </div>
+        </article>
+
+        <article class="card loc">
+          <div class="title">Manchester, NH — Collision Center</div>
+          <p>1250 S Willow St, Manchester, NH 03103</p>
+          <div class="row">
+            <a class="btn" href="https://maps.google.com/?q=1250+S+Willow+St,+Manchester,+NH+03103" target="_blank" rel="noopener">Map</a>
+            <a class="btn" href="assets/NH-State-Accident-Form-1.pdf" target="_blank" rel="noopener">New Hampshire Accident Form</a>
+          </div>
+        </article>
       </div>
+    </section>
 
-      <!-- Step 2 -->
-      <div class="wiz-step" data-step="2" hidden>
-        <div class="wiz-field"><label for="vin">VIN or Plate</label><input id="vin" type="text" placeholder="1FT... or Plate #"></div>
-        <div class="wiz-field"><label for="damage">Describe the damage</label><textarea id="damage" rows="3" placeholder="Rear bumper scuff, trunk won’t close..."></textarea></div>
-        <div class="wiz-actions"><button class="btn" data-prev type="button">Back</button><span class="spacer"></span><button class="btn btn-primary" data-next type="button">Next</button></div>
+    <!-- EXECUTIVE CASE STUDIES -->
+    <section class="block" id="case-studies">
+      <h2>Enterprise Case Studies & OEM Programs</h2>
+      <div class="grid grid-3">
+
+        <article class="card">
+          <h3>Group 1 Automotive</h3>
+          <p class="muted">AI-first operations across 30+ collision centers.</p>
+          <ul class="list">
+            <li>AI scheduling + follow-up to balance bay workload.</li>
+            <li>Drive-through CV/ML inspection (e.g., UVeye) for rapid damage discovery.</li>
+            <li>AI call assistance for after-hours collision inquiries.</li>
+            <li>ADAS/EV readiness: digital calibrations, repurposed bays.</li>
+          </ul>
+          <a class="cta-link" href="assets/AI%20ML%20Case%20Study_Collision%20Repair.pdf" target="_blank" rel="noopener">Read full case study (PDF)</a>
+        </article>
+
+        <article class="card">
+          <h3>Sonic Automotive</h3>
+          <p class="muted">Data-driven performance & training at scale.</p>
+          <ul class="list">
+            <li>AmplifAI coaching dashboards to lift estimate→RO conversion.</li>
+            <li>LLM “internal assistant” for procedures & parts lookups.</li>
+            <li>Ops analytics on advisor follow-ups, tech productivity, bottlenecks.</li>
+          </ul>
+          <a class="cta-link" href="assets/AI%20ML%20Case%20Study_Collision%20Repair.pdf" target="_blank" rel="noopener">Read full case study (PDF)</a>
+        </article>
+
+        <article class="card">
+          <h3>Mopar / Stellantis (2025)</h3>
+          <p class="muted">OEM parts, robotics & AI assistants.</p>
+          <ul class="list">
+            <li>AutoStore robotic PDC → faster OEM parts delivery.</li>
+            <li>ChatGPT-based in-car assistant & WhatsApp support for owners.</li>
+            <li>Predictive inventory & telematics-driven service guidance.</li>
+          </ul>
+          <a class="cta-link" href="assets/AI%20ML%20Case%20Study_Collision%20Repair.pdf" target="_blank" rel="noopener">Read full case study (PDF)</a>
+        </article>
+
+        <article class="card">
+          <h3>Top Ford Dealers (2025)</h3>
+          <p class="muted">Programs we can adopt at Quirk Ford Auto Body.</p>
+          <ul class="list">
+            <li>FordDirect + Impel conversational AI for service/collision chat & SMS.</li>
+            <li>AI call analytics (e.g., Marchex) to recover missed estimate leads.</li>
+            <li>AR repair aids / Remote Expert for complex structural & ADAS work.</li>
+            <li>AI photo estimating (CCC, Tractable/Ravin) + imaging portals.</li>
+          </ul>
+          <a class="cta-link" href="assets/AI%20ML%20Case%20Study_Collision%20Repair.pdf" target="_blank" rel="noopener">Read full case study (PDF)</a>
+        </article>
+
+        <article class="card">
+          <h3>Quick Wins for Quirk</h3>
+          <p class="muted">Pilot items to boost throughput in Quincy & Manchester.</p>
+          <ul class="list">
+            <li>Embed AI chat on <em>quirkautobody.com</em> for 24/7 estimate capture.</li>
+            <li>AI call triage + missed-opportunity alerts for advisors.</li>
+            <li>Photo estimate intake + next-step SMS automation.</li>
+            <li>Parts acceleration: OEM priority ordering & status texts.</li>
+          </ul>
+          <a class="cta-link" href="#photo-estimate">Open Photo Estimate demo</a>
+        </article>
+
+        <article class="card">
+          <h3>Reference Docs</h3>
+          <p class="muted">One-click downloads to share with leadership.</p>
+          <p><a class="cta-link" href="assets/AI%20ML%20Case%20Study_Collision%20Repair.pdf" target="_blank" rel="noopener">Enterprise AI/ML Collision — Industry Case Study</a></p>
+          <p><a class="cta-link" href="project-library.html#projects">Browse Project Library</a></p>
+        </article>
+
       </div>
+    </section>
 
-      <!-- Step 3 -->
-      <div class="wiz-step" data-step="3" hidden>
-        <p class="muted" style="margin:0 0 8px;">Photo upload is mocked for demo purposes.</p>
-        <div class="wiz-field"><label>Photos</label><input type="file" accept="image/*" multiple></div>
-        <div class="wiz-actions"><button class="btn" data-prev type="button">Back</button><span class="spacer"></span><button class="btn btn-primary" type="button" id="submitDemo">Submit</button></div>
+    <!-- PHOTO ESTIMATE DEMO -->
+    <section class="block" id="photo-estimate">
+      <h2>Photo Estimate — Intake Demo</h2>
+      <div class="wizard card">
+        <div class="steps" aria-hidden="true">
+          <div class="step-dot active" id="sd1"></div>
+          <div class="step-dot" id="sd2"></div>
+          <div class="step-dot" id="sd3"></div>
+        </div>
+
+        <form class="wiz-form" id="wiz">
+          <!-- Step 1 -->
+          <div class="wiz-step" data-step="1">
+            <div class="wiz-field"><label for="name">Your name</label><input id="name" type="text" placeholder="First & last name"></div>
+            <div class="wiz-field"><label for="phone">Mobile</label><input id="phone" type="tel" placeholder="(###) ###-####"><div class="hint">We’ll text you updates about your estimate.</div></div>
+            <div class="wiz-actions"><span></span><span class="spacer"></span><button class="btn btn-primary" data-next type="button">Next</button></div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="wiz-step" data-step="2" hidden>
+            <div class="wiz-field"><label for="vin">VIN or Plate</label><input id="vin" type="text" placeholder="1FT... or Plate #"></div>
+            <div class="wiz-field"><label for="damage">Describe the damage</label><textarea id="damage" rows="3" placeholder="Rear bumper scuff, trunk won’t close..."></textarea></div>
+            <div class="wiz-actions"><button class="btn" data-prev type="button">Back</button><span class="spacer"></span><button class="btn btn-primary" data-next type="button">Next</button></div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="wiz-step" data-step="3" hidden>
+            <p class="muted" style="margin:0 0 8px;">Photo upload is mocked for demo purposes.</p>
+            <div class="wiz-field"><label>Photos</label><input type="file" accept="image/*" multiple></div>
+            <div class="wiz-actions"><button class="btn" data-prev type="button">Back</button><span class="spacer"></span><button class="btn btn-primary" type="button" id="submitDemo">Submit</button></div>
+          </div>
+        </form>
       </div>
-    </form>
-  </div>
-</section>
+    </section>
 
-<!-- STATUS TEXT TEMPLATES -->
-<section class="block" id="status-templates">
-  <h2>Customer Status Text Templates</h2>
-  <article class="card sms">
-    <div class="sms-row">
-      <code>Hi {{first}}, this is Quirk Collision. We’ve checked in your {{year}} {{model}} and will send an estimate within 24 hours. Reply with any questions.</code>
-      <button data-copy>Copy</button>
-    </div>
-    <div class="sms-row">
-      <code>Update: We’re in teardown and validating parts/repair plan for your {{model}}. We’ll confirm ETA once parts are ordered.</code>
-      <button data-copy>Copy</button>
-    </div>
-    <div class="sms-row">
-      <code>Parts update: {{part}} is on order with ETA {{eta}}. Your repair clock resumes when parts arrive. We’ll keep you posted.</code>
-      <button data-copy>Copy</button>
-    </div>
-    <div class="sms-row">
-      <code>Paint & reassembly are underway. Current target completion: {{date}}. We’ll text you when it’s ready for pickup.</code>
-      <button data-copy>Copy</button>
-    </div>
-    <div class="sms-row">
-      <code>Good news — your {{model}} is ready today. Pickup hours {{hours}} at {{location}}. Reply if you need alternate arrangements.</code>
-      <button data-copy>Copy</button>
-    </div>
-  </article>
-</section>
+    <!-- STATUS TEXT TEMPLATES -->
+    <section class="block" id="status-templates">
+      <h2>Customer Status Text Templates</h2>
+      <article class="card sms">
+        <div class="sms-row">
+          <code>Hi {{first}}, this is Quirk Collision. We’ve checked in your {{year}} {{model}} and will send an estimate within 24 hours. Reply with any questions.</code>
+          <button class="btn" data-copy>Copy</button>
+        </div>
+        <div class="sms-row">
+          <code>Update: We’re in teardown and validating parts/repair plan for your {{model}}. We’ll confirm ETA once parts are ordered.</code>
+          <button class="btn" data-copy>Copy</button>
+        </div>
+        <div class="sms-row">
+          <code>Parts update: {{part}} is on order with ETA {{eta}}. Your repair clock resumes when parts arrive. We’ll keep you posted.</code>
+          <button class="btn" data-copy>Copy</button>
+        </div>
+        <div class="sms-row">
+          <code>Paint & reassembly are underway. Current target completion: {{date}}. We’ll text you when it’s ready for pickup.</code>
+          <button class="btn" data-copy>Copy</button>
+        </div>
+        <div class="sms-row">
+          <code>Good news — your {{model}} is ready today. Pickup hours {{hours}} at {{location}}. Reply if you need alternate arrangements.</code>
+          <button class="btn" data-copy>Copy</button>
+        </div>
+      </article>
+    </section>
 
-<!-- 30/60/90 PLAN -->
-<section class="block" id="plan">
-  <h2>30 / 60 / 90 Day Plan</h2>
-  <div class="grid grid-3">
-    <article class="card">
-      <h3>First 30 Days</h3>
-      <ul class="list">
-        <li>Embed AI chat on estimate page (after-hours capture).</li>
-        <li>Turn on AI call analytics + missed-opportunity alerts.</li>
-        <li>Standardize status SMS (above) in DMS/CRM templates.</li>
-      </ul>
-    </article>
-    <article class="card">
-      <h3>Day 31–60</h3>
-      <ul class="list">
-        <li>Pilot photo estimating + advisor camera flow.</li>
-        <li>Parts acceleration playbook with OEM priority ordering.</li>
-        <li>AR/remote-expert trial for ADAS & structural jobs (Ford CCN).</li>
-      </ul>
-    </article>
-    <article class="card">
-      <h3>Day 61–90</h3>
-      <ul class="list">
-        <li>Evaluate imaging portal (UVeye-class) ROI.</li>
-        <li>Roll out performance dashboards for estimators/advisors.</li>
-        <li>Publish customer NPS + cycle-time scorecards monthly.</li>
-      </ul>
-    </article>
-  </div>
-</section>
+    <!-- 30/60/90 PLAN -->
+    <section class="block" id="plan">
+      <h2>30 / 60 / 90 Day Plan</h2>
+      <div class="grid grid-3">
+        <article class="card">
+          <h3>First 30 Days</h3>
+          <ul class="list">
+            <li>Embed AI chat on estimate page (after-hours capture).</li>
+            <li>Turn on AI call analytics + missed-opportunity alerts.</li>
+            <li>Standardize status SMS (above) in DMS/CRM templates.</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Day 31–60</h3>
+          <ul class="list">
+            <li>Pilot photo estimating + advisor camera flow.</li>
+            <li>Parts acceleration playbook with OEM priority ordering.</li>
+            <li>AR/remote-expert trial for ADAS & structural jobs (Ford CCN).</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Day 61–90</h3>
+          <ul class="list">
+            <li>Evaluate imaging portal (UVeye-class) ROI.</li>
+            <li>Roll out performance dashboards for estimators/advisors.</li>
+            <li>Publish customer NPS + cycle-time scorecards monthly.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Wizard interactions
+    (function(){
+      const form = document.getElementById('wiz');
+      if(!form) return;
+
+      const steps = [...form.querySelectorAll('.wiz-step')];
+      const dots = [document.getElementById('sd1'), document.getElementById('sd2'), document.getElementById('sd3')];
+      let idx = 0;
+
+      function show(i){
+        steps.forEach((s, n) => s.hidden = n !== i);
+        dots.forEach((d, n) => d.classList.toggle('active', n === i));
+        idx = i;
+      }
+      form.addEventListener('click', (e)=>{
+        const next = e.target.closest('[data-next]');
+        const prev = e.target.closest('[data-prev]');
+        if(next){ show(Math.min(idx+1, steps.length-1)); }
+        if(prev){ show(Math.max(idx-1, 0)); }
+      });
+
+      const submitDemo = document.getElementById('submitDemo');
+      if(submitDemo){
+        submitDemo.addEventListener('click', ()=>{
+          alert('Thanks! A service advisor will text you shortly with next steps.');
+          show(0);
+          form.reset();
+        });
+      }
+    })();
+
+    // Copy buttons
+    document.querySelectorAll('[data-copy]').forEach(btn=>{
+      btn.addEventListener('click', async ()=>{
+        const code = btn.parentElement.querySelector('code');
+        if(!code) return;
+        try{
+          await navigator.clipboard.writeText(code.textContent);
+          btn.textContent = 'Copied!';
+          setTimeout(()=>btn.textContent='Copy', 1200);
+        }catch(e){ btn.textContent='Copy failed'; setTimeout(()=>btn.textContent='Copy', 1200); }
+      });
+    });
+  </script>
+</body>
+</html>
