@@ -19,6 +19,8 @@
       --bg:#f8fafc;
       --card:#ffffff;
       --ring:rgba(11,110,55,.18);
+      --yes:#0b6e37;
+      --no:#9ca3af;
     }
     *{box-sizing:border-box}
     body{margin:0;background:linear-gradient(180deg,#f7fbf9 0%, #f9fbfc 100%);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Helvetica Neue",Arial,sans-serif}
@@ -107,6 +109,17 @@
       font-weight:800;letter-spacing:.02em;border-radius:999px;padding:10px 20px;line-height:1;
       border:1px solid rgba(255,255,255,.06);box-shadow:0 10px 24px rgba(0,0,0,.18)}
     .home-btn:hover{background:#0a0a0a}
+
+    /* Chatbot status badges */
+    .status{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:6px 10px;font-weight:800;border:1px solid var(--line)}
+    .status.yes{color:#fff;background:var(--yes);border-color:var(--yes)}
+    .status.no{color:#111;background:#f3f4f6;border-color:#e5e7eb}
+    .status .dot{width:8px;height:8px;border-radius:50%;background:#10b981}
+    .status.no .dot{background:#9ca3af}
+
+    /* Compact bullets under benefits */
+    .benefits{margin:8px 0 0 18px}
+    .benefits li{margin:6px 0}
   </style>
 </head>
 <body>
@@ -151,6 +164,60 @@
           </div>
         </article>
       </div>
+    </section>
+
+    <!-- NEW: Chatbot Coverage -->
+    <section class="block" id="chatbot-coverage" aria-labelledby="chatbot-heading">
+      <h2 id="chatbot-heading">Website Chatbot Coverage (ChatGPT)</h2>
+      <div class="grid grid-3">
+        <!-- Quirk Ford Collision Center — YES -->
+        <article class="card">
+          <h3 style="margin-bottom:2px;">Quirk Ford Collision Center</h3>
+          <p class="muted" style="margin:0 0 8px;">quirk-ford.com</p>
+          <p class="status yes" aria-label="Chatbot present">
+            <span class="dot" aria-hidden="true"></span> Yes — Live
+          </p>
+          <p style="margin:10px 0 0;">
+            <a class="cta-link" href="https://www.quirk-ford.com/service/quirk-auto-body/" target="_blank" rel="noopener">Open page</a>
+          </p>
+        </article>
+
+        <!-- Quincy — NO -->
+        <article class="card">
+          <h3 style="margin-bottom:2px;">Quirk Collision Center — Quincy</h3>
+          <p class="muted" style="margin:0 0 8px;">quirkautobody.com</p>
+          <p class="status no" aria-label="Chatbot missing">
+            <span class="dot" aria-hidden="true"></span> No — Not Installed
+          </p>
+          <p style="margin:10px 0 0;">
+            <a class="cta-link" href="https://quirkautobody.com/quirk-auto-body-quincy-ma/" target="_blank" rel="noopener">Open page</a>
+          </p>
+        </article>
+
+        <!-- Manchester — NO -->
+        <article class="card">
+          <h3 style="margin-bottom:2px;">Quirk Collision Center — Manchester</h3>
+          <p class="muted" style="margin:0 0 8px;">quirkautobody.com</p>
+          <p class="status no" aria-label="Chatbot missing">
+            <span class="dot" aria-hidden="true"></span> No — Not Installed
+          </p>
+          <p style="margin:10px 0 0;">
+            <a class="cta-link" href="https://quirkautobody.com/manchester-nh-auto-body-shop/" target="_blank" rel="noopener">Open page</a>
+          </p>
+        </article>
+      </div>
+
+      <!-- Benefits quick-hit -->
+      <article class="card" style="margin-top:12px;">
+        <h3>Why add AI-powered chat to Collision pages?</h3>
+        <ul class="benefits">
+          <li><strong>Capture after-hours leads:</strong> 24/7 responses turn late-night inquiries into scheduled estimates.</li>
+          <li><strong>Faster first reply:</strong> Sub-minute answers lift estimate&nbsp;→&nbsp;RO conversion and reduce phone tag.</li>
+          <li><strong>Triage & routing:</strong> Steers photo estimates, rental/insurance questions, and ADAS calibrations to the right queue.</li>
+          <li><strong>Lower workload:</strong> Automates FAQs and status updates so advisors spend more time on repairs.</li>
+          <li><strong>Compliance & visibility:</strong> Conversations can push into CRM/DMS for tracking and follow-up.</li>
+        </ul>
+      </article>
     </section>
 
     <!-- EXECUTIVE CASE STUDIES -->
