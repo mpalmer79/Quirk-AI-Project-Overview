@@ -10,9 +10,18 @@
   <link rel="stylesheet" href="assets/collision.css" />
   <script src="assets/collision.js" defer></script>
 
-  <!-- Center all green bold section headers -->
+  <!-- Center all green bold section headers + keep H2 link color consistent -->
   <style>
     .block > h2 { text-align: center; }
+    /* Make the H2 itself clickable without changing color on hover/visited/active */
+    .block > h2 a.h2-link { color: inherit; text-decoration: none; }
+    .block > h2 a.h2-link:visited,
+    .block > h2 a.h2-link:hover,
+    .block > h2 a.h2-link:active,
+    .block > h2 a.h2-link:focus { color: inherit; text-decoration: underline; }
+
+    /* Center the "Open full report (PDF)" link inside its card */
+    .link-center { text-align: center; }
   </style>
 </head>
 <body>
@@ -141,9 +150,17 @@
 
     <!-- NEW: AI & Automation in Collision Centers (2025) -->
     <section class="block" id="tech-advancement-2025">
-      <h2>AI & Automation in Collision Centers (2025)</h2>
-      <div class="grid grid-3">
+      <!-- Make the H2 itself a link (same green color on hover/click/visited) -->
+      <h2>
+        <a
+          class="h2-link"
+          href="assets/Collision%20Repair%20technology%20advancement%202025.pdf"
+          target="_blank"
+          rel="noopener"
+        >AI & Automation in Collision Centers (2025)</a>
+      </h2>
 
+      <div class="grid grid-3">
         <article class="card">
           <h3>Executive Overview</h3>
           <p class="muted">Enterprise Adaptation — Technology, Trends & Transformation</p>
@@ -152,7 +169,8 @@
             <li>OEM-aligned centers are evolving into <strong>AI-enhanced service hubs</strong>.</li>
             <li>Benefits: lower cycle time, higher repair accuracy, better customer experience.</li>
           </ul>
-          <p style="margin-top:8px;">
+          <!-- Center this link within the card -->
+          <p class="link-center" style="margin-top:8px;">
             <a class="cta-link" href="assets/Collision%20Repair%20technology%20advancement%202025.pdf" target="_blank" rel="noopener">
               Open full report (PDF)
             </a>
@@ -188,7 +206,6 @@
             <li><strong>Scheduling & Capture:</strong> High — AI CRM & lead routing.</li>
           </ul>
         </article>
-
       </div>
     </section>
 
